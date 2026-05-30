@@ -1,0 +1,68 @@
+{
+  "generated": "2026-05-30T19:34:17",
+  "config_file": "config\\emg_baseline.json",
+  "protocol_id": "P-may2026",
+  "subjects": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "project_baseline": {
+    "model": "BSC binary (RTL-matched)",
+    "D": 1024,
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "spatial": {
+      "mean": 0.9030067843493381,
+      "std": 0.0012693043280479187
+    },
+    "spatiotemporal": {
+      "mean": 0.8924954778284956,
+      "std": 0.008873567081719096
+    },
+    "per_seed": {
+      "1": {
+        "spatial": 0.9011957885295333,
+        "spatiotemporal": 0.8977458718350698
+      },
+      "2": {
+        "spatial": 0.902391162806703,
+        "spatiotemporal": 0.8978564788668286
+      },
+      "3": {
+        "spatial": 0.9029327520675766,
+        "spatiotemporal": 0.9016186726567861
+      },
+      "4": {
+        "spatial": 0.9050523659043979,
+        "spatiotemporal": 0.8771768393967132
+      },
+      "5": {
+        "spatial": 0.9034618524384802,
+        "spatiotemporal": 0.8880795263870802
+      }
+    }
+  },
+  "parity_anchor": {
+    "model": "MAP bipolar (paper)",
+    "D": 10000,
+    "seed": 1,
+    "spatial": {
+      "mean": 0.9035811443597186
+    },
+    "spatiotemporal": {
+      "mean": 0.9603522952569772
+    },
+    "paper": {
+      "spatial": 0.908,
+      "spatiotemporal": 0.978
+    }
+  }
+}

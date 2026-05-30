@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# ModelSim / Questa build artifacts (regenerated on compile)
+work/
+transcript
+*.wlf
+vsim.wlf
+vish_stacktrace.vstf
+
+# Third-party reference clone (GPLv3, large dataset.mat; clone separately:
+#   git clone https://github.com/abbas-rahimi/HDC-EMG python_ref/HDC-EMG)
+python_ref/HDC-EMG/
+
+# Generated co-simulation vectors (regenerate: python python_ref/generate_vectors.py)
+python_ref/vectors/
+
+# OS cruft
+Thumbs.db
+.DS_Store

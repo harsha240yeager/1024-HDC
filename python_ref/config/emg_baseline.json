@@ -1,0 +1,51 @@
+{
+  "name": "May 2026 EMG HDC baseline",
+  "description": "Frozen configuration for the EMG hand-gesture baseline. The project baseline is the binary BSC model the 1024-bit RTL implements; a bipolar MAP D=10000 run is kept as the literal published-parity anchor (Rahimi et al., ICRC 2016).",
+  "dataset": {
+    "source": "abbas-rahimi/HDC-EMG (dataset.mat, GPLv3)",
+    "path": "HDC-EMG/dataset.mat",
+    "subjects": [1, 2, 3, 4, 5],
+    "channels": 4,
+    "classes": 5,
+    "feature": "enveloped EMG amplitude (NOT Hudgins features)",
+    "levels": 21,
+    "percision": 1,
+    "quantize": "int(value * percision), clipped to [0, 21]"
+  },
+  "project_baseline_model": {
+    "name": "BSC binary (RTL-matched)",
+    "D": 1024,
+    "hypervector": "binary {0,1}, D/2 ones",
+    "bind": "XOR",
+    "permute": "cyclic shift",
+    "bundle": "thresholded majority, tie -> 0",
+    "similarity": "Hamming distance / popcount (argmin)",
+    "rtl_modules": ["xor_permute_top.sv", "permute_stage.sv", "bundle_unit.sv", "popcount_am.sv"]
+  },
+  "parity_anchor_model": {
+    "name": "MAP bipolar (paper)",
+    "D": 10000,
+    "hypervector": "bipolar {-1,+1}, D/2 each",
+    "bind": "element-wise multiply",
+    "permute": "cyclic shift by 1",
+    "bundle": "integer addition",
+    "similarity": "cosine (argmax)",
+    "training": "conditional add (cos < cutting_angle)"
+  },
+  "protocol": {
+    "id": "P-may2026",
+    "train_fraction": 0.25,
+    "train_selection": "first 25% of each class in order, then shuffled within class (rng = seed + 100)",
+    "test_set": "full per-subject sequence",
+    "cutting_angle": 0.9,
+    "best_n_per_subject": {"1": 4, "2": 4, "3": 3, "4": 5, "5": 4},
+    "downsample_spatial": 1,
+    "downsample_spatiotemporal": {"1": 250, "2": 250, "3": 250, "4": 250, "5": 50},
+    "evaluation": "per-subject accuracy, mean over the 5 subjects",
+    "spatial_predict": "stride-1 sample classification (hdcpredict)",
+    "spatiotemporal_predict": "gesture-window slicing, max-similarity n-gram (test_slicing)"
+  },
+  "seed": 1,
+  "seeds_for_std": [1, 2, 3, 4, 5],
+  "run_parity_anchor": true
+}

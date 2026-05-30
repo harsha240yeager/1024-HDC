@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>HDC Research Plan — One-Page Brief</title>
+<style>
+@page { size: A4; margin: 9mm 11mm 9mm 11mm; }
+html, body { background: #ffffff; }
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  color: #1e293b;
+  font-size: 9pt;
+  line-height: 1.3;
+  margin: 0;
+  zoom: 0.93;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+strong, b { color: #0a2540; }
+.m { font-family: "Cambria Math", Cambria, Georgia, serif; font-style: italic; }
+code {
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  font-size: 8.9pt;
+  background: #eef2f7;
+  color: #0a2540;
+  padding: 0 3pt;
+  border-radius: 2px;
+}
+
+/* Top banner */
+.banner {
+  background: linear-gradient(90deg, #0a2540 0%, #1e6091 60%, #2563eb 100%);
+  color: #f1f5f9;
+  padding: 7pt 12pt;
+  margin: 0 0 6pt 0;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.banner .badge {
+  background: #f59e0b; color: #0a2540;
+  padding: 1.5pt 7pt; border-radius: 10pt;
+  font-size: 7.4pt; font-weight: 700; letter-spacing: 1pt; text-transform: uppercase;
+}
+.banner h1 {
+  margin: 3pt 0 0 0; font-size: 13.5pt; color: #ffffff; font-weight: 700; line-height: 1.15;
+}
+.banner .sub { font-size: 8.4pt; color: #cbd5e1; margin-top: 1pt; }
+.banner .right { text-align: right; font-size: 8pt; color: #cbd5e1; line-height: 1.25; }
+.banner .right b { color: #ffffff; }
+
+/* Section headers */
+h2 {
+  font-size: 9.2pt;
+  color: #0a2540;
+  margin: 5pt 0 2pt 0;
+  padding-bottom: 1.5pt;
+  border-bottom: 1.5px solid #1e6091;
+  text-transform: uppercase;
+  letter-spacing: 0.7pt;
+  font-weight: 700;
+}
+p { margin: 2pt 0 3pt 0; text-align: justify; }
+ul { margin: 2pt 0 3pt 15pt; padding: 0; }
+li { margin: 0.5pt 0; }
+li::marker { color: #1e6091; }
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 12pt;
+  margin-top: 3pt;
+}
+
+/* System diagram container */
+.fig {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 4pt;
+  margin: 3pt 0;
+}
+.fig .cap { font-size: 8pt; color: #64748b; font-style: italic; text-align: center; margin-top: 2pt; }
+
+/* Numbers / targets */
+.targets {
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 3pt;
+  margin: 3pt 0 3pt 0;
+}
+.target {
+  background: #eff6ff; border-left: 3px solid #2563eb;
+  padding: 2.5pt 5pt; border-radius: 2px;
+  text-align: center;
+}
+.target .v { font-size: 9.6pt; font-weight: 700; color: #0a2540; line-height: 1.15; }
+.target .l { font-size: 7.2pt; color: #475569; }
+
+/* Timeline */
+.tl { width: 100%; border-collapse: collapse; margin-top: 2pt; font-size: 8.4pt; }
+.tl th, .tl td { border-bottom: 1px solid #e2e8f0; padding: 1.8pt 5pt; text-align: left; }
+.tl th { background: #0a2540; color: #f1f5f9; font-weight: 600; font-size: 8.2pt; }
+.tl td.m1 { color: #0a2540; font-weight: 600; background: #eef2f7; width: 22%; }
+
+/* Venue cascade */
+.vc {
+  background: #fffbeb; border-left: 3px solid #f59e0b;
+  padding: 4pt 7pt; border-radius: 2px; margin-top: 3pt;
+  font-size: 8.4pt;
+}
+.vc b { color: #92400e; }
+
+/* Bottom note */
+.foot {
+  margin-top: 5pt;
+  padding: 5pt 9pt;
+  background: #ecfdf5;
+  border-left: 3px solid #059669;
+  border-radius: 2px;
+  font-size: 8.4pt;
+  color: #065f46;
+}
+.foot b { color: #047857; }
+
+.sig {
+  margin-top: 6pt;
+  display: flex;
+  justify-content: space-between;
+  font-size: 8pt;
+  color: #475569;
+}
+.sig .line {
+  border-top: 1px solid #94a3b8;
+  width: 40%;
+  padding-top: 1.5pt;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<!-- ====== Top banner ====== -->
+<div class="banner">
+  <div>
+    <span class="badge">Research Plan &mdash; Advisor Brief</span>
+    <h1>Informed Bit-Position Pruning for Hyperdimensional Computing on FPGA</h1>
+    <div class="sub">A discriminability-driven Pareto study with cross-subject transferability &mdash; on Zynq, for EMG classification</div>
+  </div>
+  <div class="right">
+    <div><b>Primary venue</b></div><div>DATE 2027</div>
+    <div style="margin-top:4pt"><b>Submission</b></div><div>~Sept 2026</div>
+  </div>
+</div>
+
+<!-- ====== Context paragraph ====== -->
+<p>
+<strong>Background.</strong> Hyperdimensional Computing (HDC) represents information as wide binary vectors on
+which all operations are bit-parallel and noise-tolerant &mdash; a strong match for FPGA edge inference. I
+already have a verified 1024-bit bind&nbsp;+&nbsp;permute SystemVerilog core with an AXI-Lite wrapper
+(<code>71/71</code> ModelSim tests passing). This proposal turns it into a streaming HDC classifier and adds
+three layered research contributions absent from prior FPGA-HDC work: <strong>(i)</strong> an accuracy/energy
+Pareto across <em>dimension</em>, <em>bundle precision</em>, and <em>bit-pruning</em>; <strong>(ii)</strong> a
+direct <em>informed-vs-random</em> bit-pruning comparison establishing that bit-position matters, not just
+bit-count; <strong>(iii)</strong> a <em>cross-subject</em> mask-transferability study on EMG.
+</p>
+
+<!-- ====== Two-column body ====== -->
+<div class="grid">
+
+  <!-- LEFT COLUMN -->
+  <div>
+
+    <h2>What I will build</h2>
+    <ul>
+      <li><b>Six new RTL modules</b>: <code>item_memory</code>, <code>bundle_unit</code>, <code>pruning_mask</code> (Hook A), <code>popcount_am</code>, <code>encoder_top</code>, <code>hdc_stream_wrapper</code>; all parameterised on <span class="m">D</span>.</li>
+      <li><b>AXI-Stream + DMA</b> replacing AXI-Lite to unlock streaming throughput.</li>
+      <li><b>Bare-metal C software</b> + a Python training pipeline that emits a per-bit pruning mask offline.</li>
+      <li><b>Bit-exact Python golden reference</b> + 10&thinsp;k randomised co-sim vectors + dataset replay.</li>
+    </ul>
+
+    <h2>How I will evaluate it</h2>
+    <ul>
+      <li><b>Primary:</b> UCI EMG Hand-Gesture (4 ch, 5 classes, 36 subjects) &mdash; canonical HDC benchmark.</li>
+      <li><b>Secondary:</b> MIT-BIH ECG arrhythmia (5 AAMI classes).</li>
+      <li><b>Baselines:</b> ARM-only HDC, the existing AXI-Lite path, a tiny int8 MLP, prior FPGA HDC.</li>
+      <li><b>Metrics:</b> accuracy, latency, energy/inference (shunt + INA219), LUT/FF/BRAM, f<sub>max</sub>.</li>
+    </ul>
+
+    <h2>Novelty / contribution</h2>
+    <ul>
+      <li><b>Hook A &mdash; three-axis Pareto:</b> <span class="m">D</span>&nbsp;&times;&nbsp;CNT_W&nbsp;&times;&nbsp;bit-pruning ratio, jointly measured on real Zynq hardware. Bit-position pruning uses per-bit Fisher discriminability and a tiny <code>pruning_mask</code> module gating the AM popcount.</li>
+      <li><b>Twist 1 &mdash; informed&nbsp;vs.&nbsp;random:</b> at each pruning ratio, the discriminability-driven mask is compared head-to-head with a random mask of identical density. Expected headline: <em>informed beats random by &ge;&nbsp;5&nbsp;pp at iso-budget</em> &mdash; converts the "is this just feature selection?" objection into the strongest published claim.</li>
+      <li><b>Twist 2 &mdash; cross-subject transfer:</b> mask trained on 18 EMG subjects, evaluated on 18 held-out subjects. Either result is publishable (universal vs. per-subject).</li>
+    </ul>
+
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div>
+
+    <h2>System overview</h2>
+    <div class="fig">
+      <svg viewBox="0 0 400 200" width="100%" height="86" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" font-size="9">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#0a2540"/>
+          </marker>
+        </defs>
+        <rect x="6" y="6" width="120" height="188" rx="4" fill="#f8fafc" stroke="#1e6091" stroke-dasharray="4,2"/>
+        <rect x="6" y="6" width="120" height="16" fill="#1e6091"/>
+        <text x="66" y="17" text-anchor="middle" font-weight="700" fill="#ffffff" font-size="8.5">PROCESSING SYSTEM</text>
+        <rect x="14" y="30"  width="104" height="22" rx="2" fill="#eff6ff" stroke="#1d4ed8"/><text x="66" y="44" text-anchor="middle">ARM Cortex-A9</text>
+        <rect x="14" y="58"  width="104" height="22" rx="2" fill="#eff6ff" stroke="#1d4ed8"/><text x="66" y="72" text-anchor="middle">Features + quantise</text>
+        <rect x="14" y="86"  width="104" height="22" rx="2" fill="#eff6ff" stroke="#1d4ed8"/><text x="66" y="100" text-anchor="middle">DDR buffer</text>
+        <rect x="14" y="114" width="104" height="22" rx="2" fill="#eff6ff" stroke="#1d4ed8"/><text x="66" y="128" text-anchor="middle">Training loop</text>
+        <rect x="14" y="142" width="104" height="22" rx="2" fill="#eff6ff" stroke="#1d4ed8"/><text x="66" y="156" text-anchor="middle">Logging</text>
+
+        <rect x="140" y="6" width="254" height="188" rx="4" fill="#fefce8" stroke="#92400e" stroke-dasharray="4,2"/>
+        <rect x="140" y="6" width="254" height="16" fill="#92400e"/>
+        <text x="267" y="17" text-anchor="middle" font-weight="700" fill="#ffffff" font-size="8.5">PROGRAMMABLE LOGIC</text>
+
+        <rect x="150" y="30" width="90" height="28" rx="2" fill="#ffffff" stroke="#92400e"/><text x="195" y="42" text-anchor="middle">AXI-DMA</text><text x="195" y="53" text-anchor="middle" font-size="8" fill="#475569">DDR → stream</text>
+        <rect x="256" y="30" width="130" height="28" rx="2" fill="#ecfdf5" stroke="#059669"/><text x="321" y="42" text-anchor="middle" font-weight="600">Encoder</text><text x="321" y="53" text-anchor="middle" font-size="8" fill="#475569">item-mem · bind · Π</text>
+
+        <rect x="256" y="68" width="130" height="28" rx="2" fill="#eff6ff" stroke="#1d4ed8"/><text x="321" y="80" text-anchor="middle" font-weight="600">Bundler</text><text x="321" y="91" text-anchor="middle" font-size="8" fill="#475569">1024 counters</text>
+
+        <rect x="256" y="106" width="130" height="28" rx="2" fill="#fef2f2" stroke="#dc2626"/><text x="321" y="118" text-anchor="middle" font-weight="600">Associative mem</text><text x="321" y="129" text-anchor="middle" font-size="8" fill="#475569">popcount + argmin</text>
+
+        <rect x="150" y="106" width="90" height="28" rx="2" fill="#ffffff" stroke="#92400e"/><text x="195" y="118" text-anchor="middle">AXI-Lite</text><text x="195" y="129" text-anchor="middle" font-size="8" fill="#475569">ctrl + class HV</text>
+
+        <rect x="150" y="158" width="90" height="28" rx="2" fill="#ffffff" stroke="#92400e"/><text x="195" y="170" text-anchor="middle">AXI-Stream</text><text x="195" y="181" text-anchor="middle" font-size="8" fill="#475569">class id out</text>
+
+        <line x1="118" y1="100" x2="150" y2="42"  stroke="#0a2540" marker-end="url(#ar)"/>
+        <line x1="240" y1="44"  x2="256" y2="44"  stroke="#0a2540" marker-end="url(#ar)"/>
+        <line x1="321" y1="58"  x2="321" y2="68"  stroke="#0a2540" marker-end="url(#ar)"/>
+        <line x1="321" y1="96"  x2="321" y2="106" stroke="#0a2540" marker-end="url(#ar)"/>
+        <line x1="256" y1="120" x2="240" y2="120" stroke="#0a2540" marker-end="url(#ar)"/>
+        <line x1="195" y1="134" x2="195" y2="158" stroke="#0a2540" marker-end="url(#ar)"/>
+        <line x1="150" y1="172" x2="118" y2="172" stroke="#0a2540" marker-end="url(#ar)"/>
+      </svg>
+      <div class="cap">Five new modules (coloured) wrapped around the existing verified bind + permute core.</div>
+    </div>
+
+    <h2>Target headline numbers</h2>
+    <div class="targets">
+      <div class="target"><div class="v">&ge; 92&nbsp;%</div><div class="l">EMG accuracy at D=1024</div></div>
+      <div class="target"><div class="v">&ge; 5&nbsp;pp</div><div class="l">Informed &minus; random gap</div></div>
+      <div class="target"><div class="v">2&ndash;4×</div><div class="l">Energy along Pareto</div></div>
+      <div class="target"><div class="v">10×</div><div class="l">vs. ARM baseline</div></div>
+    </div>
+
+    <h2>Timeline (May → Sept 2026)</h2>
+    <table class="tl">
+      <tr><td class="m1">May</td><td>Python golden reference; reproduce published EMG number</td></tr>
+      <tr><td class="m1">Jun</td><td>New RTL modules + bit-exact co-sim</td></tr>
+      <tr><td class="m1">Jul</td><td>AXI-Stream + DMA bring-up on board</td></tr>
+      <tr><td class="m1">Aug</td><td>Full experimental matrix + power measurement</td></tr>
+      <tr><td class="m1">Sept</td><td>Paper draft &amp; submission to DATE 2027</td></tr>
+    </table>
+
+    <div class="vc">
+      <b>Venue cascade:</b> DATE 2027 &rarr; AICAS 2027 &rarr; FCCM 2027 &rarr; journal (TVLSI / TRETS / JETCAS).
+    </div>
+
+  </div>
+</div>
+
+<!-- ====== Footer: ask + risk ====== -->
+<div class="foot">
+<b>What I would like from you.</b> (1) Confirmation of Zynq board availability through August's power-measurement phase; (2) ~30 min of feedback in mid-July on the experimental design before I lock figures; (3) co-author review of the paper draft in early September. <b>Main risk:</b> &ldquo;yet-another-HDC-paper&rdquo; reviewer reflex &mdash; mitigated by leading with the streaming + AM + open-artifact contribution rather than the algorithm.
+</div>
+
+</body>
+</html>
