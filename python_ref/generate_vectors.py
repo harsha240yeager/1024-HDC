@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Generate bind+permute co-simulation vectors for ModelSim/Questa.
+"""Generate co-simulation vectors for ModelSim/Questa.
 
-Two output formats:
+Formats:
   * default (per-case): one directory per case (in_vec.hex, bind_vec.hex,
     expected.hex, ctrl.txt) plus manifest.json.
-  * --flat: a single flat, $readmemh-friendly set (in_vec.hex, bind_vec.hex,
-    expected.hex, ctrl.hex, meta.txt) consumed by tb/tb_cosim.sv.
+  * --flat: a single flat, $readmemh-friendly bind+permute set (in_vec.hex,
+    bind_vec.hex, expected.hex, ctrl.hex, meta.txt) for tb/tb_cosim.sv.
+  * --bundle: a flat bundle set (bundle_in.hex, expected.hex, kcnt.hex,
+    meta.txt) for tb/tb_bundle_cosim.sv.
 """
 
 from __future__ import annotations
@@ -17,23 +19,38 @@ from hdc_ref import (
     HDCConfig,
     export_bind_permute_cosim,
     export_bind_permute_vectors,
+    export_bundle_cosim,
 )
 
 
 def main() -> None:
     p = argparse.ArgumentParser(description="Export HDC golden vectors for RTL co-simulation")
     p.add_argument("--out-dir", type=Path, default=None,
-                   help="output directory (default: vectors, or vectors/cosim with --flat)")
+                   help="output directory (defaults depend on format)")
     p.add_argument("--count", type=int, default=1000)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--D", type=int, default=1024)
     p.add_argument("--flat", action="store_true",
-                   help="emit flat $readmemh files for tb_cosim.sv")
+                   help="emit flat bind+permute $readmemh files for tb_cosim.sv")
+    p.add_argument("--bundle", action="store_true",
+                   help="emit flat bundle $readmemh files for tb_bundle_cosim.sv")
+    p.add_argument("--kmin", type=int, default=2, help="bundle: min vectors per case")
+    p.add_argument("--kmax", type=int, default=16, help="bundle: max vectors per case")
+    p.add_argument("--cnt-bits", type=int, default=6, help="bundle: counter width")
     args = p.parse_args()
 
     cfg = HDCConfig(D=args.D, seed=args.seed)
 
-    if args.flat:
+    if args.bundle:
+        out_dir = args.out_dir or Path("vectors/cosim_bundle")
+        meta = export_bundle_cosim(
+            out_dir, cfg, args.count, args.seed,
+            k_min=args.kmin, k_max=args.kmax, cnt_bits=args.cnt_bits,
+        )
+        print(f"Wrote {meta['count']} bundle cases (D={meta['D']}, "
+              f"K in [{meta['k_min']},{meta['k_max']}], cnt_bits={meta['cnt_bits']}) "
+              f"to {out_dir.resolve()}")
+    elif args.flat:
         out_dir = args.out_dir or Path("vectors/cosim")
         meta = export_bind_permute_cosim(out_dir, cfg, args.count, args.seed)
         print(f"Wrote {meta['count']} flat cases (D={meta['D']}) to {out_dir.resolve()}")

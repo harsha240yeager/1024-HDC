@@ -1,4 +1,11 @@
-C:/Modelsim_projects/1024HDC/tb_xor_permute.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb_xor_permute.sv
+C:/Modelsim_projects/1024HDC/rtl/permute_stage.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/permute_stage.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module permute_stage
+
+Top level modules:
+	permute_stage
+
+} {} {}} C:/Modelsim_projects/1024HDC/tb_xor_permute.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb_xor_permute.sv
 Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
 -- Compiling module tb_xor_permute
 
@@ -19,11 +26,32 @@ Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
 Top level modules:
 	xor_permute_top
 
+} {} {}} C:/Modelsim_projects/1024HDC/rtl/simple_bind_rom.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/simple_bind_rom.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module simple_bind_rom
+
+Top level modules:
+	simple_bind_rom
+
+} {} {}} C:/Modelsim_projects/1024HDC/tb/tb_xor_permute.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb/tb_xor_permute.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module tb_xor_permute
+
+Top level modules:
+	tb_xor_permute
+
 } {} {}} C:/Modelsim_projects/1024HDC/permute_stage.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/permute_stage.sv
 Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
 -- Compiling module permute_stage
 
 Top level modules:
 	permute_stage
+
+} {} {}} C:/Modelsim_projects/1024HDC/rtl/xor_permute_top.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/xor_permute_top.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module xor_permute_top
+
+Top level modules:
+	xor_permute_top
 
 } {} {}}

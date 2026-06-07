@@ -595,6 +595,66 @@ def _write_case(
         f.write(f"mode={mode}\nparam={param}\n")
 
 
+def export_bundle_cosim(
+    out_dir: Path,
+    cfg: HDCConfig,
+    count: int,
+    seed: int,
+    k_min: int = 2,
+    k_max: int = 16,
+    cnt_bits: int = 6,
+) -> dict:
+    """
+    Write a flat co-simulation vector set for tb_bundle_cosim.sv.
+
+    Each case bundles K (random, in [k_min, k_max]) random hypervectors using
+    the BundleAccumulator (saturating per-bit counters at 2**cnt_bits-1, then
+    majority threshold count >= n_accum >> 1) -- i.e. exactly bundle_unit.sv.
+
+    Layout (all under out_dir):
+      bundle_in.hex  sum(K_i)*words lines, 16 hex digits each (one 64-bit word)
+      expected.hex   count*words lines (the bundled/thresholded result per case)
+      kcnt.hex       count lines, one hex value per case = K (vectors in bundle)
+      meta.txt       key=value metadata
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rng = np.random.default_rng(seed)
+
+    in_lines: List[str] = []
+    exp_lines: List[str] = []
+    k_lines: List[str] = []
+
+    for _ in range(count):
+        K = int(rng.integers(k_min, k_max + 1))
+        acc = BundleAccumulator(cfg, cnt_bits=cnt_bits)
+        for _ in range(K):
+            v = random_bits(rng, cfg.D)
+            acc.accumulate(v)
+            in_lines.extend(bits_to_hex_lines(v, cfg.words, cfg.bits_per_word))
+        out = acc.threshold()
+        exp_lines.extend(bits_to_hex_lines(out, cfg.words, cfg.bits_per_word))
+        k_lines.append(f"{K:04x}")
+
+    (out_dir / "bundle_in.hex").write_text("\n".join(in_lines) + "\n", encoding="utf-8")
+    (out_dir / "expected.hex").write_text("\n".join(exp_lines) + "\n", encoding="utf-8")
+    (out_dir / "kcnt.hex").write_text("\n".join(k_lines) + "\n", encoding="utf-8")
+
+    meta = {
+        "count": count,
+        "D": cfg.D,
+        "words": cfg.words,
+        "bits_per_word": cfg.bits_per_word,
+        "seed": seed,
+        "cnt_bits": cnt_bits,
+        "k_min": k_min,
+        "k_max": k_max,
+    }
+    (out_dir / "meta.txt").write_text(
+        "".join(f"{k}={v}\n" for k, v in meta.items()), encoding="utf-8"
+    )
+    return meta
+
+
 def export_pruning_mask_hex(mask: np.ndarray, path: Path, cfg: HDCConfig) -> None:
     lines = bits_to_hex_lines(mask, cfg.words, cfg.bits_per_word)
     with path.open("w", encoding="utf-8") as f:
