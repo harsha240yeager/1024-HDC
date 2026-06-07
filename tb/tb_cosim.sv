@@ -180,7 +180,7 @@ module tb_cosim;
         checked = 0;
 
         if (!$value$plusargs("CASES=%d", num_cases))   num_cases = 1000;
-        if (!$value$plusargs("VECDIR=%s", vecdir))      vecdir    = "vectors/cosim";
+        if (!$value$plusargs("VECDIR=%s", vecdir))      vecdir    = "python_ref/vectors/cosim";
         if (num_cases > MAX_CASES) begin
             $display("WARNING: CASES=%0d exceeds MAX_CASES=%0d; clamping.", num_cases, MAX_CASES);
             num_cases = MAX_CASES;
