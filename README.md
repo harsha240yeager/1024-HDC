@@ -14,7 +14,8 @@ the PS through an AXI4-Lite wrapper.
 | Folder | Contents |
 |---|---|
 | `rtl/` | SystemVerilog RTL: `xor_permute_top.sv` (1024-bit XOR+permute datapath), `permute_stage.sv` (permutation modes), `simple_bind_rom.sv` (bind-vector ROM), `hdc_axi_lite_wrapper.sv` (AXI4-Lite slave). |
-| `tb/` | Testbenches: `tb_xor_permute.sv` (golden-model self-checking TB for the bind+permute core). |
+| `tb/` | Testbenches: `tb_xor_permute.sv` (golden-model self-checking TB) and `tb_cosim.sv` (file-driven co-sim that checks the RTL bit-for-bit against the Python golden vectors). |
+| `sim/` | Automation: `run_cosim.do` — one-command co-simulation harness (generate vectors → compile → simulate → PASS/FAIL). |
 | `sw/` | Bare-metal software: `hdc_axi_example.c` (Zynq PS example driving the AXI-Lite core). |
 | `docs/` | Research plan, advisor one-pager, project guide, and the reference paper (PDF/HTML/DOCX). |
 | `python_ref/` | Bit-exact Python golden reference, EMG reproduction (Stage A/B), frozen baseline config + results, and PDF notes. See `python_ref/README.md`. |
@@ -48,6 +49,21 @@ vlog rtl/xor_permute_top.sv rtl/permute_stage.sv rtl/simple_bind_rom.sv tb/tb_xo
 vsim work.tb_xor_permute -do "run -all"
 ```
 
+### Automated co-simulation vs the Python golden
+
+One command regenerates the golden vectors, compiles the RTL + co-sim TB, runs
+the simulation, and reports PASS/FAIL (non-zero exit on any mismatch). Run from
+the repo root:
+
+```bash
+vsim -c -do sim/run_cosim.do
+```
+
+Override the case count with the `NUM_CASES` environment variable (default 1000).
+The harness compares `xor_permute_top` output bit-for-bit against vectors emitted
+by `python_ref/generate_vectors.py --flat`, so the Python reference is the single
+source of truth (no hand-written SV golden in the loop).
+
 ### Python golden reference + EMG baseline
 
 ```bash
@@ -63,7 +79,8 @@ python run_emg_baseline.py --quick --no-parity   # fast sanity (~7 s)
 
 ## Roadmap (June+)
 
-- Wire the Stage B encoder into RTL co-simulation (drive ModelSim from Python vectors).
+- ~~Automated bind+permute co-sim harness driven by the Python golden~~ — **done** (`sim/run_cosim.do`).
+- Extend co-sim to the Stage B encoder once those modules land.
 - New RTL modules: `bundle_unit.sv`, `popcount_am.sv`, `encoder_top.sv`, `hdc_stream_wrapper.sv` (AXI-Stream + DMA).
 - Novelty studies: dimension/precision/pruning Pareto (Hook A), informed-vs-random pruning (Twist 1), cross-subject mask transfer (Twist 2).
 - Zynq bring-up: throughput / latency / energy / area.

@@ -601,6 +601,64 @@ def export_pruning_mask_hex(mask: np.ndarray, path: Path, cfg: HDCConfig) -> Non
         f.write("\n".join(lines) + "\n")
 
 
+def export_bind_permute_cosim(
+    out_dir: Path,
+    cfg: HDCConfig,
+    count: int,
+    seed: int,
+) -> dict:
+    """
+    Write a flat, $readmemh-friendly co-simulation vector set for tb_cosim.sv.
+
+    Layout (all under out_dir):
+      in_vec.hex    count*words lines, 16 hex digits each (one 64-bit word/line)
+      bind_vec.hex  same shape
+      expected.hex  same shape (RTL-exact golden = bind then permute)
+      ctrl.hex      count lines, one 32-bit hex word per case = (mode<<16)|param
+      meta.txt      key=value metadata (count, D, words, bits_per_word, seed)
+
+    Word ordering matches bits_to_hex_lines / pack_u64_words: line 0 of a case is
+    word 0 = flat bits [63:0]; the testbench reconstructs flat[(w+1)*64-1 -: 64].
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rng = np.random.default_rng(seed)
+    engine = HDCEngine(cfg)
+
+    in_lines: List[str] = []
+    bind_lines: List[str] = []
+    exp_lines: List[str] = []
+    ctrl_lines: List[str] = []
+
+    for _ in range(count):
+        in_vec = random_bits(rng, cfg.D)
+        bind_vec = random_bits(rng, cfg.D)
+        mode = int(rng.integers(0, 4))
+        param = int(rng.integers(0, cfg.D))
+        expected = engine.bind_permute(in_vec, bind_vec, mode, param)
+
+        in_lines.extend(bits_to_hex_lines(in_vec, cfg.words, cfg.bits_per_word))
+        bind_lines.extend(bits_to_hex_lines(bind_vec, cfg.words, cfg.bits_per_word))
+        exp_lines.extend(bits_to_hex_lines(expected, cfg.words, cfg.bits_per_word))
+        ctrl_lines.append(f"{((mode << 16) | (param & 0xFFFF)):08x}")
+
+    (out_dir / "in_vec.hex").write_text("\n".join(in_lines) + "\n", encoding="utf-8")
+    (out_dir / "bind_vec.hex").write_text("\n".join(bind_lines) + "\n", encoding="utf-8")
+    (out_dir / "expected.hex").write_text("\n".join(exp_lines) + "\n", encoding="utf-8")
+    (out_dir / "ctrl.hex").write_text("\n".join(ctrl_lines) + "\n", encoding="utf-8")
+
+    meta = {
+        "count": count,
+        "D": cfg.D,
+        "words": cfg.words,
+        "bits_per_word": cfg.bits_per_word,
+        "seed": seed,
+    }
+    (out_dir / "meta.txt").write_text(
+        "".join(f"{k}={v}\n" for k, v in meta.items()), encoding="utf-8"
+    )
+    return meta
+
+
 # ---------------------------------------------------------------------------
 # Self-check against permute golden used in tb_xor_permute.sv
 # ---------------------------------------------------------------------------
