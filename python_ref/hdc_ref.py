@@ -735,6 +735,85 @@ def export_am_cosim(
     return meta
 
 
+def export_encoder_cosim(
+    out_dir: Path,
+    cfg: HDCConfig,
+    count: int,
+    seed: int,
+) -> dict:
+    """
+    Write a flat co-simulation vector set for tb_encoder_cosim.sv (encoder_top).
+
+    The encoder consumes one quantized EMG window -- an (n_channels, n_features)
+    grid of level indices in [0, n_levels) -- and produces the bundled query
+    hypervector, exactly HDCEngine.encode_emg_window:
+
+        for c in channels, f in features:
+            pair = channel[c] ^ value[level] ^ permute(feature[f], mode=2, param=f)
+        query = majority_bundle(all pairs)
+
+    The item memories are written as .mem files (channel/feature/value) so the
+    RTL ROMs initialise from identical content; the level grid + golden query are
+    written as flat $readmemh files.
+
+    Layout (all under out_dir):
+      item_mem_channel.mem  n_channels * words lines
+      item_mem_feature.mem  n_features * words lines
+      item_mem_value.mem    n_levels   * words lines
+      enc_levels.hex        count lines, one packed word = level[p] at bits
+                            [p*level_w +: level_w], pair p = c*n_features + f
+      enc_expect.hex        count * words lines (golden query hypervector)
+      meta.txt              key=value metadata
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rng = np.random.default_rng(seed)
+
+    mem = ItemMemory(cfg)
+    mem.export_mem_files(out_dir)
+    engine = HDCEngine(cfg)
+
+    n_ch = cfg.n_channels
+    n_ft = cfg.n_features
+    n_pairs = n_ch * n_ft
+    level_w = max(1, int(math.ceil(math.log2(cfg.n_levels))))
+    hex_digits = (n_pairs * level_w + 3) // 4
+
+    lvl_lines: List[str] = []
+    exp_lines: List[str] = []
+
+    for _ in range(count):
+        q = rng.integers(0, cfg.n_levels, size=(n_ch, n_ft), dtype=np.int32)
+        expected = engine.encode_emg_window(q, mem)
+
+        packed = 0
+        for c in range(n_ch):
+            for f in range(n_ft):
+                p = c * n_ft + f
+                packed |= (int(q[c, f]) & ((1 << level_w) - 1)) << (level_w * p)
+        lvl_lines.append(f"{packed:0{hex_digits}x}")
+        exp_lines.extend(bits_to_hex_lines(expected, cfg.words, cfg.bits_per_word))
+
+    (out_dir / "enc_levels.hex").write_text("\n".join(lvl_lines) + "\n", encoding="utf-8")
+    (out_dir / "enc_expect.hex").write_text("\n".join(exp_lines) + "\n", encoding="utf-8")
+
+    meta = {
+        "count": count,
+        "D": cfg.D,
+        "words": cfg.words,
+        "bits_per_word": cfg.bits_per_word,
+        "n_channels": n_ch,
+        "n_features": n_ft,
+        "n_levels": cfg.n_levels,
+        "level_w": level_w,
+        "n_pairs": n_pairs,
+        "seed": seed,
+    }
+    (out_dir / "meta.txt").write_text(
+        "".join(f"{k}={v}\n" for k, v in meta.items()), encoding="utf-8"
+    )
+    return meta
+
+
 def export_pruning_mask_hex(mask: np.ndarray, path: Path, cfg: HDCConfig) -> None:
     lines = bits_to_hex_lines(mask, cfg.words, cfg.bits_per_word)
     with path.open("w", encoding="utf-8") as f:
