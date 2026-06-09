@@ -17,6 +17,7 @@ from pathlib import Path
 
 from hdc_ref import (
     HDCConfig,
+    export_am_cosim,
     export_bind_permute_cosim,
     export_bind_permute_vectors,
     export_bundle_cosim,
@@ -34,14 +35,22 @@ def main() -> None:
                    help="emit flat bind+permute $readmemh files for tb_cosim.sv")
     p.add_argument("--bundle", action="store_true",
                    help="emit flat bundle $readmemh files for tb_bundle_cosim.sv")
+    p.add_argument("--am", action="store_true",
+                   help="emit flat associative-memory $readmemh files for tb_am_cosim.sv")
     p.add_argument("--kmin", type=int, default=2, help="bundle: min vectors per case")
     p.add_argument("--kmax", type=int, default=16, help="bundle: max vectors per case")
     p.add_argument("--cnt-bits", type=int, default=6, help="bundle: counter width")
+    p.add_argument("--nclass", type=int, default=8, help="AM: number of class prototypes")
     args = p.parse_args()
 
     cfg = HDCConfig(D=args.D, seed=args.seed)
 
-    if args.bundle:
+    if args.am:
+        out_dir = args.out_dir or Path("vectors/cosim_am")
+        meta = export_am_cosim(out_dir, cfg, args.count, args.seed, n_class=args.nclass)
+        print(f"Wrote {meta['count']} AM cases (D={meta['D']}, "
+              f"n_class={meta['n_class']}) to {out_dir.resolve()}")
+    elif args.bundle:
         out_dir = args.out_dir or Path("vectors/cosim_bundle")
         meta = export_bundle_cosim(
             out_dir, cfg, args.count, args.seed,

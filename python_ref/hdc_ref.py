@@ -655,6 +655,86 @@ def export_bundle_cosim(
     return meta
 
 
+def export_am_cosim(
+    out_dir: Path,
+    cfg: HDCConfig,
+    count: int,
+    seed: int,
+    n_class: int = 8,
+    tie_prob: float = 0.12,
+    allones_prob: float = 0.2,
+) -> dict:
+    """
+    Write a flat co-simulation vector set for tb_am_cosim.sv (popcount_am).
+
+    Each case holds N_CLASS random prototype hypervectors, a random pruning
+    mask, and a random query.  The golden decision is HDCEngine.classify:
+    masked Hamming distance to every prototype, then argmin with NumPy's
+    first-index-on-tie semantics -- exactly popcount_am.sv (strict '<').
+
+    To exercise the tie-break path, with probability `tie_prob` one prototype
+    is duplicated onto another so two classes share the minimum distance; the
+    golden (and RTL) must then return the lower index.  With probability
+    `allones_prob` the mask is all-ones (unmasked Hamming).
+
+    Layout (all under out_dir):
+      am_proto.hex   count*N_CLASS*words lines (all prototypes, class-major)
+      am_mask.hex    count*words lines
+      am_query.hex   count*words lines
+      am_expect.hex  count lines, one 32-bit hex word = (best_idx<<16)|best_dist
+      meta.txt       key=value metadata (count, D, words, n_class, seed)
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rng = np.random.default_rng(seed)
+    engine = HDCEngine(cfg)
+
+    proto_lines: List[str] = []
+    mask_lines: List[str] = []
+    query_lines: List[str] = []
+    exp_lines: List[str] = []
+
+    for _ in range(count):
+        protos = np.stack([random_bits(rng, cfg.D) for _ in range(n_class)], axis=0)
+
+        if rng.random() < tie_prob and n_class >= 2:
+            i = int(rng.integers(0, n_class))
+            j = int(rng.integers(0, n_class))
+            if i != j:
+                protos[j] = protos[i].copy()
+
+        if rng.random() < allones_prob:
+            mask = np.ones(cfg.D, dtype=np.uint8)
+        else:
+            mask = random_bits(rng, cfg.D)
+
+        query = random_bits(rng, cfg.D)
+        res = engine.classify(query, protos, mask=mask)
+
+        for k in range(n_class):
+            proto_lines.extend(bits_to_hex_lines(protos[k], cfg.words, cfg.bits_per_word))
+        mask_lines.extend(bits_to_hex_lines(mask, cfg.words, cfg.bits_per_word))
+        query_lines.extend(bits_to_hex_lines(query, cfg.words, cfg.bits_per_word))
+        exp_lines.append(f"{((res.class_id << 16) | (res.distance & 0xFFFF)):08x}")
+
+    (out_dir / "am_proto.hex").write_text("\n".join(proto_lines) + "\n", encoding="utf-8")
+    (out_dir / "am_mask.hex").write_text("\n".join(mask_lines) + "\n", encoding="utf-8")
+    (out_dir / "am_query.hex").write_text("\n".join(query_lines) + "\n", encoding="utf-8")
+    (out_dir / "am_expect.hex").write_text("\n".join(exp_lines) + "\n", encoding="utf-8")
+
+    meta = {
+        "count": count,
+        "D": cfg.D,
+        "words": cfg.words,
+        "bits_per_word": cfg.bits_per_word,
+        "n_class": n_class,
+        "seed": seed,
+    }
+    (out_dir / "meta.txt").write_text(
+        "".join(f"{k}={v}\n" for k, v in meta.items()), encoding="utf-8"
+    )
+    return meta
+
+
 def export_pruning_mask_hex(mask: np.ndarray, path: Path, cfg: HDCConfig) -> None:
     lines = bits_to_hex_lines(mask, cfg.words, cfg.bits_per_word)
     with path.open("w", encoding="utf-8") as f:

@@ -13,9 +13,9 @@ the PS through an AXI4-Lite wrapper.
 
 | Folder | Contents |
 |---|---|
-| `rtl/` | SystemVerilog RTL: `xor_permute_top.sv` (1024-bit XOR+permute datapath), `permute_stage.sv` (permutation modes), `bundle_unit.sv` (majority-vote bundler), `simple_bind_rom.sv` (bind-vector ROM), `hdc_axi_lite_wrapper.sv` (AXI4-Lite slave). |
-| `tb/` | Testbenches: `tb_xor_permute.sv` (golden-model self-checking TB), `tb_cosim.sv` (bind+permute co-sim), and `tb_bundle_cosim.sv` (bundle co-sim) — the co-sim TBs check the RTL bit-for-bit against the Python golden vectors. |
-| `sim/` | Automation: `run_cosim.do` (bind+permute) and `run_bundle_cosim.do` (bundle) — one-command harnesses (generate vectors → compile → simulate → PASS/FAIL); `open_project.do` opens the GUI project. |
+| `rtl/` | SystemVerilog RTL: `xor_permute_top.sv` (1024-bit XOR+permute datapath), `permute_stage.sv` (permutation modes), `bundle_unit.sv` (majority-vote bundler), `popcount_am.sv` (nearest-prototype associative memory), `simple_bind_rom.sv` (bind-vector ROM), `hdc_axi_lite_wrapper.sv` (AXI4-Lite slave). |
+| `tb/` | Testbenches: `tb_xor_permute.sv` (golden-model self-checking TB), `tb_cosim.sv` (bind+permute co-sim), `tb_bundle_cosim.sv` (bundle co-sim), and `tb_am_cosim.sv` (associative-memory co-sim) — the co-sim TBs check the RTL bit-for-bit against the Python golden vectors. |
+| `sim/` | Automation: `run_cosim.do` (bind+permute), `run_bundle_cosim.do` (bundle), and `run_am_cosim.do` (associative memory) — one-command harnesses (generate vectors → compile → simulate → PASS/FAIL); `open_project.do` opens the GUI project. |
 | `sw/` | Bare-metal software: `hdc_axi_example.c` (Zynq PS example driving the AXI-Lite core). |
 | `docs/` | Research plan, advisor one-pager, project guide, and the reference paper (PDF/HTML/DOCX). |
 | `python_ref/` | Bit-exact Python golden reference, EMG reproduction (Stage A/B), frozen baseline config + results, and PDF notes. See `python_ref/README.md`. |
@@ -70,6 +70,13 @@ The bundler has its own harness (majority bundle of K random vectors per case):
 vsim -c -do sim/run_bundle_cosim.do
 ```
 
+The associative memory has its own harness (masked Hamming search over N_CLASS
+prototypes, including forced-tie and all-ones-mask cases):
+
+```bash
+vsim -c -do sim/run_am_cosim.do
+```
+
 ### Python golden reference + EMG baseline
 
 ```bash
@@ -87,7 +94,8 @@ python run_emg_baseline.py --quick --no-parity   # fast sanity (~7 s)
 
 - ~~Automated bind+permute co-sim harness driven by the Python golden~~ — **done** (`sim/run_cosim.do`).
 - ~~`bundle_unit.sv` (majority bundler) + co-sim~~ — **done** (`sim/run_bundle_cosim.do`, 500/500 PASS). See `docs/Bundle_Unit_and_Cosim_Flow.pdf`.
-- New RTL modules: `popcount_am.sv`, `encoder_top.sv`, `hdc_stream_wrapper.sv` (AXI-Stream + DMA); extend the co-sim to each.
+- ~~`popcount_am.sv` (nearest-prototype associative memory) + co-sim~~ — **done** (`sim/run_am_cosim.do`, 500/500 PASS). See `docs/Popcount_AM_and_Cosim_Flow.pdf`.
+- New RTL modules: `encoder_top.sv`, `hdc_stream_wrapper.sv` (AXI-Stream + DMA); extend the co-sim to each.
 - Novelty studies: dimension/precision/pruning Pareto (Hook A), informed-vs-random pruning (Twist 1), cross-subject mask transfer (Twist 2).
 - Zynq bring-up: throughput / latency / energy / area.
 
