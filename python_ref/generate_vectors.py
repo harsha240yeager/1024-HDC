@@ -21,6 +21,7 @@ from hdc_ref import (
     export_bind_permute_cosim,
     export_bind_permute_vectors,
     export_bundle_cosim,
+    export_core_cosim,
     export_encoder_cosim,
 )
 
@@ -40,6 +41,8 @@ def main() -> None:
                    help="emit flat associative-memory $readmemh files for tb_am_cosim.sv")
     p.add_argument("--encoder", action="store_true",
                    help="emit encoder $readmemh files + item_mem .mem for tb_encoder_cosim.sv")
+    p.add_argument("--core", action="store_true",
+                   help="emit end-to-end core $readmemh files for tb_core_cosim.sv")
     p.add_argument("--kmin", type=int, default=2, help="bundle: min vectors per case")
     p.add_argument("--kmax", type=int, default=16, help="bundle: max vectors per case")
     p.add_argument("--cnt-bits", type=int, default=6, help="bundle: counter width")
@@ -48,7 +51,14 @@ def main() -> None:
 
     cfg = HDCConfig(D=args.D, seed=args.seed)
 
-    if args.encoder:
+    if args.core:
+        out_dir = args.out_dir or Path("vectors/cosim_core")
+        meta = export_core_cosim(out_dir, cfg, args.count, args.seed, n_class=args.nclass)
+        print(f"Wrote {meta['count']} core cases (D={meta['D']}, "
+              f"{meta['n_channels']}x{meta['n_features']} pairs, "
+              f"n_class={meta['n_class']}, mask_density={meta['mask_density']:.3f}) "
+              f"to {out_dir.resolve()}")
+    elif args.encoder:
         out_dir = args.out_dir or Path("vectors/cosim_encoder")
         meta = export_encoder_cosim(out_dir, cfg, args.count, args.seed)
         print(f"Wrote {meta['count']} encoder cases (D={meta['D']}, "

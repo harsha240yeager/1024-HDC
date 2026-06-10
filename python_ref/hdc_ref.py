@@ -814,6 +814,113 @@ def export_encoder_cosim(
     return meta
 
 
+def export_core_cosim(
+    out_dir: Path,
+    cfg: HDCConfig,
+    count: int,
+    seed: int,
+    n_class: int = 8,
+    train_per_class: int = 5,
+    mask_keep: float = 0.75,
+    allones_mask: bool = False,
+) -> dict:
+    """
+    Write a flat co-simulation vector set for tb_core_cosim.sv (hdc_core_top).
+
+    End-to-end inference golden: class prototypes are *trained* (majority
+    bundle of `train_per_class` encoded random windows per class), a pruning
+    mask is drawn once, and then each case classifies one fresh random window:
+
+        query = encode_emg_window(levels)        # encoder_top
+        idx, dist = classify(query, protos, mask)  # popcount_am
+
+    The item memories are written as .mem files (same tables the RTL ROMs
+    initialise from), the prototypes/mask as flat hex, the per-case level grids
+    and expected (idx, dist) as $readmemh files.
+
+    Layout (all under out_dir):
+      item_mem_channel.mem / item_mem_feature.mem / item_mem_value.mem
+      core_proto.hex   n_class * words lines  (trained prototypes, class-major)
+      core_mask.hex    words lines            (pruning mask, ~mask_keep density)
+      core_levels.hex  count lines            (packed level grid, as encoder)
+      core_expect.hex  count lines            ((best_idx << 16) | best_dist)
+      meta.txt         key=value metadata
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rng = np.random.default_rng(seed)
+
+    mem = ItemMemory(cfg)
+    mem.export_mem_files(out_dir)
+    engine = HDCEngine(cfg)
+
+    n_ch = cfg.n_channels
+    n_ft = cfg.n_features
+    n_pairs = n_ch * n_ft
+    level_w = max(1, int(math.ceil(math.log2(cfg.n_levels))))
+    hex_digits = (n_pairs * level_w + 3) // 4
+
+    # Train prototypes: per class, bundle the encodings of random windows.
+    protos = np.zeros((n_class, cfg.D), dtype=np.uint8)
+    for k in range(n_class):
+        windows = [
+            engine.encode_emg_window(
+                rng.integers(0, cfg.n_levels, size=(n_ch, n_ft), dtype=np.int32), mem
+            )
+            for _ in range(train_per_class)
+        ]
+        protos[k] = bundle_majority(windows, cfg)
+
+    if allones_mask:
+        mask = np.ones(cfg.D, dtype=np.uint8)
+    else:
+        mask = (rng.random(cfg.D) < mask_keep).astype(np.uint8)
+
+    proto_lines: List[str] = []
+    for k in range(n_class):
+        proto_lines.extend(bits_to_hex_lines(protos[k], cfg.words, cfg.bits_per_word))
+    mask_lines = bits_to_hex_lines(mask, cfg.words, cfg.bits_per_word)
+
+    lvl_lines: List[str] = []
+    exp_lines: List[str] = []
+    for _ in range(count):
+        q = rng.integers(0, cfg.n_levels, size=(n_ch, n_ft), dtype=np.int32)
+        query = engine.encode_emg_window(q, mem)
+        res = engine.classify(query, protos, mask=mask)
+
+        packed = 0
+        for c in range(n_ch):
+            for f in range(n_ft):
+                p = c * n_ft + f
+                packed |= (int(q[c, f]) & ((1 << level_w) - 1)) << (level_w * p)
+        lvl_lines.append(f"{packed:0{hex_digits}x}")
+        exp_lines.append(f"{((res.class_id << 16) | (res.distance & 0xFFFF)):08x}")
+
+    (out_dir / "core_proto.hex").write_text("\n".join(proto_lines) + "\n", encoding="utf-8")
+    (out_dir / "core_mask.hex").write_text("\n".join(mask_lines) + "\n", encoding="utf-8")
+    (out_dir / "core_levels.hex").write_text("\n".join(lvl_lines) + "\n", encoding="utf-8")
+    (out_dir / "core_expect.hex").write_text("\n".join(exp_lines) + "\n", encoding="utf-8")
+
+    meta = {
+        "count": count,
+        "D": cfg.D,
+        "words": cfg.words,
+        "bits_per_word": cfg.bits_per_word,
+        "n_channels": n_ch,
+        "n_features": n_ft,
+        "n_levels": cfg.n_levels,
+        "level_w": level_w,
+        "n_pairs": n_pairs,
+        "n_class": n_class,
+        "train_per_class": train_per_class,
+        "mask_density": float(mask.mean()),
+        "seed": seed,
+    }
+    (out_dir / "meta.txt").write_text(
+        "".join(f"{k}={v}\n" for k, v in meta.items()), encoding="utf-8"
+    )
+    return meta
+
+
 def export_pruning_mask_hex(mask: np.ndarray, path: Path, cfg: HDCConfig) -> None:
     lines = bits_to_hex_lines(mask, cfg.words, cfg.bits_per_word)
     with path.open("w", encoding="utf-8") as f:

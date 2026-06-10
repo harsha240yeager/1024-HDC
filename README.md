@@ -13,9 +13,9 @@ the PS through an AXI4-Lite wrapper.
 
 | Folder | Contents |
 |---|---|
-| `rtl/` | SystemVerilog RTL: `xor_permute_top.sv` (1024-bit XOR+permute datapath), `permute_stage.sv` (permutation modes), `bundle_unit.sv` (majority-vote bundler), `popcount_am.sv` (nearest-prototype associative memory), `item_mem.sv` (hypervector ROM), `encoder_top.sv` (EMG-window encoder), `simple_bind_rom.sv` (bind-vector ROM), `hdc_axi_lite_wrapper.sv` (AXI4-Lite slave). |
-| `tb/` | Testbenches: `tb_xor_permute.sv` (golden-model self-checking TB), `tb_cosim.sv` (bind+permute co-sim), `tb_bundle_cosim.sv` (bundle co-sim), `tb_am_cosim.sv` (associative-memory co-sim), and `tb_encoder_cosim.sv` (encoder co-sim) — the co-sim TBs check the RTL bit-for-bit against the Python golden vectors. |
-| `sim/` | Automation: `run_cosim.do` (bind+permute), `run_bundle_cosim.do` (bundle), `run_am_cosim.do` (associative memory), and `run_encoder_cosim.do` (encoder) — one-command harnesses (generate vectors → compile → simulate → PASS/FAIL); `open_project.do` opens the GUI project. |
+| `rtl/` | SystemVerilog RTL: `xor_permute_top.sv` (1024-bit XOR+permute datapath), `permute_stage.sv` (permutation modes), `bundle_unit.sv` (majority-vote bundler), `popcount_am.sv` (nearest-prototype associative memory), `item_mem.sv` (hypervector ROM), `encoder_top.sv` (EMG-window encoder), `hdc_core_top.sv` (end-to-end inference core: encoder → AM), `simple_bind_rom.sv` (bind-vector ROM), `hdc_axi_lite_wrapper.sv` (AXI4-Lite slave). |
+| `tb/` | Testbenches: `tb_xor_permute.sv` (golden-model self-checking TB), `tb_cosim.sv` (bind+permute co-sim), `tb_bundle_cosim.sv` (bundle co-sim), `tb_am_cosim.sv` (associative-memory co-sim), `tb_encoder_cosim.sv` (encoder co-sim), and `tb_core_cosim.sv` (end-to-end inference co-sim) — the co-sim TBs check the RTL bit-for-bit against the Python golden vectors. |
+| `sim/` | Automation: `run_cosim.do` (bind+permute), `run_bundle_cosim.do` (bundle), `run_am_cosim.do` (associative memory), `run_encoder_cosim.do` (encoder), and `run_core_cosim.do` (end-to-end inference) — one-command harnesses (generate vectors → compile → simulate → PASS/FAIL); `open_project.do` opens the GUI project. |
 | `sw/` | Bare-metal software: `hdc_axi_example.c` (Zynq PS example driving the AXI-Lite core). |
 | `docs/` | Research plan, advisor one-pager, project guide, and the reference paper (PDF/HTML/DOCX). |
 | `python_ref/` | Bit-exact Python golden reference, EMG reproduction (Stage A/B), frozen baseline config + results, and PDF notes. See `python_ref/README.md`. |
@@ -84,6 +84,13 @@ bind+permute → majority bundle → query hypervector):
 vsim -c -do sim/run_encoder_cosim.do
 ```
 
+The end-to-end core has its own harness (trained prototypes + pruning mask
+loaded once, then level grid in → class label out):
+
+```bash
+vsim -c -do sim/run_core_cosim.do
+```
+
 ### Python golden reference + EMG baseline
 
 ```bash
@@ -103,7 +110,8 @@ python run_emg_baseline.py --quick --no-parity   # fast sanity (~7 s)
 - ~~`bundle_unit.sv` (majority bundler) + co-sim~~ — **done** (`sim/run_bundle_cosim.do`, 500/500 PASS). See `docs/Bundle_Unit_and_Cosim_Flow.pdf`.
 - ~~`popcount_am.sv` (nearest-prototype associative memory) + co-sim~~ — **done** (`sim/run_am_cosim.do`, 500/500 PASS). See `docs/Popcount_AM_and_Cosim_Flow.pdf`.
 - ~~`item_mem.sv` + `encoder_top.sv` (full EMG-window encoder) + co-sim~~ — **done** (`sim/run_encoder_cosim.do`, 500/500 PASS). See `docs/Encoder_Top_and_Cosim_Flow.pdf`.
-- `hdc_core_top.sv` (encoder → AM + pruning mask, end-to-end inference) and `hdc_stream_wrapper.sv` (AXI-Stream + DMA); extend the co-sim to each.
+- ~~`hdc_core_top.sv` (encoder → AM + pruning mask, end-to-end inference) + co-sim~~ — **done** (`sim/run_core_cosim.do`, 500/500 PASS). See `docs/HDC_Core_Top_and_Cosim_Flow.pdf`.
+- AXI integration: rework `hdc_axi_lite_wrapper.sv` around `hdc_core_top` and add `hdc_stream_wrapper.sv` (AXI-Stream + DMA).
 - Novelty studies: dimension/precision/pruning Pareto (Hook A), informed-vs-random pruning (Twist 1), cross-subject mask transfer (Twist 2).
 - Zynq bring-up: throughput / latency / energy / area.
 
