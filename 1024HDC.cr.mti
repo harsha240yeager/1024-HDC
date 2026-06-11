@@ -1,30 +1,30 @@
-C:/Modelsim_projects/1024HDC/tb/tb_bundle_cosim.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb/tb_bundle_cosim.sv
+C:/Modelsim_projects/1024HDC/tb/tb_core_axi_cosim.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb/tb_core_axi_cosim.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module tb_core_axi_cosim
+
+Top level modules:
+	tb_core_axi_cosim
+
+} {} {}} C:/Modelsim_projects/1024HDC/rtl/hdc_core_axi_lite.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/hdc_core_axi_lite.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module hdc_core_axi_lite
+
+Top level modules:
+	hdc_core_axi_lite
+
+} {} {}} C:/Modelsim_projects/1024HDC/rtl/item_mem.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/item_mem.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module item_mem
+
+Top level modules:
+	item_mem
+
+} {} {}} C:/Modelsim_projects/1024HDC/tb/tb_bundle_cosim.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb/tb_bundle_cosim.sv
 Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
 -- Compiling module tb_bundle_cosim
 
 Top level modules:
 	tb_bundle_cosim
-
-} {} {}} C:/Modelsim_projects/1024HDC/rtl/bundle_unit.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/bundle_unit.sv
-Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
--- Compiling module bundle_unit
-
-Top level modules:
-	bundle_unit
-
-} {} {}} C:/Modelsim_projects/1024HDC/rtl/permute_stage.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/permute_stage.sv
-Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
--- Compiling module permute_stage
-
-Top level modules:
-	permute_stage
-
-} {} {}} C:/Modelsim_projects/1024HDC/simple_bind_rom.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/simple_bind_rom.sv
-Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
--- Compiling module simple_bind_rom
-
-Top level modules:
-	simple_bind_rom
 
 } {} {}} C:/Modelsim_projects/1024HDC/tb_xor_permute.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb_xor_permute.sv
 Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
@@ -32,6 +32,13 @@ Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
 
 Top level modules:
 	tb_xor_permute
+
+} {} {}} C:/Modelsim_projects/1024HDC/simple_bind_rom.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/simple_bind_rom.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module simple_bind_rom
+
+Top level modules:
+	simple_bind_rom
 
 } {} {}} C:/Modelsim_projects/1024HDC/tb/tb_xor_permute.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb/tb_xor_permute.sv
 Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
@@ -54,13 +61,6 @@ Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
 Top level modules:
 	xor_permute_top
 
-} {} {}} C:/Modelsim_projects/1024HDC/tb/tb_cosim.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb/tb_cosim.sv
-Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
--- Compiling module tb_cosim
-
-Top level modules:
-	tb_cosim
-
 } {} {}} C:/Modelsim_projects/1024HDC/rtl/xor_permute_top.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/xor_permute_top.sv
 Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
 -- Compiling module xor_permute_top
@@ -74,5 +74,68 @@ Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
 
 Top level modules:
 	permute_stage
+
+} {} {}} C:/Modelsim_projects/1024HDC/rtl/permute_stage.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/permute_stage.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module permute_stage
+
+Top level modules:
+	permute_stage
+
+} {} {}} C:/Modelsim_projects/1024HDC/rtl/popcount_am.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/popcount_am.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module popcount_am
+
+Top level modules:
+	popcount_am
+
+} {} {}} C:/Modelsim_projects/1024HDC/rtl/hdc_core_top.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/hdc_core_top.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module hdc_core_top
+
+Top level modules:
+	hdc_core_top
+
+} {} {}} C:/Modelsim_projects/1024HDC/tb/tb_am_cosim.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb/tb_am_cosim.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module tb_am_cosim
+
+Top level modules:
+	tb_am_cosim
+
+} {} {}} C:/Modelsim_projects/1024HDC/rtl/bundle_unit.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/bundle_unit.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module bundle_unit
+
+Top level modules:
+	bundle_unit
+
+} {} {}} C:/Modelsim_projects/1024HDC/rtl/encoder_top.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/rtl/encoder_top.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module encoder_top
+
+Top level modules:
+	encoder_top
+
+} {} {}} C:/Modelsim_projects/1024HDC/tb/tb_encoder_cosim.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb/tb_encoder_cosim.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module tb_encoder_cosim
+
+Top level modules:
+	tb_encoder_cosim
+
+} {} {}} C:/Modelsim_projects/1024HDC/tb/tb_core_cosim.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb/tb_core_cosim.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module tb_core_cosim
+
+Top level modules:
+	tb_core_cosim
+
+} {} {}} C:/Modelsim_projects/1024HDC/tb/tb_cosim.sv {1 {vlog -work work -vopt -sv -stats=none C:/Modelsim_projects/1024HDC/tb/tb_cosim.sv
+Model Technology ModelSim SE-64 vlog 10.6e Compiler 2018.06 Jun 23 2018
+-- Compiling module tb_cosim
+
+Top level modules:
+	tb_cosim
 
 } {} {}}
