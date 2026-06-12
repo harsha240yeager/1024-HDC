@@ -1,0 +1,167 @@
+// hdc_stream_wrapper.sv
+// AXI4-Stream wrapper around the end-to-end HDC inference core (hdc_core_top).
+//
+// This is the high-throughput path: instead of register writes per window
+// (AXI4-Lite), quantized windows arrive as a continuous AXI4-Stream -- the
+// natural target of an AXI-DMA channel fed by the Zynq PS -- and one result
+// beat streams back per window.
+//
+// Input stream (S_AXIS), TDATA = 32 bits:
+//   A window is the packed level grid (N_PAIRS*LEVEL_W = 80 bits), sent as
+//   IN_BEATS = ceil(80/32) = 3 beats, little-endian: beat b carries
+//   levels_flat[b*32 +: 32] (upper bits of the final beat are ignored).
+//   TLAST marks the final beat of each window (frame boundary).
+//
+// Output stream (M_AXIS), TDATA = 32 bits:
+//   One beat per window: (class_idx << 16) | class_dist, TLAST = 1.
+//
+// Back-pressure is correct on both sides: s_axis_tready drops while the core
+// is busy or a result is waiting; m_axis_tvalid holds until m_axis_tready.
+//
+// Configuration (prototypes / pruning mask) is exposed as direct write ports,
+// passed through to popcount_am -- in a Zynq system these come from the
+// AXI4-Lite wrapper or are tied to the same staging logic.  Item memories
+// initialise from .mem files via parameters (same files as the golden).
+
+module hdc_stream_wrapper #(
+    parameter int TDATA_W       = 32,
+    parameter int WORDS         = 16,
+    parameter int BITS_PER_WORD = 64,
+    parameter int N_CH          = 4,
+    parameter int N_FEAT        = 5,
+    parameter int N_VAL         = 16,
+    parameter int N_CLASS       = 8,
+    parameter int CNT_W         = 6,
+    parameter int D             = WORDS * BITS_PER_WORD,
+    parameter int N_PAIRS       = N_CH * N_FEAT,
+    parameter int LEVEL_W       = (N_VAL   <= 1) ? 1 : $clog2(N_VAL),
+    parameter int IDX_W         = (N_CLASS <= 1) ? 1 : $clog2(N_CLASS),
+    parameter int DIST_W        = $clog2(D + 1),
+    parameter int LVL_BITS      = N_PAIRS * LEVEL_W,
+    parameter int IN_BEATS      = (LVL_BITS + TDATA_W - 1) / TDATA_W,
+    parameter     CH_MEM        = "python_ref/vectors/cosim_core/item_mem_channel.mem",
+    parameter     FT_MEM        = "python_ref/vectors/cosim_core/item_mem_feature.mem",
+    parameter     VAL_MEM       = "python_ref/vectors/cosim_core/item_mem_value.mem"
+) (
+    input  logic               aclk,
+    input  logic               aresetn,
+
+    // Configuration write ports (from AXI-Lite wrapper / PS staging)
+    input  logic               proto_we,
+    input  logic [IDX_W-1:0]   proto_idx,
+    input  logic [D-1:0]       proto_vec,
+    input  logic               mask_we,
+    input  logic [D-1:0]       mask_vec,
+
+    // S_AXIS: quantized windows in (IN_BEATS beats per window, TLAST on final)
+    input  logic               s_axis_tvalid,
+    output logic               s_axis_tready,
+    input  logic [TDATA_W-1:0] s_axis_tdata,
+    input  logic               s_axis_tlast,
+
+    // M_AXIS: one result beat per window: (class_idx << 16) | class_dist
+    output logic               m_axis_tvalid,
+    input  logic               m_axis_tready,
+    output logic [TDATA_W-1:0] m_axis_tdata,
+    output logic               m_axis_tlast
+);
+
+    localparam int BEAT_W = (IN_BEATS <= 1) ? 1 : $clog2(IN_BEATS);
+
+    // ------------------------------------------------------------------
+    // Core
+    // ------------------------------------------------------------------
+    logic                core_start;
+    logic [LVL_BITS-1:0] levels_reg;
+    logic                core_busy;
+    logic                core_out_valid;
+    logic [IDX_W-1:0]    core_class_idx;
+    logic [DIST_W-1:0]   core_class_dist;
+
+    hdc_core_top #(
+        .WORDS(WORDS), .BITS_PER_WORD(BITS_PER_WORD),
+        .N_CH(N_CH), .N_FEAT(N_FEAT), .N_VAL(N_VAL),
+        .N_CLASS(N_CLASS), .CNT_W(CNT_W),
+        .CH_MEM(CH_MEM), .FT_MEM(FT_MEM), .VAL_MEM(VAL_MEM)
+    ) u_core (
+        .clk        (aclk),
+        .rst_n      (aresetn),
+        .proto_we   (proto_we),
+        .proto_idx  (proto_idx),
+        .proto_vec  (proto_vec),
+        .mask_we    (mask_we),
+        .mask_vec   (mask_vec),
+        .start      (core_start),
+        .levels_flat(levels_reg),
+        .busy       (core_busy),
+        .out_valid  (core_out_valid),
+        .class_idx  (core_class_idx),
+        .class_dist (core_class_dist)
+    );
+
+    // ------------------------------------------------------------------
+    // Stream FSM: collect IN_BEATS beats -> run core -> emit result beat
+    // ------------------------------------------------------------------
+    typedef enum logic [1:0] { ST_IN, ST_RUN, ST_OUT } st_t;
+    st_t              st;
+    logic [BEAT_W-1:0] beat;
+
+    assign s_axis_tready = (st == ST_IN);
+
+    integer b;
+    always_ff @(posedge aclk or negedge aresetn) begin
+        if (!aresetn) begin
+            st            <= ST_IN;
+            beat          <= '0;
+            levels_reg    <= '0;
+            core_start    <= 1'b0;
+            m_axis_tvalid <= 1'b0;
+            m_axis_tdata  <= '0;
+            m_axis_tlast  <= 1'b0;
+        end else begin
+            core_start <= 1'b0;
+
+            case (st)
+                // --------------------------------------------------------
+                ST_IN: begin
+                    if (s_axis_tvalid && s_axis_tready) begin
+                        // place beat into levels_reg (clip the final beat)
+                        for (b = 0; b < TDATA_W; b = b + 1) begin
+                            if (beat*TDATA_W + b < LVL_BITS)
+                                levels_reg[beat*TDATA_W + b] <= s_axis_tdata[b];
+                        end
+                        // TLAST (or the count) closes the window
+                        if (s_axis_tlast || (beat == IN_BEATS-1)) begin
+                            beat       <= '0;
+                            core_start <= 1'b1;
+                            st         <= ST_RUN;
+                        end else begin
+                            beat <= beat + 1'b1;
+                        end
+                    end
+                end
+                // --------------------------------------------------------
+                ST_RUN: begin
+                    if (core_out_valid) begin
+                        m_axis_tdata  <= '0;
+                        m_axis_tdata[DIST_W-1:0]  <= core_class_dist;
+                        m_axis_tdata[16 +: IDX_W] <= core_class_idx;
+                        m_axis_tvalid <= 1'b1;
+                        m_axis_tlast  <= 1'b1;
+                        st            <= ST_OUT;
+                    end
+                end
+                // --------------------------------------------------------
+                ST_OUT: begin
+                    if (m_axis_tvalid && m_axis_tready) begin
+                        m_axis_tvalid <= 1'b0;
+                        m_axis_tlast  <= 1'b0;
+                        st            <= ST_IN;
+                    end
+                end
+                default: st <= ST_IN;
+            endcase
+        end
+    end
+
+endmodule
