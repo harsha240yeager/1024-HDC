@@ -53,6 +53,16 @@ module tb_stream_cosim;
     logic               m_tvalid, m_tready, m_tlast;
     logic [TDATA_W-1:0] m_tdata;
 
+    // Debug observation wires (explicit connections silence vsim-3017/3722)
+    logic [1:0]         dbg_fsm_state;
+    logic [1:0]         dbg_beat;
+    logic [LVL_BITS-1:0] dbg_levels_flat;
+    logic               dbg_core_start;
+    logic               dbg_core_busy;
+    logic               dbg_core_out_valid;
+    logic [IDX_W-1:0]   dbg_class_idx;
+    logic [DIST_W-1:0]  dbg_class_dist;
+
     hdc_stream_wrapper #(
         .TDATA_W(TDATA_W), .WORDS(WORDS), .BITS_PER_WORD(BITS_PER_WORD),
         .N_CH(N_CH), .N_FEAT(N_FEAT), .N_VAL(N_VAL), .N_CLASS(N_CLASS)
@@ -71,7 +81,15 @@ module tb_stream_cosim;
         .m_axis_tvalid(m_tvalid),
         .m_axis_tready(m_tready),
         .m_axis_tdata (m_tdata),
-        .m_axis_tlast (m_tlast)
+        .m_axis_tlast (m_tlast),
+        .dbg_fsm_state     (dbg_fsm_state),
+        .dbg_beat          (dbg_beat),
+        .dbg_levels_flat   (dbg_levels_flat),
+        .dbg_core_start    (dbg_core_start),
+        .dbg_core_busy     (dbg_core_busy),
+        .dbg_core_out_valid(dbg_core_out_valid),
+        .dbg_class_idx     (dbg_class_idx),
+        .dbg_class_dist    (dbg_class_dist)
     );
 
     initial clk = 1'b0;
@@ -108,30 +126,30 @@ module tb_stream_cosim;
 
     always @(posedge clk) begin
         if (!aresetn) prev_fsm <= 0;
-        else if (dbg_en && (dut.dbg_fsm_state !== prev_fsm)) begin
+        else if (dbg_en && (dbg_fsm_state !== prev_fsm)) begin
             $display("[DBG %0t] FSM %s -> %s  beat=%0d busy=%0b out_valid=%0b",
-                     $time, fsm_name(prev_fsm), fsm_name(dut.dbg_fsm_state),
-                     dut.dbg_beat, dut.dbg_core_busy, dut.dbg_core_out_valid);
-            prev_fsm <= dut.dbg_fsm_state;
+                     $time, fsm_name(prev_fsm), fsm_name(dbg_fsm_state),
+                     dbg_beat, dbg_core_busy, dbg_core_out_valid);
+            prev_fsm <= dbg_fsm_state;
         end
     end
 
     always @(posedge clk) begin
         if (dbg_en && s_tvalid && s_tready)
             $display("[DBG %0t] S_AXIS beat accepted: tdata=0x%08h tlast=%0b beat=%0d ready=%0b",
-                     $time, s_tdata, s_tlast, dut.dbg_beat, s_tready);
+                     $time, s_tdata, s_tlast, dbg_beat, s_tready);
     end
 
     always @(posedge clk) begin
-        if (dbg_en && dut.dbg_core_start)
+        if (dbg_en && dbg_core_start)
             $display("[DBG %0t] CORE START  levels_flat=0x%0h  (80-bit window latched)",
-                     $time, dut.dbg_levels_flat);
+                     $time, dbg_levels_flat);
     end
 
     always @(posedge clk) begin
-        if (dbg_en && dut.dbg_core_out_valid)
+        if (dbg_en && dbg_core_out_valid)
             $display("[DBG %0t] CORE DONE   class_idx=%0d class_dist=%0d",
-                     $time, dut.dbg_class_idx, dut.dbg_class_dist);
+                     $time, dbg_class_idx, dbg_class_dist);
     end
 
     always @(posedge clk) begin
@@ -241,7 +259,7 @@ module tb_stream_cosim;
                 $display("FAIL case %0d  (tlast=%0b)", c, m_tlast);
                 $display("  expected idx=%0d dist=%0d", exp_idx, exp_dist);
                 $display("  got      idx=%0d dist=%0d", got_idx, got_dist);
-                $display("  dbg: fsm=%s levels=0x%0h", fsm_name(dut.dbg_fsm_state), dut.dbg_levels_flat);
+                $display("  dbg: fsm=%s levels=0x%0h", fsm_name(dbg_fsm_state), dbg_levels_flat);
                 $display("--------------------------------------------------");
             end
         end
