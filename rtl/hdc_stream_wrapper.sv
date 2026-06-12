@@ -39,6 +39,7 @@ module hdc_stream_wrapper #(
     parameter int DIST_W        = $clog2(D + 1),
     parameter int LVL_BITS      = N_PAIRS * LEVEL_W,
     parameter int IN_BEATS      = (LVL_BITS + TDATA_W - 1) / TDATA_W,
+    parameter int BEAT_W        = (IN_BEATS <= 1) ? 1 : $clog2(IN_BEATS),
     parameter     CH_MEM        = "python_ref/vectors/cosim_core/item_mem_channel.mem",
     parameter     FT_MEM        = "python_ref/vectors/cosim_core/item_mem_feature.mem",
     parameter     VAL_MEM       = "python_ref/vectors/cosim_core/item_mem_value.mem"
@@ -63,10 +64,18 @@ module hdc_stream_wrapper #(
     output logic               m_axis_tvalid,
     input  logic               m_axis_tready,
     output logic [TDATA_W-1:0] m_axis_tdata,
-    output logic               m_axis_tlast
-);
+    output logic               m_axis_tlast,
 
-    localparam int BEAT_W = (IN_BEATS <= 1) ? 1 : $clog2(IN_BEATS);
+    // Functional-verification observation ports (leave unconnected in synthesis)
+    output logic [1:0]         dbg_fsm_state,      // 0=ST_IN 1=ST_RUN 2=ST_OUT
+    output logic [BEAT_W-1:0]  dbg_beat,           // input beat index while ST_IN
+    output logic [LVL_BITS-1:0] dbg_levels_flat,  // assembled window after last beat
+    output logic               dbg_core_start,     // one-cycle pulse into hdc_core_top
+    output logic               dbg_core_busy,      // encoder running
+    output logic               dbg_core_out_valid, // classification done (1 cycle)
+    output logic [IDX_W-1:0]   dbg_class_idx,
+    output logic [DIST_W-1:0]  dbg_class_dist
+);
 
     // ------------------------------------------------------------------
     // Core
@@ -107,6 +116,15 @@ module hdc_stream_wrapper #(
     logic [BEAT_W-1:0] beat;
 
     assign s_axis_tready = (st == ST_IN);
+
+    assign dbg_fsm_state      = st;
+    assign dbg_beat           = beat;
+    assign dbg_levels_flat    = levels_reg;
+    assign dbg_core_start     = core_start;
+    assign dbg_core_busy      = core_busy;
+    assign dbg_core_out_valid = core_out_valid;
+    assign dbg_class_idx      = core_class_idx;
+    assign dbg_class_dist     = core_class_dist;
 
     integer b;
     always_ff @(posedge aclk or negedge aresetn) begin

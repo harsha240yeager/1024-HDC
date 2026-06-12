@@ -106,6 +106,18 @@ beats with random idle gaps, results consumed under random back-pressure:
 vsim -c -do sim/run_stream_cosim.do
 ```
 
+For **functional verification with trace + waveform** (recommended while learning
+the streaming path):
+
+```bash
+vsim -c -do sim/run_stream_cosim_debug.do
+```
+
+This enables `+DEBUG +TRACE=3 +WAVE`, prints every handshake/FSM transition, and
+writes `sim/waves/stream_cosim.vcd`. Key signals: `s_axis_*`, `m_axis_*`,
+`dut/dbg_fsm_state`, `dut/dbg_core_*`, and inside the core
+`dut/u_core/u_encoder/*`, `dut/u_core/u_am/*`.
+
 See `docs/AXI4_Lite_Protocol_Study.pdf` and `docs/AXI4_Stream_Protocol_Study.pdf`
 for from-scratch explanations of the two protocols, and the matching
 `docs/HDC_Core_AXI_Lite_and_Cosim_Flow.pdf` / `docs/HDC_Stream_Wrapper_and_Cosim_Flow.pdf`
