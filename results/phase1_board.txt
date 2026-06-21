@@ -1,0 +1,17 @@
+# HDC Phase 1 board results (JTAG readback from hdc_core_bench.elf @ 0x00100000)
+# 2026-06-21T17:39:55+05:30
+# Path: AXI-Lite @ 100 MHz PL
+# Device: xc7z020 (ZedBoard)
+
+==================================================
+HDC Phase 1 bench (AXI-Lite @ 0x43C00000)
+CPU=650000000 Hz  global_tmr=325000000 Hz  iters=1000
+==================================================
+--- Latency (START..DONE, incl. AXI poll) ---
+min  = 3 us
+max  = 3 us
+mean = 3 us
+throughput ~ 333333 windows/s (1/mean)
+--- Golden batch check ---
+PASS: 200/200 golden cases
+==================================================
