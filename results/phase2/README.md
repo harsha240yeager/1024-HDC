@@ -22,11 +22,12 @@
 
 ```bash
 # Golden test over JTAG (done — 200/200 PASS)
-bash "/home/bsp-lab/Desktop/Final HDC/HDC_DMA/run_jtag.sh"
+bash board/HDC_DMA/run_jtag.sh
 
 # Build + run DMA throughput bench (optional)
-bash "/home/bsp-lab/Desktop/Final HDC/HDC_DMA/build.sh"
-bash "/home/bsp-lab/Desktop/Final HDC/HDC_DMA/run_bench.sh"
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
+bash board/HDC_DMA/build.sh
+bash board/HDC_DMA/run_bench.sh
 ```
 
 ## Software

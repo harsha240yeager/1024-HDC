@@ -1,0 +1,53 @@
+# Copyright (C) 2023 - 2024 Advanced Micro Devices, Inc.  All rights reserved.
+# SPDX-License-Identifier: MIT
+cmake_minimum_required(VERSION 3.16)
+
+###    USER SETTINGS  START    ###
+set(USER_COMPILE_DEFINITIONS
+""
+)
+
+set(USER_UNDEFINED_SYMBOLS
+"__clang__"
+)
+
+set(USER_INCLUDE_DIRECTORIES
+"/home/bsp-lab/1024-HDC/sw"
+)
+
+set(USER_COMPILE_SOURCES
+"/home/bsp-lab/1024-HDC/sw/hdc_dma_stream_golden_test.c"
+"/home/bsp-lab/1024-HDC/sw/hdc_dma_stream.c"
+"/home/bsp-lab/1024-HDC/sw/hdc_core_regs.c"
+)
+
+set(USER_COMPILE_WARNINGS_ALL -Wall)
+set(USER_COMPILE_WARNINGS_EXTRA -Wextra)
+set(USER_COMPILE_WARNINGS_AS_ERRORS )
+set(USER_COMPILE_OPTIMIZATION_LEVEL -O0)
+set(USER_COMPILE_DEBUG_LEVEL -g3)
+set(USER_LINK_LIBRARIES )
+set(USER_LINK_DIRECTORIES )
+set(USER_LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/lscript.ld")
+set(USER_LINK_OTHER_FLAGS )
+###   END OF USER SETTINGS SECTION ###
+
+set(USER_COMPILE_OPTIONS
+    " ${USER_COMPILE_WARNINGS_ALL}"
+    " ${USER_COMPILE_WARNINGS_EXTRA}"
+    " ${USER_COMPILE_WARNINGS_AS_ERRORS}"
+    " ${USER_COMPILE_OPTIMIZATION_LEVEL}"
+    " ${USER_COMPILE_DEBUG_LEVEL}"
+    " ${USER_COMPILE_OTHER_FLAGS}"
+)
+foreach(entry ${USER_UNDEFINED_SYMBOLS})
+    list(APPEND USER_COMPILE_OPTIONS " -U${entry}")
+endforeach()
+
+set(USER_LINK_OPTIONS
+    " ${USER_LINKER_NO_START_FILES}"
+    " ${USER_LINKER_NO_DEFAULT_LIBS}"
+    " ${USER_LINKER_NO_STDLIB}"
+    " ${USER_LINKER_OMIT_ALL_SYMBOL_INFO}"
+    " ${USER_LINK_OTHER_FLAGS}"
+)

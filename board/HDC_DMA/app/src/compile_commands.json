@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_1024_Platform/build",
+  "command": "/cad/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-none-eabi/bin/arm-none-eabi-gcc -isystem /home/bsp-lab/Desktop/Final HDC/HDC_harsha/FInal_1024-HDC/export/FInal_1024-HDC/sw/standalone_ps7_cortexa9_0/include -isystem /cad/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-none-eabi/x86_64-oesdk-linux/usr/lib/arm-xilinx-eabi/gcc/arm-xilinx-eabi/13.3.0/include -isystem /cad/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-none-eabi/x86_64-oesdk-linux/usr/lib/arm-xilinx-eabi/gcc/arm-xilinx-eabi/13.3.0/include-fixed -isystem /cad/Xilinx/Vitis/2024.2/gnu/aarch32/lin/gcc-arm-none-eabi/aarch32-xilinx-eabi/usr/include  -O2 -DSDT -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard  -MMD -MP -specs=/home/bsp-lab/Desktop/Final HDC/HDC_harsha/FInal_1024-HDC/export/FInal_1024-HDC/sw/standalone_ps7_cortexa9_0/Xilinx.spec -I/home/bsp-lab/Desktop/Final HDC/HDC_harsha/FInal_1024-HDC/export/FInal_1024-HDC/sw/standalone_ps7_cortexa9_0/include -Wall -Wextra      -O0  -g3     -U__clang__ \"-D__FILENAME__=\\\"\\$$(subst /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_1024_Platform/src/,,\\$$(abspath \\$$<))\\\"\" -o CMakeFiles/Final_1024_Platform.elf.dir/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_1024_Platform/hdc_core_axi_example.c.obj -c /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_1024_Platform/hdc_core_axi_example.c",
+  "file": "/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_1024_Platform/hdc_core_axi_example.c"
+}
+]

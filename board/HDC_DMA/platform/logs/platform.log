@@ -1,0 +1,1585 @@
+TRACE::2026-06-21.21:16:48::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:48::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:48::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:50::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:16:50::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:50::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:16:50::SCWPlatform::Do not have an existing db opened. 
+TRACE::2026-06-21.21:16:53::SCWPlatform::Opened new HwDB with name design_1_wrapper
+TRACE::2026-06-21.21:16:53::SCWWriter::formatted JSON is {
+	"platformName":	"Final_HDC",
+	"sprVersion":	"2.0",
+	"mode":	"cmd",
+	"dsaType":	"Fixed",
+	"platformDesc":	"Final_HDC",
+	"platHandOff":	"/home/bsp-lab/Desktop/Final HDC/FInal_HDC/export/hw/design_1_wrapper.xsa",
+	"platIntHandOff":	"<platformDir>/hw/design_1_wrapper.xsa",
+	"deviceType":	"zynq",
+	"platIsPrebuiltAutogen":	"false",
+	"platIsNoBootBsp":	"false",
+	"hasFsblMakeHasChanges":	"false",
+	"hasPmufwMakeHasChanges":	"false",
+	"platPreBuiltFlag":	false,
+	"platformSamplesDir":	""
+}
+TRACE::2026-06-21.21:16:53::SCWWriter::formatted JSON is {
+	"platformName":	"Final_HDC",
+	"sprVersion":	"2.0",
+	"mode":	"cmd",
+	"dsaType":	"Fixed",
+	"platformDesc":	"Final_HDC",
+	"platHandOff":	"/home/bsp-lab/Desktop/Final HDC/FInal_HDC/export/hw/design_1_wrapper.xsa",
+	"platIntHandOff":	"<platformDir>/hw/design_1_wrapper.xsa",
+	"deviceType":	"zynq",
+	"platIsPrebuiltAutogen":	"false",
+	"platIsNoBootBsp":	"false",
+	"hasFsblMakeHasChanges":	"false",
+	"hasPmufwMakeHasChanges":	"false",
+	"platPreBuiltFlag":	false,
+	"platformSamplesDir":	"",
+	"platActiveSys":	"Final_HDC",
+	"systems":	[{
+			"systemName":	"Final_HDC",
+			"systemDesc":	"Final_HDC",
+			"sysIsBootAutoGen":	"true",
+			"systemDispName":	"Final_HDC"
+		}]
+}
+TRACE::2026-06-21.21:16:54::SCWPlatform::Boot application domains not present, creating them
+TRACE::2026-06-21.21:16:54::SCWDomain::checking for install qemu data   : 
+TRACE::2026-06-21.21:16:54::SCWDomain:: Using the QEMU Data from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/
+TRACE::2026-06-21.21:16:54::SCWDomain:: Using the QEMU args  from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/qemu_args.txt
+TRACE::2026-06-21.21:16:54::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:16:54::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:16:54::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:16:54::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:16:54::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:16:54::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:16:54::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:16:54::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:16:54::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:16:54::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:16:54::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:16:54::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:16:54::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:16:54::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:16:54::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:16:54::SCWPlatform::Boot application domain added for zynq_fsbl
+TRACE::2026-06-21.21:16:54::SCWPlatform::Generating the sources  .
+TRACE::2026-06-21.21:16:54::SCWBDomain::Generating boot domain sources.
+TRACE::2026-06-21.21:16:54::SCWBDomain:: Generating the zynq_fsbl Application.
+TRACE::2026-06-21.21:16:54::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:16:54::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:16:54::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:16:54::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:16:54::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:16:54::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:16:54::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:16:54::SCWMssOS::DEBUG:  swdes dump  
+TRACE::2026-06-21.21:16:54::SCWMssOS::No sw design opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:16:54::SCWMssOS::mss does not exists at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:16:54::SCWMssOS::Creating sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:16:54::SCWMssOS::Adding the swdes entry, created swdb /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss with des name /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:16:54::SCWMssOS::updating the scw layer changes to swdes at   /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:16:54::SCWMssOS::Writing mss at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:16:54::SCWMssOS::Completed writing the mss file at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp
+TRACE::2026-06-21.21:16:54::SCWMssOS::Picking up changes from newly written mss file into SCW Layer. 
+TRACE::2026-06-21.21:16:54::SCWMssOS::Updated the changes from newly written mss file into SCW Layer. 
+TRACE::2026-06-21.21:16:54::SCWBDomain::Completed writing the mss file at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp
+TRACE::2026-06-21.21:17:10::SCWPlatform::Generating sources Done.
+TRACE::2026-06-21.21:17:10::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:10::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:10::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:10::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:10::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:10::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWMssOS::DEBUG:  swdes dump  
+TRACE::2026-06-21.21:17:10::SCWMssOS::No sw design opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWMssOS::mss exists loading the mss file  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWMssOS::Opened the sw design from mss  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWMssOS::Adding the swdes entry /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss with des name system
+TRACE::2026-06-21.21:17:10::SCWMssOS::updating the scw layer about changes
+TRACE::2026-06-21.21:17:10::SCWMssOS::Opened the sw design.  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:17:10::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:17:10::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:17:10::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:10::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:10::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:10::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:10::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:10::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:10::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:10::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:10::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:10::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:10::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:10::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:10::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:10::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:10::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:10::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:10::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:10::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:10::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:10::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:10::SCWWriter::formatted JSON is {
+	"platformName":	"Final_HDC",
+	"sprVersion":	"2.0",
+	"mode":	"cmd",
+	"dsaType":	"Fixed",
+	"platformDesc":	"Final_HDC",
+	"platHandOff":	"/home/bsp-lab/Desktop/Final HDC/FInal_HDC/export/hw/design_1_wrapper.xsa",
+	"platIntHandOff":	"<platformDir>/hw/design_1_wrapper.xsa",
+	"deviceType":	"zynq",
+	"platIsPrebuiltAutogen":	"false",
+	"platIsNoBootBsp":	"false",
+	"platFsblTarget":	"ps7_cortexa9_0",
+	"hasFsblMakeHasChanges":	"false",
+	"hasPmufwMakeHasChanges":	"false",
+	"fsblExtraCompilerFlags":	"-MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard ",
+	"platPreBuiltFlag":	false,
+	"platformSamplesDir":	"",
+	"platActiveSys":	"Final_HDC",
+	"systems":	[{
+			"systemName":	"Final_HDC",
+			"systemDesc":	"Final_HDC",
+			"sysIsBootAutoGen":	"true",
+			"systemDispName":	"Final_HDC",
+			"sysActiveDom":	"zynq_fsbl",
+			"sysDefaultDom":	"",
+			"domains":	[{
+					"domainName":	"zynq_fsbl",
+					"domainDispName":	"zynq_fsbl",
+					"domainDesc":	"FSBL Application BSP - Auto Generated.",
+					"processors":	"ps7_cortexa9_0",
+					"os":	"standalone",
+					"sdxOs":	"standalone",
+					"debugEnable":	"",
+					"domRuntimes":	["cpp"],
+					"swRepo":	"",
+					"mssOsVer":	"9.2",
+					"mssFile":	"",
+					"md5Digest":	"795b7314bbbe89a9b9d61725ec1b371d",
+					"compatibleApp":	"zynq_fsbl",
+					"domType":	"bootDomain",
+					"arch":	"32-bit",
+					"appSettings":	{
+						"appCompilerFlags":	"",
+						"appLinkerFlags":	""
+					},
+					"addedLibs":	["xilffs:5.3", "xilrsa:1.8"],
+					"libOptions":	{
+						"libsContainingOptions":	[]
+					},
+					"prebuiltLibs":	{
+						"prebuiltIncPath":	[],
+						"prebuiltLibPath":	[]
+					},
+					"isolation":	{
+					}
+				}]
+		}]
+}
+TRACE::2026-06-21.21:17:26::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:26::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:26::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:26::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:26::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:26::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:26::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:26::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:26::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:26::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:26::SCWDomain::checking for install qemu data   : 
+TRACE::2026-06-21.21:17:26::SCWDomain:: Using the QEMU Data from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/
+TRACE::2026-06-21.21:17:26::SCWDomain:: Using the QEMU args  from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/qemu_args.txt
+TRACE::2026-06-21.21:17:26::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:26::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:26::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:26::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:26::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:26::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:26::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:26::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:26::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:26::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:26::SCWDomain::Qemu Directory name is changed from "" to "qemu"
+TRACE::2026-06-21.21:17:26::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:26::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:26::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:26::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:26::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:26::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:26::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:26::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:26::SCWMssOS::No sw design opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:26::SCWMssOS::mss does not exists at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:26::SCWMssOS::Creating sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:26::SCWMssOS::Adding the swdes entry, created swdb /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss with des name /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:26::SCWMssOS::updating the scw layer changes to swdes at   /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:26::SCWMssOS::Writing mss at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:26::SCWMssOS::Completed writing the mss file at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp
+TRACE::2026-06-21.21:17:26::SCWMssOS::Picking up changes from newly written mss file into SCW Layer. 
+TRACE::2026-06-21.21:17:26::SCWMssOS::Updated the changes from newly written mss file into SCW Layer. 
+TRACE::2026-06-21.21:17:26::SCWMssOS::Completed writing the mss file at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp
+TRACE::2026-06-21.21:17:26::SCWMssOS::Forcing BSP Sources regeneration.
+TRACE::2026-06-21.21:17:27::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:17:27::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:17:27::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:17:27::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::Adding the swdes entry, mss present, able to open swdb /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss with des name system_0
+TRACE::2026-06-21.21:17:27::SCWMssOS::Writing the mss file completed /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWWriter::formatted JSON is {
+	"platformName":	"Final_HDC",
+	"sprVersion":	"2.0",
+	"mode":	"cmd",
+	"dsaType":	"Fixed",
+	"platformDesc":	"Final_HDC",
+	"platHandOff":	"/home/bsp-lab/Desktop/Final HDC/FInal_HDC/export/hw/design_1_wrapper.xsa",
+	"platIntHandOff":	"<platformDir>/hw/design_1_wrapper.xsa",
+	"deviceType":	"zynq",
+	"platIsPrebuiltAutogen":	"false",
+	"platIsNoBootBsp":	"false",
+	"platFsblTarget":	"ps7_cortexa9_0",
+	"hasFsblMakeHasChanges":	"false",
+	"hasPmufwMakeHasChanges":	"false",
+	"fsblExtraCompilerFlags":	"-MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard ",
+	"platPreBuiltFlag":	false,
+	"platformSamplesDir":	"",
+	"platActiveSys":	"Final_HDC",
+	"systems":	[{
+			"systemName":	"Final_HDC",
+			"systemDesc":	"Final_HDC",
+			"sysIsBootAutoGen":	"true",
+			"systemDispName":	"Final_HDC",
+			"sysActiveDom":	"standalone_domain",
+			"sysDefaultDom":	"standalone_domain",
+			"domains":	[{
+					"domainName":	"zynq_fsbl",
+					"domainDispName":	"zynq_fsbl",
+					"domainDesc":	"FSBL Application BSP - Auto Generated.",
+					"processors":	"ps7_cortexa9_0",
+					"os":	"standalone",
+					"sdxOs":	"standalone",
+					"debugEnable":	"",
+					"domRuntimes":	["cpp"],
+					"swRepo":	"",
+					"mssOsVer":	"9.2",
+					"mssFile":	"",
+					"md5Digest":	"795b7314bbbe89a9b9d61725ec1b371d",
+					"compatibleApp":	"zynq_fsbl",
+					"domType":	"bootDomain",
+					"arch":	"32-bit",
+					"appSettings":	{
+						"appCompilerFlags":	"",
+						"appLinkerFlags":	""
+					},
+					"addedLibs":	["xilffs:5.3", "xilrsa:1.8"],
+					"libOptions":	{
+						"libsContainingOptions":	[]
+					},
+					"prebuiltLibs":	{
+						"prebuiltIncPath":	[],
+						"prebuiltLibPath":	[]
+					},
+					"isolation":	{
+					}
+				}, {
+					"domainName":	"standalone_domain",
+					"domainDispName":	"standalone_domain",
+					"domainDesc":	"standalone_domain",
+					"processors":	"ps7_cortexa9_0",
+					"os":	"standalone",
+					"sdxOs":	"standalone",
+					"qemuArgs":	"<platformDir>/resources/Final_HDC/standalone_domain/qemu_args.txt",
+					"qemuData":	"<platformDir>/resources/Final_HDC/standalone_domain/qemu",
+					"debugEnable":	"False",
+					"domRuntimes":	["cpp"],
+					"swRepo":	"",
+					"mssOsVer":	"9.2",
+					"mssFile":	"",
+					"md5Digest":	"2607cd6bce56bd75d0f61e7b114b2beb",
+					"compatibleApp":	"",
+					"domType":	"mssDomain",
+					"arch":	"32-bit",
+					"appSettings":	{
+						"appCompilerFlags":	"",
+						"appLinkerFlags":	""
+					},
+					"addedLibs":	[],
+					"libOptions":	{
+						"libsContainingOptions":	[]
+					},
+					"prebuiltLibs":	{
+						"prebuiltIncPath":	[],
+						"prebuiltLibPath":	[]
+					},
+					"isolation":	{
+					}
+				}]
+		}]
+}
+LOG::2026-06-21.21:17:27::SCWPlatform::Started generating the artifacts platform Final_HDC
+TRACE::2026-06-21.21:17:27::SCWPlatform::Sanity checking of platform is completed
+LOG::2026-06-21.21:17:27::SCWPlatform::Started generating the artifacts for system configuration Final_HDC
+LOG::2026-06-21.21:17:27::SCWSystem::Checking the domain zynq_fsbl
+LOG::2026-06-21.21:17:27::SCWSystem::Doing application build for :  zynq_fsbl
+TRACE::2026-06-21.21:17:27::SCWBDomain::Not a forced makefile updation, No changes are present. 
+TRACE::2026-06-21.21:17:27::SCWDomain::Skipping the build for domain :  zynq_fsbl
+LOG::2026-06-21.21:17:27::SCWSystem::Checking the domain standalone_domain
+LOG::2026-06-21.21:17:27::SCWSystem::Not a boot domain 
+LOG::2026-06-21.21:17:27::SCWSystem::Started Processing the domain standalone_domain
+TRACE::2026-06-21.21:17:27::SCWDomain::Generating domain artifcats
+TRACE::2026-06-21.21:17:27::SCWMssOS::Generating standalone artifcats
+TRACE::2026-06-21.21:17:27::SCWMssOS::Copying the qemu file from  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/resources/Final_HDC/standalone_domain/qemu_args.txt To /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/export/Final_HDC/sw/Final_HDC/qemu/
+TRACE::2026-06-21.21:17:27::SCWMssOS::Copying the qemu file from  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/resources/Final_HDC/standalone_domain/qemu_args.txt To /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/export/Final_HDC/sw/Final_HDC/standalone_domain/qemu/
+TRACE::2026-06-21.21:17:27::SCWMssOS:: Copying the user libraries. 
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::Completed writing the mss file at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp
+TRACE::2026-06-21.21:17:27::SCWMssOS::Mss edits present, copying mssfile into export location /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::bsp generated is upto date with the mss file. Skipping bsp generation.
+TRACE::2026-06-21.21:17:27::SCWMssOS::BSP is already built. skipping the bsp build ... 
+TRACE::2026-06-21.21:17:27::SCWDomain::Skipping the build for domain :  standalone_domain
+TRACE::2026-06-21.21:17:27::SCWMssOS::skipping the bsp build ... 
+TRACE::2026-06-21.21:17:27::SCWMssOS::Copying to export directory.
+TRACE::2026-06-21.21:17:27::SCWMssOS:: Checking if to create the Supporting Applications
+TRACE::2026-06-21.21:17:27::SCWMssOS:: No Linux domain exists, trying to generate FSBL 
+TRACE::2026-06-21.21:17:27::SCWMssOS:: Completed Standalone Artifacts creation 
+LOG::2026-06-21.21:17:27::SCWSystem::Completed Processing the domain standalone_domain
+LOG::2026-06-21.21:17:27::SCWSystem::Completed Processing the sysconfig Final_HDC
+LOG::2026-06-21.21:17:27::SCWPlatform::Completed generating the artifacts for system configuration Final_HDC
+TRACE::2026-06-21.21:17:27::SCWPlatform::Started preparing the platform 
+TRACE::2026-06-21.21:17:27::SCWSystem::Writing the bif file for system config Final_HDC
+TRACE::2026-06-21.21:17:27::SCWSystem::dir created 
+TRACE::2026-06-21.21:17:27::SCWSystem::Writing the bif 
+TRACE::2026-06-21.21:17:27::SCWPlatform::Started writing the spfm file 
+TRACE::2026-06-21.21:17:27::SCWPlatform::Started writing the xpfm file 
+TRACE::2026-06-21.21:17:27::SCWPlatform::Completed generating the platform
+TRACE::2026-06-21.21:17:27::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:17:27::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:17:27::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:17:27::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:17:27::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:17:27::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:27::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:27::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:27::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:27::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:27::SCWWriter::formatted JSON is {
+	"platformName":	"Final_HDC",
+	"sprVersion":	"2.0",
+	"mode":	"cmd",
+	"dsaType":	"Fixed",
+	"platformDesc":	"Final_HDC",
+	"platHandOff":	"/home/bsp-lab/Desktop/Final HDC/FInal_HDC/export/hw/design_1_wrapper.xsa",
+	"platIntHandOff":	"<platformDir>/hw/design_1_wrapper.xsa",
+	"deviceType":	"zynq",
+	"platIsPrebuiltAutogen":	"false",
+	"platIsNoBootBsp":	"false",
+	"platFsblTarget":	"ps7_cortexa9_0",
+	"hasFsblMakeHasChanges":	"false",
+	"hasPmufwMakeHasChanges":	"false",
+	"fsblExtraCompilerFlags":	"-MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard ",
+	"platPreBuiltFlag":	false,
+	"platformSamplesDir":	"",
+	"platActiveSys":	"Final_HDC",
+	"systems":	[{
+			"systemName":	"Final_HDC",
+			"systemDesc":	"Final_HDC",
+			"sysIsBootAutoGen":	"true",
+			"systemDispName":	"Final_HDC",
+			"sysActiveDom":	"standalone_domain",
+			"sysDefaultDom":	"standalone_domain",
+			"domains":	[{
+					"domainName":	"zynq_fsbl",
+					"domainDispName":	"zynq_fsbl",
+					"domainDesc":	"FSBL Application BSP - Auto Generated.",
+					"processors":	"ps7_cortexa9_0",
+					"os":	"standalone",
+					"sdxOs":	"standalone",
+					"debugEnable":	"",
+					"domRuntimes":	["cpp"],
+					"swRepo":	"",
+					"mssOsVer":	"9.2",
+					"mssFile":	"",
+					"md5Digest":	"795b7314bbbe89a9b9d61725ec1b371d",
+					"compatibleApp":	"zynq_fsbl",
+					"domType":	"bootDomain",
+					"arch":	"32-bit",
+					"appSettings":	{
+						"appCompilerFlags":	"",
+						"appLinkerFlags":	""
+					},
+					"addedLibs":	["xilffs:5.3", "xilrsa:1.8"],
+					"libOptions":	{
+						"libsContainingOptions":	[]
+					},
+					"prebuiltLibs":	{
+						"prebuiltIncPath":	[],
+						"prebuiltLibPath":	[]
+					},
+					"isolation":	{
+					}
+				}, {
+					"domainName":	"standalone_domain",
+					"domainDispName":	"standalone_domain",
+					"domainDesc":	"standalone_domain",
+					"processors":	"ps7_cortexa9_0",
+					"os":	"standalone",
+					"sdxOs":	"standalone",
+					"qemuArgs":	"<platformDir>/resources/Final_HDC/standalone_domain/qemu_args.txt",
+					"qemuData":	"<platformDir>/resources/Final_HDC/standalone_domain/qemu",
+					"debugEnable":	"False",
+					"domRuntimes":	["cpp"],
+					"swRepo":	"",
+					"mssOsVer":	"9.2",
+					"mssFile":	"",
+					"md5Digest":	"2607cd6bce56bd75d0f61e7b114b2beb",
+					"compatibleApp":	"",
+					"domType":	"mssDomain",
+					"arch":	"32-bit",
+					"appSettings":	{
+						"appCompilerFlags":	"",
+						"appLinkerFlags":	""
+					},
+					"addedLibs":	[],
+					"libOptions":	{
+						"libsContainingOptions":	[]
+					},
+					"prebuiltLibs":	{
+						"prebuiltIncPath":	[],
+						"prebuiltLibPath":	[]
+					},
+					"isolation":	{
+					}
+				}]
+		}]
+}
+KEYINFO::2026-06-21.21:17:27::SCWPlatform::updated the xpfm file.
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:17:28::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:17:28::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:17:28::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:17:28::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:17:28::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWWriter::formatted JSON is {
+	"platformName":	"Final_HDC",
+	"sprVersion":	"2.0",
+	"mode":	"cmd",
+	"dsaType":	"Fixed",
+	"platformDesc":	"Final_HDC",
+	"platHandOff":	"/home/bsp-lab/Desktop/Final HDC/FInal_HDC/export/hw/design_1_wrapper.xsa",
+	"platIntHandOff":	"<platformDir>/hw/design_1_wrapper.xsa",
+	"deviceType":	"zynq",
+	"platIsPrebuiltAutogen":	"false",
+	"platIsNoBootBsp":	"false",
+	"platFsblTarget":	"ps7_cortexa9_0",
+	"hasFsblMakeHasChanges":	"false",
+	"hasPmufwMakeHasChanges":	"false",
+	"fsblExtraCompilerFlags":	"-MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard ",
+	"platPreBuiltFlag":	false,
+	"platformSamplesDir":	"",
+	"platActiveSys":	"Final_HDC",
+	"systems":	[{
+			"systemName":	"Final_HDC",
+			"systemDesc":	"Final_HDC",
+			"sysIsBootAutoGen":	"true",
+			"systemDispName":	"Final_HDC",
+			"sysActiveDom":	"standalone_domain",
+			"sysDefaultDom":	"standalone_domain",
+			"domains":	[{
+					"domainName":	"zynq_fsbl",
+					"domainDispName":	"zynq_fsbl",
+					"domainDesc":	"FSBL Application BSP - Auto Generated.",
+					"processors":	"ps7_cortexa9_0",
+					"os":	"standalone",
+					"sdxOs":	"standalone",
+					"debugEnable":	"",
+					"domRuntimes":	["cpp"],
+					"swRepo":	"",
+					"mssOsVer":	"9.2",
+					"mssFile":	"",
+					"md5Digest":	"795b7314bbbe89a9b9d61725ec1b371d",
+					"compatibleApp":	"zynq_fsbl",
+					"domType":	"bootDomain",
+					"arch":	"32-bit",
+					"appSettings":	{
+						"appCompilerFlags":	"",
+						"appLinkerFlags":	""
+					},
+					"addedLibs":	["xilffs:5.3", "xilrsa:1.8"],
+					"libOptions":	{
+						"libsContainingOptions":	[]
+					},
+					"prebuiltLibs":	{
+						"prebuiltIncPath":	[],
+						"prebuiltLibPath":	[]
+					},
+					"isolation":	{
+					}
+				}, {
+					"domainName":	"standalone_domain",
+					"domainDispName":	"standalone_domain",
+					"domainDesc":	"standalone_domain",
+					"processors":	"ps7_cortexa9_0",
+					"os":	"standalone",
+					"sdxOs":	"standalone",
+					"qemuArgs":	"<platformDir>/resources/Final_HDC/standalone_domain/qemu_args.txt",
+					"qemuData":	"<platformDir>/resources/Final_HDC/standalone_domain/qemu",
+					"debugEnable":	"False",
+					"domRuntimes":	["cpp"],
+					"swRepo":	"",
+					"mssOsVer":	"9.2",
+					"mssFile":	"",
+					"md5Digest":	"2607cd6bce56bd75d0f61e7b114b2beb",
+					"compatibleApp":	"",
+					"domType":	"mssDomain",
+					"arch":	"32-bit",
+					"appSettings":	{
+						"appCompilerFlags":	"",
+						"appLinkerFlags":	""
+					},
+					"addedLibs":	[],
+					"libOptions":	{
+						"libsContainingOptions":	[]
+					},
+					"prebuiltLibs":	{
+						"prebuiltIncPath":	[],
+						"prebuiltLibPath":	[]
+					},
+					"isolation":	{
+					}
+				}]
+		}]
+}
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:17:28::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:17:28::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:17:28::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:17:28::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:17:28::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:17:28::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:17:28::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:17:28::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:17:28::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:17:28::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:17:28::SCWWriter::formatted JSON is {
+	"platformName":	"Final_HDC",
+	"sprVersion":	"2.0",
+	"mode":	"cmd",
+	"dsaType":	"Fixed",
+	"platformDesc":	"Final_HDC",
+	"platHandOff":	"/home/bsp-lab/Desktop/Final HDC/FInal_HDC/export/hw/design_1_wrapper.xsa",
+	"platIntHandOff":	"<platformDir>/hw/design_1_wrapper.xsa",
+	"deviceType":	"zynq",
+	"platIsPrebuiltAutogen":	"false",
+	"platIsNoBootBsp":	"false",
+	"platFsblTarget":	"ps7_cortexa9_0",
+	"hasFsblMakeHasChanges":	"false",
+	"hasPmufwMakeHasChanges":	"false",
+	"fsblExtraCompilerFlags":	"-MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard ",
+	"platPreBuiltFlag":	false,
+	"platformSamplesDir":	"",
+	"platActiveSys":	"Final_HDC",
+	"systems":	[{
+			"systemName":	"Final_HDC",
+			"systemDesc":	"Final_HDC",
+			"sysIsBootAutoGen":	"true",
+			"systemDispName":	"Final_HDC",
+			"sysActiveDom":	"standalone_domain",
+			"sysDefaultDom":	"standalone_domain",
+			"domains":	[{
+					"domainName":	"zynq_fsbl",
+					"domainDispName":	"zynq_fsbl",
+					"domainDesc":	"FSBL Application BSP - Auto Generated.",
+					"processors":	"ps7_cortexa9_0",
+					"os":	"standalone",
+					"sdxOs":	"standalone",
+					"debugEnable":	"",
+					"domRuntimes":	["cpp"],
+					"swRepo":	"",
+					"mssOsVer":	"9.2",
+					"mssFile":	"",
+					"md5Digest":	"795b7314bbbe89a9b9d61725ec1b371d",
+					"compatibleApp":	"zynq_fsbl",
+					"domType":	"bootDomain",
+					"arch":	"32-bit",
+					"appSettings":	{
+						"appCompilerFlags":	"",
+						"appLinkerFlags":	""
+					},
+					"addedLibs":	["xilffs:5.3", "xilrsa:1.8"],
+					"libOptions":	{
+						"libsContainingOptions":	[]
+					},
+					"prebuiltLibs":	{
+						"prebuiltIncPath":	[],
+						"prebuiltLibPath":	[]
+					},
+					"isolation":	{
+					}
+				}, {
+					"domainName":	"standalone_domain",
+					"domainDispName":	"standalone on ps7_cortexa9_0",
+					"domainDesc":	"standalone_domain",
+					"processors":	"ps7_cortexa9_0",
+					"os":	"standalone",
+					"sdxOs":	"standalone",
+					"qemuArgs":	"<platformDir>/resources/Final_HDC/standalone_domain/qemu_args.txt",
+					"qemuData":	"<platformDir>/resources/Final_HDC/standalone_domain/qemu",
+					"debugEnable":	"False",
+					"domRuntimes":	["cpp"],
+					"swRepo":	"",
+					"mssOsVer":	"9.2",
+					"mssFile":	"",
+					"md5Digest":	"2607cd6bce56bd75d0f61e7b114b2beb",
+					"compatibleApp":	"",
+					"domType":	"mssDomain",
+					"arch":	"32-bit",
+					"appSettings":	{
+						"appCompilerFlags":	"",
+						"appLinkerFlags":	""
+					},
+					"addedLibs":	[],
+					"libOptions":	{
+						"libsContainingOptions":	[]
+					},
+					"prebuiltLibs":	{
+						"prebuiltIncPath":	[],
+						"prebuiltLibPath":	[]
+					},
+					"isolation":	{
+					}
+				}]
+		}]
+}
+TRACE::2026-06-21.21:18:26::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:26::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:26::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:27::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:27::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:27::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:27::SCWPlatform::Do not have an existing db opened. 
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened new HwDB with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWReader::Active system found as  Final_HDC
+TRACE::2026-06-21.21:18:29::SCWReader::Handling sysconfig Final_HDC
+TRACE::2026-06-21.21:18:29::SCWDomain::checking for install qemu data   : 
+TRACE::2026-06-21.21:18:29::SCWDomain:: Using the QEMU Data from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/
+TRACE::2026-06-21.21:18:29::SCWDomain:: Using the QEMU args  from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/qemu_args.txt
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWReader::Boot application domain added for zynq_fsbl
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::DEBUG:  swdes dump  
+TRACE::2026-06-21.21:18:29::SCWMssOS::No sw design opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::mss exists loading the mss file  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::Opened the sw design from mss  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::Adding the swdes entry /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss with des name system
+TRACE::2026-06-21.21:18:29::SCWMssOS::updating the scw layer about changes
+TRACE::2026-06-21.21:18:29::SCWMssOS::Opened the sw design.  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:18:29::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS:: library already available in sw design:  xilffs:5.3
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:18:29::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS:: library already available in sw design:  xilrsa:1.8
+TRACE::2026-06-21.21:18:29::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:18:29::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:18:29::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:18:29::SCWReader::Adding prebuilt librarypaths as   
+TRACE::2026-06-21.21:18:29::SCWReader::Adding prebuilt incpaths  as   
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:18:29::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWReader::No isolation master present  
+TRACE::2026-06-21.21:18:29::SCWDomain::checking for install qemu data   : 
+TRACE::2026-06-21.21:18:29::SCWDomain:: Using the QEMU Data from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/
+TRACE::2026-06-21.21:18:29::SCWDomain:: Using the QEMU args  from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/qemu_args.txt
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:18:29::SCWMssOS::No sw design opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::mss exists loading the mss file  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::Opened the sw design from mss  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::Adding the swdes entry /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss with des name system_0
+TRACE::2026-06-21.21:18:29::SCWMssOS::updating the scw layer about changes
+TRACE::2026-06-21.21:18:29::SCWMssOS::Opened the sw design.  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:18:29::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:18:29::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:18:29::SCWReader::Adding prebuilt librarypaths as   
+TRACE::2026-06-21.21:18:29::SCWReader::Adding prebuilt incpaths  as   
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:18:29::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWReader::No isolation master present  
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:29::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:29::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:29::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:29::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:18:29::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:29::SCWMssOS::Completed writing the mss file at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp
+TRACE::2026-06-21.21:18:29::SCWMssOS::Forcing BSP Sources regeneration.
+KEYINFO::2026-06-21.21:18:30::SCWMssOS::Removing file /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system_0.mss
+LOG::2026-06-21.21:18:30::SCWPlatform::Started generating the artifacts platform Final_HDC
+TRACE::2026-06-21.21:18:30::SCWPlatform::Sanity checking of platform is completed
+LOG::2026-06-21.21:18:30::SCWPlatform::Started generating the artifacts for system configuration Final_HDC
+LOG::2026-06-21.21:18:30::SCWSystem::Checking the domain zynq_fsbl
+LOG::2026-06-21.21:18:30::SCWSystem::Doing application build for :  zynq_fsbl
+TRACE::2026-06-21.21:18:30::SCWBDomain::Not a forced makefile updation, No changes are present. 
+TRACE::2026-06-21.21:18:30::SCWDomain::Building the domain as part of full build :  zynq_fsbl
+TRACE::2026-06-21.21:18:30::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:30::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:30::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:30::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:30::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:30::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:30::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:30::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:30::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:30::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:30::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:18:30::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:18:30::SCWBDomain::Completed writing the mss file at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp
+TRACE::2026-06-21.21:18:30::SCWBDomain::bsp generated is upto date with the mss file. Skipping bsp generation.
+TRACE::2026-06-21.21:18:30::SCWBDomain::Not a forced makefile updation, No changes are present. 
+TRACE::2026-06-21.21:18:30::SCWBDomain::System Command Ran  cd  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl ; bash -c " make -C zynq_fsbl_bsp ; make  " 
+ERROR::2026-06-21.21:18:30::SCWBDomain::Failed to build the  zynq_fsbl application.
+LOG::2026-06-21.21:18:30::SCWSystem::Checking the domain standalone_domain
+LOG::2026-06-21.21:18:30::SCWSystem::Not a boot domain 
+LOG::2026-06-21.21:18:30::SCWSystem::Started Processing the domain standalone_domain
+TRACE::2026-06-21.21:18:30::SCWDomain::Generating domain artifcats
+TRACE::2026-06-21.21:18:30::SCWMssOS::Generating standalone artifcats
+TRACE::2026-06-21.21:18:30::SCWMssOS::Copying the qemu file from  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/resources/Final_HDC/standalone_domain/qemu_args.txt To /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/export/Final_HDC/sw/Final_HDC/qemu/
+TRACE::2026-06-21.21:18:30::SCWMssOS::Copying the qemu file from  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/resources/Final_HDC/standalone_domain/qemu_args.txt To /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/export/Final_HDC/sw/Final_HDC/standalone_domain/qemu/
+TRACE::2026-06-21.21:18:30::SCWMssOS:: Copying the user libraries. 
+TRACE::2026-06-21.21:18:30::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:30::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:30::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:30::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:18:30::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:18:30::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:18:30::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:18:30::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:18:30::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:18:30::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:30::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:18:30::SCWMssOS::No sw design opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:30::SCWMssOS::mss exists loading the mss file  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:30::SCWMssOS::Opened the sw design from mss  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:30::SCWMssOS::Adding the swdes entry /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss with des name system_0
+TRACE::2026-06-21.21:18:30::SCWMssOS::updating the scw layer about changes
+TRACE::2026-06-21.21:18:30::SCWMssOS::Opened the sw design.  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:30::SCWMssOS::Completed writing the mss file at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp
+TRACE::2026-06-21.21:18:30::SCWMssOS::Mss edits present, copying mssfile into export location /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:18:30::SCWMssOS::bsp generated is upto date with the mss file. Skipping bsp generation.
+TRACE::2026-06-21.21:18:30::SCWMssOS::BSP is already built. skipping the bsp build ... 
+TRACE::2026-06-21.21:18:30::SCWDomain::Building the domain as part of full build :  standalone_domain
+TRACE::2026-06-21.21:18:30::SCWMssOS::doing bsp build ... 
+TRACE::2026-06-21.21:18:30::SCWMssOS::System Command Ran  cd  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp ; bash -c "make  " 
+ERROR::2026-06-21.21:18:30::SCWMssOS::Failed to build  the bsp sources for domain - standalone_domain
+ERROR::2026-06-21.21:18:30::SCWSystem::Error in Processing the domain standalone_domain
+TRACE::2026-06-21.21:19:56::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:56::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:56::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:57::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:57::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:57::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:57::SCWPlatform::Do not have an existing db opened. 
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened new HwDB with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWReader::Active system found as  Final_HDC
+TRACE::2026-06-21.21:19:59::SCWReader::Handling sysconfig Final_HDC
+TRACE::2026-06-21.21:19:59::SCWDomain::checking for install qemu data   : 
+TRACE::2026-06-21.21:19:59::SCWDomain:: Using the QEMU Data from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/
+TRACE::2026-06-21.21:19:59::SCWDomain:: Using the QEMU args  from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/qemu_args.txt
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWReader::Boot application domain added for zynq_fsbl
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::DEBUG:  swdes dump  
+TRACE::2026-06-21.21:19:59::SCWMssOS::No sw design opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::mss exists loading the mss file  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::Opened the sw design from mss  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::Adding the swdes entry /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss with des name system
+TRACE::2026-06-21.21:19:59::SCWMssOS::updating the scw layer about changes
+TRACE::2026-06-21.21:19:59::SCWMssOS::Opened the sw design.  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:19:59::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS:: library already available in sw design:  xilffs:5.3
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:19:59::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS:: library already available in sw design:  xilrsa:1.8
+TRACE::2026-06-21.21:19:59::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:19:59::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:19:59::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:19:59::SCWReader::Adding prebuilt librarypaths as   
+TRACE::2026-06-21.21:19:59::SCWReader::Adding prebuilt incpaths  as   
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:19:59::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWReader::No isolation master present  
+TRACE::2026-06-21.21:19:59::SCWDomain::checking for install qemu data   : 
+TRACE::2026-06-21.21:19:59::SCWDomain:: Using the QEMU Data from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/
+TRACE::2026-06-21.21:19:59::SCWDomain:: Using the QEMU args  from install at  : /cad/Xilinx/Vitis/2024.2/data/emulation/platforms/zynq/sw/a9_standalone/qemu/qemu_args.txt
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:19:59::SCWMssOS::No sw design opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::mss exists loading the mss file  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::Opened the sw design from mss  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::Adding the swdes entry /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss with des name system_0
+TRACE::2026-06-21.21:19:59::SCWMssOS::updating the scw layer about changes
+TRACE::2026-06-21.21:19:59::SCWMssOS::Opened the sw design.  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::Saving the mss changes /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::Found a swdesign opened with the mssfile.
+TRACE::2026-06-21.21:19:59::SCWMssOS::Completed writemss as part of save.
+TRACE::2026-06-21.21:19:59::SCWMssOS::Commit changes completed.
+TRACE::2026-06-21.21:19:59::SCWReader::Adding prebuilt librarypaths as   
+TRACE::2026-06-21.21:19:59::SCWReader::Adding prebuilt incpaths  as   
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:19:59::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWReader::No isolation master present  
+LOG::2026-06-21.21:19:59::SCWPlatform::Started generating the artifacts platform Final_HDC
+TRACE::2026-06-21.21:19:59::SCWPlatform::Sanity checking of platform is completed
+LOG::2026-06-21.21:19:59::SCWPlatform::Started generating the artifacts for system configuration Final_HDC
+LOG::2026-06-21.21:19:59::SCWSystem::Checking the domain zynq_fsbl
+LOG::2026-06-21.21:19:59::SCWSystem::Doing application build for :  zynq_fsbl
+TRACE::2026-06-21.21:19:59::SCWBDomain::Not a forced makefile updation, No changes are present. 
+TRACE::2026-06-21.21:19:59::SCWDomain::Building the domain as part of full build :  zynq_fsbl
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:19:59::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWBDomain::Completed writing the mss file at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp
+TRACE::2026-06-21.21:19:59::SCWBDomain::bsp generated is upto date with the mss file. Skipping bsp generation.
+TRACE::2026-06-21.21:19:59::SCWBDomain::Not a forced makefile updation, No changes are present. 
+TRACE::2026-06-21.21:19:59::SCWBDomain::System Command Ran  cd  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl ; bash -c " make -C zynq_fsbl_bsp ; make  " 
+ERROR::2026-06-21.21:19:59::SCWBDomain::Failed to build the  zynq_fsbl application.
+LOG::2026-06-21.21:19:59::SCWSystem::Checking the domain standalone_domain
+LOG::2026-06-21.21:19:59::SCWSystem::Not a boot domain 
+LOG::2026-06-21.21:19:59::SCWSystem::Started Processing the domain standalone_domain
+TRACE::2026-06-21.21:19:59::SCWDomain::Generating domain artifcats
+TRACE::2026-06-21.21:19:59::SCWMssOS::Generating standalone artifcats
+TRACE::2026-06-21.21:19:59::SCWMssOS::Copying the qemu file from  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/resources/Final_HDC/standalone_domain/qemu_args.txt To /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/export/Final_HDC/sw/Final_HDC/qemu/
+TRACE::2026-06-21.21:19:59::SCWMssOS::Copying the qemu file from  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/resources/Final_HDC/standalone_domain/qemu_args.txt To /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/export/Final_HDC/sw/Final_HDC/standalone_domain/qemu/
+TRACE::2026-06-21.21:19:59::SCWMssOS:: Copying the user libraries. 
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to open the hw design at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA given /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA absoulate path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform::DSA directory /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Platform Path /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/hw/design_1_wrapper.xsa
+TRACE::2026-06-21.21:19:59::SCWPlatform:: Unique name xilinx:zedboard::0.0
+TRACE::2026-06-21.21:19:59::SCWPlatform::Trying to set the existing hwdb with name design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Opened existing hwdb design_1_wrapper
+TRACE::2026-06-21.21:19:59::SCWPlatform::Found the Hw Db part of the input DSA
+TRACE::2026-06-21.21:19:59::SCWMssOS::Checking the sw design at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::DEBUG:  swdes dump  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss|system_0||
+/home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/zynq_fsbl/zynq_fsbl_bsp/system.mss|system||
+
+TRACE::2026-06-21.21:19:59::SCWMssOS::Sw design exists and opened at  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::Completed writing the mss file at /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp
+TRACE::2026-06-21.21:19:59::SCWMssOS::Mss edits present, copying mssfile into export location /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp/system.mss
+TRACE::2026-06-21.21:19:59::SCWMssOS::bsp generated is upto date with the mss file. Skipping bsp generation.
+TRACE::2026-06-21.21:19:59::SCWMssOS::BSP is already built. skipping the bsp build ... 
+TRACE::2026-06-21.21:19:59::SCWDomain::Building the domain as part of full build :  standalone_domain
+TRACE::2026-06-21.21:19:59::SCWMssOS::doing bsp build ... 
+TRACE::2026-06-21.21:19:59::SCWMssOS::System Command Ran  cd  /home/bsp-lab/Desktop/Final HDC/HDC_harsha/Final_HDC/ps7_cortexa9_0/standalone_domain/bsp ; bash -c "make  " 
+ERROR::2026-06-21.21:19:59::SCWMssOS::Failed to build  the bsp sources for domain - standalone_domain
+ERROR::2026-06-21.21:19:59::SCWSystem::Error in Processing the domain standalone_domain

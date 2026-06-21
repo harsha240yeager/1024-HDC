@@ -1,0 +1,15 @@
+{
+  "name": "Final_HDC_dma_golden",
+  "type": "HOST",
+  "platform": "Final_HDC",
+  "domain": "standalone_domain",
+  "cpuInstance": "ps7_cortexa9_0",
+  "cpuType": "cortex-a9",
+  "os": "standalone",
+  "configuration": {
+    "componentType": "HOST",
+    "hostToolchainConfigurations": []
+  },
+  "domainRealName": "standalone_domain",
+  "applicationFlow": "EMBEDDED"
+}

@@ -1,0 +1,6 @@
+# Local build artifacts (regenerate via build.sh)
+app/build/*.o
+app/build/*.bench.o
+
+# Vitis platform export (regenerated)
+platform/export/

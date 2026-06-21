@@ -9,11 +9,12 @@
 
 set SCRIPT_DIR [file dirname [file normalize [info script]]]
 set REPO_ROOT  [file normalize [file join $SCRIPT_DIR ..]]
+set DEFAULT_IDE [file join $REPO_ROOT board HDC_DMA _ide]
 
 if {[info exists env(HDC_IDE)] && $env(HDC_IDE) ne ""} {
     set HDC_IDE $env(HDC_IDE)
 } else {
-    error "Set HDC_IDE to board Tcl dir (e.g. export HDC_IDE=/path/to/HDC_DMA/_ide)"
+    set HDC_IDE $DEFAULT_IDE
 }
 
 source [file join $HDC_IDE paths.tcl]

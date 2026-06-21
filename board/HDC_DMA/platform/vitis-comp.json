@@ -1,0 +1,46 @@
+{
+  "name": "Final_HDC",
+  "type": "PLATFORM",
+  "configuration": {
+    "description": "Phase 2 ZedBoard platform: AXI DMA + hdc_stream_system @ 100 MHz",
+    "xsa": "/home/bsp-lab/Desktop/Final HDC/FInal_HDC/export/hw/design_1_wrapper.xsa",
+    "xsaPathInPlatform": "Final_HDC/hw/design_1_wrapper.xsa",
+    "emulationXsa": "",
+    "emulationXsaPathInPlatform": "",
+    "isCustomFSBL": false,
+    "fsblPath": "",
+    "pmufwElf": "",
+    "flow": "EMBEDDED",
+    "processorsMap": {
+      "ps7_cortexa9_0": "ps7_cortexa9",
+      "ps7_cortexa9_1": "ps7_cortexa9"
+    },
+    "supportedFamily": "zynq",
+    "componentType": "PLATFORM",
+    "domains": [
+      {
+        "name": "zynq_fsbl",
+        "displayName": "zynq_fsbl",
+        "processor": "ps7_cortexa9_0",
+        "cpuType": "cortex-a9",
+        "cpuInstance": "ps7_cortexa9_0",
+        "os": "standalone",
+        "appTemplate": "zynq_fsbl",
+        "isBootDomain": true,
+        "isBSPGenReq": false
+      },
+      {
+        "name": "standalone_domain",
+        "displayName": "standalone_domain",
+        "processor": "ps7_cortexa9_0",
+        "cpuType": "cortex-a9",
+        "cpuInstance": "ps7_cortexa9_0",
+        "os": "standalone",
+        "appTemplate": "empty_application",
+        "isBootDomain": false,
+        "isBSPGenReq": false
+      }
+    ],
+    "emptyToolchainConfiguration": []
+  }
+}
