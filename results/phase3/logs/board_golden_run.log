@@ -1,0 +1,10 @@
+Loading golden ELF (PL must already be programmed):
+  app: /home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_golden.elf
+golden loaded
+CPU running golden — polling @ 0x00100100 (max 600s)...
+==================================================
+HDC Phase 2 golden app (sw/hdc_dma_stream_golden_test.c)
+DDR readback @ 0x00100100
+==================================================
+PASS: 200/200 stream golden cases
+==================================================

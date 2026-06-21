@@ -3,7 +3,7 @@
  *
  * Phase 2/3 board benchmark on the DMA stream path:
  *   1) Single-window DMA latency (BENCH_ITERS)
- *   2) Batch DMA throughput (BENCH_BATCH_WINDOWS in one MM2S/S2MM pair)
+ *   2) Batch throughput (BENCH_BATCH_WINDOWS back-to-back single-window DMA)
  *   3) Golden checks (per-window + batch outputs)
  *
  * JTAG readback @ 0x00100000 magic 0xBEC00002 (Phase 2 layout, single-window).
@@ -294,6 +294,7 @@ int main(void)
     }
 
     xil_printf("--- Batch DMA throughput ---\r\n");
+    xil_printf("(sequential single-window xfers; see README for SG one-MM2S path)\r\n");
     XTime_GetTime(&t0);
     rc = hdc_dma_stream_batch(in_batch, out_batch, n_batch);
     XTime_GetTime(&t1);

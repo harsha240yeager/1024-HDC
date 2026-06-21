@@ -79,12 +79,32 @@ int hdc_dma_stream_one_timed(const u32 *in3, u32 *out1, HdcDmaStreamTiming *timi
     return 0;
 }
 
-void hdc_dma_stream_batch(const u32 *in_words, u32 *out_words, u32 n_windows)
+int hdc_dma_stream_batch(const u32 *in_words, u32 *out_words, u32 n_windows)
 {
     u32 i;
+    u32 in_bytes  = n_windows * HDC_IN_BEATS * (u32)sizeof(u32);
+    u32 out_bytes = n_windows * HDC_OUT_BEATS * (u32)sizeof(u32);
+
+    if (n_windows == 0U)
+        return 0;
+
+    /* Simple-mode AXI DMA + stream wrapper (s_axis_tready only in ST_IN) cannot
+     * sustain one long MM2S burst for N windows — the PS hangs in Busy().
+     * Run N back-to-back single-window transfers; proto/mask stay loaded.
+     * True one-transfer batch needs SG DMA with per-window TLAST (see README). */
+    Xil_DCacheFlushRange((INTPTR)in_words, in_bytes);
+    Xil_DCacheInvalidateRange((INTPTR)out_words, out_bytes);
 
     for (i = 0U; i < n_windows; ++i) {
         hdc_dma_stream_one(in_words + (i * HDC_IN_BEATS),
                            out_words + (i * HDC_OUT_BEATS));
     }
+
+    Xil_DCacheInvalidateRange((INTPTR)out_words, out_bytes);
+    return 0;
+}
+
+void hdc_dma_stream_batch_sequential(const u32 *in_words, u32 *out_words, u32 n_windows)
+{
+    (void)hdc_dma_stream_batch(in_words, out_words, n_windows);
 }

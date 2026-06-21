@@ -1,0 +1,15 @@
+Phase 3 — DMA stream golden regression (ZedBoard)
+==================================================
+Date:       2026-06-21T23:05:18+05:30
+App:        sw/hdc_dma_stream_golden_test.c
+Method:     JTAG DDR readback @ 0x00100100
+Run script: bash board/HDC_DMA/run_phase3_golden.sh
+
+==================================================
+HDC Phase 2 golden app (sw/hdc_dma_stream_golden_test.c)
+DDR readback @ 0x00100100
+==================================================
+PASS: 200/200 stream golden cases
+==================================================
+
+Status: PASS

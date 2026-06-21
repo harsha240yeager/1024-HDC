@@ -1,0 +1,20 @@
+Phase 3 — Energy measurement results
+=====================================
+Status: NOT YET MEASURED — hardware (INA219 + shunt on Vcc_int) pending
+
+Prerequisite: run batch bench first (`bash board/HDC_DMA/run_phase3_bench.sh`)
+so batch_windows and batch duration match board_bench.txt.
+
+Record after measurement
+------------------------
+Date:
+Bitstream:
+Batch windows: 200
+V rail (V):
+Shunt (mΩ):
+Static power (mW):
+Batch duration (ms):
+Dynamic energy (mJ):
+Energy per window (µJ):
+
+See also: energy_setup.txt, energy_setup.md, scripts/ina219_log.py

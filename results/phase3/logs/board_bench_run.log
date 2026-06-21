@@ -1,0 +1,56 @@
+Programming HDC_DMA bench with:
+  bitstream: /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wrapper.bit
+  app:       /home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_bench.elf
+=== JTAG targets ===
+  1
+  APU
+  2
+  ARM
+  Cortex-A9
+  MPCore
+  #0
+  (Running)
+  3
+  ARM
+  Cortex-A9
+  MPCore
+  #1
+  (Running)
+  4
+  xc7z020
+
+=== PS7 init before PL (releases PL from reset) ===
+  pre-PL PS7 attempt 1...
+Pre-PL PS7 init OK
+
+=== Programming PL bitstream ===
+  PL attempt 1
+PL programmed successfully via xsdb
+
+=== PS7 init after PL ===
+  post-PL PS7 attempt 1...
+PS7 initialized
+FSBL loaded
+HDC_app loaded
+Programming and run complete
+CPU running bench — polling @ 0x00100000 (max 300s)...
+==================================================
+HDC Phase 3 bench (DMA stream @ 0x40400000)
+CPU=650000000 Hz  global_tmr=325000000 Hz  single_iters=1000
+==================================================
+--- Single-window DMA latency ---
+min  = 7 us
+max  = 7 us
+mean = 7 us
+throughput ~ 142857 windows/s (1/mean)
+--- vs Phase 1 AXI-Lite baseline (~3 us/window) ---
+delta = +4 us (slower than Phase 1)
+--- Batch DMA throughput (200 windows, one MM2S/S2MM pair) ---
+total   = 1470 us
+mean/window ~ 7 us (total / N)
+throughput ~ 136054 windows/s (batch / total)
+--- Golden batch check (batch DMA outputs) ---
+PASS: 200/200 batch golden cases
+--- Golden check (per-window DMA) ---
+PASS: 200/200 stream golden cases
+==================================================

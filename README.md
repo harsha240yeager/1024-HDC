@@ -54,10 +54,9 @@ Three measurement stages on the **same HDC core** — see `results/` for full lo
 | **WNS @ 100 MHz** | +0.246 ns | +0.023 ns | (same bitstream) |
 | **Results** | `results/phase1/` | `results/phase2/` | `results/phase3/` |
 
-Phase 2/3 DMA latency includes channel setup + CPU busy-wait per window. Sustained
-batch (proto loaded once, 10 000 back-to-back transfers) matches single-window
-throughput — true multi-window MM2S batching needs scatter-gather DMA (not in
-current BD).
+Phase 2/3 DMA latency includes channel setup + CPU busy-wait per window. Phase 3
+**batch** timing uses 200 back-to-back single-window transfers (proto loaded once).
+True one-MM2S multi-window batch requires scatter-gather DMA — see **Later fixes** below.
 
 **Board workspace:** `board/HDC_DMA/` — build, golden, bench, and Phase 3 batch scripts.
 
@@ -272,22 +271,20 @@ Host-side golden Tcl (same vectors): `scripts/run_stream_golden_jtag.tcl`
 
 ### Phase 3 — batch throughput + latency (ZedBoard)
 
-Software: `sw/hdc_dma_stream_batch_bench.c` — 10 000 sustained single-window DMA
-inferences (proto/mask loaded once) plus 100 timed E2E samples. Results published
-to DDR @ `0x00100200` (magic `0xBEC00004`).
+Primary app: `sw/hdc_dma_stream_bench.c` — single-window min/mean/max, 200-window
+batch (back-to-back DMA), and golden 200/200. Results @ `0x00100000` + `0x00100100`.
 
 ```bash
 cd board/HDC_DMA
 bash build_sw.sh
-bash run_batch_bench.sh
+bash run_phase3_bench.sh      # → results/phase3/board_bench.txt
+bash run_phase3_golden.sh     # optional regression → board_golden.txt
 ```
 
-Results: `results/phase3/board_batch_bench.txt` — **~143k windows/s**, **7 µs/window**,
-**6 µs** E2E proxy (MM2S+S2MM submit → both channels idle).
+Supplementary 10k sustained bench: `bash run_batch_bench.sh` → `board_batch_bench.txt`.
 
-Still pending for Hook A (Pareto): full EMG dataset replay on board (~0.5% accuracy
-vs Python) and INA219 energy on Vcc_int — scaffolds in `scripts/export_emg_board_vectors.py`,
-`sw/hdc_emg_board_test.c`, `results/phase3/energy_setup.md`.
+Still pending for Hook A (Pareto): full EMG dataset replay and INA219 energy —
+scaffolds in `scripts/export_emg_board_vectors.py`, `results/phase3/energy_setup.md`.
 
 ### Phase 1 board bench (1000 timed inferences + 200-case golden)
 
@@ -349,17 +346,33 @@ Pareto / energy claims. Record under `results/phase3/`.
 
 | Task | Why | Status |
 |------|-----|--------|
-| **Stream batch bench** | Sustained windows/s (proto once, back-to-back DMA) | **Done** — ~143k windows/s, 7 µs/window |
-| **End-to-end latency** | Submit → both DMA idle (global timer proxy) | **Done** — 6 µs mean |
-| **Full dataset replay on board** | Many windows; accuracy vs Python on real EMG vectors (~0.5% target) | Scaffold only |
-| **Energy setup** | Shunt + INA219 on Vcc_int; static + dynamic over fixed batch | Scaffold only |
+| **Single-window latency** | min/mean/max µs per DMA inference | Run `run_phase3_bench.sh` |
+| **Batch throughput (200 windows)** | Sustained windows/s with proto loaded once | Same (sequential DMA batch) |
+| **Golden 200/200** | Batch + per-window checks | Same |
+| **Full dataset replay on board** | Accuracy vs Python on real EMG vectors | Scaffold only |
+| **Energy setup** | Shunt + INA219 on Vcc_int | Scaffold only |
 
-Run: `bash board/HDC_DMA/run_batch_bench.sh` (after `build_sw.sh`).
+Run: `bash board/HDC_DMA/run_phase3_bench.sh` (after `build_sw.sh`).
 
 Energy notes: `results/phase3/energy_setup.md` and `energy_setup.txt`.
 
-Without EMG replay + energy, Hook A (Pareto) is incomplete — throughput and latency
-are now recorded; accuracy-on-EMG and energy remain.
+### Later fixes — true one-transfer batch DMA
+
+Current board batch uses **N back-to-back single-window DMA transfers** in
+`sw/hdc_dma_stream.c` (`hdc_dma_stream_batch()`). A single MM2S of 600 beats
+for 200 windows **deadlocks** on hardware: the stream wrapper only asserts
+`s_axis_tready` in `ST_IN` (`rtl/hdc_stream_wrapper.sv`), while simple-mode AXI
+DMA asserts TLAST only on the final beat of the whole transfer.
+
+| Layer | Where | Change |
+|-------|--------|--------|
+| **BD (recommended)** | Vivado `axi_dma_0` | Enable **scatter-gather**; one buffer descriptor per window with TLAST on the 3rd input beat |
+| **Driver** | `sw/hdc_dma_stream.c` | SG descriptor ring + `XAxiDma_BdRing` instead of `SimpleTransfer` for batch |
+| **RTL (alternative)** | `rtl/hdc_stream_wrapper.sv` | Input skid FIFO so MM2S can burst while the core runs; drain 3 beats per window internally |
+| **Observability** | `sw/hdc_dma_stream_bench.c` | DDR stage markers (`status` = phase id) for JTAG debug |
+
+Until SG or RTL buffering lands, Phase 3 throughput numbers are valid as
+**amortized sequential DMA** (proto/mask loaded once, no AXI-Lite per window).
 
 ### Later
 
