@@ -1,0 +1,17 @@
+Phase 1 — AXI-Lite golden test (ZedBoard)
+=========================================
+Date:       2026-06
+Bitstream:  design_1, hdc_core_axi_lite_bd_wrapper @ 0x43C00000
+Vectors:    python_ref/vectors/cosim_core (seed 42, 200 cases)
+App:        sw/hdc_core_golden_test.c + sw/hdc_core_regs.c
+UART:       115200 8N1
+
+Output:
+  HDC golden test: 200 cases (D=1024, N_CLASS=8)
+  PASS: 200/200 golden cases
+
+Status: PASS
+
+Notes:
+  - Item memories must match cosim_core *.mem (seed 42).
+  - Prep: bash scripts/prep_golden_test.sh

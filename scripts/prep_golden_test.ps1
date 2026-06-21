@@ -18,7 +18,8 @@ python (Join-Path $Root "python_ref\tools\export_golden_c.py") $VecDir $OutH
 
 Write-Host ""
 Write-Host "Ready. Vitis application sources:"
-Write-Host "  sw/hdc_core_golden_test.c"
+Write-Host "  sw/hdc_core_golden_test.c  (200-case golden test)"
+Write-Host "  sw/hdc_core_bench.c       (Phase 1 latency bench)"
 Write-Host "  sw/hdc_core_regs.c"
 Write-Host "  sw/golden_vectors.h"
 Write-Host ""

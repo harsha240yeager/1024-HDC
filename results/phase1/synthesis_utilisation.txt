@@ -1,0 +1,18 @@
+Phase 1 — Post-route utilisation (xc7z020clg484-1)
+==================================================
+Tool:       Vivado 2024.2
+Design:     design_1 (Zynq PS + hdc_core_axi_lite_bd_wrapper)
+Clock:      FCLK_CLK0 = 100 MHz
+
+Resource summary (PL):
+  LUTs:     31,186  (58.6% of slice LUTs)
+  FFs:      20,062  (18.9%)
+  Slices:   ~88.5% slice utilisation
+  BRAM:     0
+  DSP:      0
+
+Notes:
+  - item_mem inferred as LUT ROM (not BRAM18).
+  - Single hdc_core_top instance inside axi_lite wrapper.
+
+Status: Fits xc7z020 with headroom for stream wrapper glue (~1k LUT est.), not a second full core.

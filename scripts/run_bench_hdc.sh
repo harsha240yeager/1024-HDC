@@ -5,7 +5,7 @@ set -euo pipefail
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 HDC_ROOT="${HDC_ROOT:-/home/bsp-lab/Desktop/Final HDC/HDC_harsha}"
 HDC_LOG_DIR="${HDC_LOG_DIR:-/tmp/hdc_bench}"
-RESULTS="${HDC_BENCH_RESULTS:-$REPO/results/phase1_board.txt}"
+RESULTS="${HDC_BENCH_RESULTS:-$REPO/results/phase1/board_bench.txt}"
 
 # shellcheck source=/dev/null
 source "$HDC_ROOT/_ide/common.sh"

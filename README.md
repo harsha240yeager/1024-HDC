@@ -16,7 +16,8 @@ the PS through an AXI4-Lite wrapper.
 | `rtl/` | SystemVerilog RTL: `xor_permute_top.sv` (1024-bit XOR+permute datapath), `permute_stage.sv` (permutation modes), `bundle_unit.sv` (majority-vote bundler), `popcount_am.sv` (nearest-prototype associative memory), `item_mem.sv` (hypervector ROM), `encoder_top.sv` (EMG-window encoder), `hdc_core_top.sv` (end-to-end inference core: encoder → AM), `hdc_core_axi_lite.sv` (AXI4-Lite wrapper around the core), `hdc_stream_wrapper.sv` (AXI4-Stream wrapper for DMA-fed streaming), `simple_bind_rom.sv` (bind-vector ROM), `hdc_axi_lite_wrapper.sv` (legacy bind+permute AXI4-Lite slave). |
 | `tb/` | Testbenches: `tb_xor_permute.sv` (golden-model self-checking TB), `tb_cosim.sv` (bind+permute co-sim), `tb_bundle_cosim.sv` (bundle co-sim), `tb_am_cosim.sv` (associative-memory co-sim), `tb_encoder_cosim.sv` (encoder co-sim), `tb_core_cosim.sv` (end-to-end inference co-sim), `tb_core_axi_cosim.sv` (AXI4-Lite-driven inference co-sim), and `tb_stream_cosim.sv` (AXI4-Stream co-sim with random gaps + back-pressure) — the co-sim TBs check the RTL bit-for-bit against the Python golden vectors. |
 | `sim/` | Automation: `run_cosim.do` (bind+permute), `run_bundle_cosim.do` (bundle), `run_am_cosim.do` (associative memory), `run_encoder_cosim.do` (encoder), `run_core_cosim.do` (end-to-end inference), `run_core_axi_cosim.do` (AXI4-Lite), and `run_stream_cosim.do` (AXI4-Stream) — one-command harnesses (generate vectors → compile → simulate → PASS/FAIL); `open_project.do` opens the GUI project. |
-| `sw/` | Bare-metal software: `hdc_core_axi_example.c` (smoke test), `hdc_core_golden_test.c` (200-case board golden test), `hdc_core_bench.c` (Phase 1 latency + golden bench), `hdc_core_regs.c/h`, and generated `golden_vectors.h`. |
+| `sw/` | Bare-metal software: `hdc_core_axi_example.c` (smoke test), `hdc_core_golden_test.c` (200-case board golden test), `hdc_core_bench.c` (Phase 1 latency + golden bench), `hdc_dma_stream*.c/h` (Phase 2 DMA path), `hdc_core_regs.c/h`, and generated `golden_vectors.h`. |
+| `results/` | Board benchmarks, synthesis utilisation/timing, and per-phase logs — updated after each Vivado/board run. See `results/README.md`. |
 | `docs/` | Research plan, advisor one-pager, project guide, and the reference paper (PDF/HTML/DOCX). |
 | `python_ref/` | Bit-exact Python golden reference, EMG reproduction (Stage A/B), frozen baseline config + results, and PDF notes. See `python_ref/README.md`. |
 | `scripts/` | Golden-test prep (`prep_golden_test.sh`, `.ps1`), on-board JTAG runner (`run_golden_jtag.tcl`, `run_golden_jtag.sh`), Phase 1 bench (`run_bench_hdc.sh`, `build_hdc_core_bench.sh`). |
@@ -247,7 +248,7 @@ Or from the Final HDC workspace:
 bash "/home/bsp-lab/Desktop/Final HDC/HDC_harsha/run_bench_hdc.sh"
 ```
 
-Results are saved to `results/phase1_board.txt`. Success:
+Results are saved to `results/phase1/board_bench.txt` (see `results/phase1/`). Success:
 
 ```
 PASS: 200/200 golden cases
@@ -270,8 +271,9 @@ mean = 3 us
 - ~~`hdc_core_top.sv` (encoder → AM + pruning mask, end-to-end inference) + co-sim~~ — **done** (`sim/run_core_cosim.do`, 500/500 PASS). See `docs/HDC_Core_Top_and_Cosim_Flow.pdf`.
 - ~~`hdc_core_axi_lite.sv` (AXI4-Lite control wrapper around the core) + co-sim~~ — **done** (`sim/run_core_axi_cosim.do`, 200/200 PASS). See `docs/HDC_Core_AXI_Lite_and_Cosim_Flow.pdf` and the protocol study `docs/AXI4_Lite_Protocol_Study.pdf`.
 - ~~`hdc_stream_wrapper.sv` (AXI4-Stream wrapper for DMA-fed streaming) + co-sim~~ — **done** (`sim/run_stream_cosim.do`, 200/200 PASS under random gaps + back-pressure). See `docs/HDC_Stream_Wrapper_and_Cosim_Flow.pdf` and the protocol study `docs/AXI4_Stream_Protocol_Study.pdf`.
-- ~~Zynq bring-up: Vivado block design (PS + AXI-DMA + both wrappers), on-board smoke test, then throughput / latency / energy / area measurements.~~ — **smoke + 200-case JTAG golden test + Phase 1 latency bench done** on ZedBoard (see ZedBoard golden test and Phase 1 bench above).
-- Novelty studies: dimension/precision/pruning Pareto (Hook A), informed-vs-random pruning (Twist 1), cross-subject mask transfer (Twist 2).
+- ~~Phase 1 Zynq bring-up (AXI-Lite @ 0x43C00000)~~ — **done** on ZedBoard: smoke + 200-case JTAG golden + latency bench (~3 µs/window, WNS +0.246 ns @ 100 MHz). See `results/phase1/` and ZedBoard sections above.
+- Phase 2 Zynq bring-up: `hdc_stream_system_bd_wrapper` + AXI DMA on board (RTL + `sw/hdc_dma_stream_golden_test.c` ready; results → `results/phase2/`).
+- Throughput / latency / energy / area measurements; novelty studies (Pareto, informed pruning, cross-subject transfer).
 
 ## License / attribution
 

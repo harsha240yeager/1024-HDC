@@ -41,4 +41,9 @@ void hdc_load_mask_from64(const u64 *mask64);
 int hdc_classify_levels(u32 lvl0, u32 lvl1, u32 lvl2,
                         u32 *class_idx, u32 *class_dist);
 
+/* Timed inference: START through DONE. *ticks_out = global-timer delta. */
+int hdc_classify_levels_timed(u32 lvl0, u32 lvl1, u32 lvl2,
+                              u32 *class_idx, u32 *class_dist,
+                              u64 *ticks_out);
+
 #endif

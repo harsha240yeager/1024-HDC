@@ -17,6 +17,7 @@ python3 "$ROOT/python_ref/tools/export_golden_c.py" "$VECDIR" "$OUTH"
 
 echo ""
 echo "Ready. Vitis app sources:"
-echo "  sw/hdc_core_golden_test.c"
+echo "  sw/hdc_core_golden_test.c  (200-case golden test)"
+echo "  sw/hdc_core_bench.c       (Phase 1 latency bench)"
 echo "  sw/hdc_core_regs.c"
 echo "  sw/golden_vectors.h"

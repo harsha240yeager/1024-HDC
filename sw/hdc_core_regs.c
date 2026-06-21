@@ -1,5 +1,6 @@
 #include "hdc_core_regs.h"
 #include "xil_io.h"
+#include "xtime_l.h"
 
 void hdc_wr(u32 off, u32 val)
 {
@@ -72,5 +73,36 @@ int hdc_classify_levels(u32 lvl0, u32 lvl1, u32 lvl2,
     *class_idx  = (result >> 16) & ((1U << HDC_IDX_W) - 1U);
     *class_dist = result & ((1U << HDC_DIST_W) - 1U);
     hdc_wr(HDC_REG_CTRL, HDC_CTRL_CLR_DONE);
+    return 0;
+}
+
+int hdc_classify_levels_timed(u32 lvl0, u32 lvl1, u32 lvl2,
+                              u32 *class_idx, u32 *class_dist,
+                              u64 *ticks_out)
+{
+    u32 status, result, guard = 1000000U;
+    XTime t0, t1;
+
+    hdc_wr(HDC_REG_LEVELS0, lvl0);
+    hdc_wr(HDC_REG_LEVELS1, lvl1);
+    hdc_wr(HDC_REG_LEVELS2, lvl2);
+
+    XTime_GetTime(&t0);
+    hdc_wr(HDC_REG_CTRL, HDC_CTRL_START);
+
+    do {
+        status = hdc_rd(HDC_REG_STATUS);
+    } while (((status & HDC_STATUS_DONE) == 0U) && (--guard > 0U));
+
+    XTime_GetTime(&t1);
+
+    if ((status & HDC_STATUS_DONE) == 0U)
+        return -1;
+
+    result = hdc_rd(HDC_REG_RESULT);
+    *class_idx  = (result >> 16) & ((1U << HDC_IDX_W) - 1U);
+    *class_dist = result & ((1U << HDC_DIST_W) - 1U);
+    hdc_wr(HDC_REG_CTRL, HDC_CTRL_CLR_DONE);
+    *ticks_out = (u64)(t1 - t0);
     return 0;
 }

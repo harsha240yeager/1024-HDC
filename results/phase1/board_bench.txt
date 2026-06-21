@@ -1,0 +1,26 @@
+Phase 1 — AXI-Lite latency bench (ZedBoard)
+===========================================
+Date:       2026-06
+Bitstream:  design_1, hdc_core_axi_lite_bd_wrapper @ 0x43C00000
+App:        sw/hdc_core_bench.c + sw/hdc_core_regs.c
+UART:       115200 8N1
+CPU clock:  650 MHz (standalone BSP)
+Global timer: 325 MHz (CPU/2)
+
+Latency (START → DONE, includes AXI poll):
+  min  = 3 µs
+  mean = 3 µs
+  max  = 3 µs
+
+Peak throughput (1 / mean):
+  ~333,333 windows/s  (micro-benchmark; not full system with DMA overhead)
+
+Golden spot-check during bench:
+  errors = 0
+
+Status: PASS
+
+Notes:
+  - First two PL program attempts failed ("could not find configuration request");
+    third attempt via xsdb succeeded.
+  - Original log path on VDI: ~/1024-HDC/results/phase1_board.txt

@@ -34,7 +34,32 @@ PHASE A — AXI-Lite bring-up (start here)
 
 PHASE B — Streaming (after AXI-Lite golden test passes)
 -------------------------------------------------------
-Add rtl/hdc_stream_wrapper.sv + AXI DMA in block design (see research plan).
+IMPORTANT: Remove hdc_core_axi_lite_bd_wrapper from the block design first.
+Do NOT keep both the lite wrapper and stream system — each contains a full core
+(~58% LUT each; two will not fit on xc7z020).
+
+Add to Vivado sources:
+  hdc_core_cfg_axi_lite.sv
+  hdc_stream_wrapper.sv
+  hdc_stream_system_bd_wrapper.sv   <-- single BD module (config + stream)
+
+Block design (100 MHz FCLK_CLK0):
+  1. Zynq PS: enable S_AXI_HP0 (or HP1) for DMA memory masters.
+  2. Add AXI DMA IP: MM2S + S2MM, 32-bit stream, NO scatter-gather.
+  3. Add AXI SmartConnect (or Interconnect):
+       PS HP0 <-> DMA M_AXI_MM2S and M_AXI_S2MM
+  4. Replace lite wrapper with hdc_stream_system_bd_wrapper:
+       PS GP0 -> interconnect -> S_AXI @ 0x43C00000 (config, same as Phase 1)
+       PS GP0 -> interconnect -> axi_dma /S_AXI_LITE @ 0x40400000 (typical)
+  5. Stream wiring:
+       axi_dma.M_AXIS_MM2S  -> hdc_stream_system / S_AXIS
+       hdc_stream_system / M_AXIS -> axi_dma.S_AXIS_S2MM
+  6. Clock / reset: aclk = FCLK_CLK0; aresetn from proc_sys_reset (active-low).
+  7. Validate Address Editor, generate bitstream, export .xsa.
+
+Vitis Phase 2 app:
+  hdc_dma_stream_golden_test.c + hdc_dma_stream.c + hdc_core_regs.c + golden_vectors.h
+  Enable xaxidma in BSP. UART 115200 -> PASS: 200/200 stream golden cases.
 
 GOLDEN ON-BOARD TEST
 --------------------

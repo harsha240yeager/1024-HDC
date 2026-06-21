@@ -22,6 +22,12 @@ python_ref/vectors/
 # Generated bare-metal golden header (regenerate: scripts/prep_golden_test.ps1)
 sw/golden_vectors.h
 
+# Simulation waveforms (large; regenerate locally)
+sim/waves/*.vcd
+
+# Packaged Vivado zip (use vivado_pack/ in repo instead)
+1024HDC_vivado_pack.zip
+
 # OS cruft
 Thumbs.db
 .DS_Store

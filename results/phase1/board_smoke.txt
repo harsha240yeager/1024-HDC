@@ -1,0 +1,13 @@
+Phase 1 — AXI-Lite smoke test (ZedBoard)
+==========================================
+Date:       2026-06 (Phase 1 bring-up)
+Bitstream:  design_1, hdc_core_axi_lite_bd_wrapper @ 0x43C00000
+App:        sw/hdc_core_axi_example.c (or equivalent smoke)
+UART:       115200 8N1
+
+Result:
+  class_idx = 3
+  class_dist = 623
+  RESULT register = 0x0003026F
+
+Status: PASS
