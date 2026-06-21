@@ -1,0 +1,33 @@
+HDC Core AXI4-Lite register map (hdc_core_axi_lite.sv)
+Base address on PS: 0x43C00000
+
+Offset   Name       R/W   Description
+------   ----       ---   -----------
+0x000    CTRL       W     bit0 START (pulse classify)
+                          bit1 LOAD_PROTO (staging -> prototype[PROTO_IDX])
+                          bit2 LOAD_MASK  (staging -> mask)
+                          bit3 CLR_DONE
+0x004    STATUS     R     bit0 BUSY, bit1 DONE (sticky)
+0x008    PROTO_IDX  RW    Class index for LOAD_PROTO (0 .. N_CLASS-1)
+0x00C    RESULT     R     [15:0] class_dist, [18:16] class_idx, [31] DONE
+0x010    LEVELS0    RW    levels_flat[31:0]
+0x014    LEVELS1    RW    levels_flat[63:32]
+0x018    LEVELS2    RW    levels_flat[79:64] (lower 16 bits used)
+0x100    STAGING0   RW    Hypervector word 0 (LSB)
+...
+0x17C    STAGING31  RW    Hypervector word 31
+
+Programming sequence:
+  for k in 0..N_CLASS-1:
+    write 32 words to STAGING
+    write PROTO_IDX = k
+    write CTRL = LOAD_PROTO (0x2)
+  write mask to STAGING; write CTRL = LOAD_MASK (0x4)
+  per window:
+    write LEVELS0..2
+    write CTRL = START (0x1)
+    poll STATUS until DONE
+    read RESULT
+    write CTRL = CLR_DONE (0x8)
+
+Parameters: D=1024, N_CLASS=8, N_CH=4, N_FEAT=5, N_VAL=16

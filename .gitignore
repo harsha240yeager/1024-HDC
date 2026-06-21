@@ -19,6 +19,9 @@ python_ref/HDC-EMG/
 # Generated co-simulation vectors (regenerate: python python_ref/generate_vectors.py)
 python_ref/vectors/
 
+# Generated bare-metal golden header (regenerate: scripts/prep_golden_test.ps1)
+sw/golden_vectors.h
+
 # OS cruft
 Thumbs.db
 .DS_Store
