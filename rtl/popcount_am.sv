@@ -8,12 +8,11 @@
 //   dist[k] = popcount( (query ^ proto[k]) & mask )
 //   best    = argmin_k dist[k]     // first index wins on a tie (NumPy argmin)
 //
-// Protocol
-//   * Load each prototype: drive proto_we=1 with load_idx/load_vec (one/clk).
-//   * Load the mask:       drive mask_we=1 with mask_vec (one clk).  If never
-//                          loaded after reset the mask is all-ones (unmasked).
-//   * Classify:            drive q_valid=1 with query_vec; out_valid pulses one
-//                          cycle later with best_idx / best_dist for that query.
+// Classify is fully pipelined:
+//   * one 64-bit XOR/mask word per cycle
+//   * one 64-bit popcount + accumulate per cycle
+//   * one compare cycle per prototype
+//   Total latency after q_valid: N_CLASS * (WORDS * 2 + 1) cycles.
 
 module popcount_am #(
     parameter int WORDS         = 16,
@@ -26,88 +25,154 @@ module popcount_am #(
     input  logic               clk,
     input  logic               rst_n,
 
-    // Prototype write port
     input  logic               proto_we,
     input  logic [IDX_W-1:0]   load_idx,
     input  logic [D-1:0]       load_vec,
 
-    // Mask write port
     input  logic               mask_we,
     input  logic [D-1:0]       mask_vec,
 
-    // Query / classify
     input  logic               q_valid,
     input  logic [D-1:0]       query_vec,
 
+    output logic               am_busy,
     output logic               out_valid,
     output logic [IDX_W-1:0]   best_idx,
     output logic [DIST_W-1:0]  best_dist
 );
 
-    // ------------------------------------------------------------------
-    // Storage: prototypes + pruning mask
-    // ------------------------------------------------------------------
+    localparam int WORD_IDX_W = (WORDS <= 1) ? 1 : $clog2(WORDS);
+    localparam int POP_W      = $clog2(BITS_PER_WORD + 1);
+
+    typedef enum logic [2:0] { S_IDLE, S_XOR, S_ACC, S_CMP } state_t;
+
+    state_t              state;
+    logic [D-1:0]        query_r;
+    logic [BITS_PER_WORD-1:0] xor_w;
+    logic [WORD_IDX_W-1:0] w_idx;
+    logic [IDX_W-1:0]    k_idx;
+    logic [IDX_W-1:0]    run_best_idx;
+    logic [DIST_W-1:0]   run_best_dist;
+    logic [DIST_W-1:0]   acc_dist;
+    logic [DIST_W-1:0]   dk_r;
+
+    logic [POP_W-1:0]    word_pop_c;
+    logic [DIST_W-1:0]   acc_next_c;
+    logic [IDX_W-1:0]    final_idx_c;
+    logic [DIST_W-1:0]   final_dist_c;
+
+    assign am_busy = (state != S_IDLE);
+
+    function automatic [POP_W-1:0] popcount64(input logic [BITS_PER_WORD-1:0] v);
+        integer b;
+        logic [POP_W-1:0] s;
+        begin
+            s = '0;
+            for (b = 0; b < BITS_PER_WORD; b = b + 1)
+                s = s + v[b];
+            popcount64 = s;
+        end
+    endfunction
+
+    assign word_pop_c  = popcount64(xor_w);
+    assign acc_next_c  = acc_dist + DIST_W'(word_pop_c);
+
+    always_comb begin
+        if (dk_r < run_best_dist) begin
+            final_idx_c  = k_idx;
+            final_dist_c = dk_r;
+        end else begin
+            final_idx_c  = run_best_idx;
+            final_dist_c = run_best_dist;
+        end
+    end
+
+    // Prototypes/mask use synchronous reset to avoid huge async-reset fanout.
     logic [D-1:0] proto [0:N_CLASS-1];
     logic [D-1:0] mask;
 
     integer pi;
-    always_ff @(posedge clk or negedge rst_n) begin
+    always_ff @(posedge clk) begin
         if (!rst_n) begin
-            for (pi = 0; pi < N_CLASS; pi = pi + 1) proto[pi] <= '0;
-            mask <= '1;                 // default: unmasked (all bits kept)
+            for (pi = 0; pi < N_CLASS; pi = pi + 1)
+                proto[pi] <= '0;
+            mask <= '1;
         end else begin
             if (proto_we) proto[load_idx] <= load_vec;
             if (mask_we)  mask            <= mask_vec;
         end
     end
 
-    // ------------------------------------------------------------------
-    // popcount of a D-bit vector (synthesises to an adder tree)
-    // ------------------------------------------------------------------
-    function automatic [DIST_W-1:0] popcount(input logic [D-1:0] v);
-        integer b;
-        logic [DIST_W-1:0] s;
-        begin
-            s = '0;
-            for (b = 0; b < D; b = b + 1) s = s + v[b];
-            popcount = s;
-        end
-    endfunction
-
-    // ------------------------------------------------------------------
-    // Combinational masked-Hamming + argmin (first index on tie)
-    // ------------------------------------------------------------------
-    logic [IDX_W-1:0]  best_idx_c;
-    logic [DIST_W-1:0] best_dist_c;
-
-    integer k;
-    logic [DIST_W-1:0] dk;
-    always_comb begin
-        best_idx_c  = '0;
-        best_dist_c = '1;               // larger than any real distance (<= D)
-        for (k = 0; k < N_CLASS; k = k + 1) begin
-            dk = popcount((query_vec ^ proto[k]) & mask);
-            if (dk < best_dist_c) begin // strict '<' => first index wins ties
-                best_dist_c = dk;
-                best_idx_c  = k[IDX_W-1:0];
-            end
-        end
-    end
-
-    // ------------------------------------------------------------------
-    // Register the decision; out_valid pulses one cycle after q_valid
-    // ------------------------------------------------------------------
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            out_valid <= 1'b0;
-            best_idx  <= '0;
-            best_dist <= '0;
+            state         <= S_IDLE;
+            query_r       <= '0;
+            xor_w         <= '0;
+            w_idx         <= '0;
+            k_idx         <= '0;
+            run_best_idx  <= '0;
+            run_best_dist <= '0;
+            acc_dist      <= '0;
+            dk_r          <= '0;
+            out_valid     <= 1'b0;
+            best_idx      <= '0;
+            best_dist     <= '0;
         end else begin
-            out_valid <= q_valid;
-            if (q_valid) begin
-                best_idx  <= best_idx_c;
-                best_dist <= best_dist_c;
-            end
+            out_valid <= 1'b0;
+
+            case (state)
+                S_IDLE: begin
+                    if (q_valid) begin
+                        query_r       <= query_vec;
+                        k_idx         <= '0;
+                        w_idx         <= '0;
+                        acc_dist      <= '0;
+                        run_best_idx  <= '0;
+                        run_best_dist <= {DIST_W{1'b1}};
+                        state         <= S_XOR;
+                    end
+                end
+
+                S_XOR: begin
+                    xor_w <= (query_r[w_idx * BITS_PER_WORD +: BITS_PER_WORD] ^
+                              proto[k_idx][w_idx * BITS_PER_WORD +: BITS_PER_WORD]) &
+                             mask[w_idx * BITS_PER_WORD +: BITS_PER_WORD];
+                    state <= S_ACC;
+                end
+
+                S_ACC: begin
+                    acc_dist <= acc_next_c;
+
+                    if (w_idx == WORD_IDX_W'(WORDS - 1)) begin
+                        dk_r  <= acc_next_c;
+                        state <= S_CMP;
+                    end else begin
+                        w_idx <= w_idx + 1'b1;
+                        state <= S_XOR;
+                    end
+                end
+
+                S_CMP: begin
+                    if (dk_r < run_best_dist) begin
+                        run_best_dist <= dk_r;
+                        run_best_idx  <= k_idx;
+                    end
+
+                    if (k_idx == IDX_W'(N_CLASS - 1)) begin
+                        best_idx  <= final_idx_c;
+                        best_dist <= final_dist_c;
+                        out_valid <= 1'b1;
+                        state     <= S_IDLE;
+                    end else begin
+                        k_idx    <= k_idx + 1'b1;
+                        w_idx    <= '0;
+                        acc_dist <= '0;
+                        state    <= S_XOR;
+                    end
+                end
+
+                default: state <= S_IDLE;
+            endcase
         end
     end
 

@@ -13,7 +13,7 @@ if [[ ! -f "$VECDIR/core_expect.hex" ]]; then
 fi
 
 echo "Exporting C header..."
-python "$ROOT/python_ref/tools/export_golden_c.py" "$VECDIR" "$OUTH"
+python3 "$ROOT/python_ref/tools/export_golden_c.py" "$VECDIR" "$OUTH"
 
 echo ""
 echo "Ready. Vitis app sources:"

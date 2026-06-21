@@ -18,7 +18,8 @@
 //   * item memories initialise from .mem files via parameters
 //
 // Inference: pulse `start` with the level grid on `levels_flat`; `out_valid`
-// pulses with class_idx / class_dist.  Latency = encode (N_PAIRS + ~3) + 1.
+// pulses with class_idx / class_dist.  Latency = encode (N_PAIRS + ~3)
+// + pipelined classify (N_CLASS * (2*WORDS + 1) cycles).
 
 module hdc_core_top #(
     parameter int WORDS         = 16,
@@ -60,7 +61,11 @@ module hdc_core_top #(
     // Encoder: window -> query hypervector
     // ------------------------------------------------------------------
     logic         enc_out_valid;
+    logic         enc_busy;
+    logic         am_busy;
     logic [D-1:0] enc_query;
+
+    assign busy = enc_busy | am_busy;
 
     encoder_top #(
         .WORDS(WORDS), .BITS_PER_WORD(BITS_PER_WORD),
@@ -71,16 +76,13 @@ module hdc_core_top #(
         .rst_n      (rst_n),
         .start      (start),
         .levels_flat(levels_flat),
-        .busy       (busy),
+        .busy       (enc_busy),
         .out_valid  (enc_out_valid),
         .query_vec  (enc_query)
     );
 
     // ------------------------------------------------------------------
-    // Associative memory: query -> nearest prototype
-    // The encoder's out_valid/query_vec drive the AM's q_valid/query_vec
-    // directly; the AM registers its decision, so out_valid here pulses
-    // one cycle after the encoder finishes.
+    // Associative memory: query -> nearest prototype (pipelined classify)
     // ------------------------------------------------------------------
     popcount_am #(
         .WORDS(WORDS), .BITS_PER_WORD(BITS_PER_WORD), .N_CLASS(N_CLASS)
@@ -94,6 +96,7 @@ module hdc_core_top #(
         .mask_vec (mask_vec),
         .q_valid  (enc_out_valid),
         .query_vec(enc_query),
+        .am_busy  (am_busy),
         .out_valid(out_valid),
         .best_idx (class_idx),
         .best_dist(class_dist)
