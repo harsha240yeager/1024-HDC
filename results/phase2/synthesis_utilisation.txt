@@ -1,0 +1,20 @@
+Phase 2 — Post-route utilisation (xc7z020clg484-1)
+==================================================
+Tool:       Vivado 2024.2
+Design:     design_1 (Zynq PS + hdc_stream_system_bd_wrapper + axi_dma_0 + axi_smc)
+Clock:      FCLK_CLK0 = 100 MHz
+
+Resource summary (PL):
+  Slice LUTs:     35,206 / 53,200  (66.18%)
+  Slice Registers: 27,639 / 106,400 (25.98%)
+  Slices:         12,810 / 13,300  (96.32%)
+  BRAM:           0
+  DSP:            0
+
+Source: FInal_HDC.runs/impl_1/design_1_wrapper_utilization_placed.rpt
+
+Notes:
+  - Single hdc_core_top inside stream wrapper (same core as Phase 1).
+  - Slice utilisation is tight but fits xc7z020.
+
+Status: PASS (fits device)

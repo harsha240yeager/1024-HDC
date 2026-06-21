@@ -1,0 +1,17 @@
+Phase 2 — DMA stream latency bench (ZedBoard)
+=============================================
+Status:     PENDING — run on board to fill in measurements
+
+Run:
+  bash "/home/bsp-lab/Desktop/Final HDC/HDC_DMA/build.sh"
+  bash "/home/bsp-lab/Desktop/Final HDC/HDC_DMA/run_bench.sh"
+
+App:        sw/hdc_dma_stream_bench.c (1000 timed DMA windows + 200-case golden)
+JTAG:       readback @ 0x00100000 (magic 0xBEC00002)
+Phase 1 baseline: ~3 µs/window (see results/phase1/board_bench.txt)
+
+Expected output fields (after board run):
+  min / max / mean latency (µs)
+  throughput (windows/s)
+  delta vs Phase 1 baseline
+  PASS: 200/200 stream golden cases

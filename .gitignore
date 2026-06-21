@@ -31,3 +31,11 @@ sim/waves/*.vcd
 # OS cruft
 Thumbs.db
 .DS_Store
+
+# Vivado local cache / logs
+.Xil/
+vivado.jou
+vivado.log
+vivado_*.backup.jou
+vivado_*.backup.log
+vivado_pid*.str

@@ -1,0 +1,28 @@
+Phase 2 — AXI-DMA stream golden test (ZedBoard)
+=================================================
+Date:       2026-06-21
+Bitstream:  design_1, hdc_stream_system_bd_wrapper @ 0x43C00000
+DMA:        axi_dma_0 @ 0x40400000 (MM2S + S2MM, 32-bit, no SG)
+Vectors:    python_ref/vectors/cosim_core (seed 42, 200 cases)
+Method:     Host-side JTAG (run_stream_golden_jtag.tcl)
+Run script: bash "/home/bsp-lab/Desktop/Final HDC/HDC_DMA/run_jtag.sh"
+Log:        /tmp/hdc_dma_jtag/stream_golden_jtag.log
+
+Output:
+==================================================
+HDC stream JTAG golden test: 200 cases (D=1024, N_CLASS=8)
+  VECDIR = /home/bsp-lab/1024-HDC/python_ref/vectors/cosim_core
+  HDC    = 0x43C00000
+  DMA    = 0x40400000
+==================================================
+  ... 200 / 200 checked (errors so far: 0)
+==================================================
+PASS: 200/200 stream golden cases
+==================================================
+
+Status: PASS
+
+Notes:
+  - Exercises full DMA path: MM2S → stream wrapper → S2MM.
+  - Same golden vectors as Phase 1 AXI-Lite (functional equivalence).
+  - Bare-metal app (Final_HDC_dma_golden.elf) also built; UART optional.
