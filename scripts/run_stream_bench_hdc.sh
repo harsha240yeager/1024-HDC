@@ -3,10 +3,11 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
+HDC_DMA="${HDC_DMA:-$REPO/board/HDC_DMA}"
 HDC_ROOT="${HDC_ROOT:-/home/bsp-lab/Desktop/Final HDC/HDC_harsha}"
 HDC_LOG_DIR="${HDC_LOG_DIR:-/tmp/hdc_stream_bench}"
 RESULTS="${HDC_STREAM_BENCH_RESULTS:-$REPO/results/phase3/board_bench.txt}"
-ELF="${HDC_STREAM_BENCH_ELF:-$HDC_ROOT/hdc_dma_stream_bench/build/hdc_dma_stream_bench.elf}"
+ELF="${HDC_STREAM_BENCH_ELF:-$HDC_DMA/app/build/Final_HDC_dma_bench.elf}"
 SERIAL="${HDC_SERIAL:-/dev/ttyUSB1}"
 BAUD="${HDC_SERIAL_BAUD:-115200}"
 
@@ -19,8 +20,16 @@ echo "  results: $RESULTS"
 
 if [[ ! -f "$ELF" ]]; then
   echo "ERROR: missing $ELF" >&2
-  echo "Build first: bash scripts/build_hdc_dma_stream_bench.sh" >&2
+  echo "Build first:" >&2
+  echo "  cd board/HDC_DMA && bash build_sw.sh" >&2
+  echo "Or: bash scripts/build_hdc_dma_stream_bench.sh (set HDC_BSP)" >&2
   exit 1
+fi
+
+# Prefer JTAG readback when integrated workspace is available (reliable on ZedBoard).
+if [[ -x "$HDC_DMA/run_phase3_bench.sh" ]] && [[ "${HDC_STREAM_BENCH_UART_ONLY:-0}" != "1" ]]; then
+  echo "=== Using JTAG bench (board/HDC_DMA/run_phase3_bench.sh) ==="
+  exec bash "$HDC_DMA/run_phase3_bench.sh"
 fi
 
 if [[ -f "$HDC_ROOT/_ide/common.sh" ]]; then

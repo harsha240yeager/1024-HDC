@@ -346,13 +346,14 @@ Pareto / energy claims. Record under `results/phase3/`.
 
 | Task | Why | Status |
 |------|-----|--------|
-| **Single-window latency** | min/mean/max µs per DMA inference | Run `run_phase3_bench.sh` |
-| **Batch throughput (200 windows)** | Sustained windows/s with proto loaded once | Same (sequential DMA batch) |
-| **Golden 200/200** | Batch + per-window checks | Same |
-| **Full dataset replay on board** | Accuracy vs Python on real EMG vectors | Scaffold only |
-| **Energy setup** | Shunt + INA219 on Vcc_int | Scaffold only |
+| **Single-window latency** | min/mean/max µs per DMA inference | **COMPLETE** |
+| **Batch throughput (200 windows)** | Sustained windows/s with proto loaded once | **COMPLETE** |
+| **Golden 200/200** | Batch + per-window checks | **COMPLETE** |
+| **Full dataset replay on board** | Accuracy vs Python on real EMG vectors | **NOT STARTED** |
+| **Energy setup** | Shunt + INA219 on Vcc_int | **NOT STARTED** |
 
 Run: `bash board/HDC_DMA/run_phase3_bench.sh` (after `build_sw.sh`).
+Results: `results/phase3/board_bench.txt`.
 
 Energy notes: `results/phase3/energy_setup.md` and `energy_setup.txt`.
 

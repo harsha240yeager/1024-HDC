@@ -294,7 +294,6 @@ int main(void)
     }
 
     xil_printf("--- Batch DMA throughput ---\r\n");
-    xil_printf("(sequential single-window xfers; see README for SG one-MM2S path)\r\n");
     XTime_GetTime(&t0);
     rc = hdc_dma_stream_batch(in_batch, out_batch, n_batch);
     XTime_GetTime(&t1);

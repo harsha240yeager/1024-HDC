@@ -1,0 +1,29 @@
+Phase 3 — EMG full-dataset replay (ZedBoard)
+============================================
+Status: NOT YET RUN — software scaffold only
+
+Goal
+----
+Stream many real EMG inference windows through the DMA path on board; confirm
+classification accuracy within ~0.5% of the Python reference baseline.
+
+Prerequisites
+-------------
+1. Export board vectors:
+     python3 scripts/export_emg_board_vectors.py --max-windows N
+   (wire script to python_ref EMG pipeline — currently scaffold)
+2. Rebuild with generated sw/emg_board_vectors.h
+3. Run sw/hdc_emg_board_test.c on board (JTAG or UART)
+4. Compare accuracy vs python_ref/results/emg_baseline.json
+
+Record here after run
+---------------------
+Date:
+Bitstream:
+Windows replayed:
+Board accuracy (%):
+Python baseline (%):
+Delta (%):
+PASS (within 0.5%): yes / no
+
+See: sw/hdc_emg_board_test.c, scripts/export_emg_board_vectors.py

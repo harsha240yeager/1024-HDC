@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
-# Manual build for hdc_dma_stream_bench.elf (Phase 3 stream bench).
+# Build Phase 3 stream bench ELF.
+# Preferred: board/HDC_DMA/build_sw.sh (integrated workspace BSP).
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
+HDC_DMA="$REPO/board/HDC_DMA"
+
+if [[ -x "$HDC_DMA/build_sw.sh" ]] && [[ "${HDC_BUILD_BENCH_LEGACY:-0}" != "1" ]]; then
+  echo "=== Building via board/HDC_DMA/build_sw.sh ==="
+  exec bash "$HDC_DMA/build_sw.sh"
+fi
+
 HDC_ROOT="${HDC_ROOT:-/home/bsp-lab/Desktop/Final HDC/HDC_harsha}"
 BUILD="${HDC_BUILD:-$HDC_ROOT/hdc_dma_stream_bench/build}"
 BSP="${HDC_BSP:-$HDC_ROOT/FInal_1024-HDC/export/FInal_1024-HDC/sw/standalone_ps7_cortexa9_0}"

@@ -55,7 +55,7 @@ proc phase3_print_bench_results {cpu_hz gtmr_hz iters min_us max_us mean_us thro
     } elseif {$mean_us > 0} {
         puts "delta = -[expr {$PHASE3_PHASE1_BASELINE_US - $mean_us}] us (faster than Phase 1)"
     }
-    puts "--- Batch DMA throughput ($batch_n windows, back-to-back single-window) ---"
+    puts "--- Batch DMA throughput ---"
     puts "total   = $batch_us us"
     if {$batch_n > 0 && $batch_us > 0} {
         puts "mean/window ~ [expr {$batch_us / $batch_n}] us (total / N)"
@@ -69,7 +69,7 @@ proc phase3_print_bench_results {cpu_hz gtmr_hz iters min_us max_us mean_us thro
     } else {
         puts "FAIL: batch section missing or empty"
     }
-    puts "--- Golden check (per-window DMA) ---"
+    puts "--- Golden batch check (per-window DMA) ---"
     if {$g_errors == 0} {
         puts "PASS: $g_checked/$g_checked stream golden cases"
     } else {
