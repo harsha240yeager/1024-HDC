@@ -20,7 +20,8 @@ the PS through an AXI4-Lite wrapper.
 | `results/` | Board benchmarks, synthesis utilisation/timing, and per-phase logs — updated after each Vivado/board run. See `results/README.md`. |
 | `docs/` | Research plan, advisor one-pager, project guide, and the reference paper (PDF/HTML/DOCX). |
 | `python_ref/` | Bit-exact Python golden reference, EMG reproduction (Stage A/B), frozen baseline config + results, and PDF notes. See `python_ref/README.md`. |
-| `scripts/` | Golden-test prep (`prep_golden_test.sh`, `.ps1`), on-board JTAG runner (`run_golden_jtag.tcl`, `run_golden_jtag.sh`), Phase 1 bench (`run_bench_hdc.sh`, `build_hdc_core_bench.sh`). |
+| `scripts/` | Golden-test prep (`prep_golden_test.sh`), JTAG runners (`run_golden_jtag.tcl`, `run_stream_golden_jtag.tcl`), Phase 1 bench helpers. |
+| `board/HDC_DMA/` | **Phase 2 ZedBoard workspace**: Vitis platform, DMA golden/bench ELFs, `run_jtag.sh`, `run_bench.sh`, JTAG Tcl. See `board/HDC_DMA/README.md`. |
 | `vivado_pack/` | Vivado bring-up bundle (RTL, cosim vectors layout, bare-metal examples). See `vivado_pack/README.txt`. |
 | `1024HDC.mpf`, `modelsim.ini` | ModelSim/Questa project files (kept at repo root; source paths point into `rtl/` and `tb/`). |
 
@@ -39,6 +40,25 @@ the PS through an AXI4-Lite wrapper.
   (`python_ref/config/emg_baseline.json`, `python_ref/results/emg_baseline.json`).
 
 Details: `python_ref/notes/emg_baseline_frozen.pdf` and `emg_reproduction_results.pdf`.
+
+## Board results summary (ZedBoard, xc7z020 @ 100 MHz)
+
+Two comparable inference paths on the **same HDC core** — see `results/` for full logs.
+
+| | Phase 1 — AXI-Lite | Phase 2 — DMA stream |
+|--|--------------------|----------------------|
+| **Paper role** | Baseline #2: register-mapped (shows why streaming matters) | Main path for throughput and energy |
+| **Golden test** | 200/200 PASS | 200/200 PASS |
+| **Latency (mean)** | **3 µs**/window | **7 µs**/window |
+| **Throughput** | ~333k windows/s | ~143k windows/s |
+| **WNS @ 100 MHz** | +0.246 ns | +0.023 ns |
+| **Results** | `results/phase1/` | `results/phase2/` |
+
+Phase 2 DMA latency includes channel setup + CPU busy-wait (single window per
+transfer). Batch DMA (Phase 3) should improve sustained throughput.
+
+**Phase 2 workspace:** `board/HDC_DMA/` — build, golden test, and bench scripts
+are self-contained in this repo.
 
 ## Quick start
 
@@ -217,6 +237,35 @@ bash "/home/bsp-lab/Desktop/Final HDC/HDC_harsha/run_final_1024_hdc.sh" --read-o
 
 Expected: class **3**, distance **623**, `SMOKE TEST: PASS`.
 
+### Phase 2 — DMA stream golden + bench (ZedBoard)
+
+Phase 2 uses `hdc_stream_system_bd_wrapper` + AXI DMA @ `0x40400000`, config @
+`0x43C00000`. Software: `sw/hdc_dma_stream*.c`.
+
+**Prerequisite:** Vivado `FInal_HDC` project on the build machine (for XSA/bitstream export):
+
+```bash
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
+cd board/HDC_DMA
+bash build.sh          # BSP + FSBL + golden + bench ELFs
+bash run_jtag.sh       # 200-case golden over JTAG → expect PASS: 200/200
+bash run_bench.sh      # 1000-iter latency bench + golden spot-check
+```
+
+Results saved under `results/phase2/`:
+
+| File | Content |
+|------|---------|
+| `board_golden.txt` | PASS 200/200 stream golden (JTAG) |
+| `board_bench.txt` | 7 µs mean latency, PASS 200/200 golden spot-check |
+| `synthesis_timing.txt` | WNS +0.023 ns |
+| `synthesis_utilisation.txt` | 66% LUT, 96% slices |
+
+Host-side golden Tcl (same vectors): `scripts/run_stream_golden_jtag.tcl`
+(set `HDC_IDE=board/HDC_DMA/_ide`, or use `run_jtag.sh` which sets it automatically).
+
+Bare-metal UART option: `board/HDC_DMA/run_program.sh` with serial @ 115200.
+
 ### Phase 1 board bench (1000 timed inferences + 200-case golden)
 
 `sw/hdc_core_bench.c` times **1000** START→DONE inference loops (AXI-Lite poll),
@@ -262,18 +311,39 @@ max  = 3 us
 mean = 3 us
 ```
 
-## Roadmap (June+)
+## Roadmap
 
-- ~~Automated bind+permute co-sim harness driven by the Python golden~~ — **done** (`sim/run_cosim.do`).
-- ~~`bundle_unit.sv` (majority bundler) + co-sim~~ — **done** (`sim/run_bundle_cosim.do`, 500/500 PASS). See `docs/Bundle_Unit_and_Cosim_Flow.pdf`.
-- ~~`popcount_am.sv` (nearest-prototype associative memory) + co-sim~~ — **done** (`sim/run_am_cosim.do`, 500/500 PASS). See `docs/Popcount_AM_and_Cosim_Flow.pdf`.
-- ~~`item_mem.sv` + `encoder_top.sv` (full EMG-window encoder) + co-sim~~ — **done** (`sim/run_encoder_cosim.do`, 500/500 PASS). See `docs/Encoder_Top_and_Cosim_Flow.pdf`.
-- ~~`hdc_core_top.sv` (encoder → AM + pruning mask, end-to-end inference) + co-sim~~ — **done** (`sim/run_core_cosim.do`, 500/500 PASS). See `docs/HDC_Core_Top_and_Cosim_Flow.pdf`.
-- ~~`hdc_core_axi_lite.sv` (AXI4-Lite control wrapper around the core) + co-sim~~ — **done** (`sim/run_core_axi_cosim.do`, 200/200 PASS). See `docs/HDC_Core_AXI_Lite_and_Cosim_Flow.pdf` and the protocol study `docs/AXI4_Lite_Protocol_Study.pdf`.
-- ~~`hdc_stream_wrapper.sv` (AXI4-Stream wrapper for DMA-fed streaming) + co-sim~~ — **done** (`sim/run_stream_cosim.do`, 200/200 PASS under random gaps + back-pressure). See `docs/HDC_Stream_Wrapper_and_Cosim_Flow.pdf` and the protocol study `docs/AXI4_Stream_Protocol_Study.pdf`.
-- ~~Phase 1 Zynq bring-up (AXI-Lite @ 0x43C00000)~~ — **done** on ZedBoard: smoke + 200-case JTAG golden + latency bench (~3 µs/window, WNS +0.246 ns @ 100 MHz). See `results/phase1/` and ZedBoard sections above.
-- Phase 2 Zynq bring-up: `hdc_stream_system_bd_wrapper` + AXI DMA on board (RTL + `sw/hdc_dma_stream_golden_test.c` ready; results → `results/phase2/`).
-- Throughput / latency / energy / area measurements; novelty studies (Pareto, informed pruning, cross-subject transfer).
+### Done
+
+- ~~Automated bind+permute co-sim harness~~ — **done** (`sim/run_cosim.do`).
+- ~~`bundle_unit.sv` + co-sim~~ — **done** (500/500 PASS).
+- ~~`popcount_am.sv` + co-sim~~ — **done** (500/500 PASS).
+- ~~`encoder_top.sv` + co-sim~~ — **done** (500/500 PASS).
+- ~~`hdc_core_top.sv` + co-sim~~ — **done** (500/500 PASS).
+- ~~`hdc_core_axi_lite.sv` + co-sim~~ — **done** (200/200 PASS).
+- ~~`hdc_stream_wrapper.sv` + co-sim~~ — **done** (200/200 PASS).
+- ~~**Phase 1** Zynq bring-up (AXI-Lite)~~ — **done**: golden 200/200, ~3 µs/window, WNS +0.246 ns. `results/phase1/`.
+- ~~**Phase 2** Zynq bring-up (DMA stream)~~ — **done**: golden 200/200, ~7 µs/window, WNS +0.023 ns. `results/phase2/`, `board/HDC_DMA/`.
+
+### Phase 3 — measurement infrastructure (next)
+
+Phase 2 proves **correctness**; Phase 3 produces the numbers the paper needs for
+Pareto / energy claims. Record under `results/phase3/`.
+
+| Task | Why | Status |
+|------|-----|--------|
+| **Stream batch bench** | Sustained windows/s with batched DMA (not one window per transfer) | Not started |
+| **End-to-end latency** | Last input beat → result beat (global timer) | Not started |
+| **Full dataset replay on board** | Many windows; accuracy vs Python on real EMG vectors (~0.5% target) | Not started |
+| **Energy setup** | Shunt + INA219 on Vcc_int; static + dynamic over fixed batch | Not started |
+
+Without batch throughput + energy, Hook A (Pareto) is incomplete — you would
+only have accuracy and area today.
+
+### Later
+
+- Novelty studies (informed pruning, cross-subject transfer).
+- Optional Phase 2 close-out: UART log from `hdc_dma_stream_golden_test.c`.
 
 ## License / attribution
 
