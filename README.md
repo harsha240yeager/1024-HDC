@@ -45,17 +45,19 @@ Details: `python_ref/notes/emg_baseline_frozen.pdf` and `emg_reproduction_result
 
 Three measurement stages on the **same HDC core** — see `results/` for full logs.
 
-| | Phase 1 — AXI-Lite | Phase 2 — DMA stream | Phase 3 — measurements |
-|--|--------------------|----------------------|-------------------------|
-| **Paper role** | Baseline #2: register-mapped | Main inference path | Throughput, latency, EMG, energy |
-| **Golden test** | 200/200 PASS | 200/200 PASS | — |
-| **Latency (mean)** | **3 µs**/window | **7 µs**/window | **6 µs** E2E proxy (DMA idle) |
-| **Sustained throughput** | ~333k windows/s | ~143k windows/s | **~143k windows/s** (10k batch) |
+| | Phase 1 — AXI-Lite | Phase 2 — DMA stream | Phase 3 — batch bench |
+|--|--------------------|----------------------|------------------------|
+| **Paper role** | Baseline #2: register-mapped | Main inference path | Throughput + golden (200-window batch) |
+| **Golden test** | 200/200 PASS | 200/200 PASS | 200/200 PASS (batch + per-window) |
+| **Latency (mean)** | **3 µs**/window | **7 µs**/window | **7 µs**/window (single-window) |
+| **Batch throughput** | — | ~143k windows/s (single) | **~136k windows/s** (200-window batch) |
 | **WNS @ 100 MHz** | +0.246 ns | +0.023 ns | (same bitstream) |
-| **Results** | `results/phase1/` | `results/phase2/` | `results/phase3/` |
+| **Results** | `results/phase1/` | `results/phase2/` | `results/phase3/board_bench.txt` |
 
-Phase 2/3 DMA latency includes channel setup + CPU busy-wait per window. Phase 3
-**batch** timing uses 200 back-to-back single-window transfers (proto loaded once).
+Phase 3 **batch bench is COMPLETE** (`results/phase3/board_bench.txt`). Full Phase 3
+(energy + EMG replay) is still pending — see `results/phase3/README.md`.
+
+Phase 3 batch uses 200 back-to-back single-window DMA transfers (proto loaded once).
 True one-MM2S multi-window batch requires scatter-gather DMA — see **Later fixes** below.
 
 **Board workspace:** `board/HDC_DMA/` — build, golden, bench, and Phase 3 batch scripts.
@@ -269,22 +271,44 @@ Results saved under `results/phase2/`:
 Host-side golden Tcl (same vectors): `scripts/run_stream_golden_jtag.tcl`
 (set `HDC_IDE=board/HDC_DMA/_ide`, or use `run_jtag.sh` which sets it automatically).
 
-### Phase 3 — batch throughput + latency (ZedBoard)
+### Phase 3 — batch bench (**COMPLETE**)
 
 Primary app: `sw/hdc_dma_stream_bench.c` — single-window min/mean/max, 200-window
 batch (back-to-back DMA), and golden 200/200. Results @ `0x00100000` + `0x00100100`.
 
+**Recorded results** (`results/phase3/board_bench.txt`, ZedBoard @ 100 MHz PL):
+
+| Metric | Value |
+|--------|-------|
+| Single-window (min / mean / max) | 7 / 7 / 7 µs |
+| Batch 200 windows | 1470 µs total (~136k windows/s) |
+| Golden | PASS 200/200 (batch + per-window) |
+
 ```bash
-cd board/HDC_DMA
-bash build_sw.sh
-bash run_phase3_bench.sh      # → results/phase3/board_bench.txt
-bash run_phase3_golden.sh     # optional regression → board_golden.txt
+cd ~/1024-HDC
+git pull
+bash scripts/prep_golden_test.sh
+bash scripts/build_hdc_dma_stream_bench.sh   # → board/HDC_DMA/build_sw.sh
+bash scripts/run_stream_bench_hdc.sh           # → run_phase3_bench.sh (JTAG)
 ```
 
-Supplementary 10k sustained bench: `bash run_batch_bench.sh` → `board_batch_bench.txt`.
+Or directly:
 
-Still pending for Hook A (Pareto): full EMG dataset replay and INA219 energy —
-scaffolds in `scripts/export_emg_board_vectors.py`, `results/phase3/energy_setup.md`.
+```bash
+cd board/HDC_DMA
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
+bash build_sw.sh
+bash run_phase3_bench.sh      # → results/phase3/board_bench.txt
+bash run_phase3_golden.sh     # optional → board_golden.txt
+```
+
+**JTAG on ZedBoard:** PL programming and DDR readback can fail on the first attempt
+(`ftdi_*`, `magic=0xEA000049` garbage reads). Close minicom/Vitis debug sessions,
+then retry — success often on attempt 2–6. A failed re-run does not invalidate an
+earlier good log in `board_bench.txt`.
+
+Still pending for full Phase 3 / Hook A (Pareto): EMG dataset replay
+(`board_emg_replay.txt`) and INA219 energy (`energy_batch.txt`).
 
 ### Phase 1 board bench (1000 timed inferences + 200-case golden)
 
@@ -338,24 +362,15 @@ mean = 3 us
 - ~~RTL co-sim (7 harnesses)~~ — **done**
 - ~~**Phase 1** Zynq bring-up (AXI-Lite)~~ — **done**: golden 200/200, ~3 µs/window. `results/phase1/`.
 - ~~**Phase 2** Zynq bring-up (DMA stream)~~ — **done**: golden 200/200, ~7 µs/window. `results/phase2/`, `board/HDC_DMA/`.
+- ~~**Phase 3 batch bench**~~ — **done**: 7 µs/window, ~136k windows/s (200-window batch), golden 200/200. `results/phase3/board_bench.txt`.
 
-### Phase 3 — measurement infrastructure (in progress)
+### Phase 3 — full close for paper (in progress)
 
-Phase 2 proves **correctness**; Phase 3 produces the numbers the paper needs for
-Pareto / energy claims. Record under `results/phase3/`.
-
-| Task | Why | Status |
-|------|-----|--------|
-| **Single-window latency** | min/mean/max µs per DMA inference | **COMPLETE** |
-| **Batch throughput (200 windows)** | Sustained windows/s with proto loaded once | **COMPLETE** |
-| **Golden 200/200** | Batch + per-window checks | **COMPLETE** |
-| **Full dataset replay on board** | Accuracy vs Python on real EMG vectors | **NOT STARTED** |
-| **Energy setup** | Shunt + INA219 on Vcc_int | **NOT STARTED** |
-
-Run: `bash board/HDC_DMA/run_phase3_bench.sh` (after `build_sw.sh`).
-Results: `results/phase3/board_bench.txt`.
-
-Energy notes: `results/phase3/energy_setup.md` and `energy_setup.txt`.
+| Task | Status |
+|------|--------|
+| Batch bench (latency + 200-window + golden) | **COMPLETE** |
+| Energy (INA219 + shunt) | **NOT STARTED** |
+| Full EMG replay on board | **NOT STARTED** |
 
 ### Later fixes — true one-transfer batch DMA
 

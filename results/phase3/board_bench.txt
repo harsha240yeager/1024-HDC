@@ -1,4 +1,8 @@
-Phase 3 — DMA stream bench (ZedBoard)
+# Phase 3 — batch bench run failed (2026-06-21 re-run)
+# Reason: JTAG garbage read (magic=0xEA000049) — flaky Digilent cable / hw_server
+# Action: retry run_phase3_bench.sh; earlier successful run is in board_bench.txt
+# Status: batch close-out uses board_bench.txt from successful run @ 23:04:27 +05:30
+
 =====================================
 Date:       2026-06-21T23:04:27+05:30
 App:        sw/hdc_dma_stream_bench.c (Final_HDC_dma_bench.elf)

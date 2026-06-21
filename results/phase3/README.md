@@ -53,6 +53,16 @@ PASS: 200/200 stream golden cases
 Batch = **200 back-to-back single-window DMA** transfers (proto loaded once).
 True one-MM2S batch needs SG DMA — root `README.md` **Later fixes**.
 
+## JTAG reliability (ZedBoard)
+
+Board runs use JTAG DDR readback (`run_phase3_bench.sh`), not UART. On this setup:
+
+- PL programming may fail on attempt 1 (`ftdi_*`, `could not find configuration request`) — **retry**.
+- If polling shows garbage magic (e.g. `0xEA000049`) for 300 s, the session failed — **retry** after closing minicom/Vitis debug.
+- A failed re-run does **not** invalidate an earlier good `board_bench.txt`.
+
+Log from failed 2026-06-21 re-run: noted in `board_bench.txt` header; canonical results are from the successful run the same evening.
+
 ## Run on VDI
 
 ```bash
