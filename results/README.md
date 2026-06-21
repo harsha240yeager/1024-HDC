@@ -11,7 +11,7 @@ hardware or driver instead.
 |------|----------|
 | `phase1/` | AXI-Lite path on ZedBoard (**complete**) |
 | `phase2/` | AXI-DMA + stream path (**complete**) |
-| `phase3/` | Batch throughput, EMG replay, energy (planned) |
+| `phase3/` | Batch throughput, EMG replay, energy — SW ready; board run pending |
 | `sim/` | Optional exported co-sim summaries (not waveforms) |
 
 ## Status (last updated: 2026-06-21)
@@ -21,21 +21,21 @@ hardware or driver instead.
 | RTL co-sim (7 harnesses) | PASS |
 | Phase 1 — AXI-Lite @ 0x43C00000 | **COMPLETE** |
 | Phase 2 — AXI-DMA + stream system | **COMPLETE** |
-| Phase 3 — measurements (throughput, EMG, energy) | **Not started** |
+| Phase 3 — batch bench + energy setup | SW ready; board run pending |
 
 See per-phase README files for detail.
 
 ## How to update
 
-1. Run the test on the board (see `board/HDC_DMA/` for Phase 2).
+1. Run the test on the board (see `board/HDC_DMA/` for Phase 2–3 stream apps).
 2. Copy structured output into the matching `.txt` file under `phaseN/`.
 3. After Vivado builds, paste utilisation / timing into `phaseN/synthesis_*.txt`.
-4. Commit with a short message, e.g. `results: phase2 stream golden 200/200`.
+4. Commit with a short message, e.g. `results: phase3 batch bench`.
 
 ```bash
-bash board/HDC_DMA/run_jtag.sh
-bash board/HDC_DMA/run_bench.sh
+bash board/HDC_DMA/run_bench.sh          # Phase 2 single-window (existing)
+bash scripts/run_stream_bench_hdc.sh     # Phase 3 batch bench → results/phase3/
 git add results/
-git commit -m "results: update phase2 board bench"
+git commit -m "results: update phase3 board bench"
 git push
 ```

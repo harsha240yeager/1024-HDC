@@ -1,0 +1,32 @@
+Phase 3 — Energy measurement setup (Phase 3b)
+=============================================
+Status: NOT YET MEASURED — hardware setup pending
+
+Goal
+----
+Integrate current (mA) on Zynq Vcc_int during a fixed batch of stream inferences;
+report static power (idle) and dynamic energy per inference (µJ or mJ).
+
+Suggested hardware
+------------------
+- INA219 breakout on I2C (PS I2C0 or USB adapter logged by host)
+- Low-side or high-side shunt on 1.0V (or relevant) PL/PS rail per lab policy
+- Same batch size as board_bench.txt (200 windows) for comparability
+
+Procedure (draft)
+-----------------
+1. Program Phase 2 bitstream; load protos/mask.
+2. Measure idle current for 10 s (no DMA traffic) → static mW.
+3. Run `hdc_dma_stream_bench.elf` batch section only (or dedicated energy app).
+4. Integrate (I × V × dt) over batch window; divide by N windows → µJ/inference.
+
+Record here after measurement
+-----------------------------
+Date:
+Bitstream:
+Batch windows:
+V rail (V):
+Static power (mW):
+Batch duration (ms):
+Energy per inference (µJ):
+Notes:
