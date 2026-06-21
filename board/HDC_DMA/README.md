@@ -1,6 +1,7 @@
-# HDC_DMA — Phase 2 Stream + AXI DMA (ZedBoard)
+# HDC_DMA — Phase 2/3 Stream + AXI DMA (ZedBoard)
 
-Self-contained Vitis workspace inside the **1024-HDC** repo for Phase 2 DMA bring-up.
+Self-contained Vitis workspace inside the **1024-HDC** repo for Phase 2 DMA bring-up
+and Phase 3 measurement runs.
 
 ## Quick start
 
@@ -10,14 +11,19 @@ cd board/HDC_DMA
 # Point to your Vivado project (contains export_hw_platform.tcl + impl bitstream)
 export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
 
-# Build BSP, FSBL, golden + bench ELFs
+# Full build (XSA export + BSP + FSBL + all ELFs)
 bash build.sh
 
-# Program board + run 200-case golden test over JTAG (recommended)
-bash run_jtag.sh
+# SW-only rebuild (faster — no Vivado)
+bash build_sw.sh
 
-# Optional: DMA latency bench vs Phase 1 ~3 µs baseline
-bash run_bench.sh
+# Phase 2 verification
+bash run_jtag.sh           # host-side 200-case golden (JTAG)
+bash run_golden_app.sh     # bare-metal sw/hdc_dma_stream_golden_test.c
+bash run_bench.sh          # latency bench vs Phase 1 ~3 µs baseline
+
+# Phase 3 measurements
+bash run_batch_bench.sh    # 10k sustained batch + E2E latency proxy
 ```
 
 Expected golden result: `PASS: 200/200 stream golden cases`
@@ -26,24 +32,34 @@ Expected golden result: `PASS: 200/200 stream golden cases`
 
 ```
 board/HDC_DMA/
-├── run_jtag.sh          ← main run (JTAG golden test)
-├── run_program.sh       ← program bitstream + bare-metal app
-├── run_bench.sh         ← DMA latency bench + JTAG readback
-├── build.sh             ← rebuild BSP, FSBL, ELFs
+├── run_jtag.sh              ← host-side JTAG golden test
+├── run_golden_app.sh        ← bare-metal golden app (DDR @ 0x00100100)
+├── run_bench.sh             ← Phase 2 latency bench
+├── run_batch_bench.sh       ← Phase 3 sustained throughput + E2E proxy
+├── build.sh                 ← full rebuild (Vivado XSA + SW)
+├── build_sw.sh              ← SW-only (golden + bench + batch ELFs)
 ├── _ide/
-│   ├── common.sh                    # JTAG helpers
-│   ├── paths.tcl                    # artifact paths
-│   ├── program_pl.tcl               # PL + PS7 + FSBL only
-│   ├── program_board.tcl            # full program with app
-│   ├── run_bench_all.tcl            # program bench + poll DDR
-│   ├── program_board_helpers.tcl
-│   └── ps7_init_helpers.tcl
-├── platform/            # Vitis platform (Final_HDC): BSP, FSBL, XPFM
-└── app/                 # DMA golden + bench apps, bitstream, ps7_init
+│   ├── common.sh
+│   ├── paths.tcl
+│   ├── program_pl.tcl
+│   ├── run_golden_load.tcl
+│   ├── run_bench_load.tcl / run_bench_all.tcl
+│   └── run_batch_bench_load.tcl
+├── platform/                # Vitis platform (Final_HDC): BSP, FSBL, XPFM
+└── app/build/               # Final_HDC_dma_{golden,bench,batch_bench}.elf
 ```
 
-Host-side golden Tcl (same vectors): `scripts/run_stream_golden_jtag.tcl`  
+Host-side golden Tcl: `scripts/run_stream_golden_jtag.tcl`  
 (set `HDC_IDE=board/HDC_DMA/_ide` automatically by `run_jtag.sh`)
+
+## DDR result layout (JTAG readback)
+
+| Address | Magic | App |
+|---------|-------|-----|
+| `0x00100000` | `0xBEC00002` | Phase 2 latency bench |
+| `0x00100100` | `0xBEC00003` | Phase 2 golden app |
+| `0x00100200` | `0xBEC00004` | Phase 3 batch bench |
+| `0x00100300` | `0xBEC00005` | Phase 3 EMG replay (scaffold) |
 
 ## Related paths in this repo
 
@@ -51,7 +67,8 @@ Host-side golden Tcl (same vectors): `scripts/run_stream_golden_jtag.tcl`
 |------|------|
 | SW sources | `sw/` |
 | Golden vectors | `python_ref/vectors/cosim_core/` |
-| Measured results | `results/phase2/` |
+| Phase 2 results | `results/phase2/` |
+| Phase 3 results | `results/phase3/` |
 | RTL reference pack | `vivado_pack/` |
 
 ## Hardware map
@@ -71,7 +88,9 @@ Host-side golden Tcl (same vectors): `scripts/run_stream_golden_jtag.tcl`
 
 ## Logs
 
-| Run | Default log dir |
-|-----|-----------------|
-| `run_jtag.sh` | `/tmp/hdc_dma_jtag/` |
-| `run_bench.sh` | `/tmp/hdc_dma_bench/` |
+| Run | Default log dir | Archived to |
+|-----|-----------------|-------------|
+| `run_jtag.sh` | `/tmp/hdc_dma_jtag/` | `results/phase2/logs/` |
+| `run_golden_app.sh` | `/tmp/hdc_dma_golden_app/` | `results/phase2/logs/` |
+| `run_bench.sh` | `/tmp/hdc_dma_bench/` | `results/phase2/logs/` |
+| `run_batch_bench.sh` | `/tmp/hdc_dma_batch_bench/` | `results/phase3/logs/` |

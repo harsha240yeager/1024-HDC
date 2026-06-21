@@ -1,0 +1,41 @@
+Programming HDC_DMA PL only (no application):
+  bitstream: /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wrapper.bit
+=== JTAG targets ===
+  1
+  APU
+  2
+  ARM
+  Cortex-A9
+  MPCore
+  #0
+  (Running)
+  3
+  ARM
+  Cortex-A9
+  MPCore
+  #1
+  (Running)
+  4
+  xc7z020
+
+=== PS7 init before PL (releases PL from reset) ===
+  pre-PL PS7 attempt 1...
+Pre-PL PS7 init OK
+
+=== Programming PL bitstream ===
+  PL attempt 1
+    fpga failed: could not find configuration request.
+  PL attempt 2
+    fpga failed: could not find configuration request.
+  PL attempt 3
+    fpga failed: ftdi_write_data_submit failed: all fine
+  PL attempt 4
+    fpga failed: could not find configuration request.
+  PL attempt 5
+PL programmed successfully via xsdb
+
+=== PS7 init after PL ===
+  post-PL PS7 attempt 1...
+PS7 initialized
+FSBL loaded
+PL + FSBL ready for host-side access @ HDC=0x43C00000 DMA=0x40400000

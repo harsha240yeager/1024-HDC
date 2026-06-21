@@ -1,0 +1,44 @@
+Programming HDC_DMA bench with:
+  bitstream: /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wrapper.bit
+  app:       /home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_bench.elf
+=== JTAG targets ===
+  1
+  APU
+  2
+  ARM
+  Cortex-A9
+  MPCore
+  #0
+  (Running)
+  3
+  ARM
+  Cortex-A9
+  MPCore
+  #1
+  (Running)
+  4
+  xc7z020
+
+=== PS7 init before PL (releases PL from reset) ===
+  pre-PL PS7 attempt 1...
+Pre-PL PS7 init OK
+
+=== Programming PL bitstream ===
+  PL attempt 1
+    fpga failed: could not find configuration request.
+  PL attempt 2
+    fpga failed: could not find configuration request.
+  PL attempt 3
+    fpga failed: could not find configuration request.
+  PL attempt 4
+    fpga failed: could not find configuration request.
+  PL attempt 5
+    fpga failed: could not find configuration request.
+  PL attempt 6
+    fpga failed: could not find configuration request.
+  PL attempt 7
+    fpga failed: could not find configuration request.
+  PL attempt 8
+    fpga failed: could not find configuration request.
+  PL attempt 9
+    fpga failed: could not find configuration request.

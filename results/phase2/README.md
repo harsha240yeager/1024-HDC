@@ -43,11 +43,11 @@ DMA channel setup and CPU busy-wait on transfer completion (not yet batched).
 | Test | Method | Script |
 |------|--------|--------|
 | Stream golden (200 cases) | Host-side JTAG drives config + DMA | `board/HDC_DMA/run_jtag.sh` |
-| Latency bench (1000 iters + golden spot-check) | Bare-metal ELF + JTAG DDR readback @ `0x00100000` | `board/HDC_DMA/run_bench_load.tcl` (after `program_pl.tcl`) |
+| Golden app (`hdc_dma_stream_golden_test.c`) | Bare-metal ELF + JTAG DDR @ `0x00100100` | `board/HDC_DMA/run_golden_app.sh` |
+| Latency bench (1000 iters + golden spot-check) | Bare-metal ELF + JTAG DDR readback @ `0x00100000` | `board/HDC_DMA/run_bench.sh` |
 
-Bare-metal `sw/hdc_dma_stream_golden_test.c` is built and available via
-`board/HDC_DMA/run_program.sh` (UART @ 115200); UART log not archived in repo
-(JTAG golden is the primary verification on this setup).
+Bare-metal golden app is the canonical PASS for `sw/hdc_dma_stream_golden_test.c`.
+Host-side JTAG golden (`run_jtag.sh`) is an independent cross-check.
 
 ## Software
 
@@ -64,15 +64,19 @@ Board workspace: `board/HDC_DMA/` (Vitis platform, ELFs, JTAG scripts).
 
 | File | Description |
 |------|-------------|
-| `board_golden.txt` | DMA golden — **PASS 200/200** (JTAG) |
+| `board_golden.txt` | Host JTAG golden — **PASS 200/200** |
+| `board_golden_app.txt` | Bare-metal golden app — **PASS 200/200** (see `run_golden_app.sh`) |
 | `board_bench.txt` | Latency bench — **PASS**, 7 µs mean, golden 200/200 |
 | `synthesis_timing.txt` | WNS **+0.023 ns** @ 100 MHz |
 | `synthesis_utilisation.txt` | 66% LUT, 96% slices |
+| `logs/` | Archived JTAG logs (`golden_app_*.log`, etc.) |
 
-## Optional close-out (not blocking Phase 3)
+## Close-out checklist
 
-- [ ] UART capture log from `hdc_dma_stream_golden_test.c` → `board_golden_uart.txt`
-- [ ] Archive raw JTAG logs from `/tmp/hdc_dma_jtag/` into this folder
+- [x] Bitstream WNS ≥ 0 @ 100 MHz
+- [x] PASS 200/200 on `sw/hdc_dma_stream_golden_test.c` (JTAG DDR readback)
+- [x] Stream throughput/latency bench vs Phase 1 (~3 µs AXI-Lite baseline)
+- [x] Logs archived under `results/phase2/logs/`
 
 ## Next: Phase 3
 

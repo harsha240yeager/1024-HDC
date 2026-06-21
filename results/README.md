@@ -11,7 +11,7 @@ hardware or driver instead.
 |------|----------|
 | `phase1/` | AXI-Lite path on ZedBoard (**complete**) |
 | `phase2/` | AXI-DMA + stream path (**complete**) |
-| `phase3/` | Batch throughput, EMG replay, energy — SW ready; board run pending |
+| `phase3/` | Batch throughput, EMG replay, energy (**in progress**) |
 | `sim/` | Optional exported co-sim summaries (not waveforms) |
 
 ## Status (last updated: 2026-06-21)
@@ -21,7 +21,8 @@ hardware or driver instead.
 | RTL co-sim (7 harnesses) | PASS |
 | Phase 1 — AXI-Lite @ 0x43C00000 | **COMPLETE** |
 | Phase 2 — AXI-DMA + stream system | **COMPLETE** |
-| Phase 3 — batch bench + energy setup | SW ready; board run pending |
+| Phase 3 — batch bench + E2E latency | **DONE** on board |
+| Phase 3 — EMG replay + energy | Scaffold only |
 
 See per-phase README files for detail.
 
@@ -33,9 +34,11 @@ See per-phase README files for detail.
 4. Commit with a short message, e.g. `results: phase3 batch bench`.
 
 ```bash
-bash board/HDC_DMA/run_bench.sh          # Phase 2 single-window (existing)
-bash scripts/run_stream_bench_hdc.sh     # Phase 3 batch bench → results/phase3/
+bash board/HDC_DMA/run_jtag.sh
+bash board/HDC_DMA/run_golden_app.sh
+bash board/HDC_DMA/run_bench.sh
+bash board/HDC_DMA/run_batch_bench.sh   # Phase 3
 git add results/
-git commit -m "results: update phase3 board bench"
+git commit -m "results: update phase2/phase3 board runs"
 git push
 ```

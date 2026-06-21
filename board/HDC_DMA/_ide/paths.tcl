@@ -16,6 +16,7 @@ set PS7_INIT [file join $HDC_DMA_ROOT app _ide psinit ps7_init.tcl]
 set FSBL_ELF [file join $HDC_DMA_ROOT platform zynq_fsbl fsbl.elf]
 set APP_ELF  [file join $HDC_DMA_ROOT app build Final_HDC_dma_golden.elf]
 set BENCH_ELF [file join $HDC_DMA_ROOT app build Final_HDC_dma_bench.elf]
+set BATCH_BENCH_ELF [file join $HDC_DMA_ROOT app build Final_HDC_dma_batch_bench.elf]
 set VIVADO_PL [file join $SCRIPT_DIR program_pl_vivado.tcl]
 
 set HDC_BASE 0x43C00000

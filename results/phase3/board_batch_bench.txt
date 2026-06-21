@@ -1,0 +1,21 @@
+Phase 3 — DMA stream batch bench (ZedBoard)
+===========================================
+Date:       2026-06-21T22:38:03+05:30
+App:        sw/hdc_dma_stream_batch_bench.c
+Method:     JTAG DDR readback @ 0x00100200 (magic 0xBEC00004)
+Run script: bash board/HDC_DMA/run_batch_bench.sh
+Note:       Sustained = N sequential single-window DMA xfers (proto once).
+            E2E proxy = global timer MM2S+S2MM submit through both idle.
+
+==================================================
+HDC Phase 3 batch bench (DMA stream @ 0x40400000)
+CPU=650000000 Hz  global_tmr=325000000 Hz
+==================================================
+--- Sustained batch (10000 windows, proto loaded once) ---
+total = 74656 us  mean = 7 us/window
+throughput ~ 142857 windows/s
+--- E2E proxy (MM2S+S2MM submit -> both idle, 100 samples) ---
+mean = 6 us  (MM2S done @ 3 us)
+==================================================
+
+Status: PASS

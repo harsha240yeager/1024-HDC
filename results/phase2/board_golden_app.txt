@@ -1,0 +1,15 @@
+Phase 2 — DMA stream golden app (ZedBoard)
+==========================================
+Date:       2026-06-21T22:36:38+05:30
+App:        sw/hdc_dma_stream_golden_test.c
+Method:     JTAG DDR readback @ 0x00100100 (magic 0xBEC00003)
+Run script: bash board/HDC_DMA/run_golden_app.sh
+
+==================================================
+HDC Phase 2 golden app (sw/hdc_dma_stream_golden_test.c)
+DDR readback @ 0x00100100
+==================================================
+PASS: 200/200 stream golden cases
+==================================================
+
+Status: PASS

@@ -1,0 +1,17 @@
+==================================================
+HDC stream JTAG golden test: 200 cases (D=1024, N_CLASS=8)
+  VECDIR = /home/bsp-lab/1024-HDC/python_ref/vectors/cosim_core
+  HDC    = 0x43C00000
+  DMA    = 0x40400000
+==================================================
+  ... 25 / 200 checked (errors so far: 0)
+  ... 50 / 200 checked (errors so far: 0)
+  ... 75 / 200 checked (errors so far: 0)
+  ... 100 / 200 checked (errors so far: 0)
+  ... 125 / 200 checked (errors so far: 0)
+  ... 150 / 200 checked (errors so far: 0)
+  ... 175 / 200 checked (errors so far: 0)
+  ... 200 / 200 checked (errors so far: 0)
+==================================================
+PASS: 200/200 stream golden cases
+==================================================

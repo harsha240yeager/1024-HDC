@@ -1,0 +1,18 @@
+Loading bench ELF (PL must already be programmed):
+  app: /home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_bench.elf
+bench loaded
+CPU running bench — polling @ 0x00100000 (max 300s)...
+==================================================
+HDC Phase 2 bench (DMA stream @ 0x40400000)
+CPU=650000000 Hz  global_tmr=325000000 Hz  iters=1000
+==================================================
+--- Latency (DMA stream one window, incl. busy-wait) ---
+min  = 6 us
+max  = 7 us
+mean = 6 us
+throughput ~ 166666 windows/s (1/mean)
+--- vs Phase 1 AXI-Lite baseline (~3 us/window) ---
+delta = +3 us (slower than Phase 1)
+--- Golden batch check ---
+FAIL: 200 errors / 200 checked
+==================================================

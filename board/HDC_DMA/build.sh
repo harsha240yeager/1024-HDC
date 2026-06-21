@@ -64,9 +64,23 @@ arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -O0 -g \
   -o "$BLD/Final_HDC_dma_bench.elf"
 arm-none-eabi-size "$BLD/Final_HDC_dma_bench.elf"
 
+echo "== Build Final_HDC_dma_batch_bench.elf =="
+for f in hdc_dma_stream_batch_bench.c hdc_dma_stream.c hdc_core_regs.c; do
+  arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -O0 -g -Wall \
+    "-I$BSP/ps7_cortexa9_0/include" "-I$SW" \
+    -c "$SW/$f" -o "$BLD/${f%.c}.batch.o"
+done
+arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -O0 -g \
+  -specs="$BSP/Xilinx.spec" -T "$LSCRIPT" \
+  "$BLD/hdc_dma_stream_batch_bench.batch.o" "$BLD/hdc_dma_stream.batch.o" "$BLD/hdc_core_regs.batch.o" \
+  "-L$BSP/ps7_cortexa9_0/lib" -Wl,--start-group -lxil -lgcc -lc -lm -Wl,--end-group \
+  -o "$BLD/Final_HDC_dma_batch_bench.elf"
+arm-none-eabi-size "$BLD/Final_HDC_dma_batch_bench.elf"
+
 echo "Done."
 echo "  Platform : $ROOT/platform/export/Final_HDC/Final_HDC.xpfm"
 echo "  Bitstream: $ROOT/app/_ide/bitstream/design_1_wrapper.bit"
 echo "  Golden ELF: $BLD/Final_HDC_dma_golden.elf"
 echo "  Bench ELF  : $BLD/Final_HDC_dma_bench.elf"
+echo "  Batch ELF  : $BLD/Final_HDC_dma_batch_bench.elf"
 echo "  FSBL       : $ROOT/platform/zynq_fsbl/fsbl.elf"

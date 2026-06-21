@@ -16,7 +16,26 @@
 #include "golden_vectors.h"
 #include "hdc_core_regs.h"
 #include "hdc_dma_stream.h"
+#include "xil_cache.h"
 #include "xil_printf.h"
+
+#define GOLDEN_RESULTS_BASE  0x00100100U
+#define GOLDEN_MAGIC           0xBEC00003U
+#define GOLDEN_STATUS_DONE     1U
+#define GOLDEN_RESULTS_BYTES   0x20U
+
+static u32 in_buf[HDC_IN_BEATS] __attribute__((aligned(64)));
+static u32 out_buf[HDC_OUT_BEATS] __attribute__((aligned(64)));
+
+static void golden_results_publish(u32 n_cases, u32 errors)
+{
+    Xil_Out32(GOLDEN_RESULTS_BASE + 0x00, GOLDEN_MAGIC);
+    Xil_Out32(GOLDEN_RESULTS_BASE + 0x04, GOLDEN_STATUS_DONE);
+    Xil_Out32(GOLDEN_RESULTS_BASE + 0x08, n_cases);
+    Xil_Out32(GOLDEN_RESULTS_BASE + 0x0C, errors);
+    Xil_Out32(GOLDEN_RESULTS_BASE + 0x10, (errors == 0U) ? n_cases : (n_cases - errors));
+    Xil_DCacheFlushRange((INTPTR)GOLDEN_RESULTS_BASE, GOLDEN_RESULTS_BYTES);
+}
 
 int main(void)
 {
@@ -39,21 +58,19 @@ int main(void)
     hdc_load_mask_from64(golden_mask64);
 
     for (c = 0U; c < n_cases; ++c) {
-        u32 in3[HDC_IN_BEATS];
-        u32 out1 = 0U;
         u32 exp = golden_expect[c];
         u32 exp_idx  = (exp >> 16) & ((1U << HDC_IDX_W) - 1U);
         u32 exp_dist = exp & ((1U << HDC_DIST_W) - 1U);
         u32 got_idx, got_dist;
 
-        in3[0] = golden_levels0[c];
-        in3[1] = golden_levels1[c];
-        in3[2] = golden_levels2[c];
+        in_buf[0] = golden_levels0[c];
+        in_buf[1] = golden_levels1[c];
+        in_buf[2] = golden_levels2[c];
 
-        hdc_dma_stream_one(in3, &out1);
+        hdc_dma_stream_one(in_buf, out_buf);
 
-        got_dist = out1 & ((1U << HDC_DIST_W) - 1U);
-        got_idx  = (out1 >> 16) & ((1U << HDC_IDX_W) - 1U);
+        got_dist = out_buf[0] & ((1U << HDC_DIST_W) - 1U);
+        got_idx  = (out_buf[0] >> 16) & ((1U << HDC_IDX_W) - 1U);
 
         if (got_idx != exp_idx || got_dist != exp_dist) {
             errors++;
@@ -72,6 +89,11 @@ int main(void)
         xil_printf("FAIL: %lu errors / %lu\r\n",
                    (unsigned long)errors, (unsigned long)n_cases);
     xil_printf("==================================================\r\n");
+
+    golden_results_publish(n_cases, errors);
+
+    while (1)
+        ;
 
     return (errors == 0U) ? 0 : -1;
 }
