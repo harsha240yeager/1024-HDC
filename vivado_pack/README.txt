@@ -19,7 +19,7 @@ PHASE A — AXI-Lite bring-up (start here)
 3. Block design:
      Zynq7 PS  +  AXI Interconnect  +  proc_sys_reset
      Connect PS M_AXI_GP0 -> interconnect -> hdc_core_axi_lite_bd_wrapper (AXI slave)
-     IMPORTANT: use hdc_core_axi_lite_bd_wrapper.sv in Block Design, NOT hdc_core_axi_lite.sv
+     IMPORTANT: use hdc_core_axi_lite_bd_wrapper.v in Block Design, NOT hdc_core_axi_lite.sv
      (the wrapper adds Vivado bus-interface metadata; bare core shows "incompatible").
      FCLK_CLK0 (100 MHz) -> s_axi_aclk; proc_sys_reset -> s_axi_aresetn
 4. Address Editor: assign hdc_core_axi_lite at 0x43C0_0000 (64 KB).
@@ -54,7 +54,7 @@ REGISTER MAP (byte offsets from 0x43C00000)
 
 RTL FILE LIST (minimum for hdc_core_axi_lite)
 ---------------------------------------------
-  hdc_core_axi_lite_bd_wrapper.sv  <-- add THIS module to Block Design
+  hdc_core_axi_lite_bd_wrapper.v  <-- add THIS module to Block Design
   hdc_core_axi_lite.sv, hdc_core_top.sv, encoder_top.sv, item_mem.sv,
   bundle_unit.sv, popcount_am.sv, xor_permute_top.sv, permute_stage.sv
 
@@ -62,11 +62,34 @@ Optional (streaming): hdc_stream_wrapper.sv
 
 Repo: https://github.com/harsha240yeager/1024-HDC
 
-GOLDEN TEST ON ZEDBOARD (after bitstream programmed)
-----------------------------------------------------
-From this folder (repo root or unzipped pack with scripts/):
+PREPARE GOLDEN VECTORS (from repo root)
+---------------------------------------
+  bash scripts/prep_golden_test.sh
 
+  # Windows:
   powershell -File scripts/prep_golden_test.ps1
 
-Vitis app: sw/hdc_core_golden_test.c + sw/hdc_core_regs.c + sw/golden_vectors.h
-UART 115200 -> expect PASS: 200/200 golden cases
+Generates sw/golden_vectors.h (200 cases, seed 42).
+
+GOLDEN TEST ON ZEDBOARD
+-----------------------
+
+Option A — JTAG (recommended on VDI; no UART)
+  Requires Final HDC Vitis workspace + programmed bitstream on ZedBoard.
+
+  bash "/home/bsp-lab/Desktop/Final HDC/HDC_harsha/run_final_1024_hdc.sh" --golden-jtag
+
+  Or from repo root:
+
+  bash scripts/run_golden_jtag.sh
+
+  Success: PASS: 200/200 golden cases
+
+Option B — Bare-metal app + UART 115200
+  Vitis app: sw/hdc_core_golden_test.c + sw/hdc_core_regs.c + sw/golden_vectors.h
+  Program device, launch on hardware, open serial before Resume.
+  Success: PASS: 200/200 golden cases
+
+Option C — Smoke test (single case, JTAG read)
+  bash "/home/bsp-lab/Desktop/Final HDC/HDC_harsha/run_final_1024_hdc.sh" --read-only
+  Success: class 3, dist 623, SMOKE TEST: PASS

@@ -19,6 +19,8 @@ the PS through an AXI4-Lite wrapper.
 | `sw/` | Bare-metal software: `hdc_core_axi_example.c` (smoke test), `hdc_core_golden_test.c` (200-case board golden test), `hdc_core_regs.c/h`, and generated `golden_vectors.h`. |
 | `docs/` | Research plan, advisor one-pager, project guide, and the reference paper (PDF/HTML/DOCX). |
 | `python_ref/` | Bit-exact Python golden reference, EMG reproduction (Stage A/B), frozen baseline config + results, and PDF notes. See `python_ref/README.md`. |
+| `scripts/` | Golden-test prep (`prep_golden_test.sh`, `.ps1`) and on-board JTAG runner (`run_golden_jtag.tcl`, `run_golden_jtag.sh`). |
+| `vivado_pack/` | Vivado bring-up bundle (RTL, cosim vectors layout, bare-metal examples). See `vivado_pack/README.txt`. |
 | `1024HDC.mpf`, `modelsim.ini` | ModelSim/Questa project files (kept at repo root; source paths point into `rtl/` and `tb/`). |
 
 > The reference paper's code/data (`python_ref/HDC-EMG/`, GPLv3) and the generated
@@ -136,15 +138,83 @@ python run_emg_baseline.py               # frozen baseline: 5 seeds + MAP parity
 python run_emg_baseline.py --quick --no-parity   # fast sanity (~7 s)
 ```
 
-### ZedBoard golden test (bare-metal)
+### ZedBoard golden test (200 cases, seed 42)
 
-From repo root (requires Python + programmed bitstream with `cosim_core` item_mem `.mem` files):
+Requires a programmed bitstream whose `item_mem_*.mem` ROMs were built from the
+same `python_ref/vectors/cosim_core/` vectors (seed 42). Regenerate vectors and
+the C header from the repo root:
+
+```bash
+bash scripts/prep_golden_test.sh
+```
+
+On Windows:
 
 ```powershell
 powershell -File scripts/prep_golden_test.ps1
 ```
 
-Vitis application sources: `sw/hdc_core_golden_test.c`, `sw/hdc_core_regs.c`, `sw/golden_vectors.h` (add `sw/` to include path). UART **115200** — expect `PASS: 200/200 golden cases`.
+This produces `sw/golden_vectors.h` (200 cases). Vitis app sources:
+`sw/hdc_core_golden_test.c`, `sw/hdc_core_regs.c`, `sw/golden_vectors.h`
+(add `sw/` to the include path). Base address: `0x43C00000`.
+
+#### Option A — JTAG golden test (recommended on VDI; no UART)
+
+Uses xsdb to drive the HDC registers and compare against `core_expect.hex`
+(same flow as `tb/tb_core_axi_cosim.sv`). Requires the **Final HDC** Vitis
+workspace on the same machine (bitstream + FSBL + `program_pl_only.tcl`).
+
+From the Final HDC workspace:
+
+```bash
+bash "/home/bsp-lab/Desktop/Final HDC/HDC_harsha/run_final_1024_hdc.sh" --golden-jtag
+```
+
+Or from this repo (sets `HDC_ROOT` to the Final HDC workspace by default):
+
+```bash
+bash scripts/run_golden_jtag.sh
+```
+
+Override paths if needed:
+
+```bash
+export HDC_ROOT="/path/to/Final HDC/HDC_harsha"
+export HDC_GOLDEN_VECDIR="/path/to/1024-HDC/python_ref/vectors/cosim_core"
+export HDC_LOG_DIR="/tmp/golden_jtag_hdc"
+bash scripts/run_golden_jtag.sh
+```
+
+Success:
+
+```
+PASS: 200/200 golden cases
+```
+
+Logs: `$HDC_LOG_DIR/golden_*_attempt_*.log` (default `/tmp/golden_jtag_hdc/` or
+`/tmp/final_1024_hdc/` when using `run_final_1024_hdc.sh`).
+
+#### Option B — Bare-metal app + UART
+
+Build the golden-test ELF in Vitis, program the board, launch on hardware, and
+open serial **115200 8N1 before Resume**. Expect:
+
+```
+PASS: 200/200 golden cases
+```
+
+Note: on ZedBoard the Digilent USB cable shares JTAG and UART — you cannot
+capture UART while JTAG is active. Use Option A if serial capture is unreliable.
+
+#### Smoke test (single case, JTAG register read)
+
+After programming with `hdc_core_axi_example.c`:
+
+```bash
+bash "/home/bsp-lab/Desktop/Final HDC/HDC_harsha/run_final_1024_hdc.sh" --read-only
+```
+
+Expected: class **3**, distance **623**, `SMOKE TEST: PASS`.
 
 ## Roadmap (June+)
 
@@ -155,7 +225,7 @@ Vitis application sources: `sw/hdc_core_golden_test.c`, `sw/hdc_core_regs.c`, `s
 - ~~`hdc_core_top.sv` (encoder → AM + pruning mask, end-to-end inference) + co-sim~~ — **done** (`sim/run_core_cosim.do`, 500/500 PASS). See `docs/HDC_Core_Top_and_Cosim_Flow.pdf`.
 - ~~`hdc_core_axi_lite.sv` (AXI4-Lite control wrapper around the core) + co-sim~~ — **done** (`sim/run_core_axi_cosim.do`, 200/200 PASS). See `docs/HDC_Core_AXI_Lite_and_Cosim_Flow.pdf` and the protocol study `docs/AXI4_Lite_Protocol_Study.pdf`.
 - ~~`hdc_stream_wrapper.sv` (AXI4-Stream wrapper for DMA-fed streaming) + co-sim~~ — **done** (`sim/run_stream_cosim.do`, 200/200 PASS under random gaps + back-pressure). See `docs/HDC_Stream_Wrapper_and_Cosim_Flow.pdf` and the protocol study `docs/AXI4_Stream_Protocol_Study.pdf`.
-- Zynq bring-up: Vivado block design (PS + AXI-DMA + both wrappers), on-board smoke test, then throughput / latency / energy / area measurements.
+- ~~Zynq bring-up: Vivado block design (PS + AXI-DMA + both wrappers), on-board smoke test, then throughput / latency / energy / area measurements.~~ — **smoke + 200-case JTAG golden test done** on ZedBoard (see ZedBoard golden test above).
 - Novelty studies: dimension/precision/pruning Pareto (Hook A), informed-vs-random pruning (Twist 1), cross-subject mask transfer (Twist 2).
 
 ## License / attribution
