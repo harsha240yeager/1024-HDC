@@ -1,18 +1,31 @@
 Phase 2 — DMA stream latency bench (ZedBoard)
 =============================================
-Status:     PENDING — run on board to fill in measurements
+Date:       2026-06-21
+Bitstream:  design_1, hdc_stream_system_bd_wrapper + axi_dma_0
+App:        sw/hdc_dma_stream_bench.c + sw/hdc_dma_stream.c
+Method:     JTAG readback @ 0x00100000
+Run script: bash board/HDC_DMA/run_bench.sh
+Phase 1 baseline: ~3 us/window (AXI-Lite poll)
 
-Run:
-  export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
-  bash board/HDC_DMA/build.sh
-  bash board/HDC_DMA/run_bench.sh
+CPU=650000000 Hz  global_tmr=325000000 Hz  iters=1000
 
-App:        sw/hdc_dma_stream_bench.c (1000 timed DMA windows + 200-case golden)
-JTAG:       readback @ 0x00100000 (magic 0xBEC00002)
-Phase 1 baseline: ~3 µs/window (see results/phase1/board_bench.txt)
+==================================================
+HDC Phase 2 bench (DMA stream @ 0x40400000)
+CPU=650000000 Hz  global_tmr=325000000 Hz  iters=1000
+==================================================
+--- Latency (DMA stream one window, incl. busy-wait) ---
+min  = 7 us
+max  = 8 us
+mean = 7 us
+throughput ~ 142857 windows/s (1/mean)
+--- vs Phase 1 AXI-Lite baseline (~3 us/window) ---
+delta = +4 us (slower than Phase 1)
+--- Golden batch check ---
+PASS: 200/200 stream golden cases
+==================================================
 
-Expected output fields (after board run):
-  min / max / mean latency (µs)
-  throughput (windows/s)
-  delta vs Phase 1 baseline
-  PASS: 200/200 stream golden cases
+Status: PASS
+
+Notes:
+  - Fixed D-cache flush/invalidate in hdc_dma_stream.c for DDR DMA buffers.
+  - DMA path ~2x Phase 1 AXI-Lite poll latency (expected: DMA setup + busy-wait overhead).

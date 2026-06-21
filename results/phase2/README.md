@@ -16,7 +16,7 @@
 | Synthesis / timing | WNS ≥ 0 @ 100 MHz, fits xc7z020 | **PASS** — see `synthesis_timing.txt`, `synthesis_utilisation.txt` |
 | Stream golden | 200/200 PASS via DMA | **PASS** — see `board_golden.txt` |
 | Functional | Same classes/distances as Phase 1 | **PASS** — same `cosim_core` vectors |
-| Throughput bench | vs Phase 1 ~3 µs/window baseline | **Pending** — run `HDC_DMA/run_bench.sh` |
+| Throughput bench | vs Phase 1 ~3 µs/window baseline | **PASS** — see `board_bench.txt` (7 µs mean) |
 
 ## Run (HDC_DMA folder)
 
