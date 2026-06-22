@@ -100,6 +100,16 @@ static void pack_chunk(u32 offset, u32 chunk_n)
 {
     u32 i;
 
+#if defined(EMG_USE_DDR_VECTORS) && (EMG_USE_DDR_VECTORS > 0U)
+    {
+        u32 byte_off = EMG_OFF_LEVELS0 + offset * sizeof(u32);
+        u32 byte_len = chunk_n * sizeof(u32) * 3U;
+
+        Xil_DCacheInvalidateRange(
+            (INTPTR)(EMG_VECTORS_DDR_BASE + byte_off), byte_len);
+    }
+#endif
+
     for (i = 0U; i < chunk_n; ++i) {
         u32 idx = offset + i;
 

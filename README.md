@@ -20,7 +20,7 @@ the PS through an AXI4-Lite wrapper.
 | `results/` | Board benchmarks, synthesis utilisation/timing, and per-phase logs — updated after each Vivado/board run. See `results/README.md`. |
 | `docs/` | Research plan, advisor one-pager, project guide, and the reference paper (PDF/HTML/DOCX). |
 | `python_ref/` | Bit-exact Python golden reference, EMG reproduction (Stage A/B), frozen baseline config + results, and PDF notes. See `python_ref/README.md`. |
-| `scripts/` | Golden prep, JTAG runners, Phase 1 bench, Phase 3 scaffolds (`export_emg_board_vectors.py`, `ina219_log.py`), legacy UART bench (`run_stream_bench_hdc.sh`). |
+| `scripts/` | Golden prep, JTAG runners, Phase 1 bench, Phase 3 scaffolds (`export_emg_board_vectors.py`, `regenerate_emg_protos.py`, `pack_emg_ddr_from_header.py`, `ina219_log.py`), legacy UART bench (`run_stream_bench_hdc.sh`). |
 | `board/HDC_DMA/` | **Phase 2/3 ZedBoard workspace**: Vitis platform, DMA golden/bench/batch ELFs, JTAG run scripts. See `board/HDC_DMA/README.md`. |
 | `vivado_pack/` | Vivado bring-up bundle (RTL, cosim vectors layout, bare-metal examples). See `vivado_pack/README.txt`. |
 | `1024HDC.mpf`, `modelsim.ini` | ModelSim/Questa project files (kept at repo root; source paths point into `rtl/` and `tb/`). |
@@ -53,9 +53,11 @@ Three measurement stages on the **same HDC core** — see `results/` for full lo
 | **Batch throughput** | — | ~143k windows/s (single) | **~216k windows/s** (200-window SG batch) |
 | **WNS @ 100 MHz** | +0.246 ns | +0.023 ns | **+0.111 ns** (post-route phys_opt) |
 | **Results** | `results/phase1/` | `results/phase2/` | `results/phase3/board_bench.txt` |
+| **EMG replay (v2)** | — | — | **IN PROGRESS** — export ref **74.25%** (hdc_ref); board re-run pending |
 
 Phase 3 **batch bench is COMPLETE** (`results/phase3/board_bench.txt`, June 2026).
-Full Phase 3 (energy + EMG replay) is still pending — see `results/phase3/README.md`.
+**EMG board replay** is wired (v2 export + DDR split-load + proto fix); board re-run
+pending after regenerating prototypes — see `results/phase3/README.md`.
 
 Phase 3 batch uses **scatter-gather DMA** (`XPAR_AXI_DMA_0_INCLUDE_SG 1`) with one
 MM2S/S2MM descriptor ring for 200 windows, plus an input beat FIFO in
@@ -310,8 +312,56 @@ bash run_phase3_golden.sh     # optional → board_golden.txt
 then retry — success often on attempt 2–6. A failed re-run does not invalidate an
 earlier good log in `board_bench.txt`.
 
-Still pending for full Phase 3 / Hook A (Pareto): EMG dataset replay
-(`board_emg_replay.txt`) and INA219 energy (`energy_batch.txt`).
+Still pending for full Phase 3 / Hook A (Pareto): INA219 energy (`energy_batch.txt`).
+EMG dataset replay is **in progress** — see below.
+
+### Phase 3 — EMG full-dataset replay (v2, in progress)
+
+Exports the full EMG **TEST** split (all config subjects, ~658k windows) with
+RTL-matched `hdc_ref` encoding. The board replays packed level grids via SG batch
+DMA and scores against per-subject prototypes.
+
+**Export ref (hdc_ref, fixed protos):** **74.25%** on 658,004 windows  
+(`EMG_EXPORT_REF_ACCURACY_X1000 = 74247`). Board **PASS** when
+`|board_acc − export_ref| ≤ 0.5%`.
+
+> **Proto fix (June 2026):** Early exports used `bundle_majority` (6-bit saturating
+> counters) for offline prototype training. With ~20k+ windows per class, counters
+> saturate while the threshold uses `n_accum >> 1`, collapsing prototypes to
+> all-zero. Python then always predicted class 0; because label 1 is 59.25% of
+> the test set, the bogus export ref read **59.25%**. Use
+> `bundle_majority_unlimited` (export script + `hdc_ref.py`) or
+> `scripts/regenerate_emg_protos.py` on an existing header. Stage B (~90.30%) is
+> INFO-only and does not match RTL encoding.
+
+**Large-vector JTAG:** Full headers (~52 MB ELF) fail JTAG `dow`. Use DDR
+split-load: window arrays in `sw/emg_board_vectors.bin` @ `0x02000000`, slim
+`sw/emg_board_vectors.h` (~19 KB protos/mask/metadata only).
+
+```bash
+cd ~/1024-HDC
+git pull
+
+# One-time: export full TEST split (~4 h) OR restore sw/emg_board_vectors.h.full
+bash scripts/prep_emg_board_test.sh
+
+# If export predates the proto fix, retrain protos only (~30 min):
+python3 scripts/regenerate_emg_protos.py --header sw/emg_board_vectors.h.full
+python3 scripts/regenerate_emg_protos.py --skip-train --recompute-accuracy \
+  --header sw/emg_board_vectors.h.full   # ~2 h; updates export ref in headers
+
+# Pack windows → DDR bin + slim header (no re-export):
+python3 scripts/pack_emg_ddr_from_header.py --header sw/emg_board_vectors.h.full
+
+cd board/HDC_DMA
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
+PYTHONPATH="${PYTHONPATH:-}" bash build_sw.sh
+bash run_phase3_emg.sh    # ~30–45 min → results/phase3/board_emg_replay.txt
+```
+
+Dev subset: `EMG_MAX_WINDOWS=2000 bash scripts/prep_emg_board_test.sh`
+
+Details: `results/phase3/README.md`.
 
 ### Phase 1 board bench (1000 timed inferences + 200-case golden)
 
@@ -373,7 +423,7 @@ mean = 3 us
 |------|--------|
 | Batch bench (latency + 200-window + golden) | **COMPLETE** (~216k windows/s, SG) |
 | Energy (INA219 + shunt) | **NOT STARTED** |
-| Full EMG replay on board | **NOT STARTED** |
+| Full EMG replay on board | **IN PROGRESS** — proto fix + export ref 74.25%; board re-run pending |
 
 ### Later fixes — SG batch DMA + timing close (June 2026)
 

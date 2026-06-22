@@ -100,9 +100,11 @@ bash scripts/full_rebuild_and_bench.sh
 | # | Task | Output | Status |
 |---|------|--------|--------|
 | 6 | Energy (INA219 + shunt on Vcc_int) | `energy_batch.txt` + fill `energy_setup.txt` | **NOT DONE** — hardware pending |
-| 7 | Full EMG replay on board | `board_emg_replay.txt` | **IN PROGRESS** — v2 export + board run |
+| 7 | Full EMG replay on board | `board_emg_replay.txt` | **IN PROGRESS** — proto fix applied; board re-run pending |
 
-Scaffolds wired: `scripts/export_emg_board_vectors.py` (v2), `sw/hdc_emg_board_test.c`, `run_phase3_emg.sh`.
+Scaffolds wired: `scripts/export_emg_board_vectors.py` (v2),
+`scripts/regenerate_emg_protos.py`, `scripts/pack_emg_ddr_from_header.py`,
+`sw/hdc_emg_board_test.c`, `run_phase3_emg.sh`.
 
 ### EMG replay pass criteria (v1 vs v2)
 
@@ -112,15 +114,50 @@ Scaffolds wired: `scripts/export_emg_board_vectors.py` (v2), `sw/hdc_emg_board_t
 | Export ref engine | hdc_ref only | `--engine hdc_ref` (default) or `stage_b_bsc` |
 | Board PASS | vs frozen 90.30% baseline | \|board − export ref\| ≤ 0.5% |
 | Frozen baseline | PASS/FAIL gate | INFO only when `--engine stage_b_bsc` |
-| v1 result | Board 59.60% == export 59.60% (RTL verified) | — |
+| v1 result | Board 59.60% == export 59.60% (RTL verified on subset) | — |
+
+**Export ref (June 2026, fixed protos):** **74.25%** (488,550 / 658,004 correct,
+`EMG_EXPORT_REF_ACCURACY_X1000 = 74247`).
+
+### Prototype training fix (June 2026)
+
+Class prototypes are trained offline in Python (majority bundle over all training
+windows per class). The RTL `bundle_unit` uses **6-bit saturating counters**
+(valid for query encoding over 20 channel×feature pairs, not for 20k+ training
+windows). Using `bundle_majority` for prototype training saturated counters at 63
+while threshold used `n_accum >> 1` → **all-zero prototypes** in exported headers.
+
+Symptoms:
+- `emg_proto64` all `0x0000…` in header
+- Python export ref **59.25%** = always predict class 0 (label 1 is 59.25% of TEST)
+- Board ~51% (RTL tie-break differs from Python on zero protos)
+- Displayed **5.56%** on board was a separate `u32` overflow bug (fixed in `674ca95`)
+
+Fix:
+- `bundle_majority_unlimited()` in `python_ref/hdc_ref.py` (offline training only)
+- `scripts/export_emg_board_vectors.py` uses unlimited bundling for protos
+- `scripts/regenerate_emg_protos.py` — retrain + patch headers without 4 h re-export
 
 ```bash
-# v2 export (RTL-matched ref, default)
+# Full export (~4 h, one-time)
 bash scripts/prep_emg_board_test.sh
-# dev subset
-EMG_MAX_WINDOWS=2000 bash scripts/prep_emg_board_test.sh
-cd board/HDC_DMA && bash build_sw.sh && bash run_phase3_emg.sh
+
+# Or fix protos on existing header (~30 min train + optional ~2 h accuracy):
+python3 scripts/regenerate_emg_protos.py --header sw/emg_board_vectors.h.full
+python3 scripts/regenerate_emg_protos.py --skip-train --recompute-accuracy \
+  --header sw/emg_board_vectors.h.full
+
+# DDR split-load (slim ELF ~47 KB; vectors in bin @ 0x02000000):
+python3 scripts/pack_emg_ddr_from_header.py --header sw/emg_board_vectors.h.full
+
+cd board/HDC_DMA
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
+PYTHONPATH="${PYTHONPATH:-}" bash build_sw.sh
+bash run_phase3_emg.sh
 ```
+
+Last board run in `board_emg_replay.txt` (2026-06-22) was **pre-fix** (zero protos,
+overflow display bug). Re-run after proto regeneration for valid PASS/FAIL.
 
 ## Results files
 

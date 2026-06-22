@@ -1,48 +1,31 @@
 Phase 3 — EMG full-dataset replay (ZedBoard)
 ============================================
-Status: NOT YET RUN — regenerate export (v2) and run board/HDC_DMA/run_phase3_emg.sh
+Date:       2026-06-22T21:53:47+05:30
+App:        sw/hdc_emg_board_test.c
+Method:     JTAG readback @ 0x00100300
+Run script: bash board/HDC_DMA/run_phase3_emg.sh
+Bitstream:  /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wrapper.bit
 
-Goal
-----
-Stream real EMG TEST-split windows through the Phase 3 SG DMA path; confirm board
-classification matches the Python export reference within 0.5%.
+NOTE: This run predates the June 2026 prototype fix (all-zero emg_proto64 in
+export) and u32 accuracy overflow fix. Displayed 5.56% is wrong; correct count
+337262/658004 ≈ 51.25%. Re-run after regenerate_emg_protos.py; export ref is
+now 74.25% (74247 x1000). See results/phase3/README.md.
 
-Export (v2)
------------
-  bash scripts/prep_emg_board_test.sh
-  # optional dev subset:
-  EMG_MAX_WINDOWS=2000 bash scripts/prep_emg_board_test.sh
-  # Stage B baseline reference export (INFO only on board):
-  EMG_ENGINE=stage_b_bsc bash scripts/prep_emg_board_test.sh
+==================================================
+HDC Phase 3 EMG replay (sw/hdc_emg_board_test.c)
+DDR readback @ 0x00100300
+==================================================
+EMG replay: N=658004 correct=337262 accuracy=5.56%
+Export ref: 59.24%
+Board vs export: delta=53.68%  FAIL (0.5% tol)
+errors=320742
+==================================================
 
-Board run
----------
-  cd board/HDC_DMA && bash build_sw.sh && bash run_phase3_emg.sh
+Record
+------
+Windows replayed: 658004 correct=337262 accuracy=5.56%
+Export ref: 59.24%
+Board vs export: delta=53.68%  FAIL (0.5% tol)
+PASS (board vs export, 0.5%): no
 
-Pass criteria (v1 vs v2)
-------------------------
-v1 (superseded):
-  - 500 random windows, subject 1 only
-  - PASS/FAIL vs frozen Stage B baseline 90.30% (misleading for hdc_ref export)
-  - Proved: board 59.60% == export ref 59.60% (RTL encoder OK)
-
-v2 (current):
-  - TEST split, all config subjects (concatenated in subject order)
-  - Export ref from --engine (default hdc_ref, RTL-matched)
-  - PASS if |board_acc - EMG_EXPORT_REF_ACCURACY| <= 0.5%
-  - Frozen 90.30% baseline: INFO line on board/UART when export used --engine stage_b_bsc
-
-Record here after run
----------------------
-Date:
-Export version: 2
-Engine: hdc_ref / stage_b_bsc
-Subjects:
-Windows replayed:
-Export ref accuracy (%):
-Board accuracy (%):
-Delta board vs export (%):
-PASS (v2, 0.5%): yes / no
-INFO frozen baseline (if stage_b export):
-
-See: scripts/export_emg_board_vectors.py, sw/hdc_emg_board_test.c
+Status: FAIL (board vs export ref; see v1/v2 criteria in README)
