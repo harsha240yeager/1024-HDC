@@ -8,7 +8,9 @@ source [file join $SCRIPT_DIR phase3_emg_report.tcl]
 
 set EMG_BASE $::PHASE3_EMG_BASE
 set EMG_MAGIC $::PHASE3_EMG_MAGIC
-set MAX_WAIT_SEC 600
+set EMG_BIN [file join $REPO_ROOT sw emg_board_vectors.bin]
+set EMG_DDR_BASE 0x02000000
+set MAX_WAIT_SEC 7200
 set PROGRESS_SEC 10
 
 proc jtag_error_recoverable {err} {
@@ -59,7 +61,11 @@ puts "  bitstream: $BITFILE"
 puts "  app:       $EMG_ELF"
 
 connect -url $HW_URL
-program_zed_board $BITFILE $PS7_INIT $FSBL_ELF $EMG_ELF $VIVADO_PL 1
+if {[file exists $EMG_BIN]} {
+    program_zed_board $BITFILE $PS7_INIT $FSBL_ELF $EMG_ELF $VIVADO_PL 1 $EMG_BIN $EMG_DDR_BASE
+} else {
+    program_zed_board $BITFILE $PS7_INIT $FSBL_ELF $EMG_ELF $VIVADO_PL 1
+}
 
 puts "CPU running EMG replay — polling @ [format 0x%08X $EMG_BASE] (max ${MAX_WAIT_SEC}s)..."
 
