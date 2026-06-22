@@ -1,7 +1,7 @@
 # HDC_DMA — Phase 2/3 Stream + AXI DMA (ZedBoard)
 
 Self-contained Vitis workspace inside the **1024-HDC** repo for Phase 2 DMA bring-up
-and Phase 3 batch measurement.
+and Phase 3 batch measurement (scatter-gather DMA enabled).
 
 ## Quick start
 
@@ -23,7 +23,17 @@ bash run_phase3_golden.sh     # optional golden regression
 bash run_batch_bench.sh       # supplementary 10k sequential bench
 ```
 
-Expected Phase 3 pass lines: see `results/phase3/README.md`.
+**Latest board results (June 2026):** batch **~216k windows/s**, golden **200/200**,
+SG DMA (`XPAR_AXI_DMA_0_INCLUDE_SG 1`). See `results/phase3/README.md`.
+
+Full rebuild (Vivado project required):
+
+```bash
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
+bash ../../scripts/rebuild_sg_bitstream.sh   # SG + export + BSP + ELFs
+# or
+bash build.sh                                # XSA export + BSP + ELFs from repo
+```
 
 ## JTAG tips
 
@@ -42,7 +52,10 @@ board/HDC_DMA/
 ├── run_jtag.sh / run_golden_app.sh / run_bench.sh
 ├── run_batch_bench.sh       ← supplementary 10k bench
 ├── build_sw.sh              ← fast SW rebuild
-├── build.sh                 ← full Vivado XSA + SW
+├── build.sh                 ← full Vivado XSA + BSP regen + SW
+├── scripts/
+│   ├── regenerate_bsp_from_xsa.tcl   ← HSI BSP regen (picks up SG)
+│   └── update_platform_from_xsa.tcl
 └── app/build/Final_HDC_dma_{golden,bench,batch_bench}.elf
 ```
 
@@ -59,5 +72,5 @@ board/HDC_DMA/
 | Phase | Path |
 |-------|------|
 | Phase 2 | `results/phase2/` |
-| Phase 3 batch | `results/phase3/board_bench.txt` (**COMPLETE**) |
+| Phase 3 batch | `results/phase3/board_bench.txt` (**COMPLETE**, ~216k windows/s) |
 | Phase 3 EMG / energy | pending — see `results/phase3/README.md` |

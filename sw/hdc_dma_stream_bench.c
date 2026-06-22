@@ -293,7 +293,10 @@ int main(void)
         xil_printf("TIMEOUT: no successful inferences\r\n");
     }
 
-    xil_printf("--- Batch DMA throughput ---\r\n");
+    xil_printf("--- Batch DMA throughput (%lu windows, %s) ---\r\n",
+               (unsigned long)n_batch,
+               hdc_dma_has_sg() ? "SG one MM2S/S2MM"
+                                : "one MM2S/S2MM (simple + RTL FIFO)");
     XTime_GetTime(&t0);
     rc = hdc_dma_stream_batch(in_batch, out_batch, n_batch);
     XTime_GetTime(&t1);

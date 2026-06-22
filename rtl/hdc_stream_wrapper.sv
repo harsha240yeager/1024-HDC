@@ -10,18 +10,15 @@
 //   A window is the packed level grid (N_PAIRS*LEVEL_W = 80 bits), sent as
 //   IN_BEATS = ceil(80/32) = 3 beats, little-endian: beat b carries
 //   levels_flat[b*32 +: 32] (upper bits of the final beat are ignored).
-//   TLAST marks the final beat of each window (frame boundary).
+//   TLAST marks the final beat of each window (SG DMA) or the whole transfer
+//   (simple-mode one long MM2S).  Window boundaries are always inferred from
+//   the beat count; TLAST additionally closes a partial window.
 //
 // Output stream (M_AXIS), TDATA = 32 bits:
 //   One beat per window: (class_idx << 16) | class_dist, TLAST = 1.
 //
-// Back-pressure is correct on both sides: s_axis_tready drops while the core
-// is busy or a result is waiting; m_axis_tvalid holds until m_axis_tready.
-//
-// Configuration (prototypes / pruning mask) is exposed as direct write ports,
-// passed through to popcount_am -- in a Zynq system these come from the
-// AXI4-Lite wrapper or are tied to the same staging logic.  Item memories
-// initialise from .mem files via parameters (same files as the golden).
+// An input beat FIFO decouples MM2S from the core FSM so a simple-mode DMA can
+// burst many windows while the core runs (README "RTL alternative" fix).
 
 module hdc_stream_wrapper #(
     parameter int TDATA_W       = 32,
@@ -40,6 +37,7 @@ module hdc_stream_wrapper #(
     parameter int LVL_BITS      = N_PAIRS * LEVEL_W,
     parameter int IN_BEATS      = (LVL_BITS + TDATA_W - 1) / TDATA_W,
     parameter int BEAT_W        = (IN_BEATS <= 1) ? 1 : $clog2(IN_BEATS),
+    parameter int IN_FIFO_DEPTH = 32,
     parameter     CH_MEM        = "python_ref/vectors/cosim_core/item_mem_channel.mem",
     parameter     FT_MEM        = "python_ref/vectors/cosim_core/item_mem_feature.mem",
     parameter     VAL_MEM       = "python_ref/vectors/cosim_core/item_mem_value.mem"
@@ -67,8 +65,8 @@ module hdc_stream_wrapper #(
     output logic               m_axis_tlast,
 
     // Functional-verification observation ports (leave unconnected in synthesis)
-    output logic [1:0]         dbg_fsm_state,      // 0=ST_IN 1=ST_RUN 2=ST_OUT
-    output logic [BEAT_W-1:0]  dbg_beat,           // input beat index while ST_IN
+    output logic [1:0]         dbg_fsm_state,      // 0=ST_ASM 1=ST_RUN 2=ST_OUT
+    output logic [BEAT_W-1:0]  dbg_beat,           // input beat index while ST_ASM
     output logic [LVL_BITS-1:0] dbg_levels_flat,  // assembled window after last beat
     output logic               dbg_core_start,     // one-cycle pulse into hdc_core_top
     output logic               dbg_core_busy,      // encoder running
@@ -76,6 +74,9 @@ module hdc_stream_wrapper #(
     output logic [IDX_W-1:0]   dbg_class_idx,
     output logic [DIST_W-1:0]  dbg_class_dist
 );
+
+    localparam int FIFO_PTR_W = (IN_FIFO_DEPTH <= 1) ? 1 : $clog2(IN_FIFO_DEPTH);
+    localparam int FIFO_CNT_W = $clog2(IN_FIFO_DEPTH + 1);
 
     // ------------------------------------------------------------------
     // Core
@@ -109,13 +110,52 @@ module hdc_stream_wrapper #(
     );
 
     // ------------------------------------------------------------------
-    // Stream FSM: collect IN_BEATS beats -> run core -> emit result beat
+    // Input beat FIFO (skid buffer for MM2S while core is busy)
     // ------------------------------------------------------------------
-    typedef enum logic [1:0] { ST_IN, ST_RUN, ST_OUT } st_t;
+    logic [TDATA_W-1:0] fifo_data [0:IN_FIFO_DEPTH-1];
+    logic               fifo_last [0:IN_FIFO_DEPTH-1];
+    logic [FIFO_PTR_W-1:0] fifo_wr_ptr, fifo_rd_ptr;
+    logic [FIFO_CNT_W-1:0] fifo_cnt;
+    logic                  fifo_full, fifo_empty;
+    logic [TDATA_W-1:0]    pop_data;
+    logic                  pop_last;
+    logic                  fifo_pop;
+
+    assign fifo_full  = (fifo_cnt == IN_FIFO_DEPTH[FIFO_CNT_W-1:0]);
+    assign fifo_empty = (fifo_cnt == '0);
+    assign s_axis_tready = !fifo_full;
+
+    assign pop_data = fifo_data[fifo_rd_ptr];
+    assign pop_last = fifo_last[fifo_rd_ptr];
+
+    always_ff @(posedge aclk or negedge aresetn) begin
+        if (!aresetn) begin
+            fifo_wr_ptr <= '0;
+            fifo_rd_ptr <= '0;
+            fifo_cnt    <= '0;
+        end else begin
+            if (s_axis_tvalid && s_axis_tready) begin
+                fifo_data[fifo_wr_ptr] <= s_axis_tdata;
+                fifo_last[fifo_wr_ptr] <= s_axis_tlast;
+                fifo_wr_ptr            <= fifo_wr_ptr + 1'b1;
+            end
+            if (fifo_pop) begin
+                fifo_rd_ptr <= fifo_rd_ptr + 1'b1;
+            end
+            unique case ({(s_axis_tvalid && s_axis_tready), fifo_pop})
+                2'b10: fifo_cnt <= fifo_cnt + 1'b1;
+                2'b01: fifo_cnt <= fifo_cnt - 1'b1;
+                default: ;
+            endcase
+        end
+    end
+
+    // ------------------------------------------------------------------
+    // Stream FSM: drain FIFO -> assemble IN_BEATS beats -> run core -> emit
+    // ------------------------------------------------------------------
+    typedef enum logic [1:0] { ST_ASM, ST_RUN, ST_OUT } st_t;
     st_t              st;
     logic [BEAT_W-1:0] beat;
-
-    assign s_axis_tready = (st == ST_IN);
 
     assign dbg_fsm_state      = st;
     assign dbg_beat           = beat;
@@ -126,10 +166,12 @@ module hdc_stream_wrapper #(
     assign dbg_class_idx      = core_class_idx;
     assign dbg_class_dist     = core_class_dist;
 
+    assign fifo_pop = (st == ST_ASM) && !fifo_empty;
+
     integer b;
     always_ff @(posedge aclk or negedge aresetn) begin
         if (!aresetn) begin
-            st            <= ST_IN;
+            st            <= ST_ASM;
             beat          <= '0;
             levels_reg    <= '0;
             core_start    <= 1'b0;
@@ -141,15 +183,13 @@ module hdc_stream_wrapper #(
 
             case (st)
                 // --------------------------------------------------------
-                ST_IN: begin
-                    if (s_axis_tvalid && s_axis_tready) begin
-                        // place beat into levels_reg (clip the final beat)
+                ST_ASM: begin
+                    if (!fifo_empty) begin
                         for (b = 0; b < TDATA_W; b = b + 1) begin
                             if (beat*TDATA_W + b < LVL_BITS)
-                                levels_reg[beat*TDATA_W + b] <= s_axis_tdata[b];
+                                levels_reg[beat*TDATA_W + b] <= pop_data[b];
                         end
-                        // TLAST (or the count) closes the window
-                        if (s_axis_tlast || (beat == IN_BEATS-1)) begin
+                        if (pop_last || (beat == IN_BEATS-1)) begin
                             beat       <= '0;
                             core_start <= 1'b1;
                             st         <= ST_RUN;
@@ -174,10 +214,10 @@ module hdc_stream_wrapper #(
                     if (m_axis_tvalid && m_axis_tready) begin
                         m_axis_tvalid <= 1'b0;
                         m_axis_tlast  <= 1'b0;
-                        st            <= ST_IN;
+                        st            <= ST_ASM;
                     end
                 end
-                default: st <= ST_IN;
+                default: st <= ST_ASM;
             endcase
         end
     end

@@ -45,20 +45,21 @@ Details: `python_ref/notes/emg_baseline_frozen.pdf` and `emg_reproduction_result
 
 Three measurement stages on the **same HDC core** — see `results/` for full logs.
 
-| | Phase 1 — AXI-Lite | Phase 2 — DMA stream | Phase 3 — batch bench |
-|--|--------------------|----------------------|------------------------|
+| | Phase 1 — AXI-Lite | Phase 2 — DMA stream | Phase 3 — SG batch bench |
+|--|--------------------|----------------------|---------------------------|
 | **Paper role** | Baseline #2: register-mapped | Main inference path | Throughput + golden (200-window batch) |
-| **Golden test** | 200/200 PASS | 200/200 PASS | 200/200 PASS (batch + per-window) |
-| **Latency (mean)** | **3 µs**/window | **7 µs**/window | **7 µs**/window (single-window) |
-| **Batch throughput** | — | ~143k windows/s (single) | **~136k windows/s** (200-window batch) |
-| **WNS @ 100 MHz** | +0.246 ns | +0.023 ns | (same bitstream) |
+| **Golden test** | 200/200 PASS | 200/200 PASS | **200/200 PASS** (batch + per-window) |
+| **Latency (mean)** | **3 µs**/window | **7 µs**/window | **~58 µs**/window (single); **~4 µs**/window (batch) |
+| **Batch throughput** | — | ~143k windows/s (single) | **~216k windows/s** (200-window SG batch) |
+| **WNS @ 100 MHz** | +0.246 ns | +0.023 ns | **+0.111 ns** (post-route phys_opt) |
 | **Results** | `results/phase1/` | `results/phase2/` | `results/phase3/board_bench.txt` |
 
-Phase 3 **batch bench is COMPLETE** (`results/phase3/board_bench.txt`). Full Phase 3
-(energy + EMG replay) is still pending — see `results/phase3/README.md`.
+Phase 3 **batch bench is COMPLETE** (`results/phase3/board_bench.txt`, June 2026).
+Full Phase 3 (energy + EMG replay) is still pending — see `results/phase3/README.md`.
 
-Phase 3 batch uses 200 back-to-back single-window DMA transfers (proto loaded once).
-True one-MM2S multi-window batch requires scatter-gather DMA — see **Later fixes** below.
+Phase 3 batch uses **scatter-gather DMA** (`XPAR_AXI_DMA_0_INCLUDE_SG 1`) with one
+MM2S/S2MM descriptor ring for 200 windows, plus an input beat FIFO in
+`hdc_stream_wrapper.sv`. See **Later fixes** below for rebuild steps.
 
 **Board workspace:** `board/HDC_DMA/` — build, golden, bench, and Phase 3 batch scripts.
 
@@ -276,13 +277,15 @@ Host-side golden Tcl (same vectors): `scripts/run_stream_golden_jtag.tcl`
 Primary app: `sw/hdc_dma_stream_bench.c` — single-window min/mean/max, 200-window
 batch (back-to-back DMA), and golden 200/200. Results @ `0x00100000` + `0x00100100`.
 
-**Recorded results** (`results/phase3/board_bench.txt`, ZedBoard @ 100 MHz PL):
+**Recorded results** (`results/phase3/board_bench.txt`, ZedBoard @ 100 MHz PL, June 2026):
 
 | Metric | Value |
 |--------|-------|
-| Single-window (min / mean / max) | 7 / 7 / 7 µs |
-| Batch 200 windows | 1470 µs total (~136k windows/s) |
+| Single-window (min / mean / max) | 58 / 58 / 59 µs |
+| Batch 200 windows | 926 µs total (~216k windows/s, SG one MM2S/S2MM) |
 | Golden | PASS 200/200 (batch + per-window) |
+| Implementation timing | WNS **+0.111 ns** after post-route phys_opt (0 failing endpoints) |
+| Synthesis | 0 critical warnings (item `.mem` staged for OOC synth) |
 
 ```bash
 cd ~/1024-HDC
@@ -362,33 +365,47 @@ mean = 3 us
 - ~~RTL co-sim (7 harnesses)~~ — **done**
 - ~~**Phase 1** Zynq bring-up (AXI-Lite)~~ — **done**: golden 200/200, ~3 µs/window. `results/phase1/`.
 - ~~**Phase 2** Zynq bring-up (DMA stream)~~ — **done**: golden 200/200, ~7 µs/window. `results/phase2/`, `board/HDC_DMA/`.
-- ~~**Phase 3 batch bench**~~ — **done**: 7 µs/window, ~136k windows/s (200-window batch), golden 200/200. `results/phase3/board_bench.txt`.
+- ~~**Phase 3 batch bench**~~ — **done**: SG batch ~216k windows/s (200 windows), golden 200/200, WNS +0.111 ns. `results/phase3/board_bench.txt`.
 
 ### Phase 3 — full close for paper (in progress)
 
 | Task | Status |
 |------|--------|
-| Batch bench (latency + 200-window + golden) | **COMPLETE** |
+| Batch bench (latency + 200-window + golden) | **COMPLETE** (~216k windows/s, SG) |
 | Energy (INA219 + shunt) | **NOT STARTED** |
 | Full EMG replay on board | **NOT STARTED** |
 
-### Later fixes — true one-transfer batch DMA
+### Later fixes — SG batch DMA + timing close (June 2026)
 
-Current board batch uses **N back-to-back single-window DMA transfers** in
-`sw/hdc_dma_stream.c` (`hdc_dma_stream_batch()`). A single MM2S of 600 beats
-for 200 windows **deadlocks** on hardware: the stream wrapper only asserts
-`s_axis_tready` in `ST_IN` (`rtl/hdc_stream_wrapper.sv`), while simple-mode AXI
-DMA asserts TLAST only on the final beat of the whole transfer.
+| Layer | Where | Change | Status |
+|-------|--------|--------|--------|
+| **RTL** | `rtl/hdc_stream_wrapper.sv` | Input beat FIFO — MM2S bursts while core runs | **DONE** |
+| **Driver** | `sw/hdc_dma_stream.c` | SG descriptor ring (`BdRingClone`, coalesce, per-window TLAST) | **DONE** |
+| **BD** | Vivado `axi_dma_0` | Scatter-gather enabled; BSP regen from XSA | **DONE** |
+| **Synth** | Vivado OOC hooks | Pre-copy `.mem` files → 0 critical warnings | **DONE** |
+| **Timing** | `run_timing_fix_and_export.tcl` | Post-route `phys_opt_design` → WNS +0.111 ns | **DONE** |
+| **Board** | `run_phase3_bench.sh` | 200/200 golden, ~216k windows/s batch | **DONE** |
 
-| Layer | Where | Change |
-|-------|--------|--------|
-| **BD (recommended)** | Vivado `axi_dma_0` | Enable **scatter-gather**; one buffer descriptor per window with TLAST on the 3rd input beat |
-| **Driver** | `sw/hdc_dma_stream.c` | SG descriptor ring + `XAxiDma_BdRing` instead of `SimpleTransfer` for batch |
-| **RTL (alternative)** | `rtl/hdc_stream_wrapper.sv` | Input skid FIFO so MM2S can burst while the core runs; drain 3 beats per window internally |
-| **Observability** | `sw/hdc_dma_stream_bench.c` | DDR stage markers (`status` = phase id) for JTAG debug |
+Rebuild from the Vivado project (outside this repo):
 
-Until SG or RTL buffering lands, Phase 3 throughput numbers are valid as
-**amortized sequential DMA** (proto/mask loaded once, no AXI-Lite per window).
+```bash
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
+# Full synth → impl → physopt → export (see Vivado run_timing_fix_and_export.tcl)
+bash scripts/rebuild_sg_bitstream.sh          # SG enable + export + BSP
+# Or end-to-end from repo:
+bash scripts/full_rebuild_and_bench.sh        # synth→impl→export→bench (needs Vivado project)
+cd board/HDC_DMA && bash build_sw.sh && bash run_phase3_bench.sh
+```
+
+**Timing note:** Opening `FInal_HDC.xpr` may still show WNS **-0.049 ns** (route-only).
+The shipped bitstream uses the **physopt checkpoint**
+(`design_1_wrapper_routed_physopt.dcp`, WNS **+0.111 ns**).
+
+Cosim burst test:
+
+```bash
+cd sim && vsim -c -do "run_stream_cosim.do" +BURST
+```
 
 ### Later
 

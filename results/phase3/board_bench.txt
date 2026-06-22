@@ -1,12 +1,7 @@
-# Phase 3 — batch bench run failed (2026-06-21 re-run)
-# Reason: JTAG garbage read (magic=0xEA000049) — flaky Digilent cable / hw_server
-# Action: retry run_phase3_bench.sh; earlier successful run is in board_bench.txt
-# Status: batch close-out uses board_bench.txt from successful run @ 23:04:27 +05:30
-
+Phase 3 — DMA stream bench (ZedBoard)
 =====================================
-Date:       2026-06-21T23:04:27+05:30
-App:        sw/hdc_dma_stream_bench.c (Final_HDC_dma_bench.elf)
-Bitstream:  design_1_wrapper — same Phase 2 stream + AXI DMA @ 100 MHz
+Date:       2026-06-22T16:13:16+05:30
+App:        sw/hdc_dma_stream_bench.c
 Method:     JTAG readback @ 0x00100000 (single) + 0x00100100 (batch)
 Run script: bash board/HDC_DMA/run_phase3_bench.sh
 Phase 1 baseline: ~3 us/window (AXI-Lite poll)
@@ -16,17 +11,16 @@ HDC Phase 3 bench (DMA stream @ 0x40400000)
 CPU=650000000 Hz  global_tmr=325000000 Hz  single_iters=1000
 ==================================================
 --- Single-window DMA latency ---
-min  = 7 us
-mean = 7 us
-max  = 7 us
-throughput ~ 142857 windows/s (1/mean)
+min  = 58 us
+max  = 59 us
+mean = 58 us
+throughput ~ 17241 windows/s (1/mean)
 --- vs Phase 1 AXI-Lite baseline (~3 us/window) ---
-delta = +4 us (slower than Phase 1)
+delta = +55 us (slower than Phase 1)
 --- Batch DMA throughput ---
-windows = 200
-total   = 1470 us
-mean/window ~ 7 us (total / N)
-throughput ~ 136054 windows/s (batch / total)
+total   = 926 us
+mean/window ~ 4 us (total / N)
+throughput ~ 215982 windows/s (batch / total)
 --- Golden batch check (batch DMA outputs) ---
 PASS: 200/200 batch golden cases
 --- Golden batch check (per-window DMA) ---
@@ -34,6 +28,3 @@ PASS: 200/200 stream golden cases
 ==================================================
 
 Status: PASS
-
-Note: Batch = 200 back-to-back single-window DMA (proto loaded once).
-See README "Later fixes" for SG one-MM2S path.

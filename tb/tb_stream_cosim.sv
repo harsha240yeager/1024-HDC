@@ -16,7 +16,7 @@
 // Key signals to watch in the waveform (all under /tb_stream_cosim/dut/):
 //   Stream in : s_axis_tvalid, s_axis_tready, s_axis_tdata, s_axis_tlast
 //   Stream out: m_axis_tvalid, m_axis_tready, m_axis_tdata, m_axis_tlast
-//   Wrapper   : dbg_fsm_state (0=collect 1=run-core 2=emit-result)
+//   Wrapper   : dbg_fsm_state (0=assemble 1=run-core 2=emit-result)
 //               dbg_beat, dbg_levels_flat, dbg_core_start
 //   Core      : dbg_core_busy, dbg_core_out_valid, dbg_class_idx, dbg_class_dist
 //   Encoder   : dut/u_core/u_encoder/busy, .../out_valid  (inside core)
@@ -101,7 +101,7 @@ module tb_stream_cosim;
     logic [31:0]              exp_mem   [0:MAX_CASES-1];
 
     int    num_cases, errors, checked, trace_limit;
-    bit    dbg_en, wave_en;
+    bit    dbg_en, wave_en, burst_en;
     string vecdir;
     int    active_case;
     logic [1:0] prev_fsm;
@@ -117,7 +117,7 @@ module tb_stream_cosim;
     // ------------------------------------------------------------------
     function automatic string fsm_name(input logic [1:0] s);
         case (s)
-            0: return "ST_IN (collect beats)";
+            0: return "ST_ASM (assemble beats)";
             1: return "ST_RUN (core busy)";
             2: return "ST_OUT (hold result)";
             default: return "ST_?";
@@ -204,6 +204,48 @@ module tb_stream_cosim;
         end
     endtask
 
+    task automatic send_window_burst(input int n);
+        int c, bt, gap, total_beats;
+        logic [TDATA_W-1:0] beat_data;
+        logic [LVL_BITS-1:0] lv;
+        begin
+            total_beats = n * IN_BEATS;
+            if (trace_limit > 0)
+                $display("[TRACE] BURST send %0d windows (%0d beats, TLAST on final beat only)",
+                         n, total_beats);
+            for (c = 0; c < n; c++) begin
+                lv = lvl_mem[c];
+                for (bt = 0; bt < IN_BEATS; bt++) begin
+                    gap = $urandom % 2;
+                    repeat (gap) @(posedge clk);
+                    beat_data = '0;
+                    if (bt == IN_BEATS-1)
+                        beat_data[LVL_BITS-1 - (IN_BEATS-1)*TDATA_W : 0]
+                            = lv[LVL_BITS-1 : (IN_BEATS-1)*TDATA_W];
+                    else
+                        beat_data = lv[bt*TDATA_W +: TDATA_W];
+                    s_tdata  <= beat_data;
+                    s_tlast  <= (c == n-1) && (bt == IN_BEATS-1);
+                    s_tvalid <= 1'b1;
+                    forever begin
+                        @(posedge clk);
+                        if (s_tready) break;
+                    end
+                    s_tvalid <= 1'b0;
+                    s_tlast  <= 1'b0;
+                end
+            end
+        end
+    endtask
+
+    task automatic recv_all_results(input int n);
+        int c;
+        begin
+            for (c = 0; c < n; c++)
+                recv_result(c);
+        end
+    endtask
+
     task automatic send_window(input logic [LVL_BITS-1:0] lv);
         int bt, gap;
         logic [TDATA_W-1:0] beat_data;
@@ -276,7 +318,7 @@ module tb_stream_cosim;
             $display("  M_AXIS (result out, 1 beat/window):");
             $display("    m_axis_tdata          (class_idx<<16)|class_dist");
             $display("  Wrapper FSM (dbg_fsm_state):");
-            $display("    0 ST_IN   collect %0d beats into dbg_levels_flat", IN_BEATS);
+            $display("    0 ST_ASM  collect %0d beats from input FIFO", IN_BEATS);
             $display("    1 ST_RUN  hdc_core_top running (~24 clk) dbg_core_busy=1");
             $display("    2 ST_OUT  hold result until m_axis_tready");
             $display("  Core pulses:");
@@ -302,6 +344,7 @@ module tb_stream_cosim;
         if (!$value$plusargs("TRACE=%d", trace_limit)) trace_limit = 0;
         if ($test$plusargs("DEBUG")) dbg_en = 1;
         if ($test$plusargs("WAVE"))  wave_en = 1;
+        if ($test$plusargs("BURST")) burst_en = 1;
         if (num_cases > MAX_CASES) num_cases = MAX_CASES;
 
         if (wave_en) begin
@@ -315,8 +358,8 @@ module tb_stream_cosim;
         $display("  VECDIR = %s", vecdir);
         $display("  CASES  = %0d   (D=%0d, %0d beats/window, N_CLASS=%0d)",
                  num_cases, D, IN_BEATS, N_CLASS);
-        $display("  DEBUG  = %0d   TRACE(first N cases) = %0d   WAVE = %0d",
-                 dbg_en, trace_limit, wave_en);
+        $display("  DEBUG  = %0d   TRACE(first N cases) = %0d   WAVE = %0d   BURST = %0d",
+                 dbg_en, trace_limit, wave_en, burst_en);
         $display("==================================================");
         print_signal_guide();
 
@@ -332,14 +375,21 @@ module tb_stream_cosim;
 
         configure_core();
 
-        for (int c = 0; c < num_cases; c++) begin
-            active_case = c;
+        if (burst_en) begin
             fork
-                send_window(lvl_mem[c]);
-                recv_result(c);
+                send_window_burst(num_cases);
+                recv_all_results(num_cases);
             join
-            if (!dbg_en && (c % 50) == 49)
-                $display("  ... %0d / %0d checked (errors so far: %0d)", c+1, num_cases, errors);
+        end else begin
+            for (int c = 0; c < num_cases; c++) begin
+                active_case = c;
+                fork
+                    send_window(lvl_mem[c]);
+                    recv_result(c);
+                join
+                if (!dbg_en && (c % 50) == 49)
+                    $display("  ... %0d / %0d checked (errors so far: %0d)", c+1, num_cases, errors);
+            end
         end
 
         $display("==================================================");

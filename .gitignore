@@ -39,3 +39,6 @@ vivado.log
 vivado_*.backup.jou
 vivado_*.backup.log
 vivado_pid*.str
+
+# HSI BSP regen scratch (regenerate_bsp_from_xsa.tcl)
+board/HDC_DMA/platform/**/bsp/_hsi_regen/

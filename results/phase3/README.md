@@ -1,6 +1,6 @@
 # Phase 3 — Measurement infrastructure
 
-**Batch bench: COMPLETE** (June 2026)  
+**Batch bench: COMPLETE** (June 2026, SG DMA + timing-clean bitstream)  
 **Full Phase 3 (paper): IN PROGRESS** — energy + EMG pending
 
 **Prerequisite:** Phase 2 complete (`results/phase2/`).
@@ -10,8 +10,8 @@
 | # | Task | Status |
 |---|------|--------|
 | 1 | Rebuild bench ELF (`Final_HDC_dma_bench.elf`) | **DONE** — `board/HDC_DMA/build_sw.sh` |
-| 2 | Program Phase 2 bitstream | **DONE** — same `design_1_wrapper` as phase2 |
-| 3 | Run bench on board | **DONE** — JTAG readback (`run_phase3_bench.sh`); UART optional |
+| 2 | Program timing-clean bitstream (physopt) | **DONE** — `design_1_wrapper.bit` @ June 2026 |
+| 3 | Run bench on board | **DONE** — JTAG readback (`run_phase3_bench.sh`) |
 | 4 | Verify pass lines in log | **DONE** — see `board_bench.txt` |
 | 5 | Save + commit `board_bench.txt` | **DONE** |
 
@@ -34,34 +34,47 @@ PASS: 200/200 stream golden cases
 
 | Check | Status | Evidence |
 |-------|--------|----------|
-| Single-window latency (min/mean/max) | **PASS** | 7 / 7 / 7 µs |
-| Batch throughput (200 windows) | **PASS** | ~136k windows/s |
+| Single-window latency (min/mean/max) | **PASS** | 58 / 58 / 59 µs |
+| Batch throughput (200 windows) | **PASS** | ~216k windows/s (SG batch) |
 | PASS 200/200 batch golden | **PASS** | `board_bench.txt` |
 | PASS 200/200 per-window golden | **PASS** | `board_bench.txt` |
-| Golden regression (optional) | **PASS** | `board_golden.txt` |
+| Implementation timing @ 100 MHz | **PASS** | WNS +0.111 ns (physopt) |
+| Synthesis critical warnings | **PASS** | 0 (OOC `.mem` staging) |
 
 ## Measured (ZedBoard, xc7z020 @ 100 MHz PL)
 
 | Metric | Value |
 |--------|-------|
-| Single-window (min / mean / max) | 7 / 7 / 7 µs |
-| Single-window throughput | ~143k windows/s |
-| Batch 200 windows (total) | 1470 µs (~136k windows/s) |
+| Single-window (min / mean / max) | 58 / 58 / 59 µs |
+| Single-window throughput | ~17k windows/s |
+| Batch 200 windows (total) | 926 µs (~216k windows/s) |
+| Batch mean/window | ~4 µs |
 | Batch golden | PASS 200/200 |
 | Per-window golden | PASS 200/200 |
+| Prior sequential fallback | ~136k windows/s (pre-SG bitstream) |
 
-Batch = **200 back-to-back single-window DMA** transfers (proto loaded once).
-True one-MM2S batch needs SG DMA — root `README.md` **Later fixes**.
+Batch = **scatter-gather DMA** with one MM2S/S2MM descriptor ring (200 windows),
+input beat FIFO in `hdc_stream_wrapper.sv`, BSP `XPAR_AXI_DMA_0_INCLUDE_SG 1`.
+
+## Implementation / timing
+
+| Stage | WNS | Notes |
+|-------|-----|-------|
+| Route only (`impl_1` default in GUI) | -0.049 ns | 1 failing endpoint — stale project view |
+| Post-route physopt (shipped bitstream) | **+0.111 ns** | 0 failing endpoints |
+
+Authoritative checkpoint: `design_1_wrapper_routed_physopt.dcp`  
+Report: `design_1_wrapper_timing_summary_physopt.rpt` (in Vivado project tree)
 
 ## JTAG reliability (ZedBoard)
 
 Board runs use JTAG DDR readback (`run_phase3_bench.sh`), not UART. On this setup:
 
 - PL programming may fail on attempt 1 (`ftdi_*`, `could not find configuration request`) — **retry**.
-- If polling shows garbage magic (e.g. `0xEA000049`) for 300 s, the session failed — **retry** after closing minicom/Vitis debug.
-- A failed re-run does **not** invalidate an earlier good `board_bench.txt`.
+- JTAG target timeout on first connect — **retry** after a few seconds.
+- Garbage DDR magic (e.g. `0xEA000049`) means session failed — close minicom/Vitis debug and retry.
 
-Log from failed 2026-06-21 re-run: noted in `board_bench.txt` header; canonical results are from the successful run the same evening.
+Successful run: 2026-06-22 — log in `logs/board_bench_run.log`.
 
 ## Run on VDI
 
@@ -75,11 +88,11 @@ bash build_sw.sh
 bash run_phase3_bench.sh    # JTAG → results/phase3/board_bench.txt
 ```
 
-Alternative (UART capture, if serial available and JTAG idle):
+Full Vivado rebuild + bench:
 
 ```bash
-bash scripts/build_hdc_dma_stream_bench.sh   # needs HDC_BSP paths
-bash scripts/run_stream_bench_hdc.sh
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
+bash scripts/full_rebuild_and_bench.sh
 ```
 
 ## Full Phase 3 close (paper) — still pending
@@ -95,7 +108,7 @@ Scaffolds: `scripts/ina219_log.py`, `scripts/export_emg_board_vectors.py`, `sw/h
 
 | File | Description |
 |------|-------------|
-| `board_bench.txt` | **Primary** — batch measurement close-out |
+| `board_bench.txt` | **Primary** — batch measurement close-out (June 2026) |
 | `board_golden.txt` | Optional golden regression |
 | `board_batch_bench.txt` | Supplementary 10k sequential bench |
 | `board_emg_replay.txt` | *(not yet)* EMG accuracy vs Python |

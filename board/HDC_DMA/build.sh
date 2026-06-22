@@ -20,6 +20,7 @@ source /cad/Xilinx/Vitis/2024.2/settings64.sh
 export PATH="/cad/Xilinx/Vivado/2024.2/bin:$PATH"
 
 echo "== Export XSA (with bitstream) =="
+unset HDC_FORCE_BITSTREAM_REBUILD
 vivado -mode batch -notrace -source "$VIVADO_PROJ/export_hw_platform.tcl" -log "$VIVADO_PROJ/export_hw_platform.log"
 
 echo "== Stage platform hw =="
@@ -27,6 +28,12 @@ mkdir -p "$ROOT/platform/export/Final_HDC/hw"
 cp -f "$VIVADO_PROJ/export/hw/design_1_wrapper.xsa" "$ROOT/platform/export/Final_HDC/hw/"
 cp -f "$VIVADO_PROJ/FInal_HDC.runs/impl_1/design_1_wrapper.bit" \
       "$ROOT/app/_ide/bitstream/design_1_wrapper.bit"
+
+echo "== Regenerate BSP from XSA (picks up SG / HW changes) =="
+XSA="$ROOT/platform/export/Final_HDC/hw/design_1_wrapper.xsa"
+xsct "$ROOT/scripts/regenerate_bsp_from_xsa.tcl" "$XSA" "$BSP"
+grep -E 'XPAR_(AXI_DMA_0|AXIDMA_0)_INCLUDE_SG' \
+  "$BSP/ps7_cortexa9_0/include/xparameters.h" || true
 
 echo "== Golden vectors =="
 ( cd "$REPO" && bash scripts/prep_golden_test.sh )

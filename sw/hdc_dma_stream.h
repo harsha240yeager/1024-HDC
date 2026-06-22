@@ -19,6 +19,7 @@ typedef struct {
 } HdcDmaStreamTiming;
 
 int  hdc_dma_init(void);
+int  hdc_dma_has_sg(void);
 void hdc_dma_stream_one(const u32 *in3, u32 *out1);
 int  hdc_dma_stream_one_timed(const u32 *in3, u32 *out1, HdcDmaStreamTiming *timing);
 int  hdc_dma_stream_batch(const u32 *in_words, u32 *out_words, u32 n_windows);
