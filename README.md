@@ -16,7 +16,7 @@ the PS through an AXI4-Lite wrapper.
 | `rtl/` | SystemVerilog RTL: `xor_permute_top.sv` (1024-bit XOR+permute datapath), `permute_stage.sv` (permutation modes), `bundle_unit.sv` (majority-vote bundler), `popcount_am.sv` (nearest-prototype associative memory), `item_mem.sv` (hypervector ROM), `encoder_top.sv` (EMG-window encoder), `hdc_core_top.sv` (end-to-end inference core: encoder → AM), `hdc_core_axi_lite.sv` (AXI4-Lite wrapper around the core), `hdc_stream_wrapper.sv` (AXI4-Stream wrapper for DMA-fed streaming), `simple_bind_rom.sv` (bind-vector ROM), `hdc_axi_lite_wrapper.sv` (legacy bind+permute AXI4-Lite slave). |
 | `tb/` | Testbenches: `tb_xor_permute.sv` (golden-model self-checking TB), `tb_cosim.sv` (bind+permute co-sim), `tb_bundle_cosim.sv` (bundle co-sim), `tb_am_cosim.sv` (associative-memory co-sim), `tb_encoder_cosim.sv` (encoder co-sim), `tb_core_cosim.sv` (end-to-end inference co-sim), `tb_core_axi_cosim.sv` (AXI4-Lite-driven inference co-sim), and `tb_stream_cosim.sv` (AXI4-Stream co-sim with random gaps + back-pressure) — the co-sim TBs check the RTL bit-for-bit against the Python golden vectors. |
 | `sim/` | Automation: `run_cosim.do` (bind+permute), `run_bundle_cosim.do` (bundle), `run_am_cosim.do` (associative memory), `run_encoder_cosim.do` (encoder), `run_core_cosim.do` (end-to-end inference), `run_core_axi_cosim.do` (AXI4-Lite), and `run_stream_cosim.do` (AXI4-Stream) — one-command harnesses (generate vectors → compile → simulate → PASS/FAIL); `open_project.do` opens the GUI project. |
-| `sw/` | Bare-metal software: smoke/golden/bench (Phase 1 AXI-Lite), `hdc_dma_stream*.c/h` (Phase 2–3 DMA stream), `hdc_dma_stream_batch_bench.c` (Phase 3 sustained throughput), `hdc_emg_board_test.c` (Phase 3 EMG scaffold), `hdc_core_regs.c/h`, generated `golden_vectors.h`. |
+| `sw/` | Bare-metal software: smoke/golden/bench (Phase 1 AXI-Lite), `hdc_dma_stream*.c/h` (Phase 2–3 DMA stream), `hdc_dma_stream_batch_bench.c` (Phase 3 sustained throughput), `hdc_emg_board_test.c` (Phase 3 EMG replay), `hdc_core_regs.c/h`, generated `golden_vectors.h`. |
 | `results/` | Board benchmarks, synthesis utilisation/timing, and per-phase logs — updated after each Vivado/board run. See `results/README.md`. |
 | `docs/` | Research plan, advisor one-pager, project guide, and the reference paper (PDF/HTML/DOCX). |
 | `python_ref/` | Bit-exact Python golden reference, EMG reproduction (Stage A/B), frozen baseline config + results, and PDF notes. See `python_ref/README.md`. |
@@ -55,7 +55,8 @@ Three measurement stages on the **same HDC core** — see `results/` for full lo
 | **Results** | `results/phase1/` | `results/phase2/` | `results/phase3/board_bench.txt` |
 
 Phase 3 **batch bench is COMPLETE** (`results/phase3/board_bench.txt`, June 2026).
-Full Phase 3 (energy + EMG replay) is still pending — see `results/phase3/README.md`.
+EMG **v1 RTL parity is COMPLETE** (board 59.60% == export ref on 500 windows).
+Full Phase 3 close (EMG v2 full TEST split + INA219 energy) is still pending — see `results/phase3/README.md`.
 
 Phase 3 batch uses **scatter-gather DMA** (`XPAR_AXI_DMA_0_INCLUDE_SG 1`) with one
 MM2S/S2MM descriptor ring for 200 windows, plus an input beat FIFO in
@@ -310,8 +311,9 @@ bash run_phase3_golden.sh     # optional → board_golden.txt
 then retry — success often on attempt 2–6. A failed re-run does not invalidate an
 earlier good log in `board_bench.txt`.
 
-Still pending for full Phase 3 / Hook A (Pareto): EMG dataset replay
+Still pending for full Phase 3 / Hook A (Pareto): EMG v2 full TEST-split replay
 (`board_emg_replay.txt`) and INA219 energy (`energy_batch.txt`).
+EMG v1 RTL parity (500 windows) is **done** — see `results/phase3/board_emg_replay.txt`.
 
 ### Phase 1 board bench (1000 timed inferences + 200-case golden)
 
@@ -372,8 +374,9 @@ mean = 3 us
 | Task | Status |
 |------|--------|
 | Batch bench (latency + 200-window + golden) | **COMPLETE** (~216k windows/s, SG) |
+| EMG v1 RTL parity (500 windows, subject 1) | **COMPLETE** (board == export ref 59.60%) |
+| EMG v2 full TEST-split replay | **PENDING** |
 | Energy (INA219 + shunt) | **NOT STARTED** |
-| Full EMG replay on board | **NOT STARTED** |
 
 ### Later fixes — SG batch DMA + timing close (June 2026)
 

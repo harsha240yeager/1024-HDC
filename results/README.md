@@ -11,10 +11,10 @@ hardware or driver instead.
 |------|----------|
 | `phase1/` | AXI-Lite path on ZedBoard (**complete**) |
 | `phase2/` | AXI-DMA + stream path (**complete**) |
-| `phase3/` | Batch bench (**complete**); EMG + energy (**pending**) |
+| `phase3/` | Batch bench (**complete**); EMG v1 RTL parity (**complete**); EMG v2 + energy (**pending**) |
 | `sim/` | Optional exported co-sim summaries (not waveforms) |
 
-## Status (last updated: 2026-06-21)
+## Status (last updated: 2026-06-12)
 
 | Milestone | Status |
 |-----------|--------|
@@ -22,8 +22,9 @@ hardware or driver instead.
 | Phase 1 — AXI-Lite @ 0x43C00000 | **COMPLETE** |
 | Phase 2 — AXI-DMA + stream system | **COMPLETE** |
 | Phase 3 — batch bench (latency + 200-window + golden) | **COMPLETE** |
+| Phase 3 — EMG v1 RTL parity (500 windows, subject 1) | **COMPLETE** — board 59.60% == export 59.60% |
+| Phase 3 — EMG v2 full TEST-split replay | **PENDING** |
 | Phase 3 — energy measurement | **NOT STARTED** (template only) |
-| Phase 3 — full EMG replay on board | **NOT STARTED** (scaffold only) |
 
 See `phase3/README.md` for the close checklist and remaining paper items.
 

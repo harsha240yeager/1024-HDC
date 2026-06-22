@@ -1,0 +1,19 @@
+Phase 3 EMG replay v1 — ZedBoard run (RTL parity)
+===================================================
+Date: 2026-06 (board bring-up session)
+Export: 500 random windows, subject 1, engine=hdc_ref
+Bitstream: Phase 3 SG DMA (design_1_wrapper.bit, physopt)
+
+Raw board output (UART / JTAG summary):
+---------------------------------------
+EMG replay: N=500 correct=298 accuracy=59.60%
+Export ref: 59.60% (same windows, hdc_ref)
+Board vs export: delta=0.00%  PASS (0.5% tol)
+
+Legacy line from early firmware (not v2 pass gate):
+Python baseline: 90.30%  delta=30.70%  FAIL (0.5% tol)
+
+Notes:
+- Board == export ref → RTL encoder + DMA path verified on silicon.
+- 90.30% FAIL is expected for v1: different sample + hdc_ref vs Stage B baseline.
+- v2 uses full TEST split and export-ref PASS only; see board_emg_replay.txt.

@@ -220,9 +220,10 @@ int main(void)
                (unsigned long)n, (unsigned long)correct,
                (unsigned long)(accuracy_x1000 / 1000U),
                (unsigned long)((accuracy_x1000 % 1000U) / 10U));
-    xil_printf("Export ref: %lu.%02lu%%  delta=%lu.%02lu%%  %s (0.5%% tol)\r\n",
+    xil_printf("Export ref: %lu.%02lu%%\r\n",
                (unsigned long)(EMG_EXPORT_REF_ACCURACY_X1000 / 1000U),
-               (unsigned long)((EMG_EXPORT_REF_ACCURACY_X1000 % 1000U) / 10U),
+               (unsigned long)((EMG_EXPORT_REF_ACCURACY_X1000 % 1000U) / 10U));
+    xil_printf("Board vs export: delta=%lu.%02lu%%  %s (0.5%% tol)\r\n",
                (unsigned long)(delta_x1000 / 1000U),
                (unsigned long)((delta_x1000 % 1000U) / 10U),
                pass_tol ? "PASS" : "FAIL");
