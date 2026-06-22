@@ -52,4 +52,12 @@ build_elf Final_HDC_dma_bench hdc_dma_stream_bench.c bench
 echo "== Build Final_HDC_dma_batch_bench.elf =="
 build_elf Final_HDC_dma_batch_bench hdc_dma_stream_batch_bench.c batch
 
+echo "== EMG board vectors =="
+if [[ ! -f "$SW/emg_board_vectors.h" ]]; then
+  ( cd "$REPO" && bash scripts/prep_emg_board_test.sh )
+fi
+
+echo "== Build Final_HDC_dma_emg.elf =="
+build_elf Final_HDC_dma_emg hdc_emg_board_test.c emg
+
 echo "Done (SW only)."

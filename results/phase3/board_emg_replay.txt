@@ -1,29 +1,48 @@
 Phase 3 — EMG full-dataset replay (ZedBoard)
 ============================================
-Status: NOT YET RUN — software scaffold only
+Status: NOT YET RUN — regenerate export (v2) and run board/HDC_DMA/run_phase3_emg.sh
 
 Goal
 ----
-Stream many real EMG inference windows through the DMA path on board; confirm
-classification accuracy within ~0.5% of the Python reference baseline.
+Stream real EMG TEST-split windows through the Phase 3 SG DMA path; confirm board
+classification matches the Python export reference within 0.5%.
 
-Prerequisites
--------------
-1. Export board vectors:
-     python3 scripts/export_emg_board_vectors.py --max-windows N
-   (wire script to python_ref EMG pipeline — currently scaffold)
-2. Rebuild with generated sw/emg_board_vectors.h
-3. Run sw/hdc_emg_board_test.c on board (JTAG or UART)
-4. Compare accuracy vs python_ref/results/emg_baseline.json
+Export (v2)
+-----------
+  bash scripts/prep_emg_board_test.sh
+  # optional dev subset:
+  EMG_MAX_WINDOWS=2000 bash scripts/prep_emg_board_test.sh
+  # Stage B baseline reference export (INFO only on board):
+  EMG_ENGINE=stage_b_bsc bash scripts/prep_emg_board_test.sh
+
+Board run
+---------
+  cd board/HDC_DMA && bash build_sw.sh && bash run_phase3_emg.sh
+
+Pass criteria (v1 vs v2)
+------------------------
+v1 (superseded):
+  - 500 random windows, subject 1 only
+  - PASS/FAIL vs frozen Stage B baseline 90.30% (misleading for hdc_ref export)
+  - Proved: board 59.60% == export ref 59.60% (RTL encoder OK)
+
+v2 (current):
+  - TEST split, all config subjects (concatenated in subject order)
+  - Export ref from --engine (default hdc_ref, RTL-matched)
+  - PASS if |board_acc - EMG_EXPORT_REF_ACCURACY| <= 0.5%
+  - Frozen 90.30% baseline: INFO line on board/UART when export used --engine stage_b_bsc
 
 Record here after run
 ---------------------
 Date:
-Bitstream:
+Export version: 2
+Engine: hdc_ref / stage_b_bsc
+Subjects:
 Windows replayed:
+Export ref accuracy (%):
 Board accuracy (%):
-Python baseline (%):
-Delta (%):
-PASS (within 0.5%): yes / no
+Delta board vs export (%):
+PASS (v2, 0.5%): yes / no
+INFO frozen baseline (if stage_b export):
 
-See: sw/hdc_emg_board_test.c, scripts/export_emg_board_vectors.py
+See: scripts/export_emg_board_vectors.py, sw/hdc_emg_board_test.c

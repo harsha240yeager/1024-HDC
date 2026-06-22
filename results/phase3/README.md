@@ -100,9 +100,27 @@ bash scripts/full_rebuild_and_bench.sh
 | # | Task | Output | Status |
 |---|------|--------|--------|
 | 6 | Energy (INA219 + shunt on Vcc_int) | `energy_batch.txt` + fill `energy_setup.txt` | **NOT DONE** — hardware pending |
-| 7 | Full EMG replay on board | `board_emg_replay.txt` | **NOT DONE** — export vectors + wire `hdc_emg_board_test.c` |
+| 7 | Full EMG replay on board | `board_emg_replay.txt` | **IN PROGRESS** — v2 export + board run |
 
-Scaffolds: `scripts/ina219_log.py`, `scripts/export_emg_board_vectors.py`, `sw/hdc_emg_board_test.c`.
+Scaffolds wired: `scripts/export_emg_board_vectors.py` (v2), `sw/hdc_emg_board_test.c`, `run_phase3_emg.sh`.
+
+### EMG replay pass criteria (v1 vs v2)
+
+| | v1 (superseded) | v2 (current) |
+|---|-----------------|--------------|
+| Export scope | 500 random windows, subject 1 | TEST split, all subjects (config order) |
+| Export ref engine | hdc_ref only | `--engine hdc_ref` (default) or `stage_b_bsc` |
+| Board PASS | vs frozen 90.30% baseline | \|board − export ref\| ≤ 0.5% |
+| Frozen baseline | PASS/FAIL gate | INFO only when `--engine stage_b_bsc` |
+| v1 result | Board 59.60% == export 59.60% (RTL verified) | — |
+
+```bash
+# v2 export (RTL-matched ref, default)
+bash scripts/prep_emg_board_test.sh
+# dev subset
+EMG_MAX_WINDOWS=2000 bash scripts/prep_emg_board_test.sh
+cd board/HDC_DMA && bash build_sw.sh && bash run_phase3_emg.sh
+```
 
 ## Results files
 
@@ -111,7 +129,7 @@ Scaffolds: `scripts/ina219_log.py`, `scripts/export_emg_board_vectors.py`, `sw/h
 | `board_bench.txt` | **Primary** — batch measurement close-out (June 2026) |
 | `board_golden.txt` | Optional golden regression |
 | `board_batch_bench.txt` | Supplementary 10k sequential bench |
-| `board_emg_replay.txt` | *(not yet)* EMG accuracy vs Python |
+| `board_emg_replay.txt` | EMG accuracy — board vs export ref (v2) |
 | `energy_batch.txt` | *(template)* until INA219 measured |
 | `energy_setup.txt` | Wiring / procedure notes |
 | `logs/` | Raw JTAG logs |
