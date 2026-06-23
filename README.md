@@ -1,8 +1,12 @@
 # 1024-HDC — 1024-bit Hyperdimensional Computing block on Zynq
 
 A 1024-bit Hyperdimensional Computing (HDC) processing block in SystemVerilog,
-targeting a Xilinx Zynq SoC, with a bit-exact Python golden reference and a
-reproduced EMG hand-gesture classification baseline.
+targeting a Xilinx Zynq SoC, with a bit-exact Python golden reference and EMG
+hand-gesture classification under frozen protocol **P-may2026**.
+
+**Two accuracy tracks (do not conflate):** Stage B **~90.30%** spatial in Python
+(literature reference) vs RTL encoder **74.24%** on Zynq (verified deployment path).
+See [`docs/Baseline_vs_RTL_Encoder.md`](docs/Baseline_vs_RTL_Encoder.md).
 
 The hardware core performs the HDC primitives — **XOR bind**, **permute**
 (cyclic shift), **majority bundle**, and **Hamming/popcount** associative-memory
@@ -38,7 +42,21 @@ the PS through an AXI4-Lite wrapper.
   - **RTL encoder (board):** **74.24%** on 658k TEST windows — bit-exact vs Python export ref (±0.5%).
 - **Stage A MAP parity:** spatial **90.36%** (paper 90.8%), spatiotemporal **96.04%** (paper 97.8%).
 
-Config: `python_ref/config/emg_baseline.json`, results: `python_ref/results/emg_baseline.json`.
+Config: `python_ref/config/emg_baseline.json` · Results: `python_ref/results/emg_baseline.json`
+
+## EMG accuracy — dual baseline (paper framing)
+
+| Track | Where | Encoding | Spatial accuracy | Role |
+|-------|-------|----------|------------------|------|
+| **Stage B reference** | Python (`stage_b_bsc.py`) | 4-ch spatial records | **90.30% ± 0.13** @ D=1024 | Compare to Rahimi / prior HDC work |
+| **RTL encoder** | Python export + **ZedBoard** | Eq. (3.1), `encoder_top.sv` | **74.24%** (658k TEST windows) | Verified inference path for Hook A / energy |
+| Stage A MAP anchor | Python | Bipolar MAP D=10k | 90.36% spatial | Literal paper parity |
+
+**Board EMG PASS** = `|board_acc − export_ref| ≤ 0.5%` — **not** “reach 90.30% on silicon.”
+Early ~59% runs were prototype-training bugs (fixed June 2026); see
+`results/phase3/board_emg_replay.txt`.
+
+Full write-up: [`docs/Baseline_vs_RTL_Encoder.md`](docs/Baseline_vs_RTL_Encoder.md) (DATE subsection draft).
 
 ## Board results summary (ZedBoard, xc7z020 @ 100 MHz)
 
@@ -151,7 +169,7 @@ for from-scratch explanations of the two protocols, and the matching
 `docs/HDC_Core_AXI_Lite_and_Cosim_Flow.pdf` / `docs/HDC_Stream_Wrapper_and_Cosim_Flow.pdf`
 for each wrapper's design + co-sim flow.
 
-### Python golden reference + EMG baseline
+### Python golden reference + EMG baselines
 
 ```bash
 cd python_ref
@@ -160,9 +178,14 @@ pip install -r requirements.txt
 git clone https://github.com/abbas-rahimi/HDC-EMG HDC-EMG
 
 python run_smoke_test.py                 # verify the golden model
-python run_emg_baseline.py               # frozen baseline: 5 seeds + MAP parity (~50 s)
-python run_emg_baseline.py --quick --no-parity   # fast sanity (~7 s)
+python run_emg_baseline.py               # Stage B ~90% + cached RTL ~74% summary
+python run_emg_baseline.py --quick --no-parity   # fast (~7 s)
+# optional: re-measure hdc_ref (slow — cap windows per subject)
+python run_emg_baseline.py --measure-rtl-ref --rtl-max-windows 5000
 ```
+
+Prints **Stage B reference (~90.30%)** and **RTL encoder baseline (74.24%, board PASS)**.
+See `docs/Baseline_vs_RTL_Encoder.md`.
 
 ### ZedBoard golden test (200 cases, seed 42)
 
@@ -465,7 +488,9 @@ cd sim && vsim -c -do "run_stream_cosim.do" +BURST
 ### Later
 
 - Phase 4 baselines: ARM-only HDC, tiny int8 MLP.
-- Phase 5 novelty: Hook A Pareto, Twist 1, Twist 2.
+- Phase 5 novelty: Hook A Pareto, Twist 1, Twist 2 (measured on **RTL encoder path**, not Stage B reference).
+
+Research plan: `docs/HDC_Research_Plan.html` · Accuracy framing: `docs/Baseline_vs_RTL_Encoder.md`.
 
 ## License / attribution
 
