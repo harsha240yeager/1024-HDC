@@ -1,7 +1,8 @@
 # Phase 3 — Measurement infrastructure
 
 **Batch bench: COMPLETE** (June 2026, SG DMA + timing-clean bitstream)  
-**Full Phase 3 (paper): IN PROGRESS** — energy + EMG pending
+**EMG replay: PASS** (June 2026, 658k windows, 74.24%)  
+**Full Phase 3 (paper):** energy pending
 
 **Prerequisite:** Phase 2 complete (`results/phase2/`).
 
@@ -95,12 +96,12 @@ export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
 bash scripts/full_rebuild_and_bench.sh
 ```
 
-## Full Phase 3 close (paper) — still pending
+## Full Phase 3 close (paper)
 
 | # | Task | Output | Status |
 |---|------|--------|--------|
 | 6 | Energy (INA219 + shunt on Vcc_int) | `energy_batch.txt` + fill `energy_setup.txt` | **NOT DONE** — hardware pending |
-| 7 | Full EMG replay on board | `board_emg_replay.txt` | **PASS** — 74.24% board == export ref (2026-06-23) |
+| 7 | Full EMG replay on board | `board_emg_replay.txt` | **PASS** — 488550/658004, 74.24%, Δ0.00% (2026-06-23) |
 
 Scaffolds wired: `scripts/export_emg_board_vectors.py` (v2),
 `scripts/regenerate_emg_protos.py`, `scripts/pack_emg_ddr_from_header.py`,

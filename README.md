@@ -314,26 +314,28 @@ then retry — success often on attempt 2–6. A failed re-run does not invalida
 earlier good log in `board_bench.txt`.
 
 Still pending for full Phase 3 / Hook A (Pareto): INA219 energy (`energy_batch.txt`).
-EMG dataset replay is **in progress** — see below.
 
-### Phase 3 — EMG full-dataset replay (v2, in progress)
+### Phase 3 — EMG full-dataset replay (v2, **PASS**)
 
 Exports the full EMG **TEST** split (all config subjects, ~658k windows) with
 RTL-matched `hdc_ref` encoding. The board replays packed level grids via SG batch
 DMA and scores against per-subject prototypes.
 
-**Export ref (hdc_ref, fixed protos):** **74.25%** on 658,004 windows  
-(`EMG_EXPORT_REF_ACCURACY_X1000 = 74247`). Board **PASS** when
-`|board_acc − export_ref| ≤ 0.5%`.
+**Board result (ZedBoard, 2026-06-23):** **488,550 / 658,004** correct,
+**74.24%** accuracy — **delta 0.00%** vs export ref (**PASS**, 0.5% tolerance).
+Evidence: `results/phase3/board_emg_replay.txt`.
 
-> **Proto fix (June 2026):** Early exports used `bundle_majority` (6-bit saturating
-> counters) for offline prototype training. With ~20k+ windows per class, counters
-> saturate while the threshold uses `n_accum >> 1`, collapsing prototypes to
-> all-zero. Python then always predicted class 0; because label 1 is 59.25% of
-> the test set, the bogus export ref read **59.25%**. Use
-> `bundle_majority_unlimited` (export script + `hdc_ref.py`) or
-> `scripts/regenerate_emg_protos.py` on an existing header. Stage B (~90.30%) is
-> INFO-only and does not match RTL encoding.
+**Export ref (hdc_ref):** **74.24%** (`EMG_EXPORT_REF_ACCURACY_X1000 = 74247`).
+Board **PASS** when `|board_acc − export_ref| ≤ 0.5%`.
+
+> **Fixes (June 2026):**
+> 1. **Prototype training** — use `bundle_majority_unlimited` (not 6-bit-saturating
+>    `bundle_majority`) for offline class protos; see `regenerate_emg_protos.py`.
+>    Early exports had all-zero protos → bogus **59.25%** ref (always predict class 0).
+> 2. **Prototype load** — `hdc_load_prototype_from64(k, &emg_proto64[base])` must
+>    pass the **subject base** only; the helper already indexes by `class_idx`.
+>    Passing `base + k*16` left only class 0 loaded correctly (~59.5% board).
+> Stage B (~90.30%) is INFO-only and does not match RTL encoding.
 
 **Large-vector JTAG:** Full headers (~52 MB ELF) fail JTAG `dow`. Use DDR
 split-load: window arrays in `sw/emg_board_vectors.bin` @ `0x02000000`, slim
@@ -418,13 +420,13 @@ mean = 3 us
 - ~~**Phase 2** Zynq bring-up (DMA stream)~~ — **done**: golden 200/200, ~7 µs/window. `results/phase2/`, `board/HDC_DMA/`.
 - ~~**Phase 3 batch bench**~~ — **done**: SG batch ~216k windows/s (200 windows), golden 200/200, WNS +0.111 ns. `results/phase3/board_bench.txt`.
 
-### Phase 3 — full close for paper (in progress)
+### Phase 3 — full close for paper
 
 | Task | Status |
 |------|--------|
 | Batch bench (latency + 200-window + golden) | **COMPLETE** (~216k windows/s, SG) |
-| Energy (INA219 + shunt) | **NOT STARTED** |
 | Full EMG replay on board | **PASS** — 74.24% (658k windows, June 2026) |
+| Energy (INA219 + shunt) | **NOT STARTED** |
 
 ### Later fixes — SG batch DMA + timing close (June 2026)
 
