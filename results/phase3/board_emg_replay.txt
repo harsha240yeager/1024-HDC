@@ -1,31 +1,26 @@
 Phase 3 — EMG full-dataset replay (ZedBoard)
 ============================================
-Date:       2026-06-22T21:53:47+05:30
+Date:       2026-06-23T10:48:12+05:30
 App:        sw/hdc_emg_board_test.c
 Method:     JTAG readback @ 0x00100300
 Run script: bash board/HDC_DMA/run_phase3_emg.sh
 Bitstream:  /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wrapper.bit
 
-NOTE: This run predates the June 2026 prototype fix (all-zero emg_proto64 in
-export) and u32 accuracy overflow fix. Displayed 5.56% is wrong; correct count
-337262/658004 ≈ 51.25%. Re-run after regenerate_emg_protos.py; export ref is
-now 74.25% (74247 x1000). See results/phase3/README.md.
-
 ==================================================
 HDC Phase 3 EMG replay (sw/hdc_emg_board_test.c)
 DDR readback @ 0x00100300
 ==================================================
-EMG replay: N=658004 correct=337262 accuracy=5.56%
-Export ref: 59.24%
-Board vs export: delta=53.68%  FAIL (0.5% tol)
-errors=320742
+EMG replay: N=658004 correct=488550 accuracy=74.24%
+Export ref: 74.24%
+Board vs export: delta=0.00%  PASS (0.5% tol)
+errors=169454
 ==================================================
 
 Record
 ------
-Windows replayed: 658004 correct=337262 accuracy=5.56%
-Export ref: 59.24%
-Board vs export: delta=53.68%  FAIL (0.5% tol)
-PASS (board vs export, 0.5%): no
+Windows replayed: 658004 correct=488550 accuracy=74.24%
+Export ref: 74.24%
+Board vs export: delta=0.00%  PASS (0.5% tol)
+PASS (board vs export, 0.5%): yes
 
-Status: FAIL (board vs export ref; see v1/v2 criteria in README)
+Status: PASS

@@ -53,11 +53,12 @@ Three measurement stages on the **same HDC core** — see `results/` for full lo
 | **Batch throughput** | — | ~143k windows/s (single) | **~216k windows/s** (200-window SG batch) |
 | **WNS @ 100 MHz** | +0.246 ns | +0.023 ns | **+0.111 ns** (post-route phys_opt) |
 | **Results** | `results/phase1/` | `results/phase2/` | `results/phase3/board_bench.txt` |
-| **EMG replay (v2)** | — | — | **IN PROGRESS** — export ref **74.25%** (hdc_ref); board re-run pending |
+| **EMG replay (v2)** | — | — | **PASS** — 74.24% board == export ref (658k windows) |
 
 Phase 3 **batch bench is COMPLETE** (`results/phase3/board_bench.txt`, June 2026).
-**EMG board replay** is wired (v2 export + DDR split-load + proto fix); board re-run
-pending after regenerating prototypes — see `results/phase3/README.md`.
+**EMG board replay** is **PASS** (v2, June 2026): 488,550 / 658,004 correct,
+**74.24%** on board, matching Python export ref within 0.5%. See
+`results/phase3/board_emg_replay.txt`.
 
 Phase 3 batch uses **scatter-gather DMA** (`XPAR_AXI_DMA_0_INCLUDE_SG 1`) with one
 MM2S/S2MM descriptor ring for 200 windows, plus an input beat FIFO in
@@ -423,7 +424,7 @@ mean = 3 us
 |------|--------|
 | Batch bench (latency + 200-window + golden) | **COMPLETE** (~216k windows/s, SG) |
 | Energy (INA219 + shunt) | **NOT STARTED** |
-| Full EMG replay on board | **IN PROGRESS** — proto fix + export ref 74.25%; board re-run pending |
+| Full EMG replay on board | **PASS** — 74.24% (658k windows, June 2026) |
 
 ### Later fixes — SG batch DMA + timing close (June 2026)
 

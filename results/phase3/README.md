@@ -100,7 +100,7 @@ bash scripts/full_rebuild_and_bench.sh
 | # | Task | Output | Status |
 |---|------|--------|--------|
 | 6 | Energy (INA219 + shunt on Vcc_int) | `energy_batch.txt` + fill `energy_setup.txt` | **NOT DONE** — hardware pending |
-| 7 | Full EMG replay on board | `board_emg_replay.txt` | **IN PROGRESS** — proto fix applied; board re-run pending |
+| 7 | Full EMG replay on board | `board_emg_replay.txt` | **PASS** — 74.24% board == export ref (2026-06-23) |
 
 Scaffolds wired: `scripts/export_emg_board_vectors.py` (v2),
 `scripts/regenerate_emg_protos.py`, `scripts/pack_emg_ddr_from_header.py`,
@@ -137,6 +137,8 @@ Fix:
 - `bundle_majority_unlimited()` in `python_ref/hdc_ref.py` (offline training only)
 - `scripts/export_emg_board_vectors.py` uses unlimited bundling for protos
 - `scripts/regenerate_emg_protos.py` — retrain + patch headers without 4 h re-export
+- `load_protos_for_subject()` passes subject proto base to `hdc_load_prototype_from64`
+  (not per-class offset — that API already indexes by `class_idx`)
 
 ```bash
 # Full export (~4 h, one-time)
@@ -156,8 +158,8 @@ PYTHONPATH="${PYTHONPATH:-}" bash build_sw.sh
 bash run_phase3_emg.sh
 ```
 
-Last board run in `board_emg_replay.txt` (2026-06-22) was **pre-fix** (zero protos,
-overflow display bug). Re-run after proto regeneration for valid PASS/FAIL.
+Last board run: **PASS** (2026-06-23) — 488550/658004 correct, 74.24%, delta 0.00% vs export ref.
+Pre-fix runs (zero protos / proto load bug) are documented below for history.
 
 ## Results files
 

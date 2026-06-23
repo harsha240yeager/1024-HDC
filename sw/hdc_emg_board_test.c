@@ -92,8 +92,9 @@ static void load_protos_for_subject(u32 subj_idx)
     u32 base = subj_idx * EMG_N_CLASS * EMG_WORDS64;
     u32 k;
 
+    /* proto64 must be subject base: hdc_load_prototype_from64 indexes by class_idx. */
     for (k = 0U; k < EMG_N_CLASS; ++k)
-        hdc_load_prototype_from64(k, &emg_proto64[base + k * EMG_WORDS64]);
+        hdc_load_prototype_from64(k, &emg_proto64[base]);
 }
 
 static void pack_chunk(u32 offset, u32 chunk_n)
