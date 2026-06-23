@@ -238,13 +238,13 @@ Before hardware experiments, the **algorithm** was locked in software:
 |-----------|--------|
 | Stage A — literal MAP parity vs Rahimi 2016 | Spatial **90.36%** (paper 90.8%); spatiotemporal **96.04%** (paper 97.8%) |
 | Stage B — RTL-matched binary BSC model | D-sweep completed |
-| **Frozen baseline (protocol P-may2026)** | **90.30% ± 0.13 spatial @ D = 1024** |
+| **Frozen baseline (protocol P-may2026)** | **Stage B:** **90.30% ± 0.13 spatial @ D = 1024** (Python reference). **RTL encoder:** **74.24%** on board (see `docs/Baseline_vs_RTL_Encoder.md`). |
 
 Config: `python_ref/config/emg_baseline.json`  
 Results: `python_ref/results/emg_baseline.json`  
 Notes: `python_ref/notes/emg_baseline_frozen.pdf`
 
-**Why this matters:** You can tell the professor the **classification algorithm is validated** independently of FPGA bring-up. Hardware work is about **implementation efficiency and novel pruning studies**, not fixing a broken classifier.
+**Why this matters:** Stage B validates the **algorithm class** on EMG independently of FPGA bring-up. The **RTL encoder** (~74%) is the verified deployment path for Hook A / energy / pruning — not the same number as Stage B. Hardware work focuses on **efficiency and novel pruning studies**, not matching 90% on a different encoding.
 
 ---
 
@@ -337,22 +337,23 @@ Python: `cross_subject_mask_experiment()` in `hdc_ref.py`.
 - Full RTL datapath: bind, permute, bundle, AM, encoder, core
 - AXI4-Lite wrapper + co-sim (200/200 PASS)
 - AXI4-Stream wrapper + co-sim with back-pressure (200/200 PASS)
-- Python golden reference + EMG baseline frozen at 90.30% @ D=1024
-- Per-block and protocol documentation PDFs in `docs/`
-- Bare-metal driver stub: `sw/hdc_core_axi_example.c`
+- Python golden reference + **dual EMG baselines** (Stage B 90.30% Python; RTL encoder 74.24% board PASS)
+- Zynq Phases 1–3 bring-up (AXI-Lite, DMA stream, SG batch, EMG replay 658k windows)
+- Per-block and protocol documentation PDFs in `docs/` + `docs/Baseline_vs_RTL_Encoder.md`
+- Bare-metal drivers + board workspace `board/HDC_DMA/`
 - Repository synced to GitHub (`harsha240yeager/1024-HDC`)
 
 ### 11.2 Remaining (hardware + experiments)
 
-1. **Vivado block design** — Zynq PS + AXI-DMA + both wrappers → bitstream
-2. **On-board smoke test** — AXI-Lite first, then DMA streaming (VDI OK)
-3. **Synthesis sweep** — D and CNT_W variants for Hook A
-4. **Measurements** — latency, throughput, energy, area, f_max
+1. ~~**Vivado block design** — Zynq PS + AXI-DMA + stream wrapper~~ — **done** (Phases 2–3)
+2. ~~**On-board smoke + EMG replay**~~ — **done** (74.24% RTL encoder PASS)
+3. **Energy measurement** — INA219 + shunt on Vcc_int
+4. **Synthesis sweep** — D and CNT_W variants for Hook A
 5. **Novelty experiments** — Hook A Pareto plots, Twist 1, Twist 2
 6. **Baselines** — ARM-only HDC, tiny MLP
 7. **Paper / thesis** — figures, write-up, DATE submission prep
 
-**Honest status line:** *RTL and simulation verification are complete; FPGA integration and hardware-characterisation experiments are in progress.*
+**Honest status line:** *RTL verification and Zynq bring-up are complete; energy and Hook A/Twist experiments are next.*
 
 ---
 
@@ -407,6 +408,7 @@ If you can answer all ten, you are ready to explain the research end to end.
 
 | Path | Contents |
 |------|----------|
+| `docs/Baseline_vs_RTL_Encoder.md` | Paper subsection: Stage B 90% vs RTL encoder 74% |
 | `docs/HDC_Research_Plan.html` | Full research plan (print to PDF) |
 | `docs/HDC_OnePager.html` | Advisor one-page brief |
 | `python_ref/hdc_ref.py` | Bit-exact golden reference |

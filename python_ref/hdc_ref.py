@@ -237,6 +237,23 @@ def bundle_majority(vectors: Sequence[np.ndarray], cfg: HDCConfig) -> np.ndarray
     return acc.threshold()
 
 
+def bundle_majority_unlimited(vectors: Sequence[np.ndarray], cfg: HDCConfig) -> np.ndarray:
+    """Majority bundle without per-bit counter saturation (offline training only).
+
+    RTL bundle_unit saturates at 2**CNT_W-1; that model matches query encoding
+    (N_CH*N_FEAT pairs per window) but not class-prototype training over thousands
+    of windows. Use this for software prototype bundling loaded onto the board.
+    """
+    if not vectors:
+        return zeros(cfg.D)
+    counts = np.zeros(cfg.D, dtype=np.int32)
+    n_accum = 0
+    for v in vectors:
+        counts += (np.asarray(v, dtype=np.uint8) & 1).astype(np.int32)
+        n_accum += 1
+    return bundle_threshold(counts, n_accum)
+
+
 # ---------------------------------------------------------------------------
 # Item memory
 # ---------------------------------------------------------------------------
@@ -384,7 +401,7 @@ def train_class_hypervectors(
         if idx.size == 0:
             continue
         vecs = [query_hvs[i] for i in idx]
-        class_hvs[c] = bundle_majority(vecs, cfg)
+        class_hvs[c] = bundle_majority_unlimited(vecs, cfg)
     return class_hvs
 
 

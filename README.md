@@ -18,9 +18,9 @@ the PS through an AXI4-Lite wrapper.
 | `sim/` | Automation: `run_cosim.do` (bind+permute), `run_bundle_cosim.do` (bundle), `run_am_cosim.do` (associative memory), `run_encoder_cosim.do` (encoder), `run_core_cosim.do` (end-to-end inference), `run_core_axi_cosim.do` (AXI4-Lite), and `run_stream_cosim.do` (AXI4-Stream) — one-command harnesses (generate vectors → compile → simulate → PASS/FAIL); `open_project.do` opens the GUI project. |
 | `sw/` | Bare-metal software: smoke/golden/bench (Phase 1 AXI-Lite), `hdc_dma_stream*.c/h` (Phase 2–3 DMA stream), `hdc_dma_stream_batch_bench.c` (Phase 3 sustained throughput), `hdc_emg_board_test.c` (Phase 3 EMG replay), `hdc_core_regs.c/h`, generated `golden_vectors.h`. |
 | `results/` | Board benchmarks, synthesis utilisation/timing, and per-phase logs — updated after each Vivado/board run. See `results/README.md`. |
-| `docs/` | Research plan, advisor one-pager, project guide, and the reference paper (PDF/HTML/DOCX). |
+| `docs/` | Research plan, advisor one-pager, **`Baseline_vs_RTL_Encoder.md`** (paper subsection), project guide, reference paper. |
 | `python_ref/` | Bit-exact Python golden reference, EMG reproduction (Stage A/B), frozen baseline config + results, and PDF notes. See `python_ref/README.md`. |
-| `scripts/` | Golden prep, JTAG runners, Phase 1 bench, Phase 3 scaffolds (`export_emg_board_vectors.py`, `ina219_log.py`), legacy UART bench (`run_stream_bench_hdc.sh`). |
+| `scripts/` | Golden prep, JTAG runners, Phase 1 bench, Phase 3 scaffolds (`export_emg_board_vectors.py`, `regenerate_emg_protos.py`, `pack_emg_ddr_from_header.py`, `ina219_log.py`), legacy UART bench (`run_stream_bench_hdc.sh`). |
 | `board/HDC_DMA/` | **Phase 2/3 ZedBoard workspace**: Vitis platform, DMA golden/bench/batch ELFs, JTAG run scripts. See `board/HDC_DMA/README.md`. |
 | `vivado_pack/` | Vivado bring-up bundle (RTL, cosim vectors layout, bare-metal examples). See `vivado_pack/README.txt`. |
 | `1024HDC.mpf`, `modelsim.ini` | ModelSim/Questa project files (kept at repo root; source paths point into `rtl/` and `tb/`). |
@@ -33,13 +33,12 @@ the PS through an AXI4-Lite wrapper.
 
 - **RTL core + self-checking testbench** for the 1024-bit XOR+permute datapath.
 - **Python golden reference** (`python_ref/hdc_ref.py`) matching RTL semantics, with smoke tests.
-- **EMG baseline reproduced** (anchor: Rahimi et al., ICRC 2016):
-  - **Stage A** — literal MAP parity: spatial **90.36%** (paper 90.8%), spatiotemporal **96.04%** (paper 97.8%).
-  - **Stage B** — RTL-matched binary BSC model, D-sweep.
-- **Frozen project baseline:** **90.30% ± 0.13 (spatial)** at **D=1024** under protocol P-may2026
-  (`python_ref/config/emg_baseline.json`, `python_ref/results/emg_baseline.json`).
+- **EMG baselines (dual-track)** — see `docs/Baseline_vs_RTL_Encoder.md`:
+  - **Stage B reference (Python):** **90.30% ± 0.13 (spatial)** @ D=1024 — comparison to Rahimi / literature.
+  - **RTL encoder (board):** **74.24%** on 658k TEST windows — bit-exact vs Python export ref (±0.5%).
+- **Stage A MAP parity:** spatial **90.36%** (paper 90.8%), spatiotemporal **96.04%** (paper 97.8%).
 
-Details: `python_ref/notes/emg_baseline_frozen.pdf` and `emg_reproduction_results.pdf`.
+Config: `python_ref/config/emg_baseline.json`, results: `python_ref/results/emg_baseline.json`.
 
 ## Board results summary (ZedBoard, xc7z020 @ 100 MHz)
 
@@ -53,10 +52,12 @@ Three measurement stages on the **same HDC core** — see `results/` for full lo
 | **Batch throughput** | — | ~143k windows/s (single) | **~216k windows/s** (200-window SG batch) |
 | **WNS @ 100 MHz** | +0.246 ns | +0.023 ns | **+0.111 ns** (post-route phys_opt) |
 | **Results** | `results/phase1/` | `results/phase2/` | `results/phase3/board_bench.txt` |
+| **EMG replay (v2)** | — | — | **PASS** — 74.24% board == export ref (658k windows) |
 
 Phase 3 **batch bench is COMPLETE** (`results/phase3/board_bench.txt`, June 2026).
-EMG **v1 RTL parity is COMPLETE** (board 59.60% == export ref on 500 windows).
-Full Phase 3 close (EMG v2 full TEST split + INA219 energy) is still pending — see `results/phase3/README.md`.
+**EMG board replay** is **PASS** (v2, June 2026): **74.24%** board == export ref (658k windows).
+Stage B **90.30%** is the Python reference baseline only — see `docs/Baseline_vs_RTL_Encoder.md`.
+Full Phase 3 close: INA219 energy still pending — `results/phase3/README.md`.
 
 Phase 3 batch uses **scatter-gather DMA** (`XPAR_AXI_DMA_0_INCLUDE_SG 1`) with one
 MM2S/S2MM descriptor ring for 200 windows, plus an input beat FIFO in
@@ -311,9 +312,61 @@ bash run_phase3_golden.sh     # optional → board_golden.txt
 then retry — success often on attempt 2–6. A failed re-run does not invalidate an
 earlier good log in `board_bench.txt`.
 
-Still pending for full Phase 3 / Hook A (Pareto): EMG v2 full TEST-split replay
-(`board_emg_replay.txt`) and INA219 energy (`energy_batch.txt`).
-EMG v1 RTL parity (500 windows) is **done** — see `results/phase3/board_emg_replay.txt`.
+Still pending for full Phase 3 / Hook A (Pareto): INA219 energy (`energy_batch.txt`).
+
+### Phase 3 — EMG full-dataset replay (v2, **PASS**)
+
+Exports the full EMG **TEST** split (all config subjects, ~658k windows) with
+RTL-matched `hdc_ref` encoding. The board replays packed level grids via SG batch
+DMA and scores against per-subject prototypes.
+
+**Board result (ZedBoard, 2026-06-23):** **488,550 / 658,004** correct,
+**74.24%** accuracy — **delta 0.00%** vs export ref (**PASS**, 0.5% tolerance).
+Evidence: `results/phase3/board_emg_replay.txt`.
+
+**Dual baseline (paper):** Stage B reference **90.30%** (Python) vs RTL encoder
+**74.24%** (board). Board PASS = match export ref, not match 90%. See
+`docs/Baseline_vs_RTL_Encoder.md`.
+
+**Export ref (hdc_ref):** **74.24%** (`EMG_EXPORT_REF_ACCURACY_X1000 = 74247`).
+Board **PASS** when `|board_acc − export_ref| ≤ 0.5%`.
+
+> **Fixes (June 2026):**
+> 1. **Prototype training** — use `bundle_majority_unlimited` (not 6-bit-saturating
+>    `bundle_majority`) for offline class protos; see `regenerate_emg_protos.py`.
+>    Early exports had all-zero protos → bogus **~59%** ref (always predict class 0).
+> 2. **Prototype load** — `hdc_load_prototype_from64(k, &emg_proto64[base])` must
+>    pass the **subject base** only; the helper already indexes by `class_idx`.
+> Stage B (~90.30%) is the Python reference baseline, not the PL encoder.
+
+**Large-vector JTAG:** Full headers (~52 MB ELF) fail JTAG `dow`. Use DDR
+split-load: window arrays in `sw/emg_board_vectors.bin` @ `0x02000000`, slim
+`sw/emg_board_vectors.h` (~19 KB protos/mask/metadata only).
+
+```bash
+cd ~/1024-HDC
+git pull
+
+# One-time: export full TEST split (~4 h) OR restore sw/emg_board_vectors.h.full
+bash scripts/prep_emg_board_test.sh
+
+# If export predates the proto fix, retrain protos only (~30 min):
+python3 scripts/regenerate_emg_protos.py --header sw/emg_board_vectors.h.full
+python3 scripts/regenerate_emg_protos.py --skip-train --recompute-accuracy \
+  --header sw/emg_board_vectors.h.full   # ~2 h; updates export ref in headers
+
+# Pack windows → DDR bin + slim header (no re-export):
+python3 scripts/pack_emg_ddr_from_header.py --header sw/emg_board_vectors.h.full
+
+cd board/HDC_DMA
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
+PYTHONPATH="${PYTHONPATH:-}" bash build_sw.sh
+bash run_phase3_emg.sh    # ~30–45 min → results/phase3/board_emg_replay.txt
+```
+
+Dev subset: `EMG_MAX_WINDOWS=2000 bash scripts/prep_emg_board_test.sh`
+
+Details: `results/phase3/README.md`, `docs/Baseline_vs_RTL_Encoder.md`.
 
 ### Phase 1 board bench (1000 timed inferences + 200-case golden)
 
@@ -369,13 +422,12 @@ mean = 3 us
 - ~~**Phase 2** Zynq bring-up (DMA stream)~~ — **done**: golden 200/200, ~7 µs/window. `results/phase2/`, `board/HDC_DMA/`.
 - ~~**Phase 3 batch bench**~~ — **done**: SG batch ~216k windows/s (200 windows), golden 200/200, WNS +0.111 ns. `results/phase3/board_bench.txt`.
 
-### Phase 3 — full close for paper (in progress)
+### Phase 3 — full close for paper
 
 | Task | Status |
 |------|--------|
 | Batch bench (latency + 200-window + golden) | **COMPLETE** (~216k windows/s, SG) |
-| EMG v1 RTL parity (500 windows, subject 1) | **COMPLETE** (board == export ref 59.60%) |
-| EMG v2 full TEST-split replay | **PENDING** |
+| Full EMG replay on board | **PASS** — 74.24% RTL encoder (658k windows, June 2026) |
 | Energy (INA219 + shunt) | **NOT STARTED** |
 
 ### Later fixes — SG batch DMA + timing close (June 2026)

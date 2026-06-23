@@ -43,7 +43,7 @@ from hdc_ref import (  # noqa: E402
     HDCConfig,
     HDCEngine,
     ItemMemory,
-    bundle_majority,
+    bundle_majority_unlimited,
     bits_to_hex_lines,
 )
 from stage_b_bsc import (  # noqa: E402
@@ -140,7 +140,7 @@ def train_prototypes_hdc_ref(
             engine.encode_emg_window(level21_to_grid(train_q[i], cfg), mem)
             for i in idx
         ]
-        protos[k - 1] = bundle_majority(windows, cfg)
+        protos[k - 1] = bundle_majority_unlimited(windows, cfg)
     return protos
 
 

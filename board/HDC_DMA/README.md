@@ -73,4 +73,4 @@ board/HDC_DMA/
 |-------|------|
 | Phase 2 | `results/phase2/` |
 | Phase 3 batch | `results/phase3/board_bench.txt` (**COMPLETE**, ~216k windows/s) |
-| Phase 3 EMG / energy | pending — see `results/phase3/README.md` |
+| Phase 3 EMG / energy | EMG **PASS** (74.24%) — see `results/phase3/board_emg_replay.txt` |

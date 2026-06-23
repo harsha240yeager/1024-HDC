@@ -41,6 +41,22 @@ query = engine.encode_emg_window(quantized_features, mem)
 informed, random = engine.make_pruning_masks(query_hvs, labels, keep_ratio=0.5, seed=0)
 ```
 
+## EMG baselines (dual-track)
+
+Two accuracy numbers under protocol P-may2026 — see `docs/Baseline_vs_RTL_Encoder.md`:
+
+| Track | Script | Spatial @ D=1024 | Role |
+|-------|--------|------------------|------|
+| Stage B reference | `run_emg_baseline.py` / `repro/stage_b_bsc.py` | **~90.30%** | Python vs Rahimi / literature |
+| RTL encoder | `hdc_ref` + board EMG replay | **~74.24%** | Verified deployment path |
+
+```powershell
+python run_emg_baseline.py --quick --no-parity
+python run_emg_baseline.py --measure-rtl-ref --rtl-max-windows 5000
+```
+
+Config: `config/emg_baseline.json` · Results snapshot: `results/emg_baseline.json`
+
 ## Files
 
 | File | Purpose |

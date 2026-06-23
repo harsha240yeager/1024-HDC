@@ -1,6 +1,6 @@
 {
   "name": "May 2026 EMG HDC baseline",
-  "description": "Frozen configuration for the EMG hand-gesture baseline. The project baseline is the binary BSC model the 1024-bit RTL implements; a bipolar MAP D=10000 run is kept as the literal published-parity anchor (Rahimi et al., ICRC 2016).",
+  "description": "Frozen EMG configuration under protocol P-may2026. Two accuracy baselines: (1) Stage B spatial reference ~90.30% in Python; (2) RTL encoder (hdc_ref / encoder_top.sv) ~74.24% on board. See docs/Baseline_vs_RTL_Encoder.md.",
   "dataset": {
     "source": "abbas-rahimi/HDC-EMG (dataset.mat, GPLv3)",
     "path": "HDC-EMG/dataset.mat",
@@ -13,14 +13,33 @@
     "quantize": "int(value * percision), clipped to [0, 21]"
   },
   "project_baseline_model": {
-    "name": "BSC binary (RTL-matched)",
+    "name": "BSC binary spatial reference (Stage B)",
+    "description": "4-channel spatial records via stage_b_bsc.py. Python reference for comparison to Rahimi ~90%. NOT the PL encoder.",
+    "script": "python_ref/repro/stage_b_bsc.py",
     "D": 1024,
     "hypervector": "binary {0,1}, D/2 ones",
     "bind": "XOR",
-    "permute": "cyclic shift",
+    "permute": "cyclic shift (n-gram spatial uses roll)",
     "bundle": "thresholded majority, tie -> 0",
     "similarity": "Hamming distance / popcount (argmin)",
-    "rtl_modules": ["xor_permute_top.sv", "permute_stage.sv", "bundle_unit.sv", "popcount_am.sv"]
+    "frozen_spatial_mean": 0.903,
+    "frozen_spatial_std": 0.0013
+  },
+  "rtl_encoder_baseline": {
+    "name": "RTL encoder (Eq. 3.1, hdc_ref)",
+    "description": "20-pair encoder matching encoder_top.sv; item mem seed 42; board EMG replay verification path.",
+    "script": "python_ref/hdc_ref.py + scripts/export_emg_board_vectors.py",
+    "rtl_modules": ["encoder_top.sv", "xor_permute_top.sv", "permute_stage.sv", "bundle_unit.sv", "popcount_am.sv"],
+    "D": 1024,
+    "item_mem_seed": 42,
+    "spatial_mean": 0.7424,
+    "spatial_mean_x1000": 74247,
+    "n_test_windows": 658004,
+    "n_correct": 488550,
+    "measured": "ZedBoard EMG replay v2, 2026-06-23",
+    "board_pass_criterion": "|board_acc - export_ref| <= 0.5%",
+    "board_pass": true,
+    "evidence": "results/phase3/board_emg_replay.txt"
   },
   "parity_anchor_model": {
     "name": "MAP bipolar (paper)",

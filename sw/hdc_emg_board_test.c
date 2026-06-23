@@ -47,6 +47,26 @@
 #define EMG_BATCH_CHUNK 200U
 #endif
 
+#if EMG_BOARD_WINDOWS > 0 && defined(EMG_USE_DDR_VECTORS) && (EMG_USE_DDR_VECTORS > 0U)
+static u32 *emg_levels0;
+static u32 *emg_levels1;
+static u32 *emg_levels2;
+static u8 *emg_labels;
+
+static void emg_map_ddr_vectors(void)
+{
+    u32 base = EMG_VECTORS_DDR_BASE;
+
+    emg_levels0 = (u32 *)(UINTPTR)(base + EMG_OFF_LEVELS0);
+    emg_levels1 = (u32 *)(UINTPTR)(base + EMG_OFF_LEVELS1);
+    emg_levels2 = (u32 *)(UINTPTR)(base + EMG_OFF_LEVELS2);
+    emg_labels = (u8 *)(UINTPTR)(base + EMG_OFF_LABELS);
+    Xil_DCacheInvalidateRange(
+        (INTPTR)(base + EMG_OFF_LEVELS0),
+        EMG_OFF_EXPECT + (EMG_BOARD_WINDOWS * sizeof(u32)) - EMG_OFF_LEVELS0);
+}
+#endif
+
 #if EMG_BOARD_WINDOWS > 0
 static u32 in_batch[EMG_BATCH_CHUNK * HDC_IN_BEATS] __attribute__((aligned(64)));
 static u32 out_batch[EMG_BATCH_CHUNK * HDC_OUT_BEATS] __attribute__((aligned(64)));
@@ -72,13 +92,24 @@ static void load_protos_for_subject(u32 subj_idx)
     u32 base = subj_idx * EMG_N_CLASS * EMG_WORDS64;
     u32 k;
 
+    /* proto64 must be subject base: hdc_load_prototype_from64 indexes by class_idx. */
     for (k = 0U; k < EMG_N_CLASS; ++k)
-        hdc_load_prototype_from64(k, &emg_proto64[base + k * EMG_WORDS64]);
+        hdc_load_prototype_from64(k, &emg_proto64[base]);
 }
 
 static void pack_chunk(u32 offset, u32 chunk_n)
 {
     u32 i;
+
+#if defined(EMG_USE_DDR_VECTORS) && (EMG_USE_DDR_VECTORS > 0U)
+    {
+        u32 byte_off = EMG_OFF_LEVELS0 + offset * sizeof(u32);
+        u32 byte_len = chunk_n * sizeof(u32) * 3U;
+
+        Xil_DCacheInvalidateRange(
+            (INTPTR)(EMG_VECTORS_DDR_BASE + byte_off), byte_len);
+    }
+#endif
 
     for (i = 0U; i < chunk_n; ++i) {
         u32 idx = offset + i;
@@ -183,6 +214,10 @@ int main(void)
     u32 delta_x1000 = 0U;
     int rc, pass_tol = 0;
 
+#if defined(EMG_USE_DDR_VECTORS) && (EMG_USE_DDR_VECTORS > 0U)
+    emg_map_ddr_vectors();
+#endif
+
     rc = hdc_dma_init();
     if (rc != 0) {
         xil_printf("DMA init failed (%d)\r\n", rc);
@@ -201,7 +236,7 @@ int main(void)
     }
 
     if (n > 0U)
-        accuracy_x1000 = (correct * 100000U) / n;
+        accuracy_x1000 = (u32)(((u64)correct * 100000ULL) / n);
 
     if (accuracy_x1000 >= EMG_EXPORT_REF_ACCURACY_X1000)
         delta_x1000 = accuracy_x1000 - EMG_EXPORT_REF_ACCURACY_X1000;
