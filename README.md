@@ -21,7 +21,9 @@ over **AXI4-Lite** (control) and fed at inference rate over **AXI4-Stream + DMA*
 
 | Area | State |
 |------|-------|
-| RTL datapath + 7 co-sim harnesses | ✅ **Verified** (bit-exact vs Python) |
+| RTL datapath + 7 co-sim harnesses + `pruning_mask` | ✅ **Verified** (bit-exact vs Python) |
+| D-sweep functional cosim (D ∈ {256, 512, 1024, 2048}) | ✅ **PASS** (200 cases/D) |
+| D-sweep OOC synthesis (D ∈ {256, 512, 1024, 2048}) | ✅ **Complete** (see [`results/dsweep/`](results/dsweep/)) |
 | Phase 1 — AXI-Lite bring-up | ✅ **Complete** (200/200 golden, ~3 µs/window) |
 | Phase 2 — AXI-DMA stream bring-up | ✅ **Complete** (200/200 golden, ~7 µs/window) |
 | Phase 3 — SG batch throughput | ✅ **Complete** (~216k windows/s, WNS +0.111 ns) |
@@ -30,8 +32,9 @@ over **AXI4-Lite** (control) and fed at inference rate over **AXI4-Stream + DMA*
 | Hook A / Twist 1 / Twist 2 (paper experiments) | ⏳ **Not started** (August block) |
 | ARM-only + tiny-MLP baselines | ⏳ **Not started** |
 
-Bring-up and verification are **done**. What remains is **measurement and science**
-(energy, Pareto, pruning studies, baselines, write-up) — see [What's left](#whats-left).
+Bring-up, verification, and the **D-axis characterisation** are **done**. What
+remains is **measurement and science** (energy, Pareto pruning studies, baselines,
+write-up) — see [What's left](#whats-left).
 
 ---
 
@@ -40,19 +43,38 @@ Bring-up and verification are **done**. What remains is **measurement and scienc
 All board numbers are **ZedBoard (xc7z020clg484-1) @ 100 MHz PL, Vivado 2024.2**.
 Raw logs live under [`results/`](results/).
 
-### RTL verification (ModelSim/Questa co-simulation)
+### RTL verification (co-simulation)
 
 Every harness checks the RTL **bit-for-bit** against the Python golden reference.
+Recorded on VDI 2026-06-25 (Vivado xsim; Questa `.do` harnesses equivalent).
 
-| Harness | Cases | Proves |
-|---------|-------|--------|
-| `run_cosim.do` | 1000 | XOR bind + permute datapath |
-| `run_bundle_cosim.do` | 500 | Majority bundler |
-| `run_am_cosim.do` | 500 | Masked Hamming AM + argmin |
-| `run_encoder_cosim.do` | 500 | Full EMG window encode |
-| `run_core_cosim.do` | 500 | End-to-end encode → classify |
-| `run_core_axi_cosim.do` | 200 | AXI4-Lite programming sequence |
-| `run_stream_cosim.do` | 200 | AXI4-Stream + back-pressure + random gaps |
+| Harness | Cases | Proves | Log |
+|---------|-------|--------|-----|
+| `run_cosim.do` | 1000 | XOR bind + permute datapath | — |
+| `run_bundle_cosim.do` | 500 | Majority bundler | — |
+| `run_pruning_mask_cosim.do` | 64 | `pruning_mask.sv` (full + AXI word writes) | `results/xsim_pruning_mask.log` |
+| `run_am_cosim.do` | 500 | Masked Hamming AM + argmin | `results/xsim_am.log` |
+| `run_encoder_cosim.do` | 500 | Full EMG window encode | — |
+| `run_core_cosim.do` | 500 | End-to-end encode → classify | `results/xsim_core.log` |
+| `run_core_axi_cosim.do` | 200 | AXI4-Lite programming sequence | `results/xsim_core_axi.log` |
+| `run_stream_cosim.do` | 200 | AXI4-Stream + back-pressure + random gaps | `results/xsim_stream.log` |
+| `run_dsweep_cosim.do` | 200/D | Core at D ∈ {256, 512, 1024, 2048} | `results/xsim_dsweep_D*.log` |
+
+### D-sweep — Hook A dimension axis (OOC synthesis + functional cosim)
+
+Core-only out-of-context synthesis on **xc7z020clg484-1 @ 100 MHz** (Vivado 2024.2).
+Full reports: [`results/dsweep/`](results/dsweep/).
+
+| D | Slice LUT | Slice FF | LUT util | WNS (ns) | Fmax | Functional |
+|---|-----------|----------|----------|----------|------|------------|
+| 256 | 7,331 | 4,536 | 13.8% | 1.669 | 120 MHz | **PASS** |
+| 512 | 14,422 | 8,935 | 27.1% | 1.452 | 117 MHz | **PASS** |
+| 1024 | 28,600 | 17,784 | 53.8% | 0.781 | 109 MHz | **PASS** |
+| 2048 | 59,261 | 35,424 | **111%** | 1.340 | 116 MHz | **PASS** |
+
+LUT/FF scale ~linearly with D. **D=1024** is the timing tightest point (WNS 0.781 ns)
+but still meets 100 MHz. **D=2048** exceeds OOC LUT budget on xc7z020 — a reportable
+Pareto boundary for the full system (Phase 2 already at 66% LUT @ D=1024 + PS/DMA).
 
 ### Board bring-up — three measurement paths on the *same* core
 
@@ -158,7 +180,7 @@ silicon path (decision: June 2026, Option A).
 
 | Path | Contents |
 |------|----------|
-| `rtl/` | RTL: `xor_permute_top` (bind+permute), `permute_stage`, `bundle_unit`, `popcount_am` (masked-Hamming AM), `item_mem`, `encoder_top` (EMG window encoder), `hdc_core_top` (encoder→AM), `hdc_core_axi_lite`, `hdc_stream_wrapper` (DMA stream). |
+| `rtl/` | RTL: `xor_permute_top` (bind+permute), `permute_stage`, `bundle_unit`, `pruning_mask`, `popcount_am` (masked-Hamming AM), `item_mem`, `encoder_top` (EMG window encoder), `hdc_core_top` (encoder→AM), `hdc_core_axi_lite`, `hdc_stream_wrapper` (DMA stream). |
 | `tb/` | Self-checking + co-sim testbenches (one per harness). |
 | `sim/` | `run_*_cosim.do` one-command harnesses (gen vectors → compile → sim → PASS/FAIL). |
 | `sw/` | Bare-metal: golden/bench (Phase 1), `hdc_dma_stream*` (Phase 2–3), `hdc_dma_stream_batch_bench`, `hdc_emg_board_test` (EMG replay). |
@@ -181,11 +203,14 @@ silicon path (decision: June 2026, Option A).
 ```bash
 vsim -c -do sim/run_cosim.do          # bind+permute (override count: NUM_CASES=…)
 vsim -c -do sim/run_bundle_cosim.do   # bundler
+vsim -c -do sim/run_pruning_mask_cosim.do  # pruning mask (full + AXI writes)
 vsim -c -do sim/run_am_cosim.do       # associative memory
 vsim -c -do sim/run_encoder_cosim.do  # EMG window encoder
 vsim -c -do sim/run_core_cosim.do     # end-to-end core
 vsim -c -do sim/run_core_axi_cosim.do # AXI4-Lite programming sequence
 vsim -c -do sim/run_stream_cosim.do   # AXI4-Stream + back-pressure
+vsim -c -do sim/run_dsweep_cosim.do   # functional D-sweep (256/512/1024/2048)
+vivado -mode batch -source scripts/dsweep_synth.tcl   # OOC synth → results/dsweep/
 ```
 
 Waveform/trace debug for the stream path: `vsim -c -do sim/run_stream_cosim_debug.do`
@@ -244,8 +269,9 @@ unblocks the next.
 
 ### Tier 2 — close two open June RTL gaps (feed Hook A)
 
-- [ ] **Synthesize the D-sweep** (256 / 512 / 1024 / 2048) → utilisation + f_max + the D axis.
-- [ ] **Extract `pruning_mask.sv`** as a named module (today folded into `popcount_am.sv`).
+- [x] **Synthesize the D-sweep** (256 / 512 / 1024 / 2048) → utilisation + f_max + the D axis.
+      [`results/dsweep/`](results/dsweep/) (2026-06-25).
+- [x] **Extract `pruning_mask.sv`** as a named module + cosim harness.
 
 ### Tier 3 — research contributions (the paper)
 
@@ -267,7 +293,7 @@ unblocks the next.
 | Month | Planned | Status |
 |-------|---------|--------|
 | May 2026 | Python golden + reproduce EMG number | ✅ Met (Stage A 90.36%, Stage B 90.30%) |
-| Jun 2026 | Core RTL + co-sim; D verified | ⚠️ Co-sim PASS; `pruning_mask.sv` + D-sweep pending |
+| Jun 2026 | Core RTL + co-sim; D verified | ✅ Met (`pruning_mask.sv`, D-sweep cosim + synth PASS) |
 | Jul 2026 | Stream wrapper + DMA bring-up | ✅ Ahead (Phases 2–3, EMG replay PASS) |
 | Aug 2026 | Hook A + Twist 1/2 + baselines + power | ⏳ Not started (on schedule) |
 | Sep 2026 | Paper draft + DATE submit | ⏳ Not started |
