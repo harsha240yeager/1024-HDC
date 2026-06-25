@@ -7,6 +7,8 @@ at every swept `D ∈ {256, 512, 1024, 2048}`.
 
 This is the **D-axis** of the Hook A 3-axis Pareto (D × bundle-precision × prune).
 
+**Recorded:** 2026-06-25 on VDI (`bsp-lab`, Vivado 2024.2, xc7z020clg484-1 @ 100 MHz).
+
 ## How to regenerate
 
 Functional (ModelSim/Questa — bit-exact vs Python golden, needs the USC license):
@@ -22,27 +24,45 @@ vivado -mode batch -source scripts/dsweep_synth.tcl
 # → results/dsweep/synth_D<D>.txt + summary.txt
 ```
 
-## 1. Functional co-sim (fill after `run_dsweep_cosim.do`)
+On this VDI, functional cosim was also verified with **Vivado xsim** (Questa
+license unavailable); logs are in `results/xsim_dsweep_D*.log`.
 
-| D | WORDS | Cases | Result |
-|---|-------|-------|--------|
-| 256  | 4  | 200 | _PENDING_ |
-| 512  | 8  | 200 | _PENDING_ |
-| 1024 | 16 | 200 | _PENDING_ (baseline — already PASS via run_core_cosim) |
-| 2048 | 32 | 200 | _PENDING_ |
+## 1. Functional co-sim
+
+| D | WORDS | Cases | Result | Log |
+|---|-------|-------|--------|-----|
+| 256  | 4  | 200 | **PASS** | `results/xsim_dsweep_D256.log` |
+| 512  | 8  | 200 | **PASS** | `results/xsim_dsweep_D512.log` |
+| 1024 | 16 | 200 | **PASS** | `results/xsim_dsweep_D1024.log` |
+| 2048 | 32 | 200 | **PASS** | `results/xsim_dsweep_D2048.log` |
 
 PASS = `tb_core_cosim` reaches `$finish` with 0 mismatches at that D.
 
-## 2. OOC synthesis (fill from `summary.txt` / `synth_D<D>.txt`)
+Related unit/integration cosim (also PASS, xsim 2026-06-25):
+
+| Harness | Cases | Log |
+|---------|-------|-----|
+| `pruning_mask` | 64 | `results/xsim_pruning_mask.log` |
+| `am` | 500 | `results/xsim_am.log` |
+| `core` | 500 | `results/xsim_core.log` |
+| `core_axi` | 200 | `results/xsim_core_axi.log` |
+| `stream` | 200 | `results/xsim_stream.log` |
+
+## 2. OOC synthesis (`summary.txt` / `synth_D<D>.txt`)
 
 Part `xc7z020clg484-1`, clock 100 MHz (10.0 ns). Core-only (no PS/DMA).
+Slice LUT/FF from Vivado utilisation report; WNS/Fmax from post-synth timing.
 
-| D | LUT | FF | DSP | BRAM | WNS (ns) | Fmax (MHz) |
-|---|-----|----|----|------|----------|------------|
-| 256  | _–_ | _–_ | 0 | 0 | _–_ | _–_ |
-| 512  | _–_ | _–_ | 0 | 0 | _–_ | _–_ |
-| 1024 | _–_ | _–_ | 0 | 0 | _–_ | _–_ |
-| 2048 | _–_ | _–_ | 0 | 0 | _–_ | _–_ |
+| D | Slice LUT | Slice FF | LUT util | DSP | BRAM | WNS (ns) | Fmax (MHz) |
+|---|-----------|----------|----------|-----|------|----------|------------|
+| 256  | 7,331  | 4,536  | 13.8%  | 0 | 0 | 1.669 | 120.0 |
+| 512  | 14,422 | 8,935  | 27.1%  | 0 | 0 | 1.452 | 117.0 |
+| 1024 | 28,600 | 17,784 | 53.8%  | 0 | 0 | 0.781 | 108.5 |
+| 2048 | 59,261 | 35,424 | **111.4%** | 0 | 0 | 1.340 | 115.5 |
+
+> **D=2048** OOC core-only exceeds xc7z020 slice LUT capacity (111%). Full-system
+> D=1024 + PS/DMA already at ~66% LUT (Phase 2); integrated D=2048 is expected
+> to be a Pareto boundary, not a shipping config.
 
 > Note: OOC counts are **core-only**. Full-system utilisation + bitstream timing
 > (with the Zynq PS + AXI-DMA) come from the `FInal_HDC` place&route run; see
@@ -51,8 +71,7 @@ Part `xc7z020clg484-1`, clock 100 MHz (10.0 ns). Core-only (no PS/DMA).
 
 ## 3. Expected shape (sanity check)
 
-- LUT/FF should scale ~linearly with `D` (1024-bit datapath is replicated per word).
-- `D=2048` is the area/timing risk point on xc7z020 (Phase 2 already at 96% slices
-  for D=1024 + PS/DMA); OOC core-only should still fit, but the **full system at
-  D=2048 may not** — that itself is a reportable Pareto boundary.
+- LUT/FF scale ~linearly with `D` (1024-bit datapath replicated per word) — **observed**.
+- `D=1024` is the timing tightest point (WNS 0.781 ns) but still meets 100 MHz — **observed**.
+- `D=2048` exceeds OOC LUT budget on xc7z020 — **observed**; reportable Pareto boundary.
 - Accuracy vs D is a separate Python sweep (Hook A), not measured here.

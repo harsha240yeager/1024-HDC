@@ -12,13 +12,14 @@ hardware or driver instead.
 | `phase1/` | AXI-Lite path on ZedBoard (**complete**) |
 | `phase2/` | AXI-DMA + stream path (**complete**) |
 | `phase3/` | Batch bench + EMG replay (**complete**); energy (**pending**) |
+| `dsweep/` | Hook A D-axis: functional cosim + OOC synth @ D∈{256…2048} |
 | `sim/` | Optional exported co-sim summaries (not waveforms) |
 
-## Status (last updated: 2026-06-23)
+## Status (last updated: 2026-06-25)
 
 | Milestone | Status |
 |-----------|--------|
-| RTL co-sim (7 harnesses) | PASS |
+| RTL co-sim (7 harnesses + D-sweep) | **PASS** (see `dsweep/README.md`, `xsim_*.log`) |
 | Phase 1 — AXI-Lite @ 0x43C00000 | **COMPLETE** |
 | Phase 2 — AXI-DMA + stream system | **COMPLETE** |
 | Phase 3 — batch bench (latency + 200-window + golden) | **COMPLETE** |

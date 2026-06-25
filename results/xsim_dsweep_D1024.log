@@ -1,0 +1,26 @@
+
+****** xsim v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:34:34 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Thu Jun 25 23:52:10 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source xsim.dir/dsweep_D1024_snap/xsim_script.tcl
+# xsim {dsweep_D1024_snap} -testplusarg CASES=200 -testplusarg VECDIR=/home/bsp-lab/1024-HDC/python_ref/vectors/cosim_core_D1024 -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+==================================================
+tb_core_cosim: end-to-end inference vs Python golden
+  VECDIR = /home/bsp-lab/1024-HDC/python_ref/vectors/cosim_core_D1024
+  CASES  = 200   (D=1024, 4x5 pairs, N_CLASS=8)
+==================================================
+  ... 100 / 200 checked (errors so far: 0)
+  ... 200 / 200 checked (errors so far: 0)
+==================================================
+PASS: all 200 end-to-end inference cases match the Python golden.
+==================================================
+$finish called at time : 580165 ns : File "/tmp/hdc_xsim/tb_core_cosim.sv" Line 216
+exit
+INFO: [Common 17-206] Exiting xsim at Thu Jun 25 23:52:14 2026...

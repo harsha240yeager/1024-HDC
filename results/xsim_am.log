@@ -1,0 +1,29 @@
+
+****** xsim v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:34:34 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Thu Jun 25 23:47:28 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source xsim.dir/am_snap/xsim_script.tcl
+# xsim {am_snap} -testplusarg CASES=500 -testplusarg VECDIR=/home/bsp-lab/1024-HDC/python_ref/vectors/cosim_am -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+==================================================
+tb_am_cosim: nearest-prototype AM vs Python golden
+  VECDIR  = /home/bsp-lab/1024-HDC/python_ref/vectors/cosim_am
+  CASES   = 500   (D=1024, N_CLASS=8)
+==================================================
+  ... 100 / 500 checked (errors so far: 0)
+  ... 200 / 500 checked (errors so far: 0)
+  ... 300 / 500 checked (errors so far: 0)
+  ... 400 / 500 checked (errors so far: 0)
+  ... 500 / 500 checked (errors so far: 0)
+==================================================
+PASS: all 500 AM cases match the Python golden bit-for-bit.
+==================================================
+$finish called at time : 1375065 ns : File "/tmp/hdc_xsim/tb_am_cosim.sv" Line 228
+exit
+INFO: [Common 17-206] Exiting xsim at Thu Jun 25 23:47:32 2026...

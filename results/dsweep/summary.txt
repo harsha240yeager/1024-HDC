@@ -1,0 +1,13 @@
+D-sweep OOC synthesis -- hdc_core_top
+part=xc7z020clg484-1  clock_period=10.0ns  (100.0 MHz)
+Vivado: 2024.2
+==============================================================================
+D      LUT        FF         DSP        WNS(ns)      Fmax(MHz) 
+------------------------------------------------------------------------------
+256    9124       0          0          1.669        120.0     
+512    17508      0          0          1.452        117.0     
+1024   34790      0          0          0.781        108.5     
+2048   72692      0          0          1.340        115.5     
+==============================================================================
+NOTE: OOC counts are core-only (no PS/DMA). Full-system utilisation
+      + bitstream timing come from the FInal_HDC place&route run.

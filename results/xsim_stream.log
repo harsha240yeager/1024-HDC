@@ -1,0 +1,48 @@
+
+****** xsim v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:34:34 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Thu Jun 25 23:54:07 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source xsim.dir/stream_snap/xsim_script.tcl
+# xsim {stream_snap} -testplusarg CASES=200 -testplusarg VECDIR=/home/bsp-lab/1024-HDC/python_ref/vectors/cosim_core -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+==================================================
+tb_stream_cosim: AXI4-Stream + hdc_core_top vs golden
+  VECDIR = /home/bsp-lab/1024-HDC/python_ref/vectors/cosim_core
+  CASES  = 200   (D=1024, 3 beats/window, N_CLASS=8)
+  DEBUG  = 0   TRACE(first N cases) = 0   WAVE = 0   BURST = 0
+==================================================
+
+--- Functional verification signal guide ---
+  S_AXIS (window in, 3 beats):
+    s_axis_tvalid/tready  handshake; transfer when both high
+    s_axis_tdata          32-bit level chunk (little-endian pack)
+    s_axis_tlast          1 on final beat of each window
+  M_AXIS (result out, 1 beat/window):
+    m_axis_tdata          (class_idx<<16)|class_dist
+  Wrapper FSM (dbg_fsm_state):
+    0 ST_ASM  collect 3 beats from input FIFO
+    1 ST_RUN  hdc_core_top running (~24 clk) dbg_core_busy=1
+    2 ST_OUT  hold result until m_axis_tready
+  Core pulses:
+    dbg_core_start      1-cycle: window latched, encode begins
+    dbg_core_out_valid  1-cycle: AM decision ready
+  Waveform: add +WAVE or run sim/run_stream_cosim_debug.do
+    Key paths: dut/dbg_*  dut/u_core/u_encoder/*  dut/u_core/u_am/*
+---------------------------------------------
+
+  ... 50 / 200 checked (errors so far: 0)
+  ... 100 / 200 checked (errors so far: 0)
+  ... 150 / 200 checked (errors so far: 0)
+  ... 200 / 200 checked (errors so far: 0)
+==================================================
+PASS: all 200 streamed inferences match the Python golden.
+==================================================
+$finish called at time : 599105 ns : File "/tmp/hdc_xsim/tb_stream_cosim.sv" Line 400
+exit
+INFO: [Common 17-206] Exiting xsim at Thu Jun 25 23:54:11 2026...
