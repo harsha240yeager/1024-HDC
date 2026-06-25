@@ -438,6 +438,32 @@ mean = 3 us
 
 ## Roadmap
 
+### Plan vs actual (research plan §9.3, as of June 2026)
+
+5-month build (May → Sep 2026, DATE 2027). Bring-up is **done early**; the
+contribution experiments are the August block (`docs/HDC_Research_Plan.html`).
+
+| Month | Planned deliverable | Status |
+|-------|---------------------|--------|
+| May 2026 | Python golden + reproduce published EMG number | ✅ **Met** — Stage A 90.36%, Stage B 90.30% |
+| Jun 2026 | `item_mem`/`bundle_unit`/`pruning_mask`/`popcount_am` RTL + co-sim; D verified | ⚠️ **Mostly** — co-sim PASS; gaps below |
+| Jul 2026 | `hdc_stream_wrapper`; AXI-Stream + DMA bring-up | ✅ **Ahead** — Phases 2–3, EMG 658k replay PASS |
+| Aug 2026 | Hook A Pareto + Twist 1 + Twist 2 + baselines + power | ⏳ **Not started** (on schedule) |
+| Sep 2026 | Paper draft + DATE submit | ⏳ **Not started** |
+
+**Open June gaps (feed Hook A — close before August):**
+
+1. **`pruning_mask.sv` not a dedicated module** — masking is inside `popcount_am.sv`
+   as a loadable mask (functional), but plan Fig 3 / §5.3.3 expects a named module.
+2. **D parameterization not synthesis-verified** — RTL is parameterized on D, but no
+   256 / 512 / 2048 bitstreams have been built or timing-checked yet.
+
+**Accuracy-target decision (before August):** plan targets (≥92% @ D=1024 with 50%
+informed pruning) were written against the Stage B ~90% encoding. The deployed RTL
+encoder baseline is **74.24%**. Either re-target Hook A against the 74% RTL baseline,
+or align the RTL encoder to the Stage B record model — see
+`docs/Baseline_vs_RTL_Encoder.md`.
+
 ### Done
 
 - ~~RTL co-sim (7 harnesses)~~ — **done**
