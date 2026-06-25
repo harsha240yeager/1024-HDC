@@ -458,11 +458,13 @@ contribution experiments are the August block (`docs/HDC_Research_Plan.html`).
 2. **D parameterization not synthesis-verified** — RTL is parameterized on D, but no
    256 / 512 / 2048 bitstreams have been built or timing-checked yet.
 
-**Accuracy-target decision (before August):** plan targets (≥92% @ D=1024 with 50%
-informed pruning) were written against the Stage B ~90% encoding. The deployed RTL
-encoder baseline is **74.24%**. Either re-target Hook A against the 74% RTL baseline,
-or align the RTL encoder to the Stage B record model — see
-`docs/Baseline_vs_RTL_Encoder.md`.
+**Accuracy-target decision — SETTLED (June 2026): re-target Hook A against the
+74.24% RTL encoder baseline.** The plan's absolute target (≥92% @ D=1024) was
+written for the Stage B ~90% encoding; it is **retired** for the silicon path.
+Hook A / Twist claims are now stated **relative to the 74.24% unpruned RTL
+baseline** (accuracy retention under pruning, informed-vs-random gap, energy
+reduction) rather than as an absolute accuracy floor. Stage B 90.30% remains a
+Python reference only. Details + re-stated targets: `docs/Baseline_vs_RTL_Encoder.md`.
 
 ### Done
 

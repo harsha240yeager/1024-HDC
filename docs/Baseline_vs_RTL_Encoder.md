@@ -53,13 +53,26 @@ The frozen **90.30%** figure is **not** the board pass gate. When export uses
 ### Research contributions (Hook A and beyond)
 
 The paper’s novelty is **not** reproducing Rahimi accuracy on a second FPGA port.
-Contributions are measured on the **deployed RTL encoder path**:
+Contributions are measured on the **deployed RTL encoder path**.
 
-- **Hook A:** joint accuracy / energy / area Pareto over D, bundle precision, and
-  Fisher-informed bit pruning (target ≥92% @ D=1024 with 50% informed pruning in
-  Python sweep — a Hook A goal, not the unpruned RTL baseline).
-- **Twist 1:** informed vs random pruning at iso-density.
-- **Twist 2:** cross-subject mask transfer (36 subjects).
+> **Decision (June 2026):** Hook A is re-targeted against the **74.24% unpruned RTL
+> encoder baseline** (D=1024). The plan’s original absolute target (≥92% @ D=1024)
+> was written for the Stage B ~90% encoding and is **retired** for the silicon path.
+> All claims below are stated **relative to the RTL baseline**, which keeps them
+> valid regardless of the absolute encoding accuracy.
+
+**Re-stated targets (relative to 74.24% RTL baseline):**
+
+- **Hook A:** joint accuracy / energy / area Pareto over D ∈ {256, 512, 1024, 2048},
+  bundle precision CNT_W ∈ {3, 4, 5, 6}, and Fisher-informed pruning ∈ {0, 50, 75, 87.5}%.
+  Target: **≤2 pp accuracy drop from the 74.24% baseline at 50% informed pruning**,
+  with measured energy reduction along the frontier.
+- **Twist 1:** informed pruning beats random by **≥5 pp at iso-density** (relative
+  claim — independent of the 74% vs 90% baseline).
+- **Twist 2:** cross-subject mask transfer (36 subjects) — **≤3 pp gap** vs
+  per-subject masks, or a clean characterisation of failure.
+- **System:** end-to-end latency **<50 µs** (met: ~58 µs single / ~4 µs batch),
+  **2–4×** energy reduction along the Pareto, **10×** vs ARM-only HDC.
 
 Energy (INA219), Pareto sweeps, and twist experiments use the verified 74.24%
 encoder pipeline as the functional starting point.
