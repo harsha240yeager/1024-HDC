@@ -1,9 +1,10 @@
 // popcount_am.sv
 // Associative-memory nearest-prototype classifier for 1024-bit Binary Spatter
-// Codes.  Stores N_CLASS class prototypes and a per-bit pruning mask, then for
-// each query computes the masked Hamming distance to every prototype and emits
-// the index of the closest one.  Matches the Python golden reference
-// hdc_ref.HDCEngine.classify exactly:
+// Codes.  Stores N_CLASS class prototypes and, for each query, computes the
+// masked Hamming distance to every prototype and emits the index of the closest
+// one.  The per-bit pruning mask is supplied on `mask_in` by the dedicated
+// `pruning_mask` module (research plan §5.3.3); this block only applies it.
+//   Matches the Python golden reference hdc_ref.HDCEngine.classify exactly:
 //
 //   dist[k] = popcount( (query ^ proto[k]) & mask )
 //   best    = argmin_k dist[k]     // first index wins on a tie (NumPy argmin)
@@ -29,8 +30,7 @@ module popcount_am #(
     input  logic [IDX_W-1:0]   load_idx,
     input  logic [D-1:0]       load_vec,
 
-    input  logic               mask_we,
-    input  logic [D-1:0]       mask_vec,
+    input  logic [D-1:0]       mask_in,
 
     input  logic               q_valid,
     input  logic [D-1:0]       query_vec,
@@ -43,6 +43,11 @@ module popcount_am #(
 
     localparam int WORD_IDX_W = (WORDS <= 1) ? 1 : $clog2(WORDS);
     localparam int POP_W      = $clog2(BITS_PER_WORD + 1);
+
+    // Width-exact terminal indices (cast-free so older SV front-ends that reject
+    // parameter-sized casts -- e.g. DIST_W'(x) -- still compile this module).
+    localparam logic [WORD_IDX_W-1:0] LAST_WORD  = WORDS   - 1;
+    localparam logic [IDX_W-1:0]      LAST_CLASS = N_CLASS - 1;
 
     typedef enum logic [2:0] { S_IDLE, S_XOR, S_ACC, S_CMP } state_t;
 
@@ -75,7 +80,7 @@ module popcount_am #(
     endfunction
 
     assign word_pop_c  = popcount64(xor_w);
-    assign acc_next_c  = acc_dist + DIST_W'(word_pop_c);
+    assign acc_next_c  = acc_dist + word_pop_c;   // word_pop_c zero-extends to DIST_W
 
     always_comb begin
         if (dk_r < run_best_dist) begin
@@ -87,19 +92,17 @@ module popcount_am #(
         end
     end
 
-    // Prototypes/mask use synchronous reset to avoid huge async-reset fanout.
+    // Prototypes use synchronous reset to avoid huge async-reset fanout.
+    // The pruning mask is held externally in `pruning_mask` and arrives on mask_in.
     logic [D-1:0] proto [0:N_CLASS-1];
-    logic [D-1:0] mask;
 
     integer pi;
     always_ff @(posedge clk) begin
         if (!rst_n) begin
             for (pi = 0; pi < N_CLASS; pi = pi + 1)
                 proto[pi] <= '0;
-            mask <= '1;
         end else begin
             if (proto_we) proto[load_idx] <= load_vec;
-            if (mask_we)  mask            <= mask_vec;
         end
     end
 
@@ -136,14 +139,14 @@ module popcount_am #(
                 S_XOR: begin
                     xor_w <= (query_r[w_idx * BITS_PER_WORD +: BITS_PER_WORD] ^
                               proto[k_idx][w_idx * BITS_PER_WORD +: BITS_PER_WORD]) &
-                             mask[w_idx * BITS_PER_WORD +: BITS_PER_WORD];
+                             mask_in[w_idx * BITS_PER_WORD +: BITS_PER_WORD];
                     state <= S_ACC;
                 end
 
                 S_ACC: begin
                     acc_dist <= acc_next_c;
 
-                    if (w_idx == WORD_IDX_W'(WORDS - 1)) begin
+                    if (w_idx == LAST_WORD) begin
                         dk_r  <= acc_next_c;
                         state <= S_CMP;
                     end else begin
@@ -158,7 +161,7 @@ module popcount_am #(
                         run_best_idx  <= k_idx;
                     end
 
-                    if (k_idx == IDX_W'(N_CLASS - 1)) begin
+                    if (k_idx == LAST_CLASS) begin
                         best_idx  <= final_idx_c;
                         best_dist <= final_dist_c;
                         out_valid <= 1'b1;

@@ -40,7 +40,7 @@ if {[file exists work]} { vdel -all -lib work }
 vlib work
 
 echo "=== \[3/4\] Compiling full core + AXI4-Stream wrapper + testbench ==="
-vlog -sv -quiet rtl/item_mem.sv rtl/bundle_unit.sv rtl/encoder_top.sv rtl/popcount_am.sv rtl/hdc_core_top.sv rtl/hdc_stream_wrapper.sv tb/tb_stream_cosim.sv
+vlog -sv -quiet rtl/item_mem.sv rtl/bundle_unit.sv rtl/encoder_top.sv rtl/pruning_mask.sv rtl/popcount_am.sv rtl/hdc_core_top.sv rtl/hdc_stream_wrapper.sv tb/tb_stream_cosim.sv
 
 echo "=== \[4/4\] Running stream co-sim with +DEBUG +TRACE=3 +WAVE ==="
 vsim -t 1ps work.tb_stream_cosim +CASES=$NUM_CASES +VECDIR=$VECDIR +DEBUG +TRACE=3 +WAVE

@@ -752,6 +752,82 @@ def export_am_cosim(
     return meta
 
 
+def export_pruning_mask_cosim(
+    out_dir: Path,
+    cfg: HDCConfig,
+    count: int,
+    seed: int,
+) -> dict:
+    """
+    Write a co-simulation vector set for tb_pruning_mask_cosim.sv (pruning_mask).
+
+    Each "case" is one D-bit mask the RTL must reproduce on `mask_out` through
+    BOTH write paths: the full-width parallel load (load_full/load_vec) and the
+    word-addressed AXI-style writes (wr_en/wr_addr/wr_data, AXI_W=32 per word).
+
+    The mask set deliberately spans edge + realistic patterns:
+      * all-ones  (reset default / unpruned),
+      * all-zeros (fully pruned),
+      * informed (Fisher) + random masks at keep-ratios {0.5, 0.25, 0.125}
+        from synthetic class-structured query HVs (Hook A / Twist 1 shapes),
+      * random-density masks to fill out `count`.
+
+    Masks are emitted as 64-bit $readmemh words using the same pack_u64_words
+    convention as every other vector set (word i = bits [64*i+63 : 64*i]), so the
+    testbench reconstructs both the D-bit load_vec and the 32-bit AXI words from
+    one file.
+
+    Layout (under out_dir):
+      mask.hex   count*words lines (64-bit), one mask after another
+      meta.txt   key=value metadata (count, D, words, axi_w, axi_words, seed)
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rng = np.random.default_rng(seed)
+    D = cfg.D
+
+    masks: List[np.ndarray] = [
+        np.ones(D, dtype=np.uint8),
+        np.zeros(D, dtype=np.uint8),
+    ]
+
+    # Realistic informed/random masks from synthetic class-structured data.
+    n_samp, n_cls = 240, 5
+    labels = rng.integers(0, n_cls, size=n_samp).astype(np.int32)
+    centroids = rng.integers(0, 2, size=(n_cls, D), dtype=np.uint8)
+    flips = (rng.random((n_samp, D)) < 0.15).astype(np.uint8)
+    query_hvs = (centroids[labels] ^ flips).astype(np.uint8)
+    for kr in (0.5, 0.25, 0.125):
+        informed, random_m = make_pruning_masks(
+            query_hvs, labels, kr, cfg, random_seed=seed + int(kr * 1000)
+        )
+        masks.append(informed.astype(np.uint8))
+        masks.append(random_m.astype(np.uint8))
+
+    while len(masks) < count:
+        dens = float(rng.uniform(0.1, 0.9))
+        masks.append((rng.random(D) < dens).astype(np.uint8))
+    masks = masks[:count]
+
+    lines: List[str] = []
+    for m in masks:
+        lines.extend(bits_to_hex_lines(m, cfg.words, cfg.bits_per_word))
+    (out_dir / "mask.hex").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    meta = {
+        "count": len(masks),
+        "D": D,
+        "words": cfg.words,
+        "bits_per_word": cfg.bits_per_word,
+        "axi_w": 32,
+        "axi_words": D // 32,
+        "seed": seed,
+    }
+    (out_dir / "meta.txt").write_text(
+        "".join(f"{k}={v}\n" for k, v in meta.items()), encoding="utf-8"
+    )
+    return meta
+
+
 def export_encoder_cosim(
     out_dir: Path,
     cfg: HDCConfig,

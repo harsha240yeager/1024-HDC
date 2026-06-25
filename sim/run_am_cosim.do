@@ -30,7 +30,7 @@ if {[file exists work]} { vdel -all -lib work }
 vlib work
 
 echo "=== \[3/4\] Compiling popcount_am + testbench ==="
-vlog -sv -quiet rtl/popcount_am.sv tb/tb_am_cosim.sv
+vlog -sv -quiet rtl/pruning_mask.sv rtl/popcount_am.sv tb/tb_am_cosim.sv
 
 echo "=== \[4/4\] Running AM co-simulation ==="
 vsim -quiet -t 1ps work.tb_am_cosim +CASES=$NUM_CASES +VECDIR=$VECDIR

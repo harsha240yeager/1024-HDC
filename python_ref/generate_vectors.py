@@ -23,6 +23,7 @@ from hdc_ref import (
     export_bundle_cosim,
     export_core_cosim,
     export_encoder_cosim,
+    export_pruning_mask_cosim,
 )
 
 
@@ -39,6 +40,8 @@ def main() -> None:
                    help="emit flat bundle $readmemh files for tb_bundle_cosim.sv")
     p.add_argument("--am", action="store_true",
                    help="emit flat associative-memory $readmemh files for tb_am_cosim.sv")
+    p.add_argument("--pruning-mask", dest="pruning_mask", action="store_true",
+                   help="emit pruning-mask $readmemh files for tb_pruning_mask_cosim.sv")
     p.add_argument("--encoder", action="store_true",
                    help="emit encoder $readmemh files + item_mem .mem for tb_encoder_cosim.sv")
     p.add_argument("--core", action="store_true",
@@ -49,7 +52,11 @@ def main() -> None:
     p.add_argument("--nclass", type=int, default=8, help="AM: number of class prototypes")
     args = p.parse_args()
 
-    cfg = HDCConfig(D=args.D, seed=args.seed)
+    bits_per_word = 64
+    if args.D % bits_per_word != 0:
+        p.error(f"--D ({args.D}) must be a multiple of {bits_per_word}")
+    cfg = HDCConfig(D=args.D, words=args.D // bits_per_word,
+                    bits_per_word=bits_per_word, seed=args.seed)
 
     if args.core:
         out_dir = args.out_dir or Path("vectors/cosim_core")
@@ -69,6 +76,11 @@ def main() -> None:
         meta = export_am_cosim(out_dir, cfg, args.count, args.seed, n_class=args.nclass)
         print(f"Wrote {meta['count']} AM cases (D={meta['D']}, "
               f"n_class={meta['n_class']}) to {out_dir.resolve()}")
+    elif args.pruning_mask:
+        out_dir = args.out_dir or Path("vectors/cosim_pruning_mask")
+        meta = export_pruning_mask_cosim(out_dir, cfg, args.count, args.seed)
+        print(f"Wrote {meta['count']} pruning-mask cases (D={meta['D']}, "
+              f"axi_words={meta['axi_words']}) to {out_dir.resolve()}")
     elif args.bundle:
         out_dir = args.out_dir or Path("vectors/cosim_bundle")
         meta = export_bundle_cosim(

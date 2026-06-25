@@ -64,6 +64,7 @@ module hdc_core_top #(
     logic         enc_busy;
     logic         am_busy;
     logic [D-1:0] enc_query;
+    logic [D-1:0] mask_bits;
 
     assign busy = enc_busy | am_busy;
 
@@ -82,6 +83,25 @@ module hdc_core_top #(
     );
 
     // ------------------------------------------------------------------
+    // Pruning mask (Hook A, research plan §5.3.3): holds the per-bit mask that
+    // gates the AM Hamming distance.  The legacy full-width mask_we/mask_vec
+    // load path drives the parallel load_full port (word-addressed port unused
+    // here; reserved for a future AXI-Lite 0x400 map).  Defaults to all-ones.
+    // ------------------------------------------------------------------
+    pruning_mask #(
+        .D(D)
+    ) u_mask (
+        .clk      (clk),
+        .rst_n    (rst_n),
+        .wr_en    (1'b0),
+        .wr_addr  ('0),
+        .wr_data  ('0),
+        .load_full(mask_we),
+        .load_vec (mask_vec),
+        .mask_out (mask_bits)
+    );
+
+    // ------------------------------------------------------------------
     // Associative memory: query -> nearest prototype (pipelined classify)
     // ------------------------------------------------------------------
     popcount_am #(
@@ -92,8 +112,7 @@ module hdc_core_top #(
         .proto_we (proto_we),
         .load_idx (proto_idx),
         .load_vec (proto_vec),
-        .mask_we  (mask_we),
-        .mask_vec (mask_vec),
+        .mask_in  (mask_bits),
         .q_valid  (enc_out_valid),
         .query_vec(enc_query),
         .am_busy  (am_busy),

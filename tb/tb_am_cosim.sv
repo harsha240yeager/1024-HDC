@@ -40,6 +40,24 @@ module tb_am_cosim;
     logic [IDX_W-1:0]   best_idx;
     logic [DIST_W-1:0]  best_dist;
 
+    // Mask now lives in the dedicated pruning_mask module (research plan §5.3.3);
+    // the TB drives it through the full-width parallel-load port using the same
+    // mask_we/mask_vec timing, so am_*.hex golden vectors are unchanged.
+    logic [D-1:0] mask_bits;
+
+    pruning_mask #(
+        .D(D)
+    ) u_mask (
+        .clk      (clk),
+        .rst_n    (rst_n),
+        .wr_en    (1'b0),
+        .wr_addr  ('0),
+        .wr_data  ('0),
+        .load_full(mask_we),
+        .load_vec (mask_vec),
+        .mask_out (mask_bits)
+    );
+
     popcount_am #(
         .WORDS(WORDS), .BITS_PER_WORD(BITS_PER_WORD), .N_CLASS(N_CLASS)
     ) dut (
@@ -48,8 +66,7 @@ module tb_am_cosim;
         .proto_we (proto_we),
         .load_idx (load_idx),
         .load_vec (load_vec),
-        .mask_we  (mask_we),
-        .mask_vec (mask_vec),
+        .mask_in  (mask_bits),
         .q_valid  (q_valid),
         .query_vec(query_vec),
         .out_valid(out_valid),
@@ -146,7 +163,18 @@ module tb_am_cosim;
             q_valid   <= 1'b1;
             @(posedge clk);
             q_valid   <= 1'b0;
-            @(posedge clk);   // out_valid asserted, best_idx/best_dist valid
+
+            // Wait for the pipelined classify to finish (out_valid pulse).
+            // The AM takes N_CLASS*(2*WORDS+1) cycles, so a fixed short delay is
+            // not enough -- poll out_valid (with a safety timeout).
+            begin
+                int wcnt;
+                wcnt = 0;
+                while (!out_valid && wcnt < 2000) begin
+                    @(posedge clk);
+                    wcnt++;
+                end
+            end
 
             checked++;
             exp_idx  = exp_mem[c][16 +: IDX_W];

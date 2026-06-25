@@ -33,6 +33,11 @@ module tb_core_cosim;
     parameter int N_CLASS       = 8;
     parameter int CNT_W         = 6;
     parameter int MAX_CASES     = 2000;
+    // Item-memory ROM init files (overridable for the D-sweep so the ROMs match
+    // the swept D; defaults are the seed-42 D=1024 set used by every other run).
+    parameter     CH_MEM        = "python_ref/vectors/cosim_core/item_mem_channel.mem";
+    parameter     FT_MEM        = "python_ref/vectors/cosim_core/item_mem_feature.mem";
+    parameter     VAL_MEM       = "python_ref/vectors/cosim_core/item_mem_value.mem";
     localparam int D        = WORDS * BITS_PER_WORD;
     localparam int N_PAIRS  = N_CH * N_FEAT;
     localparam int LEVEL_W  = (N_VAL   <= 1) ? 1 : $clog2(N_VAL);
@@ -56,7 +61,8 @@ module tb_core_cosim;
     hdc_core_top #(
         .WORDS(WORDS), .BITS_PER_WORD(BITS_PER_WORD),
         .N_CH(N_CH), .N_FEAT(N_FEAT), .N_VAL(N_VAL),
-        .N_CLASS(N_CLASS), .CNT_W(CNT_W)
+        .N_CLASS(N_CLASS), .CNT_W(CNT_W),
+        .CH_MEM(CH_MEM), .FT_MEM(FT_MEM), .VAL_MEM(VAL_MEM)
     ) dut (
         .clk        (clk),
         .rst_n      (rst_n),
