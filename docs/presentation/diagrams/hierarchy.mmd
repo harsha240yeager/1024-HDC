@@ -1,0 +1,22 @@
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Segoe UI, Arial','fontSize':'15px','primaryColor':'#eff6ff','primaryBorderColor':'#2563eb','lineColor':'#0a2540'}}}%%
+flowchart TB
+  TOP["hdc_core_top"]
+  ENC["encoder_top"]
+  IM["item_mem"]
+  BU["bundle_unit"]
+  XP["xor_permute_top"]
+  PS["permute_stage"]
+  MASK["pruning_mask<br/>(new — Hook A)"]
+  AM["popcount_am"]
+  TOP --> ENC
+  TOP --> MASK
+  TOP --> AM
+  ENC --> IM
+  ENC --> XP
+  ENC --> BU
+  XP --> PS
+  MASK -. mask_in .-> AM
+  classDef base fill:#eff6ff,stroke:#2563eb,color:#0a2540;
+  classDef hook fill:#fff7ed,stroke:#b45309,color:#7c2d12,stroke-width:2px;
+  class TOP,ENC,IM,BU,XP,PS,AM base;
+  class MASK hook;

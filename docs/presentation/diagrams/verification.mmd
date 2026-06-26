@@ -1,0 +1,20 @@
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Segoe UI, Arial','fontSize':'16px','primaryColor':'#eff6ff','primaryBorderColor':'#2563eb','lineColor':'#0a2540'}}}%%
+flowchart LR
+  PY["Python golden model<br/>hdc_ref.py"]
+  VEC["generate vectors<br/>stimulus + expected"]
+  RTL["RTL block<br/>(SystemVerilog)"]
+  SIM["co-sim<br/>ModelSim / xsim"]
+  CHK{"bit-exact<br/>match?"}
+  PASS["PASS<br/>(0 mismatches)"]
+  FAIL["FAIL<br/>$fatal"]
+  PY --> VEC
+  VEC --> SIM
+  RTL --> SIM
+  SIM --> CHK
+  CHK -->|yes| PASS
+  CHK -->|no| FAIL
+  classDef py fill:#ecfdf5,stroke:#059669,color:#064e3b;
+  classDef rtl fill:#eff6ff,stroke:#2563eb,color:#0a2540;
+  classDef pass fill:#dcfce7,stroke:#16a34a,color:#14532d;
+  classDef fail fill:#fee2e2,stroke:#dc2626,color:#7f1d1d;
+  class PY,VEC py; class RTL,SIM rtl; class PASS pass; class FAIL fail;

@@ -1,0 +1,16 @@
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Segoe UI, Arial','fontSize':'16px','primaryColor':'#eff6ff','primaryBorderColor':'#2563eb','lineColor':'#0a2540'}}}%%
+flowchart LR
+  WIN["EMG window<br/>4 ch x 5 feat<br/>16 levels"]
+  IM["item_mem<br/>channel / feature /<br/>value HV ROMs"]
+  BP["bind &oplus; permute<br/>20 (ch,feat) pairs<br/>position-encoded"]
+  BUN["bundle<br/>majority vote<br/>→ query HV"]
+  MASK["pruning_mask<br/>which bits count"]
+  AM["popcount_am<br/>masked Hamming<br/>argmin → class"]
+  WIN --> IM --> BP --> BUN --> AM
+  MASK -. mask_in .-> AM
+  classDef a fill:#f1f5f9,stroke:#475569,color:#0a2540;
+  classDef b fill:#eff6ff,stroke:#2563eb,color:#0a2540;
+  classDef c fill:#ecfdf5,stroke:#059669,color:#064e3b;
+  classDef d fill:#fef2f2,stroke:#dc2626,color:#7f1d1d;
+  classDef hook fill:#fff7ed,stroke:#b45309,color:#7c2d12;
+  class WIN a; class IM,BP b; class BUN c; class AM d; class MASK hook;

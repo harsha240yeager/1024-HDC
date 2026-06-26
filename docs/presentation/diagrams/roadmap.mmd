@@ -1,0 +1,22 @@
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Segoe UI, Arial','fontSize':'14px'}}}%%
+gantt
+  dateFormat  YYYY-MM-DD
+  axisFormat  %b
+  title HDC-on-Zynq — research plan vs actual (DATE 2027)
+
+  section Done
+  Python golden + 90% baselines      :done, m1, 2026-05-01, 30d
+  Core RTL + 7 co-sim harnesses       :done, m2, 2026-05-20, 35d
+  pruning_mask + D-sweep (synth+cosim) :done, m2b, 2026-06-10, 16d
+  Phases 1-3 board bring-up           :done, m3, 2026-06-01, 25d
+  EMG board replay PASS (74.24%)      :done, m4, 2026-06-20, 6d
+
+  section Next
+  INA219 energy measurement           :active, n1, 2026-06-26, 10d
+  Hook A Pareto (CNT_W + prune)        :n2, after n1, 20d
+  Twist 1 informed vs random          :n3, after n1, 18d
+  Twist 2 cross-subject transfer      :n4, after n2, 18d
+  Baselines (ARM HDC, int8 MLP)        :n5, after n2, 20d
+
+  section Paper
+  Figures + DATE 2027 draft            :p1, 2026-09-01, 30d

@@ -46,3 +46,8 @@ vivado_pid*.str
 
 # HSI BSP regen scratch (regenerate_bsp_from_xsa.tcl)
 board/HDC_DMA/platform/**/bsp/_hsi_regen/
+
+# Marp presentation build artifacts (regenerate: npm i && marp slides.md)
+docs/presentation/node_modules/
+docs/presentation/package-lock.json
+docs/presentation/*.log

@@ -1,0 +1,27 @@
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Segoe UI, Arial','fontSize':'16px','primaryColor':'#eff6ff','primaryBorderColor':'#2563eb','lineColor':'#0a2540'}}}%%
+flowchart LR
+  subgraph PS["Processing System — ARM Cortex-A9 @ 650 MHz"]
+    direction TB
+    APP["Bare-metal C app"]
+    DDR["DDR memory<br/>EMG windows"]
+    DMA["AXI DMA engine<br/>scatter-gather"]
+    APP --> DDR --> DMA
+  end
+  subgraph PL["Programmable Logic — FPGA @ 100 MHz"]
+    direction TB
+    WRAP["AXI4-Lite control +<br/>AXI4-Stream data"]
+    ENC["encoder_top<br/>window → query HV"]
+    MASK["pruning_mask<br/>Hook A"]
+    AM["popcount_am<br/>nearest prototype"]
+    WRAP --> ENC --> AM
+    MASK -. gates bits .-> AM
+  end
+  DMA == stream windows ==> WRAP
+  AM == class label ==> WRAP
+  WRAP == results ==> DMA
+  classDef ps fill:#f1f5f9,stroke:#475569,color:#0a2540;
+  classDef pl fill:#eff6ff,stroke:#2563eb,color:#0a2540;
+  classDef hook fill:#fff7ed,stroke:#b45309,color:#7c2d12;
+  class APP,DDR,DMA ps;
+  class WRAP,ENC,AM pl;
+  class MASK hook;
