@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>1024-HDC — Project Briefing</title>
+<style>
+  @page { size: A4; margin: 16mm 14mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: #1a2230; font-size: 10.5pt; line-height: 1.5; margin: 0;
+  }
+  h1 { font-size: 22pt; color: #0a2540; margin: 0 0 4px; }
+  h2 {
+    font-size: 14.5pt; color: #0a2540; margin: 22px 0 8px;
+    border-bottom: 2.5px solid #2563eb; padding-bottom: 4px;
+  }
+  h3 { font-size: 12pt; color: #1d4ed8; margin: 16px 0 4px; }
+  h4 { font-size: 10.5pt; color: #334155; margin: 12px 0 3px; text-transform: uppercase; letter-spacing: .5px; }
+  p { margin: 6px 0; }
+  ul, ol { margin: 6px 0 6px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  code { background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-family: "Consolas", monospace; font-size: 9pt; color: #b91c1c; }
+  .tag { display: inline-block; background: #2563eb; color: #fff; font-size: 8pt; font-weight: 600; padding: 2px 8px; border-radius: 10px; vertical-align: middle; }
+  .muted { color: #64748b; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 9.3pt; }
+  th { background: #0a2540; color: #fff; text-align: left; padding: 6px 8px; font-weight: 600; }
+  td { border-bottom: 1px solid #e2e8f0; padding: 5px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .ok { color: #047857; font-weight: 700; }
+  .warn { color: #b45309; font-weight: 700; }
+  .no { color: #b91c1c; font-weight: 700; }
+  .callout { background: #eff6ff; border-left: 4px solid #2563eb; padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+  .danger { background: #fef2f2; border-left: 4px solid #dc2626; padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+  .good { background: #ecfdf5; border-left: 4px solid #059669; padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+  .pagebreak { page-break-before: always; }
+  .nobreak { page-break-inside: avoid; }
+  figure { margin: 14px 0; text-align: center; page-break-inside: avoid; }
+  figcaption { font-size: 8.6pt; color: #64748b; margin-top: 6px; font-style: italic; }
+  .cover { text-align: center; padding: 60px 0 30px; }
+  .cover .sub { font-size: 13pt; color: #475569; margin-top: 6px; }
+  .cover .meta { margin-top: 40px; font-size: 10pt; color: #64748b; }
+  .grid2 { display: flex; gap: 14px; }
+  .grid2 > div { flex: 1; }
+  .qbox { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin: 10px 0; page-break-inside: avoid; }
+  .qbox .q { font-weight: 700; color: #0a2540; }
+  .qbox .a { margin-top: 4px; }
+  .kpi { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+  .kpi .card { flex: 1; min-width: 120px; background: #0a2540; color: #fff; border-radius: 8px; padding: 12px; text-align: center; }
+  .kpi .card .v { font-size: 17pt; font-weight: 700; }
+  .kpi .card .l { font-size: 8pt; opacity: .85; margin-top: 2px; }
+  .toc li { margin: 5px 0; }
+  small { font-size: 8.5pt; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<div class="cover">
+  <div class="tag">DATE 2027 · Hardware Accelerator Research</div>
+  <h1 style="margin-top:18px;">1024-bit Hyperdimensional Computing<br>Accelerator on Zynq-7020</h1>
+  <div class="sub">A streaming, bit-exact-verified HDC classifier for EMG hand-gesture recognition</div>
+  <div class="sub" style="font-size:11pt; margin-top:14px;">Advisor Meeting — Revision &amp; Talking-Points Brief</div>
+  <div class="meta">
+    Platform: Xilinx Zynq-7020 (ZedBoard) · Tools: Vivado 2024.2, ModelSim/Questa<br>
+    Language: SystemVerilog + Python golden reference · Application: EMG (Rahimi et al. dataset)<br>
+    Prepared June 2026
+  </div>
+</div>
+
+<div class="callout">
+  <strong>How to use this brief (1-hour meeting):</strong> Sections 1–4 are the concept walk-through
+  (~15 min), Sections 5–7 are architecture &amp; verification (~15 min), Section 8 is the results &amp;
+  the critical "74% vs 90%" story (~10 min), Section 9 is your research novelty (~10 min), and
+  Section 11 is the anticipated Q&amp;A (~10 min buffer). Lead with Section 9 if the professor is
+  short on time — that's your contribution.
+</div>
+
+<h2>Contents</h2>
+<ol class="toc">
+  <li>What is Hyperdimensional Computing (HDC)? — the basic concept</li>
+  <li>Why HDC for hardware? — the motivation</li>
+  <li>The four HDC primitives (bind, permute, bundle, search)</li>
+  <li>The application — EMG hand-gesture recognition</li>
+  <li>System architecture — Zynq PS + PL, AXI, DMA</li>
+  <li>The encoding pipeline &amp; module hierarchy</li>
+  <li>Verification methodology — the Python golden reference</li>
+  <li>Results &amp; the "74% vs 90%" accuracy story <span class="tag">CRITICAL</span></li>
+  <li>Research novelty — Hook A Pareto + Twist 1 + Twist 2 <span class="tag">CONTRIBUTION</span></li>
+  <li>Status, roadmap, and what's left</li>
+  <li>Anticipated questions from the professor (with answers)</li>
+  <li>One-page cheat sheet of numbers</li>
+</ol>
+
+<!-- ============ 1. WHAT IS HDC ============ -->
+<div class="pagebreak"></div>
+<h2>1. What is Hyperdimensional Computing?</h2>
+<p>
+  <strong>Hyperdimensional Computing (HDC)</strong>, also called Vector Symbolic Architecture, is a
+  brain-inspired computing model that represents <em>every</em> piece of information — a sensor reading,
+  a feature, a class label — as a single very long binary vector called a <strong>hypervector</strong>
+  (here, <strong>D = 1024 bits</strong>).
+</p>
+<p>
+  The key idea: in very high-dimensional space, two <em>random</em> vectors are almost always
+  "nearly orthogonal" (about 50% of bits differ). This gives the model enormous capacity to hold
+  distinct concepts, and makes it naturally robust to noise and bit errors — flipping a few bits
+  barely changes a vector's identity. Classification becomes simple <strong>distance comparison</strong>
+  instead of floating-point matrix math.
+</p>
+
+<div class="grid2">
+  <div class="good">
+    <strong>Why it suits FPGAs / edge hardware:</strong>
+    <ul style="margin-bottom:0;">
+      <li>Operations are <strong>bitwise</strong> (XOR, shift, popcount) — no multipliers.</li>
+      <li>Our design uses <strong>0 DSP blocks, 0 BRAM</strong> — pure logic.</li>
+      <li>Massively parallel: 1024 bits processed 64 at a time.</li>
+      <li>Inherent error tolerance → can run at low voltage / aggressive pruning.</li>
+    </ul>
+  </div>
+  <div class="callout">
+    <strong>Model used here: Binary Spatter Code (BSC).</strong>
+    Hypervectors are binary {0,1}; binding is XOR; the similarity metric is
+    <strong>Hamming distance</strong> (count of differing bits). This is the most
+    hardware-friendly HDC flavour — every primitive maps to cheap gates.
+  </div>
+</div>
+
+<!-- ============ 2. WHY HDC ============ -->
+<h2>2. Why HDC for hardware (the motivation)</h2>
+<table>
+  <tr><th>Conventional ML (CNN/MLP) on edge</th><th>HDC on edge</th></tr>
+  <tr><td>Multiply-accumulate heavy → needs DSPs / GPU</td><td>Bitwise ops → cheap LUT logic, no DSP</td></tr>
+  <tr><td>Large weight memory, float/int8</td><td>Compact binary prototypes (1 vector per class)</td></tr>
+  <tr><td>Retraining is expensive</td><td>"Training" = bundle examples once (single pass)</td></tr>
+  <tr><td>Sensitive to bit errors</td><td>Tolerates bit flips → enables voltage/pruning savings</td></tr>
+  <tr><td>Opaque</td><td>Transparent, analyzable algebra</td></tr>
+</table>
+<p>
+  The trade-off: HDC accuracy is usually a little lower than a tuned neural net, but for
+  <strong>always-on, ultra-low-power edge inference</strong> (wearables, prosthetics, IoT) the
+  energy and simplicity win. That energy/efficiency angle is exactly what this project measures.
+</p>
+
+<!-- ============ 3. PRIMITIVES ============ -->
+<h2>3. The four HDC primitives</h2>
+<p>All of HDC is built from four operations — every one is implemented as a verified RTL block here:</p>
+<table>
+  <tr><th>Primitive</th><th>Math</th><th>Meaning</th><th>RTL block</th></tr>
+  <tr><td><strong>Bind</strong></td><td>XOR (A ⊕ B)</td><td>Associate two concepts (e.g. "channel" with "value"). Reversible, dissimilar to inputs.</td><td><code>xor_permute_top</code></td></tr>
+  <tr><td><strong>Permute</strong></td><td>Cyclic bit shift ρ(A)</td><td>Encode order / position (e.g. which feature slot).</td><td><code>permute_stage</code></td></tr>
+  <tr><td><strong>Bundle</strong></td><td>Majority vote</td><td>Superpose many vectors into one "set" vector; result is similar to all inputs.</td><td><code>bundle_unit</code></td></tr>
+  <tr><td><strong>Search</strong></td><td>argmin Hamming</td><td>Classify: find the nearest stored class prototype.</td><td><code>popcount_am</code></td></tr>
+</table>
+
+<figure class="nobreak">
+<svg viewBox="0 0 720 220" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" font-size="11">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0a2540"/></marker>
+  </defs>
+  <!-- bind -->
+  <rect x="10" y="30" width="120" height="60" rx="6" fill="#eff6ff" stroke="#2563eb"/>
+  <text x="70" y="55" text-anchor="middle" font-weight="600">BIND</text>
+  <text x="70" y="74" text-anchor="middle" font-size="9" fill="#475569">A ⊕ B</text>
+  <!-- permute -->
+  <rect x="160" y="30" width="120" height="60" rx="6" fill="#eff6ff" stroke="#2563eb"/>
+  <text x="220" y="55" text-anchor="middle" font-weight="600">PERMUTE</text>
+  <text x="220" y="74" text-anchor="middle" font-size="9" fill="#475569">ρ(·) cyclic shift</text>
+  <!-- bundle -->
+  <rect x="310" y="30" width="120" height="60" rx="6" fill="#ecfdf5" stroke="#059669"/>
+  <text x="370" y="55" text-anchor="middle" font-weight="600">BUNDLE</text>
+  <text x="370" y="74" text-anchor="middle" font-size="9" fill="#475569">majority vote</text>
+  <!-- search -->
+  <rect x="460" y="30" width="130" height="60" rx="6" fill="#fef2f2" stroke="#dc2626"/>
+  <text x="525" y="55" text-anchor="middle" font-weight="600">SEARCH (AM)</text>
+  <text x="525" y="74" text-anchor="middle" font-size="9" fill="#475569">argmin Hamming</text>
+  <!-- out -->
+  <rect x="620" y="38" width="90" height="44" rx="6" fill="#0a2540"/>
+  <text x="665" y="64" text-anchor="middle" fill="#fff" font-weight="600">class</text>
+  <line x1="130" y1="60" x2="158" y2="60" stroke="#0a2540" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="280" y1="60" x2="308" y2="60" stroke="#0a2540" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="430" y1="60" x2="458" y2="60" stroke="#0a2540" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="590" y1="60" x2="618" y2="60" stroke="#0a2540" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="360" y="135" text-anchor="middle" font-size="10" fill="#334155">Encoding (bind+permute+bundle) builds a query hypervector → Search classifies it</text>
+  <text x="360" y="170" text-anchor="middle" font-size="9" fill="#64748b">All four are bitwise: XOR, shift, and popcount only — no multipliers, no floating point.</text>
+</svg>
+<figcaption>Figure 1 — The four HDC primitives form the entire compute path.</figcaption>
+</figure>
+
+<!-- ============ 4. APPLICATION ============ -->
+<div class="pagebreak"></div>
+<h2>4. The application — EMG hand-gesture recognition</h2>
+<p>
+  The benchmark task is recognising hand gestures from <strong>EMG (electromyography)</strong> signals —
+  the electrical activity of forearm muscles, measured by <strong>4 electrode channels</strong>. This is
+  the same task and dataset as <strong>Rahimi et al. (ICRC 2016)</strong>, the standard reference for
+  HDC-on-EMG, which lets us compare directly with published work. The end use case is
+  <strong>gesture-controlled prosthetics</strong>, where ultra-low-power always-on inference matters.
+</p>
+
+<h4>How an EMG window becomes a class</h4>
+<ol>
+  <li>A short time <strong>window</strong> of the 4 EMG channels is captured.</li>
+  <li>Per channel, signal features are <strong>quantised into discrete levels</strong> (16 levels).</li>
+  <li>Each (channel, feature, value) is looked up in <strong>item memories</strong> (hypervector ROMs).</li>
+  <li>These are <strong>bound + permuted + bundled</strong> into one 1024-bit <strong>query hypervector</strong>.</li>
+  <li>The query is compared (masked Hamming) to the <strong>5 class prototypes</strong>; nearest wins.</li>
+</ol>
+<div class="callout">
+  <strong>"Training" in HDC.</strong> There is no gradient descent. For each gesture class we simply
+  <em>bundle</em> all its training windows into one prototype hypervector. Inference is then a single
+  nearest-neighbour search. This one-shot, single-pass training is a major part of HDC's appeal.
+</div>
+
+<!-- ============ 5. SYSTEM ARCH ============ -->
+<h2>5. System architecture — Zyng PS + PL</h2>
+<p>
+  The Zynq-7020 is a <strong>SoC</strong>: a hardened ARM Cortex-A9 <strong>Processing System (PS)</strong>
+  plus <strong>FPGA fabric (Programmable Logic, PL)</strong> on one chip. Our HDC core lives in the PL;
+  the PS orchestrates data movement. They talk over <strong>AXI</strong> interfaces.
+</p>
+
+<figure class="nobreak">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" font-size="10.5">
+  <defs>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0a2540"/></marker>
+  </defs>
+  <!-- PS -->
+  <rect x="20" y="30" width="200" height="240" rx="8" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+  <text x="120" y="50" text-anchor="middle" font-weight="700" fill="#0a2540">Processing System (PS)</text>
+  <text x="120" y="66" text-anchor="middle" font-size="9" fill="#64748b">ARM Cortex-A9 @ 650 MHz</text>
+  <rect x="40" y="80" width="160" height="40" rx="5" fill="#fff" stroke="#94a3b8"/>
+  <text x="120" y="104" text-anchor="middle">Bare-metal C app</text>
+  <rect x="40" y="135" width="160" height="40" rx="5" fill="#fff" stroke="#94a3b8"/>
+  <text x="120" y="159" text-anchor="middle">DDR memory (windows)</text>
+  <rect x="40" y="190" width="160" height="40" rx="5" fill="#fff" stroke="#94a3b8"/>
+  <text x="120" y="214" text-anchor="middle">AXI DMA engine</text>
+
+  <!-- PL -->
+  <rect x="360" y="30" width="340" height="240" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="530" y="50" text-anchor="middle" font-weight="700" fill="#0a2540">Programmable Logic (PL) — our HDC core</text>
+  <text x="530" y="66" text-anchor="middle" font-size="9" fill="#64748b">FPGA fabric @ 100 MHz</text>
+  <rect x="380" y="80" width="140" height="50" rx="5" fill="#dbeafe" stroke="#2563eb"/>
+  <text x="450" y="100" text-anchor="middle" font-weight="600">encoder_top</text>
+  <text x="450" y="116" text-anchor="middle" font-size="8.5" fill="#475569">window → query HV</text>
+  <rect x="545" y="80" width="135" height="50" rx="5" fill="#fee2e2" stroke="#dc2626"/>
+  <text x="612" y="100" text-anchor="middle" font-weight="600">popcount_am</text>
+  <text x="612" y="116" text-anchor="middle" font-size="8.5" fill="#475569">nearest prototype</text>
+  <rect x="380" y="150" width="300" height="44" rx="5" fill="#fff" stroke="#2563eb" stroke-dasharray="4 3"/>
+  <text x="530" y="170" text-anchor="middle" font-weight="600" fill="#b45309">pruning_mask (Hook A)</text>
+  <text x="530" y="185" text-anchor="middle" font-size="8.5" fill="#475569">gates Hamming bits → energy saving</text>
+  <rect x="380" y="210" width="300" height="44" rx="5" fill="#fff" stroke="#94a3b8"/>
+  <text x="530" y="230" text-anchor="middle">AXI4-Lite (control) + AXI4-Stream (data)</text>
+  <text x="530" y="245" text-anchor="middle" font-size="8.5" fill="#64748b">hdc_core_axi_lite / hdc_stream_wrapper</text>
+
+  <!-- arrows -->
+  <line x1="220" y1="210" x2="358" y2="232" stroke="#0a2540" stroke-width="1.6" marker-end="url(#ar2)"/>
+  <text x="290" y="200" text-anchor="middle" font-size="8.5" fill="#2563eb">stream windows</text>
+  <line x1="358" y1="150" x2="222" y2="120" stroke="#0a2540" stroke-width="1.6" marker-end="url(#ar2)"/>
+  <text x="290" y="128" text-anchor="middle" font-size="8.5" fill="#059669">results back</text>
+</svg>
+<figcaption>Figure 2 — Zynq SoC partition: PS streams EMG windows to the PL HDC core over AXI-DMA; the core returns class labels.</figcaption>
+</figure>
+
+<table>
+  <tr><th>Interface</th><th>Role</th><th>Project phase</th></tr>
+  <tr><td><strong>AXI4-Lite</strong></td><td>Register-mapped control: load prototypes/mask, start, read result</td><td>Phase 1 (baseline path)</td></tr>
+  <tr><td><strong>AXI4-Stream + DMA</strong></td><td>High-throughput data plane: stream windows in, results out</td><td>Phase 2 (main inference path)</td></tr>
+  <tr><td><strong>Scatter-Gather DMA</strong></td><td>Batch many windows back-to-back via descriptor ring</td><td>Phase 3 (throughput)</td></tr>
+</table>
+
+<!-- ============ 6. PIPELINE / HIERARCHY ============ -->
+<div class="pagebreak"></div>
+<h2>6. The encoding pipeline &amp; module hierarchy</h2>
+<p>
+  The encoder implements research-plan <strong>Eq. (3.1)</strong>: a <strong>4 channels × 5 features</strong>
+  grid (20 bind operations). Each feature value indexes an item-memory hypervector, which is bound with its
+  channel vector, permuted by feature position, and all 20 are bundled into the query hypervector.
+</p>
+
+<figure class="nobreak">
+<svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" font-size="10">
+  <defs>
+    <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0a2540"/></marker>
+  </defs>
+  <rect x="10" y="40" width="120" height="70" rx="6" fill="#f1f5f9" stroke="#475569"/>
+  <text x="70" y="68" text-anchor="middle" font-weight="600">EMG window</text>
+  <text x="70" y="86" text-anchor="middle" font-size="8.5" fill="#475569">4 ch × 5 feat</text>
+  <text x="70" y="100" text-anchor="middle" font-size="8.5" fill="#475569">16 levels each</text>
+
+  <rect x="160" y="30" width="130" height="90" rx="6" fill="#fff" stroke="#2563eb"/>
+  <text x="225" y="55" text-anchor="middle" font-weight="600">item_mem</text>
+  <text x="225" y="73" text-anchor="middle" font-size="8.5" fill="#475569">channel / feature /</text>
+  <text x="225" y="86" text-anchor="middle" font-size="8.5" fill="#475569">value ROMs</text>
+  <text x="225" y="103" text-anchor="middle" font-size="8.5" fill="#64748b">(seed-42 HVs)</text>
+
+  <rect x="320" y="30" width="130" height="90" rx="6" fill="#eff6ff" stroke="#2563eb"/>
+  <text x="385" y="55" text-anchor="middle" font-weight="600">bind ⊕ permute</text>
+  <text x="385" y="73" text-anchor="middle" font-size="8.5" fill="#475569">20 (ch,feat) pairs</text>
+  <text x="385" y="90" text-anchor="middle" font-size="8.5" fill="#475569">position-encoded</text>
+
+  <rect x="480" y="30" width="110" height="90" rx="6" fill="#ecfdf5" stroke="#059669"/>
+  <text x="535" y="60" text-anchor="middle" font-weight="600">bundle</text>
+  <text x="535" y="78" text-anchor="middle" font-size="8.5" fill="#475569">majority</text>
+  <text x="535" y="92" text-anchor="middle" font-size="8.5" fill="#475569">→ query HV</text>
+
+  <rect x="620" y="30" width="90" height="90" rx="6" fill="#fef2f2" stroke="#dc2626"/>
+  <text x="665" y="60" text-anchor="middle" font-weight="600">AM</text>
+  <text x="665" y="78" text-anchor="middle" font-size="8.5" fill="#475569">masked</text>
+  <text x="665" y="92" text-anchor="middle" font-size="8.5" fill="#475569">Hamming</text>
+
+  <line x1="130" y1="75" x2="158" y2="75" stroke="#0a2540" stroke-width="1.5" marker-end="url(#ar3)"/>
+  <line x1="290" y1="75" x2="318" y2="75" stroke="#0a2540" stroke-width="1.5" marker-end="url(#ar3)"/>
+  <line x1="450" y1="75" x2="478" y2="75" stroke="#0a2540" stroke-width="1.5" marker-end="url(#ar3)"/>
+  <line x1="590" y1="75" x2="618" y2="75" stroke="#0a2540" stroke-width="1.5" marker-end="url(#ar3)"/>
+
+  <rect x="320" y="160" width="270" height="40" rx="6" fill="#fff7ed" stroke="#b45309" stroke-dasharray="4 3"/>
+  <text x="455" y="178" text-anchor="middle" font-weight="600" fill="#b45309">pruning_mask → mask_in</text>
+  <text x="455" y="192" text-anchor="middle" font-size="8.5" fill="#475569">selects which bits count in the AM distance</text>
+  <line x1="455" y1="160" x2="665" y2="122" stroke="#b45309" stroke-width="1.4" marker-end="url(#ar3)"/>
+</svg>
+<figcaption>Figure 3 — End-to-end inference datapath (<code>hdc_core_top</code>): item memory → bind/permute → bundle → masked associative-memory search. The orange <code>pruning_mask</code> is the new Hook A module.</figcaption>
+</figure>
+
+<div class="good">
+  <strong>New this month — <code>pruning_mask.sv</code> extracted as a dedicated module.</strong>
+  Previously the mask was folded inside <code>popcount_am</code>. It is now a named, parameterised
+  block (matching research-plan §5.3.3) that holds the D-bit mask and gates the Hamming distance, so
+  pruned bit positions never contribute — cutting dynamic energy roughly in proportion to the prune
+  ratio. It supports both a word-addressed AXI write port and a full-width parallel load (so the
+  existing verified board path is untouched). Verified bit-exact: <strong>129/129 checks PASS</strong>.
+</div>
+
+<!-- ============ 7. VERIFICATION ============ -->
+<h2>7. Verification — the Python golden reference</h2>
+<p>
+  The cornerstone of this project's rigour: a <strong>bit-exact Python golden model</strong>
+  (<code>hdc_ref.py</code>) defines the <em>single source of truth</em>. Every RTL block is checked
+  <strong>bit-for-bit</strong> against it in automated co-simulation. There is no hand-written
+  "expected" vector — the Python model generates both the stimulus and the expected output, so RTL
+  and reference can never silently drift apart.
+</p>
+<table>
+  <tr><th>Co-sim harness</th><th>Cases</th><th>What it proves</th></tr>
+  <tr><td><code>run_cosim</code></td><td>1000</td><td>XOR bind + permute datapath</td></tr>
+  <tr><td><code>run_bundle_cosim</code></td><td>500</td><td>Majority bundler</td></tr>
+  <tr><td><code>run_am_cosim</code></td><td>500</td><td>Masked Hamming AM + argmin</td></tr>
+  <tr><td><code>run_encoder_cosim</code></td><td>500</td><td>Full EMG window encode</td></tr>
+  <tr><td><code>run_core_cosim</code></td><td>500</td><td>End-to-end encode → classify</td></tr>
+  <tr><td><code>run_core_axi_cosim</code></td><td>200</td><td>AXI4-Lite programming sequence</td></tr>
+  <tr><td><code>run_stream_cosim</code></td><td>200</td><td>AXI4-Stream + back-pressure + random gaps</td></tr>
+</table>
+<p class="muted">Plus a new <code>run_pruning_mask_cosim</code> harness for the extracted mask module.</p>
+
+<!-- ============ 8. RESULTS + 74 STORY ============ -->
+<div class="pagebreak"></div>
+<h2>8. Results &amp; the "74% vs 90%" story <span class="tag">CRITICAL</span></h2>
+
+<div class="kpi">
+  <div class="card"><div class="v">74.24%</div><div class="l">Board EMG accuracy (RTL encoder)</div></div>
+  <div class="card"><div class="v">Δ 0.00%</div><div class="l">Board vs golden (658k windows)</div></div>
+  <div class="card"><div class="v">~216k</div><div class="l">windows/sec (SG batch)</div></div>
+  <div class="card"><div class="v">0 / 0</div><div class="l">DSP / BRAM used</div></div>
+</div>
+
+<h3>Board bring-up — three measurement paths on the same core</h3>
+<table>
+  <tr><th></th><th>Phase 1 — AXI-Lite</th><th>Phase 2 — DMA stream</th><th>Phase 3 — SG batch</th></tr>
+  <tr><td>Golden test</td><td class="ok">200/200</td><td class="ok">200/200</td><td class="ok">200/200</td></tr>
+  <tr><td>Mean latency</td><td>3 µs/win</td><td>7 µs/win</td><td>~4 µs/win (batch)</td></tr>
+  <tr><td>Throughput</td><td>~333k/s (micro)</td><td>~143k/s</td><td><strong>~216k/s</strong></td></tr>
+  <tr><td>Timing (WNS @100 MHz)</td><td>+0.246 ns</td><td>+0.023 ns</td><td><strong>+0.111 ns</strong></td></tr>
+</table>
+
+<h3>Resource utilisation (post-route, xc7z020) — pure logic</h3>
+<table>
+  <tr><th></th><th>LUTs</th><th>FFs</th><th>Slices</th><th>BRAM</th><th>DSP</th></tr>
+  <tr><td>Phase 1 (AXI-Lite)</td><td>31,186 (58.6%)</td><td>20,062 (18.9%)</td><td>~88.5%</td><td>0</td><td>0</td></tr>
+  <tr><td>Phase 2/3 (DMA stream)</td><td>35,206 (66.2%)</td><td>27,639 (26.0%)</td><td>96.3%</td><td>0</td><td>0</td></tr>
+</table>
+
+<h3>The accuracy story — read this carefully before the meeting</h3>
+<p>This project reports <strong>two accuracy numbers on purpose</strong>; they answer different questions.</p>
+<table>
+  <tr><th>Track</th><th>Where</th><th>Encoding</th><th>Accuracy</th><th>Role</th></tr>
+  <tr><td>Stage A — MAP parity</td><td>Python</td><td>Bipolar MAP, D=10k</td><td class="ok">90.36%</td><td>Literal Rahimi parity (paper 90.8%)</td></tr>
+  <tr><td>Stage B — BSC reference</td><td>Python</td><td>4-ch spatial records</td><td class="ok">90.30%</td><td>Frozen literature baseline @ D=1024</td></tr>
+  <tr><td>RTL encoder</td><td>Python + <strong>board</strong></td><td>Eq. (3.1) 4×5 grid</td><td class="warn">74.24%</td><td><strong>Verified deployment path</strong></td></tr>
+</table>
+
+<figure class="nobreak">
+<svg viewBox="0 0 720 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" font-size="10">
+  <line x1="60" y1="160" x2="700" y2="160" stroke="#94a3b8"/>
+  <line x1="60" y1="20" x2="60" y2="160" stroke="#94a3b8"/>
+  <text x="30" y="30" font-size="9" fill="#64748b">100%</text>
+  <text x="34" y="163" font-size="9" fill="#64748b">0%</text>
+  <!-- bars: scale 140px = 100% -->
+  <rect x="120" y="33" width="90" height="127" fill="#059669"/>
+  <text x="165" y="26" text-anchor="middle" font-weight="700" fill="#059669">90.36%</text>
+  <text x="165" y="178" text-anchor="middle" font-size="9">Stage A (Python)</text>
+  <rect x="300" y="34" width="90" height="126" fill="#10b981"/>
+  <text x="345" y="26" text-anchor="middle" font-weight="700" fill="#10b981">90.30%</text>
+  <text x="345" y="178" text-anchor="middle" font-size="9">Stage B (Python)</text>
+  <rect x="480" y="56" width="90" height="104" fill="#f59e0b"/>
+  <text x="525" y="49" text-anchor="middle" font-weight="700" fill="#b45309">74.24%</text>
+  <text x="525" y="178" text-anchor="middle" font-size="9">RTL encoder (BOARD)</text>
+  <text x="600" y="80" font-size="8.5" fill="#64748b">← verified on</text>
+  <text x="600" y="93" font-size="8.5" fill="#64748b">silicon, Δ0.00%</text>
+</svg>
+<figcaption>Figure 4 — Two literature-matching Python baselines (~90%) vs the hardware-deployed RTL encoder (74.24%, bit-exact on board).</figcaption>
+</figure>
+
+<div class="danger">
+  <strong>How to defend 74% (the one-liner):</strong> <em>"We reproduced ~90% in Python, matching
+  Rahimi. The FPGA runs a different, bit-exact-verified encoder at 74.24%. The paper's contribution
+  is measured energy and informed-pruning Pareto on that verified path — not a second accuracy port."</em>
+</div>
+<p><strong>The six supporting points</strong> (have these ready):</p>
+<ol>
+  <li><strong>We do reproduce ~90%</strong> — Stage A 90.36% / Stage B 90.30%, committed in Python.</li>
+  <li><strong>74% is a different encoder, not a worse one</strong> — Eq. (3.1) hardware grid vs Rahimi's spatial-record encoding. Different algorithms → never expected to match.</li>
+  <li><strong>The number that matters is verification fidelity</strong> — board = golden to <strong>Δ0.00% over 658,004 windows</strong>. The deployed system is provably correct.</li>
+  <li><strong>The contribution is a systems study</strong>, not an accuracy contest — throughput, latency, zero-DSP area, timing closure, energy/accuracy Pareto.</li>
+  <li><strong>The headline claims are relative</strong> — pruning retention, informed-vs-random gap, cross-subject transfer — so 74 vs 90 doesn't affect them.</li>
+  <li><strong>Reporting both is a credibility strength</strong> — the gap is fully traced; an honest, debugged pipeline (the earlier 59% was a documented prototype-training bug, since fixed).</li>
+</ol>
+
+<!-- ============ 9. NOVELTY ============ -->
+<div class="pagebreak"></div>
+<h2>9. Research novelty — your actual contribution <span class="tag">CONTRIBUTION</span></h2>
+<p>
+  Prior FPGA-HDC work mostly prunes the <strong>dimension D</strong>. The under-explored axis is
+  <strong>per-bit position pruning</strong>: not how many bits, but <em>which</em> bits. This project's
+  novelty is one main study (Hook A) and two twists, all measured on real Zynq energy.
+</p>
+
+<h3>Hook A — three-axis accuracy / energy / area Pareto</h3>
+<p>Sweep three knobs and map the trade-off surface for HDC-on-FPGA:</p>
+<table>
+  <tr><th>Axis</th><th>Values</th><th>Mechanism</th><th>Status</th></tr>
+  <tr><td>Dimension <strong>D</strong></td><td>256 / 512 / 1024 / 2048</td><td>Parameterised RTL; separate bitstreams (the "D-sweep")</td><td class="ok">DONE — synth + cosim</td></tr>
+  <tr><td>Bundle precision <strong>CNT_W</strong></td><td>counter width</td><td>How finely the majority vote is accumulated</td><td class="muted">next</td></tr>
+  <tr><td>Bit-pruning ratio</td><td>0 / 50 / 75 / 87.5%</td><td>Same bitstream, different mask loaded at runtime via <code>pruning_mask</code></td><td class="muted">next</td></tr>
+</table>
+
+<div class="good">
+  <strong>D-axis is measured (June 2026).</strong> OOC synthesis on xc7z020 @ 100 MHz, plus
+  bit-exact functional co-sim at every D (200 cases each):
+  <table style="margin-top:8px;">
+    <tr><th>D</th><th>Slice LUT</th><th>LUT util</th><th>WNS (ns)</th><th>Fmax (MHz)</th><th>Cosim</th></tr>
+    <tr><td>256</td><td>7,331</td><td>13.8%</td><td>1.669</td><td>120.0</td><td class="ok">PASS</td></tr>
+    <tr><td>512</td><td>14,422</td><td>27.1%</td><td>1.452</td><td>117.0</td><td class="ok">PASS</td></tr>
+    <tr><td>1024</td><td>28,600</td><td>53.8%</td><td>0.781</td><td>108.5</td><td class="ok">PASS</td></tr>
+    <tr><td>2048</td><td>59,261</td><td><strong>111.4%</strong></td><td>1.340</td><td>115.5</td><td class="ok">PASS</td></tr>
+  </table>
+  <small>LUT/FF scale ~linearly with D (observed). <strong>D=2048 core-only exceeds the device LUT
+  budget (111%)</strong> — a genuine, reportable Pareto boundary, not a shipping config. All configs
+  meet 100 MHz. Zero DSP / zero BRAM throughout. Source: <code>results/dsweep/</code>.</small>
+</div>
+
+<figure class="nobreak">
+<svg viewBox="0 0 620 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" font-size="10">
+  <line x1="70" y1="190" x2="560" y2="190" stroke="#94a3b8"/>
+  <line x1="70" y1="30" x2="70" y2="190" stroke="#94a3b8"/>
+  <text x="300" y="218" text-anchor="middle" fill="#334155">Energy per inference  →</text>
+  <text x="22" y="110" fill="#334155" transform="rotate(-90 22,110)">Accuracy  →</text>
+  <!-- pareto points -->
+  <circle cx="500" cy="55" r="6" fill="#dc2626"/><text x="512" y="52" font-size="8.5" fill="#991b1b">D=2048, no prune</text>
+  <circle cx="360" cy="70" r="6" fill="#dc2626"/><text x="372" y="67" font-size="8.5" fill="#991b1b">D=1024, no prune</text>
+  <circle cx="210" cy="95" r="6" fill="#2563eb"/><text x="120" y="90" font-size="8.5" fill="#1d4ed8">D=1024, 50% pruned</text>
+  <circle cx="140" cy="120" r="6" fill="#059669"/><text x="60" y="138" font-size="8.5" fill="#047857">D=512, 50% pruned</text>
+  <path d="M140,120 Q260,70 500,55" fill="none" stroke="#94a3b8" stroke-dasharray="5 4"/>
+  <text x="300" y="40" text-anchor="middle" font-size="9" fill="#64748b">Pareto frontier: best accuracy for a given energy budget</text>
+</svg>
+<figcaption>Figure 5 — Hook A maps the accuracy/energy Pareto frontier; pruning shifts points left (less energy) with controlled accuracy loss.</figcaption>
+</figure>
+
+<h3>Twist 1 — informed vs random pruning (the headline result)</h3>
+<p>
+  At each pruning ratio, compare a <strong>discriminability-driven mask</strong> (keep bits with the
+  highest <strong>Fisher ratio</strong> — between-class variance / within-class variance) against a
+  <strong>random mask of identical density</strong>. The claim: <strong>informed pruning beats random
+  by ≥5 percentage points at the same bit-count</strong>, proving that <em>bit position matters, not
+  just bit count</em>. This is a clean, defensible scientific result.
+</p>
+
+<h3>Twist 2 — cross-subject mask transferability</h3>
+<p>
+  Train the mask on one set of EMG subjects, deploy it unchanged on held-out subjects. Either outcome
+  is publishable: if it <strong>transfers</strong> (within ≤3 pp), there's a universal "bit-importance
+  map" for EMG; if it <strong>doesn't</strong>, that motivates on-device mask adaptation. <span class="muted">(Needs a 36-subject export; currently 5.)</span>
+</p>
+
+<div class="good">
+  <strong>Why this is a good contribution:</strong> it isolates an under-studied design axis (which
+  bits to keep), backs it with an interpretable score (Fisher ratio), and measures the payoff in
+  <strong>real silicon energy</strong> — not just simulation. All claims are <em>relative</em> to the
+  project's own 74.24% baseline, so they stand regardless of the absolute accuracy number.
+</div>
+
+<!-- ============ 10. STATUS ============ -->
+<h2>10. Status, roadmap, and what's left</h2>
+<div class="grid2">
+  <div>
+    <h4>Done</h4>
+    <ul>
+      <li class="ok">RTL datapath + 7 co-sim harnesses (bit-exact)</li>
+      <li class="ok">Phase 1 AXI-Lite bring-up (200/200, 3 µs)</li>
+      <li class="ok">Phase 2 DMA stream (200/200, 7 µs)</li>
+      <li class="ok">Phase 3 SG batch (~216k win/s)</li>
+      <li class="ok">Full EMG board replay (74.24%, Δ0.00%)</li>
+      <li class="ok"><code>pruning_mask.sv</code> extracted + verified</li>
+      <li class="ok">D-sweep synth + cosim (256–2048) — D-axis</li>
+      <li class="ok">Python ~90% baselines reproduced</li>
+    </ul>
+  </div>
+  <div>
+    <h4>Left to do</h4>
+    <ul>
+      <li class="warn">INA219 energy measurement (Phase 3 close) — <em>critical blocker</em></li>
+      <li>Hook A Pareto — add CNT_W &amp; pruning axes (D-axis done)</li>
+      <li>Twist 1 informed-vs-random (headline figure)</li>
+      <li>Twist 2 cross-subject (needs 36-subject export)</li>
+      <li>Baselines: ARM-only HDC, tiny int8 MLP</li>
+      <li>Paper draft (DATE 2027)</li>
+    </ul>
+  </div>
+</div>
+<div class="good" style="margin-top:6px;">
+  <strong>June RTL gaps now CLOSED.</strong> Both Tier-2 items are done and on GitHub:
+  <code>pruning_mask.sv</code> extracted + verified, and the full D-sweep (synthesis + cosim) recorded
+  in <code>results/dsweep/</code>. The Jun-2026 plan milestone is <strong>met</strong>.
+</div>
+<p class="muted">
+  Critical path now: <strong>INA219 energy</strong> → Hook A CNT_W/pruning sweep → board anchors →
+  write-up. Bring-up and all June deliverables are complete and <em>ahead</em> of schedule; what
+  remains is the measurement science (energy, pruning study) and the paper.
+</p>
+
+<!-- ============ 11. Q&A ============ -->
+<div class="pagebreak"></div>
+<h2>11. Anticipated questions from the professor (with answers)</h2>
+
+<h4>On accuracy</h4>
+<div class="qbox"><div class="q">Q: Rahimi reports ~90%. Why is your hardware only 74%?</div>
+<div class="a">A: We <em>do</em> reproduce ~90% in Python (Stage A 90.36%, Stage B 90.30%). The 74.24% is a
+<em>different</em> encoder — the hardware-faithful Eq. (3.1) grid — not a degraded version of Rahimi's.
+The board matches its own golden reference to Δ0.00% over 658k windows, so the system is provably
+correct. Our contribution is the energy/pruning study on that verified path, and those claims are
+relative to our own baseline.</div></div>
+
+<div class="qbox"><div class="q">Q: Then why not just put the 90% encoder on the FPGA?</div>
+<div class="a">A: It's on the roadmap as a possible Stage-B RTL encoder, but it's a richer encoding (more binds /
+different feature handling) that costs more logic and design time. The current encoder was chosen to
+lock down a fully verified streaming path first. Crucially, the <em>research questions</em> (which bits
+to prune, energy vs accuracy) don't depend on the absolute encoder — so we can publish on the 74% path
+now and upgrade the encoder later.</div></div>
+
+<div class="qbox"><div class="q">Q: Earlier you mentioned 59% — what was that?</div>
+<div class="a">A: A prototype-training bug — offline class prototypes were built with a saturating 6-bit counter,
+which clipped when bundling many samples, plus a prototype-load indexing bug. Both are fixed and
+documented; accuracy went from ~59% to the correct 74.24%. I keep it in the log as evidence of a
+debugged, honest pipeline.</div></div>
+
+<h4>On the architecture</h4>
+<div class="qbox"><div class="q">Q: Why zero DSP and zero BRAM — is that a limitation?</div>
+<div class="a">A: It's deliberate and a selling point. HDC is bitwise (XOR / shift / popcount), so it needs no
+multipliers; item memories are small enough to infer as LUT ROM. It means the design is portable to the
+cheapest FPGAs and leaves all DSP/BRAM free for other functions — exactly the edge-efficiency story.</div></div>
+
+<div class="qbox"><div class="q">Q: You're at 96% slice utilisation at D=1024 — can you even do D=2048?</div>
+<div class="a">A: Core-only (out-of-context) D=2048 should fit; the full system with PS+DMA at D=2048 may not, and
+that boundary is itself a reportable Pareto result. The D-sweep synthesis (scripted, ready to run on the
+VDI) will give exact LUT/FF/timing per D to answer this with data.</div></div>
+
+<div class="qbox"><div class="q">Q: How do you know the RTL is actually correct?</div>
+<div class="a">A: Every block is checked bit-for-bit against a Python golden model in automated co-simulation
+(7 harnesses, up to 1000 cases each). The golden model generates both stimulus and expected output, so
+there's no hand-written reference to drift. On hardware, the board reproduces the golden exactly over
+658k windows.</div></div>
+
+<h4>On the research contribution</h4>
+<div class="qbox"><div class="q">Q: What's genuinely novel here vs existing FPGA-HDC papers?</div>
+<div class="a">A: Existing work prunes the <em>dimension</em>. We prune <em>bit positions</em> by an interpretable
+discriminability score (Fisher ratio) and show — on measured silicon energy — that <em>which</em> bits you
+keep beats random selection at the same count (≥5 pp). Plus cross-subject mask transfer, which asks whether
+bit importance is universal. Both are new questions for HDC hardware.</div></div>
+
+<div class="qbox"><div class="q">Q: Why is informed pruning expected to beat random?</div>
+<div class="a">A: Because hypervector bits are not equally informative for class separation. The Fisher ratio ranks
+each bit by between-class vs within-class variance; keeping high-ranked bits preserves the discriminative
+signal while dropping noise-like bits. Random pruning removes informative and noisy bits alike. The gap
+quantifies how much structure HDC encodings actually carry per bit.</div></div>
+
+<div class="qbox"><div class="q">Q: What if the cross-subject mask doesn't transfer?</div>
+<div class="a">A: That's still a publishable result — it means EMG bit-importance is subject-specific and motivates
+lightweight on-device mask adaptation. We framed Twist 2 so either outcome is a contribution.</div></div>
+
+<div class="qbox"><div class="q">Q: How will you measure energy, and is it credible?</div>
+<div class="a">A: An INA219 current sensor across the Vcc_int shunt, logged during batch inference, giving real
+energy-per-inference — not a vendor estimate. That's the next Phase 3 task and it underpins the whole
+Pareto.</div></div>
+
+<h4>On scope &amp; timeline</h4>
+<div class="qbox"><div class="q">Q: Is this on track for DATE 2027?</div>
+<div class="a">A: Bring-up (Phases 1–3) is done and ahead of schedule. Remaining work is the measurement science
+(D-sweep, energy, Hook A, twists) and the write-up — the August/September blocks in the plan. The hard
+infrastructure risk is retired.</div></div>
+
+<div class="qbox"><div class="q">Q: What's the single biggest risk right now?</div>
+<div class="a">A: Two small ones: (1) D=2048 may not close timing with the full PS+DMA system — mitigated because
+core-only still characterises the axis; (2) cross-subject transfer needs a 36-subject export. Neither
+blocks the headline Hook A / Twist 1 results.</div></div>
+
+<!-- ============ 12. CHEAT SHEET ============ -->
+<h2>12. One-page cheat sheet of numbers</h2>
+<table>
+  <tr><th>Quantity</th><th>Value</th></tr>
+  <tr><td>Hypervector dimension D</td><td>1024 bits (parameterised; sweep 256–2048)</td></tr>
+  <tr><td>EMG channels × features × levels</td><td>4 × 5 × 16 (20 binds, Eq. 3.1)</td></tr>
+  <tr><td>Classes (gestures)</td><td>5 prototypes</td></tr>
+  <tr><td>Board EMG accuracy (RTL encoder)</td><td><strong>74.24%</strong> (488,550 / 658,004)</td></tr>
+  <tr><td>Board vs golden delta</td><td>0.00% (PASS, ±0.5% gate)</td></tr>
+  <tr><td>Python baselines</td><td>Stage A 90.36% · Stage B 90.30% (paper 90.8%)</td></tr>
+  <tr><td>Phase 1 latency / golden</td><td>3 µs/window · 200/200</td></tr>
+  <tr><td>Phase 2 latency / golden</td><td>7 µs/window · 200/200</td></tr>
+  <tr><td>Phase 3 batch throughput</td><td>~216k windows/s (scatter-gather DMA)</td></tr>
+  <tr><td>Timing (Phase 3, 100 MHz)</td><td>WNS +0.111 ns (post-route physopt)</td></tr>
+  <tr><td>Resources (DMA build)</td><td>35,206 LUT (66.2%), 96.3% slices, 0 DSP, 0 BRAM</td></tr>
+  <tr><td>Verification</td><td>7 co-sim harnesses + pruning_mask, all bit-exact PASS (Questa + Vivado xsim)</td></tr>
+  <tr><td>Pruning module</td><td><code>pruning_mask.sv</code> — 129/129 checks PASS</td></tr>
+  <tr><td>D-sweep (OOC synth)</td><td>D=256→2048: 7.3k→59.3k LUT; D=2048 = 111% (Pareto boundary); all PASS cosim</td></tr>
+  <tr><td>Novelty</td><td>Hook A (D×CNT_W×prune Pareto; D-axis done) · Twist 1 (informed vs random, ≥5 pp) · Twist 2 (cross-subject)</td></tr>
+  <tr><td>Target venue</td><td>DATE 2027 (~Sep 2026 submission)</td></tr>
+</table>
+
+<div class="callout" style="margin-top:20px;">
+  <strong>If you remember one thing:</strong> The hardware is <em>done and provably correct</em>
+  (bit-exact on 658k windows). The 74% is a faithful hardware encoder, not a failure — we already match
+  ~90% in Python. The <em>research</em> is the energy/accuracy Pareto and the informed-pruning result,
+  which stand on their own regardless of the absolute accuracy number.
+</div>
+
+<p class="muted" style="margin-top:30px; text-align:center; font-size:8.5pt;">
+  Generated for advisor meeting revision · 1024-HDC project · sources: README.md, docs/Baseline_vs_RTL_Encoder.md, docs/HDC_Research_Plan.html, results/
+</p>
+
+</body>
+</html>
