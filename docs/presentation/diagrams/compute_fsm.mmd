@@ -1,0 +1,10 @@
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Segoe UI, Arial','fontSize':'16px','primaryColor':'#eff6ff','primaryBorderColor':'#2563eb','lineColor':'#0a2540'}}}%%
+stateDiagram-v2
+  direction LR
+  [*] --> S_IDLE
+  S_IDLE --> S_XOR: q_valid
+  S_XOR --> S_ACC: XOR + mask one 64-bit word
+  S_ACC --> S_XOR: w < 16 (next word)
+  S_ACC --> S_CMP: w = 16 (word done)
+  S_CMP --> S_XOR: k < 8 (next prototype)
+  S_CMP --> S_IDLE: k = 8 → out_valid

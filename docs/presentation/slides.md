@@ -151,6 +151,39 @@ Research-plan **Eq. (3.1)**: a 4 channel × 5 feature grid (20 binds), position-
 
 ---
 
+## Computational microarchitecture — word-serial datapath
+
+![center w:1080](diagrams/compute_datapath.svg)
+
+The 1024-bit HV is stored as **16 × 64-bit words**. The associative memory streams **one 64-bit word per cycle**: `XOR` query⊕prototype → `AND` mask word → **64-bit popcount** (LUT adder tree) → accumulate distance `d_k`. Loop 16 words per class, 8 classes, then `argmin`.
+
+<div class="good">
+
+**Why word-serial?** A full 1024-bit popcount tree is large and timing-critical. Processing 64 bits/cycle reuses **one small popcount + one accumulator** → **0 DSP, 0 BRAM**, easy 100 MHz timing. The `pruning_mask` word simply zeros gated bits *before* popcount, so pruning directly removes switching activity.
+
+</div>
+
+---
+
+## Cycle-level behaviour — AM FSM & latency
+
+![center w:760](diagrams/compute_fsm.svg)
+
+| Stage | RTL block | Cycles | Notes |
+|-------|-----------|--------|-------|
+| Encode (bind+permute+bundle) | `encoder_top` | ~N_PAIRS + 3 = **~23** | 1 (channel,feature) pair/cycle, 4×5 grid |
+| Bundle majority | `bundle_unit` | combinational | 1024 saturating counters, width **CNT_W=6** |
+| Classify (masked Hamming) | `popcount_am` | N_CLASS·(2·WORDS+1) = **264** | 8 classes × (16 words × 2 + compare) |
+| **Per-window total** | core | **≈ 287 cycles** | ≈ 2.9 µs @ 100 MHz; pipelined across windows |
+
+<div class="box">
+
+`CNT_W` (bundle counter width) and the **prune ratio** are the two micro-architectural knobs of Hook A — both change the datapath's switching/area without touching its structure.
+
+</div>
+
+---
+
 ## Verification — the Python golden reference
 
 ![center w:980](diagrams/verification.svg)

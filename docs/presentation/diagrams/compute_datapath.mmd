@@ -1,0 +1,24 @@
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Segoe UI, Arial','fontSize':'15px','primaryColor':'#eff6ff','primaryBorderColor':'#2563eb','lineColor':'#0a2540'}}}%%
+flowchart LR
+  Q["Query HV<br/>16 × 64-bit words"]
+  P["Prototype k<br/>16 × 64-bit words"]
+  M["Mask word w<br/>(pruning_mask)"]
+  XOR["XOR<br/>64-bit"]
+  AND["AND mask<br/>64-bit"]
+  POP["popcount64<br/>adder tree (LUTs)"]
+  ACC["+ accumulate<br/>distance d_k"]
+  CMP["argmin over k<br/>first-index tie"]
+  OUT["class index"]
+  Q --> XOR
+  P --> XOR
+  XOR --> AND
+  M --> AND
+  AND --> POP --> ACC
+  ACC -. next word w (×16) .-> XOR
+  ACC == after 16 words ==> CMP
+  CMP -. next class k (×8) .-> XOR
+  CMP ==> OUT
+  classDef d fill:#eff6ff,stroke:#2563eb,color:#0a2540;
+  classDef hook fill:#fff7ed,stroke:#b45309,color:#7c2d12;
+  classDef out fill:#fef2f2,stroke:#dc2626,color:#7f1d1d;
+  class Q,P,XOR,AND,POP,ACC d; class M hook; class CMP,OUT out;
