@@ -7,7 +7,7 @@ Frozen EMG protocol; same train/test split as Hook A and board replay.
 | **ARM HDC (C, hdc_ref)** | **74.15%** | **819 µs**/window (mean) | 5 subjects; 200/200 golden on ZedBoard |
 | **PL DMA batch** (reference) | **74.24%** | **~4 µs**/window | Phase 3 SG batch (~216k win/s) |
 | Board RTL encoder | **74.24%** | — | ZedBoard EMG replay (reference) |
-| MLP int8 (quick, 2 subj) | 99.24% float / 60.85% int8 | — | ~5.8k params; quick run only — re-run full for paper |
+| MLP int8 (full, 5 subj) | **93.01%** float / **54.05%** int8 | — | ~5.8k params; 25 epochs; full TEST split |
 | AXI-Lite PL path | — | ~3 µs/window | Phase 1 register-mapped baseline |
 
 ## ARM HDC — on-board timing (cross-compile)
@@ -27,7 +27,19 @@ JTAG readback @ `0x00100400`, magic `0xBEC00006`. Compare to PL DMA batch (~4 µ
 ## MLP
 
 - **Runner:** `python_ref/run_mlp_baseline.py`
-- **Results:** `mlp_results.json` (quick sanity so far)
+- **Results:** [`mlp_results.json`](mlp_results.json) — full 5-subject run (2026-06-29)
+
+| Subject | Float | Int8 |
+|---------|-------|------|
+| 1 | 95.83% | 49.18% |
+| 2 | 92.34% | 56.50% |
+| 3 | 94.52% | 55.54% |
+| 4 | 90.53% | 53.25% |
+| 5 | 91.83% | 55.79% |
+| **Spatial mean** | **93.01%** | **54.05%** |
+
+Architecture `4-100-50-5`, 5,805 params, 25 epochs, ~71 s wall time on VDI.
+Int8 uses pre-train weight quantize today — fix before citing int8 in the paper.
 
 ## Regenerate
 
