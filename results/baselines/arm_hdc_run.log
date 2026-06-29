@@ -1,0 +1,90 @@
+== hdc_arm_ref host build (shared) ==
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c: In function ‘permute’:
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c:90:33: warning: left shift count >= width of type [-Wshift-count-overflow]
+   90 |                          ((1ULL << HDC_ARM_BPW) - 1ULL);
+      |                                 ^~
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c: In function ‘hdc_arm_train_proto’:
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c:269:9: warning: unused variable ‘words’ [-Wunused-variable]
+  269 |     int words = mem->words;
+      |         ^~~~~
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c: At top level:
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c:96:13: warning: ‘bind_permute_bits’ defined but not used [-Wunused-function]
+   96 | static void bind_permute_bits(const uint64_t in_vec[], const uint64_t bind_vec[],
+      |             ^~~~~~~~~~~~~~~~~
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c:37:13: warning: ‘bits_copy’ defined but not used [-Wunused-function]
+   37 | static void bits_copy(uint64_t *dst, const uint64_t *src, int words_n) {
+      |             ^~~~~~~~~
+  -> /home/bsp-lab/1024-HDC/build/host/libhdc_arm_ref.so
+Encode verify: 32/32 match Python hdc_ref
+======================================================================
+ARM HDC baseline (C)  D=1024 CNT_W=6  subjects=[1, 2, 3, 4, 5]
+  max_train=all  max_test=all
+======================================================================
+    subject 1: train=37206 test=148831
+      train protos 4.9s
+      classify 14883/148831
+      classify 29766/148831
+      classify 44649/148831
+      classify 59532/148831
+      classify 74415/148831
+      classify 89298/148831
+      classify 104181/148831
+      classify 119064/148831
+      classify 133947/148831
+      classify 148830/148831
+      test 148831 windows 25.0s
+    subject 2: train=34782 test=139135
+      train protos 4.5s
+      classify 13913/139135
+      classify 27826/139135
+      classify 41739/139135
+      classify 55652/139135
+      classify 69565/139135
+      classify 83478/139135
+      classify 97391/139135
+      classify 111304/139135
+      classify 125217/139135
+      classify 139130/139135
+      test 139135 windows 23.7s
+    subject 3: train=34391 test=137573
+      train protos 4.5s
+      classify 13757/137573
+      classify 27514/137573
+      classify 41271/137573
+      classify 55028/137573
+      classify 68785/137573
+      classify 82542/137573
+      classify 96299/137573
+      classify 110056/137573
+      classify 123813/137573
+      classify 137570/137573
+      test 137573 windows 22.8s
+    subject 4: train=33582 test=134335
+      train protos 4.5s
+      classify 13433/134335
+      classify 26866/134335
+      classify 40299/134335
+      classify 53732/134335
+      classify 67165/134335
+      classify 80598/134335
+      classify 94031/134335
+      classify 107464/134335
+      classify 120897/134335
+      classify 134330/134335
+      test 134335 windows 22.6s
+    subject 5: train=24531 test=98130
+      train protos 3.0s
+      classify 9813/98130
+      classify 19626/98130
+      classify 29439/98130
+      classify 39252/98130
+      classify 49065/98130
+      classify 58878/98130
+      classify 68691/98130
+      classify 78504/98130
+      classify 88317/98130
+      test 98130 windows 15.4s
+
+Spatial mean accuracy: 74.15%
+Wrote /home/bsp-lab/1024-HDC/results/baselines/arm_hdc_results.json
+======================================================================

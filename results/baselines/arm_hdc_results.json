@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "generated_at": "2026-06-29T12:50:16Z",
+    "baseline": "arm_hdc_c",
+    "protocol": "P-may2026",
+    "D": 1024,
+    "cnt_bits": 6,
+    "item_mem_seed": 42,
+    "subjects": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "max_train_windows_per_subject": null,
+    "max_test_windows_per_subject": null,
+    "spatial_mean_accuracy": 0.7414595956000269,
+    "encode_verify_mismatches": 0,
+    "library": "/home/bsp-lab/1024-HDC/build/host/libhdc_arm_ref.so",
+    "elapsed_s": 131.8,
+    "board_timing_energy": "pending \u2014 cross-compile sw/hdc_arm_ref.c for Zynq bench"
+  },
+  "per_subject": [
+    {
+      "subject": 1,
+      "accuracy": 0.7853202625797044,
+      "correct": 116880,
+      "n_test": 148831,
+      "n_train": 37206
+    },
+    {
+      "subject": 2,
+      "accuracy": 0.7131994106443382,
+      "correct": 99231,
+      "n_test": 139135,
+      "n_train": 34782
+    },
+    {
+      "subject": 3,
+      "accuracy": 0.8225596592354605,
+      "correct": 113162,
+      "n_test": 137573,
+      "n_train": 34391
+    },
+    {
+      "subject": 4,
+      "accuracy": 0.6421036959839208,
+      "correct": 86257,
+      "n_test": 134335,
+      "n_train": 33582
+    },
+    {
+      "subject": 5,
+      "accuracy": 0.7441149495567105,
+      "correct": 73020,
+      "n_test": 98130,
+      "n_train": 24531
+    }
+  ]
+}

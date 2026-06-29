@@ -1,0 +1,35 @@
+{
+  "name": "Tier 4 comparison baselines (P-may2026)",
+  "protocol_config": "emg_baseline.json",
+  "subjects": [1, 2, 3, 4, 5],
+  "hdc_ref": {
+    "D": 1024,
+    "item_mem_seed": 42,
+    "cnt_bits": 6,
+    "description": "RTL-matched encoder (same as board 74.24% path)"
+  },
+  "arm_hdc": {
+    "description": "Same hdc_ref algorithm in portable C (Cortex-A9 target; host verify on VDI)",
+    "D": 1024,
+    "item_mem_seed": 42,
+    "cnt_bits": 6,
+    "mem_dir": "mem_files"
+  },
+  "mlp_int8": {
+    "description": "Tiny 2-layer int8 MLP rebuttal baseline (~5k params)",
+    "input_dim": 4,
+    "hidden1": 100,
+    "hidden2": 50,
+    "output_dim": 5,
+    "epochs": 25,
+    "batch_size": 256,
+    "learning_rate": 0.05,
+    "quantize_after_train": true
+  },
+  "quick": {
+    "subjects": [1, 2],
+    "max_train_windows_per_subject": 3000,
+    "max_test_windows_per_subject": 5000,
+    "mlp_epochs": 10
+  }
+}

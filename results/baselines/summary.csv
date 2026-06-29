@@ -1,0 +1,3 @@
+baseline,spatial_mean_accuracy,n_subjects,n_params,notes
+mlp_int8,0.992400,2,5805,int8 infer 60.85%
+arm_hdc_c,0.741460,5,N/A,encode verify mism=0
