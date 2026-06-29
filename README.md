@@ -35,8 +35,9 @@ the PS over **AXI4-Lite** and fed at inference rate over **AXI4-Stream + DMA**.
 
 ## Status
 
-**Done:** RTL + verification + Zynq bring-up (Phases 1–3) + D-axis characterisation +
-Tier 4 accuracy baselines (ARM HDC + tiny MLP).
+**Done:** RTL + verification + Zynq bring-up (Phases 1–3) + **`pruning_mask.sv`**
+(cosim PASS) + **D-sweep** (functional cosim + OOC synth, results in
+[`results/dsweep/`](results/dsweep/)) + Tier 4 accuracy baselines (ARM HDC + tiny MLP).
 **In progress:** Hook A Python Pareto sweep (~26%, D=512 on VDI).
 **Next:** INA219 energy, Hook A Pareto + twists, write-up.
 
@@ -292,17 +293,15 @@ in [`results/phase3/README.md`](results/phase3/README.md).
 Hook A is re-targeted (June 2026, Option A) against the **74.24% RTL baseline**;
 the absolute ≥92% target is retired for the silicon path.
 
-**Done:** bring-up, verification, D-axis (synth + cosim), and Tier 4 accuracy
-baselines (ARM HDC 74.15% + on-board timing; MLP 93.01% float / 92.99% int8).
+**Done:** bring-up, verification, **`pruning_mask.sv`** (64-case cosim PASS),
+**D-sweep** (D ∈ {256, 512, 1024, 2048} — functional cosim + OOC synth; results
+committed in [`results/dsweep/`](results/dsweep/)), and Tier 4 accuracy baselines
+(ARM HDC 74.15% + on-board timing; MLP 93.01% float / 92.99% int8).
 **Remaining:** Hook A Pareto completion, Twist 1/2 experiments, INA219 energy
 (blocks the real energy axis), on-board anchor replays, and the DATE write-up.
 
 **Tier 1 — finish Phase 3 infrastructure**
 - [ ] Energy (INA219 + shunt) — wire per [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md), log with [`scripts/ina219_log.py`](scripts/ina219_log.py), fill [`results/phase3/energy_batch.txt`](results/phase3/energy_batch.txt). *Blocks every Pareto energy axis and the ARM-vs-PL ~10× claim; can run in parallel with the Hook A sweep at the bench.*
-
-**Tier 2 — RTL gaps feeding Hook A**
-- [x] D-sweep synthesis (256–2048) → LUT / WNS / f_max ([`results/dsweep/`](results/dsweep/))
-- [x] `pruning_mask.sv` extracted + cosim harness (64 cases PASS)
 
 **Tier 3 — research contributions**
 - [ ] Hook A Pareto — sweep script shipped + quick sanity PASS; **full grid running (~26%, D=512)**; then final CSV/JSON + Pareto figure
@@ -336,7 +335,7 @@ baselines (ARM HDC 74.15% + on-board timing; MLP 93.01% float / 92.99% int8).
 | Month | Planned | Status |
 |-------|---------|--------|
 | May 2026 | Python golden + reproduce EMG number | ✅ Stage A 90.36%, Stage B 90.30% |
-| Jun 2026 | Core RTL + co-sim; D verified | ✅ `pruning_mask.sv`, D-sweep cosim + synth PASS |
+| Jun 2026 | Core RTL + co-sim; D verified | ✅ `pruning_mask.sv` + D-sweep cosim/synth PASS; results in repo |
 | Jul 2026 | Stream wrapper + DMA bring-up | ✅ Ahead — Phases 2–3, EMG replay PASS |
 | Aug 2026 | Hook A + Twist 1/2 + baselines + power | 🔄 Hook A ~26%; Tier 4 accuracy ✅; INA219 + twists pending |
 | Sep 2026 | Paper draft + DATE submit | ⏳ Not started |
