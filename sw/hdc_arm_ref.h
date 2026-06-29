@@ -27,6 +27,19 @@ typedef struct {
 /* Load item_mem_*.mem from directory (RTL hex layout). Returns 0 on success. */
 int hdc_arm_load_mem(HdcArmMem *mem, const char *dir, int D, int cnt_bits);
 
+/* Load item memory from embedded u64 tables (bare-metal bench). */
+int hdc_arm_load_mem_embedded(
+    HdcArmMem *mem,
+    int D,
+    int cnt_bits,
+    const uint64_t channel[][HDC_ARM_WORDS_DEFAULT],
+    const uint64_t feature[][HDC_ARM_WORDS_DEFAULT],
+    const uint64_t value[][HDC_ARM_WORDS_DEFAULT]);
+
+/* Unpack RTL level words -> 4x5 grid (inverse of pack_levels_u32). */
+void hdc_arm_unpack_levels(uint32_t l0, uint32_t l1, uint32_t l2,
+                           int grid[HDC_ARM_N_CH][HDC_ARM_N_FEAT]);
+
 /* Map 21-level envelope sample to 16-level grid (matches level21_to_grid). */
 void hdc_arm_sample_to_grid(const int sample_q4[HDC_ARM_N_CH], int grid[HDC_ARM_N_CH][HDC_ARM_N_FEAT]);
 

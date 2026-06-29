@@ -22,6 +22,9 @@ python_ref/vectors/
 # Generated bare-metal golden header (regenerate: scripts/prep_golden_test.ps1)
 sw/golden_vectors.h
 
+# Generated ARM bench item mem (regenerate: scripts/prep_arm_bench.sh)
+sw/arm_bench_data.h
+
 # Generated EMG board replay header (regenerate: scripts/prep_emg_board_test.sh)
 sw/emg_board_vectors.h
 sw/emg_board_vectors.bin

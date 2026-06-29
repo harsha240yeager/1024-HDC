@@ -144,6 +144,21 @@ proc wait_for_a9_target {{attempts 15}} {
     return 0
 }
 
+proc resume_cpu_safe {{max_attempts 8}} {
+    for {set attempt 1} {$attempt <= $max_attempts} {incr attempt} {
+        if {![catch {wait_for_a9_target 5}]} {
+            catch { stop }
+        }
+        if {![catch {con} err]} {
+            return 1
+        }
+        puts "  resume attempt $attempt/$max_attempts failed: $err"
+        reconnect $::HW_URL
+        after [expr {2000 + $attempt * 1000}]
+    }
+    error "Failed to resume CPU after $max_attempts attempts"
+}
+
 proc load_elf_on_a9_0 {elf label} {
     if {![wait_for_a9_target]} {
         error "A9 target not available to load $label"
@@ -244,7 +259,7 @@ proc program_zed_board {bitfile ps7_init fsbl_elf app_elf {vivado_pl_script ""} 
 
     if {$use_fsbl} {
         load_elf_on_a9_0 $fsbl_elf "FSBL"
-        con
+        resume_cpu_safe
         after 3000
         if {![wait_for_a9_target]} {
             error "Lost JTAG targets after starting FSBL"
@@ -256,6 +271,6 @@ proc program_zed_board {bitfile ps7_init fsbl_elf app_elf {vivado_pl_script ""} 
     if {$vectors_bin ne "" && [file exists $vectors_bin]} {
         load_bin_to_ddr $vectors_bin $vectors_addr
     }
-    con
+    resume_cpu_safe
     puts "Programming and run complete"
 }

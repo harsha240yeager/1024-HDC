@@ -5,6 +5,7 @@
 
 #include "hdc_arm_ref.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -181,6 +182,48 @@ int hdc_arm_load_mem(HdcArmMem *mem, const char *dir, int D, int cnt_bits) {
     if (load_mem_table(path, HDC_ARM_N_LEVELS, words, mem->value) != 0)
         return -1;
     return 0;
+}
+
+int hdc_arm_load_mem_embedded(
+    HdcArmMem *mem,
+    int D,
+    int cnt_bits,
+    const uint64_t channel[][HDC_ARM_WORDS_DEFAULT],
+    const uint64_t feature[][HDC_ARM_WORDS_DEFAULT],
+    const uint64_t value[][HDC_ARM_WORDS_DEFAULT]) {
+    int words = words_for_d(D);
+    if (words > HDC_ARM_WORDS_DEFAULT || D != words * HDC_ARM_BPW)
+        return -1;
+
+    mem->D = D;
+    mem->words = words;
+    mem->cnt_bits = cnt_bits;
+    mem->cnt_max = (1 << cnt_bits) - 1;
+
+    memcpy(mem->channel, channel, sizeof(uint64_t) * HDC_ARM_N_CH * (size_t)words);
+    memcpy(mem->feature, feature, sizeof(uint64_t) * HDC_ARM_N_FEAT * (size_t)words);
+    memcpy(mem->value, value, sizeof(uint64_t) * HDC_ARM_N_LEVELS * (size_t)words);
+    return 0;
+}
+
+void hdc_arm_unpack_levels(uint32_t l0, uint32_t l1, uint32_t l2,
+                           int grid[HDC_ARM_N_CH][HDC_ARM_N_FEAT]) {
+    const int level_w = 4; /* log2(16) */
+    uint64_t lo = (uint64_t)l0 | ((uint64_t)l1 << 32);
+    uint16_t hi = (uint16_t)(l2 & 0xFFFFU);
+
+    for (int c = 0; c < HDC_ARM_N_CH; c++) {
+        for (int f = 0; f < HDC_ARM_N_FEAT; f++) {
+            int p = c * HDC_ARM_N_FEAT + f;
+            int shift = p * level_w;
+            int level;
+            if (shift < 64)
+                level = (int)((lo >> shift) & 0xFU);
+            else
+                level = (int)((hi >> (shift - 64)) & 0xFU);
+            grid[c][f] = level;
+        }
+    }
 }
 
 void hdc_arm_sample_to_grid(const int sample_q4[HDC_ARM_N_CH], int grid[HDC_ARM_N_CH][HDC_ARM_N_FEAT]) {

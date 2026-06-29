@@ -31,7 +31,7 @@ over **AXI4-Lite** (control) and fed at inference rate over **AXI4-Stream + DMA*
 | Phase 3 — energy (INA219) | ⏳ **Not started** |
 | Hook A — Python Pareto sweep (D × CNT_W × pruning) | 🔄 **In progress** (~21% — D=256 on VDI) |
 | Twist 1 / Twist 2 (paper experiments) | ⏳ **Not started** |
-| **ARM HDC baseline (C, accuracy)** | ✅ **74.15%** (host verify; matches board 74.24%) |
+| **ARM HDC baseline (C)** | ✅ **74.15%** accuracy + **819 µs/window** on-board (200/200 golden) |
 | **Tiny int8 MLP baseline** | 🔄 Quick sanity done; full 5-subject run pending |
 
 Bring-up, verification, and the **D-axis characterisation** are **done**. The **Hook A
@@ -101,19 +101,21 @@ Python encode). After completion: Pareto figure + 2–3 on-board anchor configs.
 
 Same **P-may2026** protocol as board replay. Details: [`results/baselines/`](results/baselines/).
 
-| Baseline | Spatial mean accuracy | Status |
-|----------|----------------------|--------|
-| **Board RTL encoder** (reference) | **74.24%** | ✅ Phase 3 EMG replay PASS |
-| **ARM HDC** (`sw/hdc_arm_ref.c`, host verify) | **74.15%** | ✅ Full 5 subjects; 32/32 encode match vs Python |
-| **Tiny int8 MLP** (~5.8k params) | quick: 99.2% float / 60.9% int8 (2 subj) | 🔄 Full run pending |
-| **AXI-Lite PL path** | latency baseline | ✅ Phase 1 (~3 µs/window) |
+| Baseline | Spatial mean accuracy | On-board latency | Status |
+|----------|----------------------|------------------|--------|
+| **Board RTL encoder** (reference) | **74.24%** | ~4 µs/window (batch) | ✅ Phase 3 EMG replay PASS |
+| **ARM HDC** (`sw/hdc_arm_ref.c`) | **74.15%** | **819 µs**/window (mean) | ✅ Host + board 200/200 golden |
+| **Tiny int8 MLP** (~5.8k params) | quick: 99.2% float / 60.9% int8 (2 subj) | — | 🔄 Full run pending |
+| **AXI-Lite PL path** | — | ~3 µs/window | ✅ Phase 1 latency baseline |
 
 Runners: [`python_ref/run_arm_hdc_baseline.py`](python_ref/run_arm_hdc_baseline.py),
 [`python_ref/run_mlp_baseline.py`](python_ref/run_mlp_baseline.py),
 [`python_ref/run_baselines.py`](python_ref/run_baselines.py).
 Build C lib: `bash scripts/build_hdc_arm_host.sh shared`.
+On-board ARM timing: `bash board/HDC_DMA/run_arm_bench.sh` →
+[`results/baselines/arm_hdc_board_timing.txt`](results/baselines/arm_hdc_board_timing.txt).
 
-**Pending for paper:** on-board ARM timing/energy bench (INA219 + cross-compile) for the ~10× claim.
+**~200×** faster per window on PL DMA batch vs ARM software (819 µs vs ~4 µs). **Pending for paper:** INA219 energy on both paths for the ~10× energy claim.
 
 ### Board bring-up — three measurement paths on the *same* core
 
@@ -222,7 +224,7 @@ silicon path (decision: June 2026, Option A).
 | `rtl/` | RTL: `xor_permute_top` (bind+permute), `permute_stage`, `bundle_unit`, `pruning_mask`, `popcount_am` (masked-Hamming AM), `item_mem`, `encoder_top` (EMG window encoder), `hdc_core_top` (encoder→AM), `hdc_core_axi_lite`, `hdc_stream_wrapper` (DMA stream). |
 | `tb/` | Self-checking + co-sim testbenches (one per harness). |
 | `sim/` | `run_*_cosim.do` one-command harnesses (gen vectors → compile → sim → PASS/FAIL). |
-| `sw/` | Bare-metal drivers + **`hdc_arm_ref.c`** (portable ARM HDC baseline). |
+| `sw/` | Bare-metal drivers + **`hdc_arm_ref.c`** / **`hdc_arm_bench.c`** (ARM HDC baseline + on-board timing). |
 | `python_ref/` | Golden model, EMG baselines, Hook A sweep, **Tier 4 runners** (`run_*_baseline.py`). |
 | `scripts/` | Golden prep, JTAG runners, EMG export, **`build_hdc_arm_host.sh`**, `ina219_log.py`. |
 | `board/HDC_DMA/` | ZedBoard Vitis workspace: platform, ELFs, JTAG run scripts. |
@@ -276,6 +278,9 @@ bash scripts/build_hdc_arm_host.sh shared     # once: build libhdc_arm_ref.so
 python3 python_ref/run_arm_hdc_baseline.py    # ARM HDC accuracy (~2 min, full split)
 python3 python_ref/run_mlp_baseline.py        # tiny int8 MLP (~minutes)
 python3 python_ref/run_baselines.py           # both
+
+# On-board ARM software timing (ZedBoard + JTAG)
+bash board/HDC_DMA/run_arm_bench.sh           # prep + host golden verify + cross-compile + run
 ```
 
 Results → [`results/baselines/`](results/baselines/).
@@ -348,7 +353,9 @@ Pareto, twist experiments, baselines, and the write-up.
 
 - [x] **ARM HDC — accuracy (host C verify)** — **74.15%** spatial mean (5 subjects, full TEST).
       [`sw/hdc_arm_ref.c`](sw/hdc_arm_ref.c) · [`results/baselines/arm_hdc_results.json`](results/baselines/arm_hdc_results.json).
-- [ ] **ARM HDC — on-board timing/energy** — cross-compile for Cortex-A9 + INA219 (for ~10× claim).
+- [x] **ARM HDC — on-board timing** — **819 µs** mean encode+classify, 200/200 golden on Cortex-A9
+      ([`sw/hdc_arm_bench.c`](sw/hdc_arm_bench.c) · [`results/baselines/arm_hdc_board_timing.txt`](results/baselines/arm_hdc_board_timing.txt)).
+- [ ] **ARM HDC — on-board energy** — INA219 on ARM vs PL path (for ~10× energy claim).
 - [x] **Tiny int8 MLP — quick sanity** — ~5.8k params, 2 subjects ([`results/baselines/mlp_results.json`](results/baselines/mlp_results.json)).
 - [ ] **Tiny int8 MLP — full 5-subject run** — `python3 python_ref/run_mlp_baseline.py`.
 - [x] **AXI-Lite PL path** — Phase 1 register-mapped baseline (already done).
@@ -365,7 +372,7 @@ Pareto, twist experiments, baselines, and the write-up.
 | INA219 energy batch | Board + I²C | No |
 | Twist 1 @ one (D, keep) | ~2–4 h Python | No (avoid second full grid on same CPU) |
 | Full MLP baseline (5 subjects) | Light Python | No |
-| ARM on-board timing/energy | Board + cross-compile | No |
+| ARM on-board energy (INA219) | Board + I²C | No |
 | Pareto plot script on `sweep_results.partial.json` | Minutes | No (preview only until full grid done) |
 | On-board anchor pick + replay | Board | Yes — needs D=1024 rows in sweep output |
 | Final Pareto table / paper numbers | — | Yes — needs full 64-cell grid |
@@ -377,7 +384,7 @@ Pareto, twist experiments, baselines, and the write-up.
 | May 2026 | Python golden + reproduce EMG number | ✅ Met (Stage A 90.36%, Stage B 90.30%) |
 | Jun 2026 | Core RTL + co-sim; D verified | ✅ Met (`pruning_mask.sv`, D-sweep cosim + synth PASS) |
 | Jul 2026 | Stream wrapper + DMA bring-up | ✅ Ahead (Phases 2–3, EMG replay PASS) |
-| Aug 2026 | Hook A + Twist 1/2 + baselines + power | 🔄 Hook A sweep running; ARM accuracy baseline ✅; MLP full + energy pending |
+| Aug 2026 | Hook A + Twist 1/2 + baselines + power | 🔄 Hook A sweep running; ARM baseline ✅ (accuracy + on-board timing); MLP full + INA219 pending |
 | Sep 2026 | Paper draft + DATE submit | ⏳ Not started |
 
 ---

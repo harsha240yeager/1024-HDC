@@ -1,0 +1,22 @@
+ARM HDC software baseline — on-board timing (ZedBoard Cortex-A9)
+================================================================
+Date:       2026-06-29T19:01:56+05:30
+App:        sw/hdc_arm_bench.c + sw/hdc_arm_ref.c (-O2)
+Method:     JTAG DDR readback @ 0x00100400 (magic 0xBEC00006)
+Run script: bash board/HDC_DMA/run_arm_bench.sh
+Compare:    results/phase3/board_bench.txt (PL DMA ~4 us/window batch)
+
+==================================================
+ ARM HDC software bench (Cortex-A9, hdc_arm_ref)
+==================================================
+CPU= 650000000 Hz  global_tmr= 325000000 Hz  iters= 1000
+Latency (encode+classify):
+  min  = 815 us
+  max  = 830 us
+  mean = 818 us
+  throughput = 1222 windows/s
+Golden spot-check: errors= 0 / 200
+PASS: 200/200 golden cases (ARM infer)
+==================================================
+
+Status: PASS

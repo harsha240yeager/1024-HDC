@@ -6,10 +6,24 @@ cd "$ROOT"
 
 VECDIR="$ROOT/python_ref/vectors/cosim_core"
 OUTH="$ROOT/sw/golden_vectors.h"
+GOLDEN_SEED="${GOLDEN_SEED:-42}"
+GOLDEN_COUNT="${GOLDEN_COUNT:-200}"
 
+need_regen=0
 if [[ ! -f "$VECDIR/core_expect.hex" ]]; then
-  echo "Generating core vectors (seed 42, 200 cases)..."
-  (cd "$ROOT/python_ref" && python generate_vectors.py --core --out-dir vectors/cosim_core --count 200 --seed 42)
+  need_regen=1
+elif [[ -f "$VECDIR/meta.txt" ]]; then
+  current_seed="$(grep '^seed=' "$VECDIR/meta.txt" | cut -d= -f2 || true)"
+  if [[ "$current_seed" != "$GOLDEN_SEED" ]]; then
+    echo "cosim_core seed=$current_seed != required $GOLDEN_SEED — regenerating"
+    need_regen=1
+  fi
+fi
+
+if [[ "$need_regen" -eq 1 ]]; then
+  echo "Generating core vectors (seed $GOLDEN_SEED, $GOLDEN_COUNT cases)..."
+  (cd "$ROOT/python_ref" && python3 generate_vectors.py --core --out-dir vectors/cosim_core \
+    --count "$GOLDEN_COUNT" --seed "$GOLDEN_SEED")
 fi
 
 echo "Exporting C header..."

@@ -9,6 +9,7 @@ SW="$REPO/sw"
 BLD="$ROOT/app/build"
 LSCRIPT="$ROOT/app/src/lscript.ld"
 
+export PYTHONPATH="${PYTHONPATH:-}"
 source /cad/Xilinx/Vitis/2024.2/settings64.sh
 
 echo "== Golden vectors =="
@@ -59,5 +60,8 @@ fi
 
 echo "== Build Final_HDC_dma_emg.elf =="
 build_elf Final_HDC_dma_emg hdc_emg_board_test.c emg
+
+echo "== ARM HDC software bench =="
+bash "$REPO/scripts/build_arm_bench_cross.sh"
 
 echo "Done (SW only)."
