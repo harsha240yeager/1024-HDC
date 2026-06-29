@@ -3,8 +3,8 @@
 Tiny int8 MLP baseline on EMG (P-may2026 protocol).
 
 2-layer feedforward (~5k params) on 4-channel envelope samples (normalized).
-Same train/test split as Hook A and board replay. Float train + optional int8
-inference report for the paper rebuttal baseline.
+Same train/test split as Hook A and board replay. Float train, then symmetric int8
+weight quantize per tensor for inference (biases stay float).
 
 Usage (repo root):
   python3 python_ref/run_mlp_baseline.py
@@ -126,6 +126,14 @@ def train_epoch(
     return loss_sum / n
 
 
+def build_int8_layers(w1, b1, w2, b2, w3, b3):
+    """Quantize trained float weights (symmetric int8 per tensor); biases stay float."""
+    qw1, s1, _ = quantize_affine(w1)
+    qw2, s2, _ = quantize_affine(w2)
+    qw3, s3, _ = quantize_affine(w3)
+    return ((qw1, s1, b1), (qw2, s2, b2), (qw3, s3, b3))
+
+
 def quantize_affine(w: np.ndarray) -> Tuple[np.ndarray, float, int]:
     """Symmetric int8 per weight tensor."""
     scale = float(np.max(np.abs(w)) / 127.0) if w.size else 1.0
@@ -154,7 +162,6 @@ def featurize(q: np.ndarray) -> np.ndarray:
 def evaluate_subject(
     subject: int,
     weights,
-    int8_layers,
     seed: int,
     train_frac: float,
     max_test: int | None,
@@ -183,6 +190,7 @@ def evaluate_subject(
     pred_f = logits.argmax(axis=1)
     acc_f = float(np.mean(pred_f == y_test))
 
+    int8_layers = build_int8_layers(w1, b1, w2, b2, w3, b3)
     pred_i = predict_int8(x_test, int8_layers)
     acc_i = float(np.mean(pred_i == y_test))
 
@@ -235,11 +243,6 @@ def main() -> int:
     w1, b1, w2, b2, w3, b3 = weights
     n_params = count_params(w1, b1, w2, b2, w3, b3)
 
-    qw1, s1, _ = quantize_affine(w1)
-    qw2, s2, _ = quantize_affine(w2)
-    qw3, s3, _ = quantize_affine(w3)
-    int8_layers = ((qw1, s1, b1), (qw2, s2, b2), (qw3, s3, b3))
-
     print("=" * 70)
     print(f"MLP int8 baseline  params={n_params}  subjects={subjects}")
     print("=" * 70)
@@ -249,7 +252,7 @@ def main() -> int:
     for subject in subjects:
         rows.append(
             evaluate_subject(
-                subject, weights, int8_layers, seed, train_frac, max_test,
+                subject, weights, seed, train_frac, max_test,
                 epochs, mlp["batch_size"], mlp["learning_rate"], seed,
             )
         )

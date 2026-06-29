@@ -32,7 +32,7 @@ over **AXI4-Lite** (control) and fed at inference rate over **AXI4-Stream + DMA*
 | Hook A — Python Pareto sweep (D × CNT_W × pruning) | 🔄 **In progress** (~21% — D=256 on VDI) |
 | Twist 1 / Twist 2 (paper experiments) | ⏳ **Not started** |
 | **ARM HDC baseline (C)** | ✅ **74.15%** accuracy + **819 µs/window** on-board (200/200 golden) |
-| **Tiny int8 MLP baseline** | ✅ **93.01%** float (5 subjects, full TEST); int8 **54.05%** |
+| **Tiny int8 MLP baseline** | ✅ **93.01%** float / **92.99%** int8 (5 subjects, full TEST) |
 
 Bring-up, verification, and the **D-axis characterisation** are **done**. The **Hook A
 Python sweep** is running on VDI (~45–50 h); everything else below is **parallel or
@@ -105,7 +105,7 @@ Same **P-may2026** protocol as board replay. Details: [`results/baselines/`](res
 |----------|----------------------|------------------|--------|
 | **Board RTL encoder** (reference) | **74.24%** | ~4 µs/window (batch) | ✅ Phase 3 EMG replay PASS |
 | **ARM HDC** (`sw/hdc_arm_ref.c`) | **74.15%** | **819 µs**/window (mean) | ✅ Host + board 200/200 golden |
-| **Tiny int8 MLP** (~5.8k params) | **93.01%** float / **54.05%** int8 | — | ✅ Full 5 subjects, 25 epochs |
+| **Tiny int8 MLP** (~5.8k params) | **93.01%** float / **92.99%** int8 | — | ✅ Full 5 subjects, 25 epochs |
 | **AXI-Lite PL path** | — | ~3 µs/window | ✅ Phase 1 latency baseline |
 
 Runners: [`python_ref/run_arm_hdc_baseline.py`](python_ref/run_arm_hdc_baseline.py),
@@ -356,9 +356,8 @@ Pareto, twist experiments, baselines, and the write-up.
 - [x] **ARM HDC — on-board timing** — **819 µs** mean encode+classify, 200/200 golden on Cortex-A9
       ([`sw/hdc_arm_bench.c`](sw/hdc_arm_bench.c) · [`results/baselines/arm_hdc_board_timing.txt`](results/baselines/arm_hdc_board_timing.txt)).
 - [ ] **ARM HDC — on-board energy** — INA219 on ARM vs PL path (for ~10× energy claim).
-- [x] **Tiny int8 MLP — full 5-subject run** — **93.01%** float spatial mean, 25 epochs, full TEST
-      ([`results/baselines/mlp_results.json`](results/baselines/mlp_results.json), ~71 s on VDI).
-      Int8 post-train quantize still TODO if int8 numbers are needed for the paper.
+- [x] **Tiny int8 MLP — full 5-subject run** — **93.01%** float / **92.99%** int8 spatial mean, 25 epochs, full TEST
+      ([`results/baselines/mlp_results.json`](results/baselines/mlp_results.json), ~74 s on VDI).
 - [x] **AXI-Lite PL path** — Phase 1 register-mapped baseline (already done).
 
 ### Tier 5 — write-up
