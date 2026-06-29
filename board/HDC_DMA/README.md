@@ -35,6 +35,19 @@ bash ../../scripts/rebuild_sg_bitstream.sh   # SG + export + BSP + ELFs
 bash build.sh                                # XSA export + BSP + ELFs from repo
 ```
 
+## JTAG + USB UART (simultaneous monitoring)
+
+On ZedBoard the Digilent cable shares JTAG and UART on one USB link. For live
+serial **during** EMG replay (plus JTAG at the same time), use the two-terminal
+flow in [`docs/USB_UART_JTAG.md`](../../docs/USB_UART_JTAG.md).
+
+Quick rules:
+
+1. Open **picocom @ 115200** on `/dev/ttyUSB0` **before** starting JTAG.
+2. Close Vivado Hardware Manager / Vitis debug (not picocom in another terminal).
+3. Expect UART to freeze during the ~11 MB vector load; progress resumes once
+   inference starts (firmware prints every 2000 windows after rebuild).
+
 ## JTAG tips
 
 On ZedBoard the Digilent cable shares JTAG and UART. If a run fails:

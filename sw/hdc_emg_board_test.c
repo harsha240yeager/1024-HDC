@@ -47,6 +47,11 @@
 #define EMG_BATCH_CHUNK 200U
 #endif
 
+#ifndef EMG_UART_PROGRESS_CHUNKS
+/* Print + DDR progress every N DMA batches (N * EMG_BATCH_CHUNK windows). */
+#define EMG_UART_PROGRESS_CHUNKS 10U
+#endif
+
 #if EMG_BOARD_WINDOWS > 0 && defined(EMG_USE_DDR_VECTORS) && (EMG_USE_DDR_VECTORS > 0U)
 static u32 *emg_levels0;
 static u32 *emg_levels1;
@@ -84,6 +89,28 @@ static void emg_results_publish(u32 status, u32 n, u32 correct, u32 errors,
     Xil_Out32(EMG_RESULTS_BASE + 0x18, export_ref_x1000);
     Xil_DCacheFlushRange((INTPTR)EMG_RESULTS_BASE, EMG_RESULTS_BYTES);
 }
+
+#if EMG_BOARD_WINDOWS > 0
+
+static void emg_progress_report(u32 windows_done, u32 correct_so_far)
+{
+    u32 accuracy_x1000 = 0U;
+
+    if (windows_done > 0U)
+        accuracy_x1000 = (u32)(((u64)correct_so_far * 100000ULL) / windows_done);
+
+    emg_results_publish(0U, windows_done, correct_so_far,
+                        EMG_BOARD_WINDOWS - correct_so_far, accuracy_x1000,
+                        EMG_EXPORT_REF_ACCURACY_X1000);
+
+    xil_printf("progress: %lu / %lu  correct=%lu  acc=%lu.%02lu%%\r\n",
+               (unsigned long)windows_done, (unsigned long)EMG_BOARD_WINDOWS,
+               (unsigned long)correct_so_far,
+               (unsigned long)(accuracy_x1000 / 1000U),
+               (unsigned long)((accuracy_x1000 % 1000U) / 10U));
+}
+
+#endif
 
 #if EMG_BOARD_WINDOWS > 0
 
@@ -145,13 +172,20 @@ static u32 score_chunk(u32 offset, u32 chunk_n, u32 *correct_out)
     return 0U;
 }
 
-static int emg_replay_subject(u32 offset, u32 subj_n, u32 *correct_out)
+static int emg_replay_subject(u32 offset, u32 subj_n, u32 subj_idx,
+                              u32 *running_correct, u32 *running_done)
 {
     u32 pos, total_correct = 0U;
+    u32 chunk_num = 0U;
     int rc;
+
+    xil_printf("subject %lu: %lu windows (offset %lu)\r\n",
+               (unsigned long)subj_idx, (unsigned long)subj_n,
+               (unsigned long)offset);
 
     for (pos = 0U; pos < subj_n; pos += EMG_BATCH_CHUNK) {
         u32 chunk_n = subj_n - pos;
+        u32 chunk_correct = 0U;
 
         if (chunk_n > EMG_BATCH_CHUNK)
             chunk_n = EMG_BATCH_CHUNK;
@@ -161,34 +195,39 @@ static int emg_replay_subject(u32 offset, u32 subj_n, u32 *correct_out)
         if (rc != 0)
             return rc;
 
-        {
-            u32 chunk_correct = 0U;
+        score_chunk(offset + pos, chunk_n, &chunk_correct);
+        total_correct += chunk_correct;
 
-            score_chunk(offset + pos, chunk_n, &chunk_correct);
-            total_correct += chunk_correct;
-        }
+        *running_correct += chunk_correct;
+        *running_done = offset + pos + chunk_n;
+        chunk_num++;
+
+        if ((chunk_num % EMG_UART_PROGRESS_CHUNKS) == 0U)
+            emg_progress_report(*running_done, *running_correct);
     }
 
-    *correct_out = total_correct;
+    xil_printf("subject %lu done: +%lu correct (running %lu / %lu)\r\n",
+               (unsigned long)subj_idx, (unsigned long)total_correct,
+               (unsigned long)*running_done, (unsigned long)EMG_BOARD_WINDOWS);
+
     return 0;
 }
 
 static int emg_replay_batch(u32 *correct_out, u32 *errors_out)
 {
-    u32 subj, offset = 0U, total_correct = 0U;
+    u32 subj, offset = 0U, total_correct = 0U, windows_done = 0U;
     int rc;
 
     for (subj = 0U; subj < EMG_N_SUBJECTS; ++subj) {
         u32 subj_n = emg_subj_windows[subj];
-        u32 subj_correct = 0U;
 
         load_protos_for_subject(subj);
-        rc = emg_replay_subject(offset, subj_n, &subj_correct);
+        rc = emg_replay_subject(offset, subj_n, subj, &total_correct, &windows_done);
         if (rc != 0)
             return rc;
 
-        total_correct += subj_correct;
         offset += subj_n;
+        emg_progress_report(windows_done, total_correct);
     }
 
     *correct_out = total_correct;
@@ -226,6 +265,17 @@ int main(void)
     }
 
     hdc_load_mask_from64(emg_mask64);
+
+    xil_printf("==================================================\r\n");
+    xil_printf("HDC EMG replay starting: %lu subjects, %lu windows\r\n",
+               (unsigned long)EMG_N_SUBJECTS, (unsigned long)n);
+    xil_printf("Export ref target: %lu.%02lu%%\r\n",
+               (unsigned long)(EMG_EXPORT_REF_ACCURACY_X1000 / 1000U),
+               (unsigned long)((EMG_EXPORT_REF_ACCURACY_X1000 % 1000U) / 10U));
+    xil_printf("(UART + JTAG DDR @ 0x00100300 — progress every %lu windows)\r\n",
+               (unsigned long)(EMG_UART_PROGRESS_CHUNKS * EMG_BATCH_CHUNK));
+    xil_printf("==================================================\r\n");
+    emg_results_publish(0U, 0U, 0U, n, 0U, EMG_EXPORT_REF_ACCURACY_X1000);
 
     rc = emg_replay_batch(&correct, &errors);
     if (rc != 0) {

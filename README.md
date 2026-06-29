@@ -237,8 +237,10 @@ bash scripts/prep_golden_test.sh        # → sw/golden_vectors.h  (Windows: pre
 bash scripts/run_golden_jtag.sh         # JTAG → PASS: 200/200 golden cases
 ```
 
-Base address `0x43C00000`. On ZedBoard the Digilent cable shares JTAG+UART; prefer
-the JTAG flow if serial capture is unreliable. PL programming may need a retry or two.
+Base address `0x43C00000`. On ZedBoard the Digilent cable shares JTAG+UART; see
+[`docs/USB_UART_JTAG.md`](docs/USB_UART_JTAG.md) for simultaneous serial + JTAG.
+Prefer the JTAG result scripts if serial capture is unreliable during programming.
+PL programming may need a retry or two.
 
 ### 4. Phase 2/3 — DMA stream, batch bench, EMG replay
 
