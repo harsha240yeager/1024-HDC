@@ -29,7 +29,8 @@ over **AXI4-Lite** (control) and fed at inference rate over **AXI4-Stream + DMA*
 | Phase 3 — SG batch throughput | ✅ **Complete** (~216k windows/s, WNS +0.111 ns) |
 | Phase 3 — full EMG replay on silicon | ✅ **PASS** (74.24%, 658k windows, Δ0.00% vs golden) |
 | Phase 3 — energy (INA219) | ⏳ **Not started** |
-| Hook A / Twist 1 / Twist 2 (paper experiments) | ⏳ **Not started** (August block) |
+| Hook A — Python Pareto sweep (D × CNT_W × pruning) | 🔄 **In progress** (~48 h full grid on VDI) |
+| Twist 1 / Twist 2 (paper experiments) | ⏳ **Not started** |
 | ARM-only + tiny-MLP baselines | ⏳ **Not started** |
 
 Bring-up, verification, and the **D-axis characterisation** are **done**. What
@@ -75,6 +76,25 @@ Full reports: [`results/dsweep/`](results/dsweep/).
 LUT/FF scale ~linearly with D. **D=1024** is the timing tightest point (WNS 0.781 ns)
 but still meets 100 MHz. **D=2048** exceeds OOC LUT budget on xc7z020 — a reportable
 Pareto boundary for the full system (Phase 2 already at 66% LUT @ D=1024 + PS/DMA).
+
+### Hook A — Python accuracy sweep (D × CNT_W × pruning)
+
+RTL-matched `hdc_ref` encoder on the frozen **P-may2026** protocol (5 subjects, full
+TEST split). Informed Fisher masks from pooled TRAIN windows; area proxy merged from
+[`results/dsweep/`](results/dsweep/); energy on silicon deferred (INA219).
+
+| Mode | Command | Status |
+|------|---------|--------|
+| Quick sanity | `python3 python_ref/run_hook_a_sweep.py --quick` | ✅ Done (~3 min, capped windows) |
+| Full grid | `python3 python_ref/run_hook_a_sweep.py` | 🔄 **Running** (64 configs × 5 subjects) |
+
+Outputs: [`results/hook_a/`](results/hook_a/) (`sweep_results.json`, `sweep_summary.csv`,
+`sweep_results.partial.json` checkpoint while running). Config:
+[`python_ref/config/hook_a_sweep.json`](python_ref/config/hook_a_sweep.json).
+
+Full grid axes: **D** ∈ {256, 512, 1024, 2048} × **CNT_W** ∈ {3, 4, 5, 6} ×
+**keep_ratio** ∈ {1.0, 0.5, 0.25, 0.125}. Expect **~45–50 h** wall time (single-core
+Python encode). After completion: Pareto figure + 2–3 on-board anchor configs.
 
 ### Board bring-up — three measurement paths on the *same* core
 
@@ -184,7 +204,7 @@ silicon path (decision: June 2026, Option A).
 | `tb/` | Self-checking + co-sim testbenches (one per harness). |
 | `sim/` | `run_*_cosim.do` one-command harnesses (gen vectors → compile → sim → PASS/FAIL). |
 | `sw/` | Bare-metal: golden/bench (Phase 1), `hdc_dma_stream*` (Phase 2–3), `hdc_dma_stream_batch_bench`, `hdc_emg_board_test` (EMG replay). |
-| `python_ref/` | Bit-exact golden model, EMG Stage A/B, frozen baseline config + results. |
+| `python_ref/` | Bit-exact golden model, EMG Stage A/B, Hook A sweep (`run_hook_a_sweep.py`), frozen baseline config. |
 | `scripts/` | Golden prep, JTAG runners, EMG export/regen/pack, `ina219_log.py` (energy). |
 | `board/HDC_DMA/` | ZedBoard Vitis workspace: platform, ELFs, JTAG run scripts. |
 | `results/` | Per-phase board/synthesis logs (the source of every number above). |
@@ -277,7 +297,8 @@ unblocks the next.
 
 ### Tier 3 — research contributions (the paper)
 
-- [ ] **Hook A Pareto** — D × CNT_W × pruning; Python sweep first, then 2–3 on-board anchors.
+- [ ] **Hook A Pareto** — D × CNT_W × pruning; Python sweep **in progress** on VDI, then 2–3 on-board anchors.
+      [`results/hook_a/`](results/hook_a/) · [`python_ref/run_hook_a_sweep.py`](python_ref/run_hook_a_sweep.py).
 - [ ] **Twist 1** — informed vs random pruning (target ≥5 pp at iso-density) — headline figure.
 - [ ] **Twist 2** — cross-subject transfer; **needs a 36-subject export** (currently 5).
 
@@ -297,7 +318,7 @@ unblocks the next.
 | May 2026 | Python golden + reproduce EMG number | ✅ Met (Stage A 90.36%, Stage B 90.30%) |
 | Jun 2026 | Core RTL + co-sim; D verified | ✅ Met (`pruning_mask.sv`, D-sweep cosim + synth PASS) |
 | Jul 2026 | Stream wrapper + DMA bring-up | ✅ Ahead (Phases 2–3, EMG replay PASS) |
-| Aug 2026 | Hook A + Twist 1/2 + baselines + power | ⏳ Not started (on schedule) |
+| Aug 2026 | Hook A + Twist 1/2 + baselines + power | 🔄 Hook A sweep running |
 | Sep 2026 | Paper draft + DATE submit | ⏳ Not started |
 
 ---

@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "generated_at": "2026-06-29T10:09:32Z",
+    "engine": "hdc_ref",
+    "mask_mode": "informed_fisher",
+    "protocol": "P-may2026",
+    "subjects": [
+      1,
+      2
+    ],
+    "D_list": [
+      1024
+    ],
+    "cnt_w_list": [
+      6
+    ],
+    "keep_ratio_list": [
+      1.0,
+      0.5
+    ],
+    "max_train_windows_per_subject": 3000,
+    "max_test_windows_per_subject": 3000,
+    "elapsed_s": 202.0,
+    "reference_accuracy": 0.7901666666666667,
+    "board_rtl_baseline_D1024": 0.7424
+  },
+  "per_subject": [
+    {
+      "subject": 1,
+      "D": 1024,
+      "cnt_w": 6,
+      "keep_ratio": 1.0,
+      "prune_pct": 0.0,
+      "accuracy": 0.5803333333333334,
+      "correct": 1741,
+      "n_test": 3000,
+      "n_train": 3000
+    },
+    {
+      "subject": 1,
+      "D": 1024,
+      "cnt_w": 6,
+      "keep_ratio": 0.5,
+      "prune_pct": 50.0,
+      "accuracy": 0.5803333333333334,
+      "correct": 1741,
+      "n_test": 3000,
+      "n_train": 3000
+    },
+    {
+      "subject": 2,
+      "D": 1024,
+      "cnt_w": 6,
+      "keep_ratio": 1.0,
+      "prune_pct": 0.0,
+      "accuracy": 1.0,
+      "correct": 3000,
+      "n_test": 3000,
+      "n_train": 3000
+    },
+    {
+      "subject": 2,
+      "D": 1024,
+      "cnt_w": 6,
+      "keep_ratio": 0.5,
+      "prune_pct": 50.0,
+      "accuracy": 1.0,
+      "correct": 3000,
+      "n_test": 3000,
+      "n_train": 3000
+    }
+  ],
+  "summary": [
+    {
+      "D": 1024,
+      "cnt_w": 6,
+      "keep_ratio": 0.5,
+      "prune_pct": 50.0,
+      "spatial_mean_accuracy": 0.7901666666666667,
+      "per_subject_accuracy": {
+        "1": 0.5803333333333334,
+        "2": 1.0
+      },
+      "n_test_total": 6000,
+      "slice_luts_ooc": 28600,
+      "energy_proxy_d_keep": 0.5,
+      "area_proxy_vs_d1024": 1.0
+    },
+    {
+      "D": 1024,
+      "cnt_w": 6,
+      "keep_ratio": 1.0,
+      "prune_pct": 0.0,
+      "spatial_mean_accuracy": 0.7901666666666667,
+      "per_subject_accuracy": {
+        "1": 0.5803333333333334,
+        "2": 1.0
+      },
+      "n_test_total": 6000,
+      "slice_luts_ooc": 28600,
+      "energy_proxy_d_keep": 1.0,
+      "area_proxy_vs_d1024": 1.0
+    }
+  ]
+}

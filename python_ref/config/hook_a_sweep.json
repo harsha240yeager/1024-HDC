@@ -1,0 +1,30 @@
+{
+  "name": "Hook A — 3-axis Pareto (Python accuracy sweep)",
+  "description": "RTL-matched hdc_ref encoder on EMG TEST split (P-may2026). D-axis area/timing from results/dsweep/; energy measured later on board.",
+  "engine": "hdc_ref",
+  "item_mem_seed": 42,
+  "protocol_config": "emg_baseline.json",
+  "subjects": [1, 2, 3, 4, 5],
+  "D_list": [256, 512, 1024, 2048],
+  "cnt_w_list": [3, 4, 5, 6],
+  "keep_ratio_list": [1.0, 0.5, 0.25, 0.125],
+  "keep_ratio_labels": {
+    "1.0": "0% pruned (baseline)",
+    "0.5": "50% pruned",
+    "0.25": "75% pruned",
+    "0.125": "87.5% pruned"
+  },
+  "baseline_D": 1024,
+  "baseline_cnt_w": 6,
+  "baseline_keep_ratio": 1.0,
+  "board_rtl_baseline_accuracy": 0.7424,
+  "mask_mode": "informed_fisher",
+  "quick": {
+    "D_list": [1024],
+    "cnt_w_list": [6],
+    "keep_ratio_list": [1.0, 0.5],
+    "max_train_windows_per_subject": 3000,
+    "max_test_windows_per_subject": 3000,
+    "subjects": [1, 2]
+  }
+}

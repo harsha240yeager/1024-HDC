@@ -230,8 +230,13 @@ class BundleAccumulator:
         return bundle_threshold(self.counts, self.n_accum)
 
 
-def bundle_majority(vectors: Sequence[np.ndarray], cfg: HDCConfig) -> np.ndarray:
-    acc = BundleAccumulator(cfg)
+def bundle_majority(
+    vectors: Sequence[np.ndarray],
+    cfg: HDCConfig,
+    *,
+    cnt_bits: int = 6,
+) -> np.ndarray:
+    acc = BundleAccumulator(cfg, cnt_bits=cnt_bits)
     for v in vectors:
         acc.accumulate(v)
     return acc.threshold()
@@ -346,10 +351,12 @@ class HDCEngine:
         self,
         quantized: np.ndarray,
         mem: ItemMemory,
+        *,
+        cnt_bits: int = 6,
     ) -> np.ndarray:
         """
         quantized shape: (n_channels, n_features), values in [0, n_levels-1].
-        Returns bundled 1024-bit query hypervector.
+        Returns bundled D-bit query hypervector.
         """
         q = np.asarray(quantized, dtype=np.int32)
         if q.shape != (self.cfg.n_channels, self.cfg.n_features):
@@ -363,7 +370,7 @@ class HDCEngine:
                 if not 0 <= level < self.cfg.n_levels:
                     raise ValueError(f"quantized value out of range at ({c},{f}): {level}")
                 parts.append(self.encode_record_pair(c, f, level, mem))
-        return bundle_majority(parts, self.cfg)
+        return bundle_majority(parts, self.cfg, cnt_bits=cnt_bits)
 
     def classify(
         self,
