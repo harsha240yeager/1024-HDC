@@ -1,133 +1,146 @@
-# 1024-HDC — Streaming 1024-bit Hyperdimensional Computing on Zynq
+# 1024-HDC — Streaming Hyperdimensional Computing on Zynq
 
-A 1024-bit Hyperdimensional Computing (HDC) classifier in SystemVerilog for a
-Xilinx Zynq-7020 (ZedBoard), built and **bit-exact verified** against a Python
-golden reference, with EMG hand-gesture recognition under the frozen protocol
-**P-may2026**.
+A 1024-bit Hyperdimensional Computing (HDC) classifier in SystemVerilog for the
+Xilinx Zynq-7020 (ZedBoard), **bit-exact verified** against a Python golden
+reference and validated on silicon with EMG hand-gesture recognition under the
+frozen protocol **P-may2026**.
 
-The core executes the HDC primitives — **XOR bind**, **permute** (cyclic shift),
+The core implements the HDC primitives — **XOR bind**, **permute** (cyclic shift),
 **majority bundle**, and **masked Hamming / popcount** associative-memory search —
-on 1024-bit binary hypervectors (Binary Spatter Code model), reachable from the PS
-over **AXI4-Lite** (control) and fed at inference rate over **AXI4-Stream + DMA**.
+on 1024-bit binary hypervectors (Binary Spatter Code model). It is controlled from
+the PS over **AXI4-Lite** and fed at inference rate over **AXI4-Stream + DMA**.
 
-> **Target venue:** DATE 2027 (~Sep 2026 submission). The research contribution is
-> a **three-axis accuracy/energy/area Pareto study** (dimension × bundle precision ×
-> bit-pruning) plus **informed-vs-random pruning** and **cross-subject mask transfer**
-> on real Zynq energy — not a re-port of prior FPGA-HDC accuracy.
+> **Target venue:** DATE 2027 (~Sep 2026 submission).
+> **Contribution:** a three-axis accuracy / energy / area Pareto study
+> (dimension × bundle precision × bit-pruning), plus informed-vs-random pruning
+> and cross-subject mask transfer on real Zynq energy — *not* a re-port of prior
+> FPGA-HDC accuracy.
+
+**Platform:** ZedBoard `xc7z020clg484-1` @ 100 MHz PL · Vivado 2024.2 · ModelSim/Questa
+**Repo:** `harsha240yeager/1024-HDC`
 
 ---
 
-## Status at a glance (June 2026)
+## Contents
+
+- [Status](#status)
+- [Results](#results)
+- [Accuracy: the two-baseline story](#accuracy-the-two-baseline-story)
+- [Repository layout](#repository-layout)
+- [Quick start](#quick-start)
+- [Roadmap](#roadmap)
+- [License](#license)
+
+---
+
+## Status
+
+**Done:** RTL + verification + Zynq bring-up (Phases 1–3) + D-axis characterisation +
+Tier 4 accuracy baselines (ARM HDC + tiny MLP).
+**In progress:** Hook A Python Pareto sweep (~26%, D=512 on VDI).
+**Next:** INA219 energy, Hook A Pareto + twists, write-up.
 
 | Area | State |
 |------|-------|
-| RTL datapath + 7 co-sim harnesses + `pruning_mask` | ✅ **Verified** (bit-exact vs Python) |
-| D-sweep functional cosim (D ∈ {256, 512, 1024, 2048}) | ✅ **PASS** (200 cases/D) |
-| D-sweep OOC synthesis (D ∈ {256, 512, 1024, 2048}) | ✅ **Complete** (see [`results/dsweep/`](results/dsweep/)) |
-| Phase 1 — AXI-Lite bring-up | ✅ **Complete** (200/200 golden, ~3 µs/window) |
-| Phase 2 — AXI-DMA stream bring-up | ✅ **Complete** (200/200 golden, ~7 µs/window) |
-| Phase 3 — SG batch throughput | ✅ **Complete** (~216k windows/s, WNS +0.111 ns) |
-| Phase 3 — full EMG replay on silicon | ✅ **PASS** (74.24%, 658k windows, Δ0.00% vs golden) |
-| Phase 3 — energy (INA219) | ⏳ **Not started** |
-| Hook A — Python Pareto sweep (D × CNT_W × pruning) | 🔄 **In progress** (~26% — D=512 on VDI) |
-| Twist 1 / Twist 2 (paper experiments) | ⏳ **Not started** |
-| **ARM HDC baseline (C)** | ✅ **74.15%** accuracy + **819 µs/window** on-board (200/200 golden) |
-| **Tiny int8 MLP baseline** | ✅ **93.01%** float / **92.99%** int8 (5 subjects, full TEST) |
-
-Bring-up, verification, the **D-axis characterisation**, and **Tier 4 accuracy baselines**
-(ARM HDC + MLP) are **done**. The **Hook A Python sweep** is running on VDI (~45–50 h);
-remaining work is **energy (INA219)**, **Hook A Pareto + twists**, and the **write-up** —
-see [What's left](#whats-left).
+| RTL datapath + 7 co-sim harnesses + `pruning_mask` | ✅ Verified (bit-exact vs Python) |
+| D-sweep functional cosim — D ∈ {256, 512, 1024, 2048} | ✅ PASS (200 cases/D) |
+| D-sweep OOC synthesis — D ∈ {256, 512, 1024, 2048} | ✅ Complete ([`results/dsweep/`](results/dsweep/)) |
+| Phase 1 — AXI-Lite bring-up | ✅ 200/200 golden, ~3 µs/window |
+| Phase 2 — AXI-DMA stream bring-up | ✅ 200/200 golden, ~7 µs/window |
+| Phase 3 — SG batch throughput | ✅ ~216k windows/s, WNS +0.111 ns |
+| Phase 3 — full EMG replay on silicon | ✅ PASS — 74.24%, 658k windows, Δ0.00% vs golden |
+| ARM HDC baseline (C) | ✅ 74.15% accuracy · 819 µs/window on-board (200/200 golden) |
+| Tiny int8 MLP baseline | ✅ 93.01% float / 92.99% int8 (5 subjects, full TEST) |
+| Hook A — Python Pareto sweep (D × CNT_W × pruning) | 🔄 In progress (~26%, D=512 on VDI) |
+| Phase 3 — energy (INA219) | ⏳ Tooling ready; measurement pending |
+| Twist 1 · Twist 2 (paper experiments) | ⏳ Not started |
 
 ---
 
 ## Results
 
-All board numbers are **ZedBoard (xc7z020clg484-1) @ 100 MHz PL, Vivado 2024.2**.
+All board numbers are from ZedBoard `xc7z020clg484-1` @ 100 MHz PL (Vivado 2024.2).
 Raw logs live under [`results/`](results/).
 
 ### RTL verification (co-simulation)
 
-Every harness checks the RTL **bit-for-bit** against the Python golden reference.
-Recorded on VDI 2026-06-25 (Vivado xsim; Questa `.do` harnesses equivalent).
+Each harness checks the RTL **bit-for-bit** against the Python golden reference
+(recorded on VDI 2026-06-25; Vivado xsim, Questa `.do` harnesses equivalent).
 
-| Harness | Cases | Proves | Log |
-|---------|-------|--------|-----|
-| `run_cosim.do` | 1000 | XOR bind + permute datapath | — |
-| `run_bundle_cosim.do` | 500 | Majority bundler | — |
-| `run_pruning_mask_cosim.do` | 64 | `pruning_mask.sv` (full + AXI word writes) | `results/xsim_pruning_mask.log` |
-| `run_am_cosim.do` | 500 | Masked Hamming AM + argmin | `results/xsim_am.log` |
-| `run_encoder_cosim.do` | 500 | Full EMG window encode | — |
-| `run_core_cosim.do` | 500 | End-to-end encode → classify | `results/xsim_core.log` |
-| `run_core_axi_cosim.do` | 200 | AXI4-Lite programming sequence | `results/xsim_core_axi.log` |
-| `run_stream_cosim.do` | 200 | AXI4-Stream + back-pressure + random gaps | `results/xsim_stream.log` |
-| `run_dsweep_cosim.do` | 200/D | Core at D ∈ {256, 512, 1024, 2048} | `results/xsim_dsweep_D*.log` |
+| Harness | Cases | Proves |
+|---------|-------|--------|
+| `run_cosim.do` | 1000 | XOR bind + permute datapath |
+| `run_bundle_cosim.do` | 500 | Majority bundler |
+| `run_pruning_mask_cosim.do` | 64 | `pruning_mask.sv` (full + AXI word writes) |
+| `run_am_cosim.do` | 500 | Masked Hamming AM + argmin |
+| `run_encoder_cosim.do` | 500 | Full EMG window encode |
+| `run_core_cosim.do` | 500 | End-to-end encode → classify |
+| `run_core_axi_cosim.do` | 200 | AXI4-Lite programming sequence |
+| `run_stream_cosim.do` | 200 | AXI4-Stream + back-pressure + random gaps |
+| `run_dsweep_cosim.do` | 200/D | Core at D ∈ {256, 512, 1024, 2048} |
 
-### D-sweep — Hook A dimension axis (OOC synthesis + functional cosim)
+### D-sweep — Hook A dimension axis
 
-Core-only out-of-context synthesis on **xc7z020clg484-1 @ 100 MHz** (Vivado 2024.2).
-Full reports: [`results/dsweep/`](results/dsweep/).
+Core-only out-of-context synthesis (Vivado 2024.2). Full reports in [`results/dsweep/`](results/dsweep/).
 
 | D | Slice LUT | Slice FF | LUT util | WNS (ns) | Fmax | Functional |
 |---|-----------|----------|----------|----------|------|------------|
-| 256 | 7,331 | 4,536 | 13.8% | 1.669 | 120 MHz | **PASS** |
-| 512 | 14,422 | 8,935 | 27.1% | 1.452 | 117 MHz | **PASS** |
-| 1024 | 28,600 | 17,784 | 53.8% | 0.781 | 109 MHz | **PASS** |
-| 2048 | 59,261 | 35,424 | **111%** | 1.340 | 116 MHz | **PASS** |
+| 256 | 7,331 | 4,536 | 13.8% | 1.669 | 120 MHz | PASS |
+| 512 | 14,422 | 8,935 | 27.1% | 1.452 | 117 MHz | PASS |
+| 1024 | 28,600 | 17,784 | 53.8% | 0.781 | 109 MHz | PASS |
+| 2048 | 59,261 | 35,424 | 111% | 1.340 | 116 MHz | PASS |
 
-LUT/FF scale ~linearly with D. **D=1024** is the timing tightest point (WNS 0.781 ns)
-but still meets 100 MHz. **D=2048** exceeds OOC LUT budget on xc7z020 — a reportable
-Pareto boundary for the full system (Phase 2 already at 66% LUT @ D=1024 + PS/DMA).
+LUT/FF scale ~linearly with D. **D=1024** is the timing-tightest point (WNS 0.781 ns)
+but still meets 100 MHz. **D=2048** exceeds the OOC LUT budget on xc7z020 — a
+reportable Pareto boundary.
 
 ### Hook A — Python accuracy sweep (D × CNT_W × pruning)
 
 RTL-matched `hdc_ref` encoder on the frozen **P-may2026** protocol (5 subjects, full
 TEST split). Informed Fisher masks from pooled TRAIN windows; area proxy merged from
-[`results/dsweep/`](results/dsweep/); energy on silicon deferred (INA219).
+[`results/dsweep/`](results/dsweep/); on-silicon energy deferred (INA219).
 
 | Mode | Command | Status |
 |------|---------|--------|
 | Quick sanity | `python3 python_ref/run_hook_a_sweep.py --quick` | ✅ Done (~3 min, capped windows) |
-| Full grid | `python3 python_ref/run_hook_a_sweep.py` | 🔄 **Running** (~26%, D=512; checkpoint `sweep_results.partial.json`) |
+| Full grid | `python3 python_ref/run_hook_a_sweep.py` | 🔄 Running (~26%, D=512) |
 
-Outputs: [`results/hook_a/`](results/hook_a/) (`sweep_results.json`, `sweep_summary.csv`,
-`sweep_results.partial.json` checkpoint while running). Config:
-[`python_ref/config/hook_a_sweep.json`](python_ref/config/hook_a_sweep.json).
+Grid: **D** ∈ {256, 512, 1024, 2048} × **CNT_W** ∈ {3, 4, 5, 6} ×
+**keep_ratio** ∈ {1.0, 0.5, 0.25, 0.125}, ~45–50 h wall time (single-core Python).
+Outputs in [`results/hook_a/`](results/hook_a/) (`sweep_results.json`,
+`sweep_summary.csv`, `sweep_results.partial.json` checkpoint).
+Config: [`python_ref/config/hook_a_sweep.json`](python_ref/config/hook_a_sweep.json).
+After completion: Pareto figure + 2–3 on-board anchor configs.
 
-Full grid axes: **D** ∈ {256, 512, 1024, 2048} × **CNT_W** ∈ {3, 4, 5, 6} ×
-**keep_ratio** ∈ {1.0, 0.5, 0.25, 0.125}. Expect **~45–50 h** wall time (single-core
-Python encode). After completion: Pareto figure + 2–3 on-board anchor configs.
+### Tier 4 — comparison baselines
 
-### Tier 4 — comparison baselines (Python + C)
+Same **P-may2026** protocol as board replay. Details in [`results/baselines/`](results/baselines/).
 
-Same **P-may2026** protocol as board replay. Details: [`results/baselines/`](results/baselines/).
+| Baseline | Accuracy (spatial mean) | On-board latency | Status |
+|----------|-------------------------|------------------|--------|
+| Board RTL encoder (reference) | **74.24%** | ~4 µs/window (batch) | ✅ Phase 3 EMG replay PASS |
+| ARM HDC (`sw/hdc_arm_ref.c`) | 74.15% | **819 µs**/window (mean) | ✅ Host + board 200/200 golden |
+| Tiny int8 MLP (~5.8k params) | 93.01% float / 92.99% int8 | — | ✅ Full 5 subjects, 25 epochs |
+| AXI-Lite PL path | — | ~3 µs/window | ✅ Phase 1 latency baseline |
 
-| Baseline | Spatial mean accuracy | On-board latency | Status |
-|----------|----------------------|------------------|--------|
-| **Board RTL encoder** (reference) | **74.24%** | ~4 µs/window (batch) | ✅ Phase 3 EMG replay PASS |
-| **ARM HDC** (`sw/hdc_arm_ref.c`) | **74.15%** | **819 µs**/window (mean) | ✅ Host + board 200/200 golden |
-| **Tiny int8 MLP** (~5.8k params) | **93.01%** float / **92.99%** int8 | — | ✅ Full 5 subjects, 25 epochs |
-| **AXI-Lite PL path** | — | ~3 µs/window | ✅ Phase 1 latency baseline |
-
+PL DMA batch is **~200×** faster per window than ARM software (819 µs vs ~4 µs).
+*Pending:* INA219 energy on both paths for the ~10× energy claim.
 Runners: [`python_ref/run_arm_hdc_baseline.py`](python_ref/run_arm_hdc_baseline.py),
 [`python_ref/run_mlp_baseline.py`](python_ref/run_mlp_baseline.py),
 [`python_ref/run_baselines.py`](python_ref/run_baselines.py).
 Build C lib: `bash scripts/build_hdc_arm_host.sh shared`.
-On-board ARM timing: `bash board/HDC_DMA/run_arm_bench.sh` →
-[`results/baselines/arm_hdc_board_timing.txt`](results/baselines/arm_hdc_board_timing.txt).
+On-board ARM timing: `bash board/HDC_DMA/run_arm_bench.sh`.
 
-**~200×** faster per window on PL DMA batch vs ARM software (819 µs vs ~4 µs). **Pending for paper:** INA219 energy on both paths for the ~10× energy claim.
-
-### Board bring-up — three measurement paths on the *same* core
+### Board bring-up — three measurement paths on the same core
 
 | | Phase 1 — AXI-Lite | Phase 2 — DMA stream | Phase 3 — SG batch |
 |--|--------------------|----------------------|--------------------|
-| **Paper role** | Register-mapped baseline | Main inference path | Throughput + golden |
-| **Golden** | 200/200 PASS | 200/200 PASS | 200/200 PASS (batch + per-window) |
-| **Latency (mean)** | **3 µs**/window | **7 µs**/window | **58 µs** single · **~4 µs**/window batch |
-| **Throughput** | ~333k win/s (micro) | ~143k win/s | **~216k win/s** (200-window SG batch) |
-| **WNS @ 100 MHz** | +0.246 ns | +0.023 ns | **+0.111 ns** (post-route physopt) |
-| **Logs** | `results/phase1/` | `results/phase2/` | `results/phase3/board_bench.txt` |
+| Paper role | Register-mapped baseline | Main inference path | Throughput + golden |
+| Golden | 200/200 PASS | 200/200 PASS | 200/200 PASS (batch + per-window) |
+| Latency (mean) | 3 µs/window | 7 µs/window | 58 µs single · ~4 µs/window batch |
+| Throughput | ~333k win/s (micro) | ~143k win/s | ~216k win/s (200-window SG batch) |
+| WNS @ 100 MHz | +0.246 ns | +0.023 ns | +0.111 ns (post-route physopt) |
+| Logs | `results/phase1/` | `results/phase2/` | `results/phase3/board_bench.txt` |
 
 ### Resource utilisation (post-route, xc7z020)
 
@@ -142,79 +155,41 @@ On-board ARM timing: `bash board/HDC_DMA/run_arm_bench.sh` →
 
 | Metric | Value |
 |--------|-------|
-| Windows replayed (full TEST split, 5 subjects) | **658,004** |
-| Correct | **488,550** |
+| Windows replayed (full TEST split, 5 subjects) | 658,004 |
+| Correct | 488,550 |
 | Board accuracy (RTL encoder) | **74.24%** |
-| Python export-ref accuracy | **74.24%** |
-| Board vs golden delta | **0.00%** → **PASS** (±0.5% gate) |
+| Python export-ref accuracy | 74.24% |
+| Board vs golden delta | **0.00%** → PASS (±0.5% gate) |
 
 Evidence: [`results/phase3/board_emg_replay.txt`](results/phase3/board_emg_replay.txt).
-The board reproduces its Python golden **exactly** over 658k real EMG windows — the
-RTL + DMA inference path is proven correct on silicon.
+The board reproduces its Python golden **exactly** over 658k real EMG windows.
 
 ---
 
-## EMG accuracy: the two-baseline story (and how to defend 74%)
+## Accuracy: the two-baseline story
 
-This project reports **two accuracy numbers on purpose**. They answer different
+This project reports **two accuracy numbers on purpose** — they answer different
 questions and must not be conflated.
 
-| Track | Where | Encoding | Spatial accuracy | Role |
-|-------|-------|----------|------------------|------|
-| **Stage A — MAP parity** | Python | Bipolar MAP, D=10k | **90.36%** | Literal Rahimi parity (paper: 90.8%) |
-| **Stage B — BSC reference** | Python | 4-channel records | **90.30% ± 0.13** | Frozen literature baseline @ D=1024 |
-| **RTL encoder** | Python golden **+ ZedBoard** | Eq. (3.1) 4×5 grid, `encoder_top.sv` | **74.24%** | **Verified deployment path** |
+| Track | Where | Encoding | Accuracy | Role |
+|-------|-------|----------|----------|------|
+| Stage A — MAP parity | Python | Bipolar MAP, D=10k | 90.36% | Literature parity (Rahimi ~90.8%) |
+| Stage B — BSC reference | Python | 4-channel records | 90.30% ± 0.13 | Frozen literature baseline @ D=1024 |
+| RTL encoder | Python golden **+ ZedBoard** | Eq. (3.1) 4×5 grid | **74.24%** | **Verified deployment path** |
 
-Full write-up: [`docs/Baseline_vs_RTL_Encoder.md`](docs/Baseline_vs_RTL_Encoder.md).
+**Why 74% on hardware is not a weakness:** the silicon runs a *different,
+hardware-faithful encoder* (Eq. 3.1 grid, seed-42 item memory), not Rahimi's
+4-channel spatial-record encoding — so identical accuracy was never expected. The
+~90% literature result *is* reproduced in Python (`python_ref/`). The deliverable is
+**verification fidelity** (board matches golden to Δ0.00% over 658k windows) and a
+**systems study** (throughput, latency, zero-DSP area, energy/pruning Pareto). All
+headline claims are **relative** to this 74.24% baseline, so the 74↔90 gap does not
+affect them.
 
-### Defending 74% against Rahimi et al. (ICRC 2016)
-
-If asked *"Rahimi got ~90% — why is your hardware at 74%?"*, the answer has six parts:
-
-1. **We *do* reproduce ~90% — and it's committed.** Stage A MAP hits **90.36%**
-   (paper 90.8%) and Stage B BSC hits **90.30%** at D=1024, both in Python under the
-   same protocol. The algorithm-level reproduction matches the literature. That box
-   is ticked; it just lives in `python_ref/`, not on the FPGA.
-
-2. **74% is a *different, hardware-faithful encoder* — not a worse classifier.**
-   The silicon runs research-plan **Eq. (3.1)**: a 4×5 (channel × feature) grid with
-   20 binds, position-permuted feature hypervectors, and seed-42 item-memory ROMs.
-   Rahimi's ~90% comes from a **4-channel spatial-record** encoding (Stage B). These
-   are two genuinely different HDC encodings, so identical accuracy was never expected.
-
-3. **The number that matters is verification fidelity — and it is perfect.** The
-   board matches its Python golden to **Δ0.00% over 658,004 windows**. That proves the
-   RTL, DMA descriptor ring, and prototype loading are bit-exact correct. *Correctness
-   of the deployed system is the deliverable, not beating a published accuracy.*
-
-4. **My contribution is a systems/hardware study, not an accuracy contest.** Rahimi
-   established *that* HDC classifies EMG. This work establishes *how efficiently a
-   streaming 1024-bit HDC core runs on Zynq* — throughput (~216k win/s), latency
-   (<50 µs), zero-DSP area, timing closure, and (next) an energy/accuracy Pareto.
-   None of those depend on the absolute encoder accuracy.
-
-5. **The headline claims are *relative*, so 74% vs 90% is irrelevant to them.**
-   - Hook A: accuracy *retention* under pruning (≤2 pp drop at 50% prune) + energy cut.
-   - Twist 1: informed pruning beats random by **≥5 pp at iso-density** — a within-run gap.
-   - Twist 2: cross-subject mask transfer within **≤3 pp** of per-subject masks.
-   All three are differences measured against the project's own 74.24% baseline.
-
-6. **Reporting both numbers is a credibility *strength*.** The 74↔90 gap is fully
-   traced (encoding topology, item-memory seed, feature handling) in
-   `docs/Baseline_vs_RTL_Encoder.md`. A reviewer sees an honest, debugged pipeline —
-   not a cherry-picked headline. (The earlier ~59% readings were a prototype-training
-   bug, since fixed and documented.)
-
-**One-liner:** *"We reproduced ~90% in Python (matching Rahimi); the FPGA runs a
-different, bit-exact-verified encoder at 74.24%; the paper's contribution is measured
-energy and informed-pruning Pareto on that verified path — not a second accuracy port."*
-
-### Board pass criterion
-
-EMG replay **PASS** = `|board_acc − export_ref| ≤ 0.5%`. The **90.30%** figure is a
-Python reference only — **not** the silicon pass gate. The original plan target
-(≥92% @ D=1024) was written for the Stage B encoding and is **retired** for the
-silicon path (decision: June 2026, Option A).
+Full rationale and pass criteria: [`docs/Baseline_vs_RTL_Encoder.md`](docs/Baseline_vs_RTL_Encoder.md).
+EMG replay PASS gate is `|board_acc − export_ref| ≤ 0.5%` — the 90.30% figure is a
+Python reference only, not the silicon gate. The original ≥92% target (Stage B
+encoding) is retired for the silicon path (June 2026, Option A).
 
 ---
 
@@ -222,16 +197,16 @@ silicon path (decision: June 2026, Option A).
 
 | Path | Contents |
 |------|----------|
-| `rtl/` | RTL: `xor_permute_top` (bind+permute), `permute_stage`, `bundle_unit`, `pruning_mask`, `popcount_am` (masked-Hamming AM), `item_mem`, `encoder_top` (EMG window encoder), `hdc_core_top` (encoder→AM), `hdc_core_axi_lite`, `hdc_stream_wrapper` (DMA stream). |
-| `tb/` | Self-checking + co-sim testbenches (one per harness). |
-| `sim/` | `run_*_cosim.do` one-command harnesses (gen vectors → compile → sim → PASS/FAIL). |
-| `sw/` | Bare-metal drivers + **`hdc_arm_ref.c`** / **`hdc_arm_bench.c`** (ARM HDC baseline + on-board timing). |
-| `python_ref/` | Golden model, EMG baselines, Hook A sweep, **Tier 4 runners** (`run_*_baseline.py`). |
-| `scripts/` | Golden prep, JTAG runners, EMG export, **`build_hdc_arm_host.sh`**, `ina219_log.py`. |
-| `board/HDC_DMA/` | ZedBoard Vitis workspace: platform, ELFs, JTAG run scripts. |
-| `results/` | Per-phase board/synthesis logs (the source of every number above). |
-| `docs/` | Research plan, `Baseline_vs_RTL_Encoder.md`, protocol/flow PDFs, end-to-end guide. |
-| `vivado_pack/` | Vivado bring-up bundle. `1024HDC.mpf` | ModelSim project. |
+| `rtl/` | `xor_permute_top`, `permute_stage`, `bundle_unit`, `pruning_mask`, `popcount_am`, `item_mem`, `encoder_top`, `hdc_core_top`, `hdc_core_axi_lite`, `hdc_stream_wrapper` |
+| `tb/` | Self-checking + co-sim testbenches (one per harness) |
+| `sim/` | `run_*_cosim.do` one-command harnesses (gen vectors → compile → sim → PASS/FAIL) |
+| `sw/` | Bare-metal drivers + `hdc_arm_ref.c` / `hdc_arm_bench.c` (ARM HDC baseline + on-board timing) |
+| `python_ref/` | Golden model, EMG baselines, Hook A sweep, Tier 4 runners (`run_*_baseline.py`) |
+| `scripts/` | Golden prep, JTAG runners, EMG export, `build_hdc_arm_host.sh`, energy tooling (`ina219_log.py`) |
+| `board/HDC_DMA/` | ZedBoard Vitis workspace: platform, ELFs, JTAG run scripts |
+| `results/` | Per-phase board / synthesis logs (the source of every number above) |
+| `docs/` | Research plan, `Baseline_vs_RTL_Encoder.md`, protocol/flow PDFs, end-to-end guide |
+| `vivado_pack/` | Vivado bring-up bundle |
 
 > Third-party data/code (`python_ref/HDC-EMG/`, GPLv3) and generated co-sim vectors
 > (`python_ref/vectors/`) are **not** committed (see `.gitignore`); both are reproducible.
@@ -240,161 +215,136 @@ silicon path (decision: June 2026, Option A).
 
 ## Quick start
 
-### 1. RTL co-simulation (single source of truth)
+### 1 · RTL co-simulation (single source of truth)
 
 ```bash
-vsim -c -do sim/run_cosim.do          # bind+permute (override count: NUM_CASES=…)
-vsim -c -do sim/run_bundle_cosim.do   # bundler
+vsim -c -do sim/run_cosim.do               # bind + permute
+vsim -c -do sim/run_bundle_cosim.do        # bundler
 vsim -c -do sim/run_pruning_mask_cosim.do  # pruning mask (full + AXI writes)
-vsim -c -do sim/run_am_cosim.do       # associative memory
-vsim -c -do sim/run_encoder_cosim.do  # EMG window encoder
-vsim -c -do sim/run_core_cosim.do     # end-to-end core
-vsim -c -do sim/run_core_axi_cosim.do # AXI4-Lite programming sequence
-vsim -c -do sim/run_stream_cosim.do   # AXI4-Stream + back-pressure
-vsim -c -do sim/run_dsweep_cosim.do   # functional D-sweep (256/512/1024/2048)
+vsim -c -do sim/run_am_cosim.do            # associative memory
+vsim -c -do sim/run_encoder_cosim.do       # EMG window encoder
+vsim -c -do sim/run_core_cosim.do          # end-to-end core
+vsim -c -do sim/run_core_axi_cosim.do      # AXI4-Lite programming sequence
+vsim -c -do sim/run_stream_cosim.do        # AXI4-Stream + back-pressure
+vsim -c -do sim/run_dsweep_cosim.do        # functional D-sweep (256/512/1024/2048)
 vivado -mode batch -source scripts/dsweep_synth.tcl   # OOC synth → results/dsweep/
 ```
 
-Waveform/trace debug for the stream path: `vsim -c -do sim/run_stream_cosim_debug.do`
+Stream-path waveform debug: `vsim -c -do sim/run_stream_cosim_debug.do`
 (`+DEBUG +TRACE=3 +WAVE` → `sim/waves/stream_cosim.vcd`).
-Protocol/flow primers: `docs/AXI4_*_Protocol_Study.pdf`, `docs/HDC_*_Cosim_Flow.pdf`.
 
-### 2. Python golden + EMG baselines
+### 2 · Python golden, EMG baselines, Hook A
 
 ```bash
 cd python_ref
 pip install -r requirements.txt
 git clone https://github.com/abbas-rahimi/HDC-EMG HDC-EMG   # one-time
 
-python run_smoke_test.py                          # verify golden model
-python run_emg_baseline.py                        # Stage B ~90% + cached RTL 74% summary
-python run_emg_baseline.py --quick --no-parity    # fast (~7 s)
-python run_emg_baseline.py --measure-rtl-ref --rtl-max-windows 5000  # re-measure RTL encoder
+python run_smoke_test.py                              # verify golden model
+python run_emg_baseline.py                            # Stage B ~90% + cached RTL 74%
+python run_emg_baseline.py --quick --no-parity        # fast (~7 s)
+
+python run_hook_a_sweep.py --quick                    # Hook A sanity (~3 min)
+python run_hook_a_sweep.py                             # full grid (~45–50 h)
 ```
 
-### 2b. Tier 4 baselines (ARM HDC + MLP)
+### 3 · Tier 4 baselines (ARM HDC + MLP)
 
 ```bash
 bash scripts/build_hdc_arm_host.sh shared     # once: build libhdc_arm_ref.so
 python3 python_ref/run_arm_hdc_baseline.py    # ARM HDC accuracy (~2 min, full split)
 python3 python_ref/run_mlp_baseline.py        # tiny int8 MLP (~minutes)
-python3 python_ref/run_baselines.py           # both
+python3 python_ref/run_baselines.py           # both → results/baselines/
 
-# On-board ARM software timing (ZedBoard + JTAG)
-bash board/HDC_DMA/run_arm_bench.sh           # prep + host golden verify + cross-compile + run
+bash board/HDC_DMA/run_arm_bench.sh           # on-board ARM software timing (ZedBoard + JTAG)
 ```
 
-Results → [`results/baselines/`](results/baselines/).
-
-### 3. ZedBoard golden test (200 cases, seed 42)
+### 4 · ZedBoard golden test (200 cases, seed 42)
 
 ```bash
-bash scripts/prep_golden_test.sh        # → sw/golden_vectors.h  (Windows: prep_golden_test.ps1)
-bash scripts/run_golden_jtag.sh         # JTAG → PASS: 200/200 golden cases
+bash scripts/prep_golden_test.sh    # → sw/golden_vectors.h  (Windows: prep_golden_test.ps1)
+bash scripts/run_golden_jtag.sh     # JTAG → PASS: 200/200 golden cases
 ```
 
-Base address `0x43C00000`. On ZedBoard the Digilent cable shares JTAG+UART; see
+Base address `0x43C00000`. The Digilent cable shares JTAG+UART; see
 [`docs/USB_UART_JTAG.md`](docs/USB_UART_JTAG.md) for simultaneous serial + JTAG.
-Prefer the JTAG result scripts if serial capture is unreliable during programming.
-PL programming may need a retry or two.
+Prefer the JTAG result scripts if serial capture is unreliable; PL programming may
+need a retry or two.
 
-### 4. Phase 2/3 — DMA stream, batch bench, EMG replay
+### 5 · Phase 2/3 — DMA stream, batch bench, EMG replay
 
 ```bash
-export HDC_VIVADO_ROOT="/path/to/FInal_HDC"   # Vivado project (for XSA/bitstream export)
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"   # Vivado project (XSA/bitstream export)
 cd board/HDC_DMA
-bash build_sw.sh                 # golden + bench + batch + EMG ELFs (fast)
+bash build_sw.sh                 # golden + bench + batch + EMG ELFs
 
 bash run_phase3_bench.sh         # batch throughput + golden → results/phase3/board_bench.txt
-bash run_phase3_emg.sh           # full EMG replay        → results/phase3/board_emg_replay.txt
+bash run_phase3_emg.sh           # full EMG replay          → results/phase3/board_emg_replay.txt
 ```
 
-**Full EMG export** (one-time ~4 h) and the prototype-fix / DDR-split flow are
-documented in [`results/phase3/README.md`](results/phase3/README.md).
+Full EMG export (one-time ~4 h) and the prototype-fix / DDR-split flow are documented
+in [`results/phase3/README.md`](results/phase3/README.md).
 
 ---
 
-## What's left
+## Roadmap
 
-The decision (June 2026) is **Option A**: re-target Hook A against the **74.24% RTL
-baseline**; absolute ≥92% is retired for silicon.
+Hook A is re-targeted (June 2026, Option A) against the **74.24% RTL baseline**;
+the absolute ≥92% target is retired for the silicon path.
 
-**Done:** bring-up, verification, D-axis (synth + cosim), and **Tier 4 accuracy baselines**
-(ARM HDC 74.15% + on-board timing, MLP 93.01% float / 92.99% int8).
+**Done:** bring-up, verification, D-axis (synth + cosim), and Tier 4 accuracy
+baselines (ARM HDC 74.15% + on-board timing; MLP 93.01% float / 92.99% int8).
+**Remaining:** Hook A Pareto completion, Twist 1/2 experiments, INA219 energy
+(blocks the real energy axis), on-board anchor replays, and the DATE write-up.
 
-**Remaining:** Hook A Pareto completion, Twist 1/2 experiments, **INA219 energy** (blocks
-the real energy axis), on-board anchor replays, and the DATE write-up.
+**Tier 1 — finish Phase 3 infrastructure**
+- [ ] Energy (INA219 + shunt) — wire per [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md), log with [`scripts/ina219_log.py`](scripts/ina219_log.py), fill [`results/phase3/energy_batch.txt`](results/phase3/energy_batch.txt). *Blocks every Pareto energy axis and the ARM-vs-PL ~10× claim; can run in parallel with the Hook A sweep at the bench.*
 
-### Tier 1 — finish Phase 3 infrastructure
+**Tier 2 — RTL gaps feeding Hook A**
+- [x] D-sweep synthesis (256–2048) → LUT / WNS / f_max ([`results/dsweep/`](results/dsweep/))
+- [x] `pruning_mask.sv` extracted + cosim harness (64 cases PASS)
 
-- [ ] **Energy (INA219 + shunt on Vcc_int)** — wire per [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md);
-      log with [`scripts/ina219_log.py`](scripts/ina219_log.py); fill
-      [`results/phase3/energy_batch.txt`](results/phase3/energy_batch.txt).
-      *Blocks the real energy axis on every Pareto figure and the ARM vs PL ~10× energy claim.*
-      *Can run in parallel with the Hook A sweep when the board is at the bench.*
+**Tier 3 — research contributions**
+- [ ] Hook A Pareto — sweep script shipped + quick sanity PASS; **full grid running (~26%, D=512)**; then final CSV/JSON + Pareto figure
+- [ ] Hook A on-board anchors (2–3 configs) at Pareto knee points
+- [ ] Twist 1 — informed vs random pruning at iso-density (target ≥5 pp); can start at one point (D=1024, keep=0.5) in parallel
+- [ ] Twist 2 — cross-subject mask transfer (target ≤3 pp); pilot on 5 subjects, full claim needs a 36-subject export
 
-### Tier 2 — close June RTL gaps (feed Hook A)
+**Tier 4 — comparison baselines (accuracy complete)**
+- [x] ARM HDC accuracy — 74.15% spatial mean (host C verify)
+- [x] ARM HDC on-board timing — 819 µs/window, 200/200 golden on Cortex-A9
+- [x] Tiny int8 MLP — 93.01% float / 92.99% int8, full 5 subjects
+- [x] AXI-Lite PL path — Phase 1 baseline
+- [ ] ARM vs PL energy (INA219) — ties to Tier 1
 
-- [x] **D-sweep synthesis** (256 / 512 / 1024 / 2048) → LUT / WNS / f_max.
-      [`results/dsweep/`](results/dsweep/) (2026-06-25).
-- [x] **`pruning_mask.sv`** extracted + cosim harness (64 cases PASS).
+**Tier 5 — write-up**
+- [ ] Paper figures — Pareto (accuracy × energy × LUT), Twist 1/2, Fisher heatmap, baseline table
+- [ ] DATE draft (~Sep 2026) — fold in [`docs/Baseline_vs_RTL_Encoder.md`](docs/Baseline_vs_RTL_Encoder.md)
 
-### Tier 3 — research contributions (the paper)
-
-- [ ] **Hook A — Python Pareto sweep** — D × CNT_W × pruning on `hdc_ref` / P-may2026.
-      - [x] Sweep script + config shipped ([`python_ref/run_hook_a_sweep.py`](python_ref/run_hook_a_sweep.py),
-            [`python_ref/config/hook_a_sweep.json`](python_ref/config/hook_a_sweep.json)).
-      - [x] Quick sanity PASS ([`results/hook_a/`](results/hook_a/), `--quick`).
-      - [ ] **Full grid running on VDI** — 64 configs × 5 subjects (~320 rows), ~45–50 h wall time;
-            **~26% complete** (D=512); checkpoint: `results/hook_a/sweep_results.partial.json`.
-      - [ ] **Final CSV/JSON + Pareto figure** — after full grid completes.
-- [ ] **Hook A — on-board anchors (2–3 configs)** — replay EMG at Pareto knee points picked
-      from the Python sweep (needs sweep ≥ D=1024 slice + board connected).
-- [ ] **Twist 1** — informed vs random pruning at iso-density (target **≥5 pp** gap) — headline figure.
-      *Can start now at one point (e.g. D=1024, keep=0.5) in parallel with the sweep.*
-- [ ] **Twist 2** — cross-subject mask transfer (target **≤3 pp** vs per-subject masks).
-      *Pilot possible on 5 subjects; full claim needs **36-subject export** (currently 5).*
-
-### Tier 4 — comparison baselines ✅ (accuracy complete)
-
-- [x] **ARM HDC — accuracy (host C verify)** — **74.15%** spatial mean (5 subjects, full TEST).
-      [`sw/hdc_arm_ref.c`](sw/hdc_arm_ref.c) · [`results/baselines/arm_hdc_results.json`](results/baselines/arm_hdc_results.json).
-- [x] **ARM HDC — on-board timing** — **819 µs** mean encode+classify, 200/200 golden on Cortex-A9
-      ([`sw/hdc_arm_bench.c`](sw/hdc_arm_bench.c) · [`results/baselines/arm_hdc_board_timing.txt`](results/baselines/arm_hdc_board_timing.txt)).
-- [x] **Tiny int8 MLP — full 5-subject run** — **93.01%** float / **92.99%** int8 spatial mean, 25 epochs, full TEST
-      ([`results/baselines/mlp_results.json`](results/baselines/mlp_results.json), post-train int8 quantize).
-- [x] **AXI-Lite PL path** — Phase 1 register-mapped baseline (already done).
-- [ ] **ARM vs PL energy (INA219)** — only Tier 4 item still open; ties to Tier 1.
-
-### Tier 5 — write-up
-
-- [ ] **Paper figures** — Pareto (accuracy × energy × LUT), Twist 1/2, Fisher heatmap, baseline comparison table.
-- [ ] **DATE draft** (~Sep 2026) — fold in [`docs/Baseline_vs_RTL_Encoder.md`](docs/Baseline_vs_RTL_Encoder.md).
-
-### Parallel while the Hook A sweep runs
+### Parallel work while the Hook A sweep runs
 
 | Task | Resource | Blocks on sweep? |
 |------|----------|------------------|
 | INA219 energy batch (PL + ARM path) | Board + I²C | No |
-| Twist 1 @ one (D, keep) | ~2–4 h Python | No (avoid second full grid on same CPU) |
-| Pareto preview from `sweep_results.partial.json` | Minutes | No (preview only until full grid done) |
-| On-board anchor pick + replay | Board | Yes — needs D=1024 rows in sweep output |
+| Twist 1 @ one (D, keep) | ~2–4 h Python | No (avoid a second full grid on the same CPU) |
+| Pareto preview from `sweep_results.partial.json` | Minutes | No (preview only) |
+| On-board anchor pick + replay | Board | Yes — needs D=1024 rows |
 | Final Pareto table / paper numbers | — | Yes — needs full 64-cell grid |
 
 ### Plan vs actual (research plan §9.3)
 
 | Month | Planned | Status |
 |-------|---------|--------|
-| May 2026 | Python golden + reproduce EMG number | ✅ Met (Stage A 90.36%, Stage B 90.30%) |
-| Jun 2026 | Core RTL + co-sim; D verified | ✅ Met (`pruning_mask.sv`, D-sweep cosim + synth PASS) |
-| Jul 2026 | Stream wrapper + DMA bring-up | ✅ Ahead (Phases 2–3, EMG replay PASS) |
-| Aug 2026 | Hook A + Twist 1/2 + baselines + power | 🔄 Hook A ~26%; **Tier 4 accuracy ✅**; INA219 + twists pending |
+| May 2026 | Python golden + reproduce EMG number | ✅ Stage A 90.36%, Stage B 90.30% |
+| Jun 2026 | Core RTL + co-sim; D verified | ✅ `pruning_mask.sv`, D-sweep cosim + synth PASS |
+| Jul 2026 | Stream wrapper + DMA bring-up | ✅ Ahead — Phases 2–3, EMG replay PASS |
+| Aug 2026 | Hook A + Twist 1/2 + baselines + power | 🔄 Hook A ~26%; Tier 4 accuracy ✅; INA219 + twists pending |
 | Sep 2026 | Paper draft + DATE submit | ⏳ Not started |
 
 ---
 
-## License / attribution
+## License
 
-This repo's RTL, Python, and docs are the project's own work. The reproduction
+This repository's RTL, Python, and docs are the project's own work. The reproduction
 depends on the third-party **HDC-EMG** dataset/code (Rahimi et al., GPLv3), fetched
 separately and not redistributed here.
