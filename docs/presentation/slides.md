@@ -280,12 +280,12 @@ Prior FPGA-HDC prunes **dimension**. The under-explored axis is **which bits** t
 | Axis | Values | Mechanism | Status |
 |------|--------|-----------|--------|
 | Dimension **D** | 256 / 512 / 1024 / 2048 | parameterised RTL | <span class="ok">DONE (synth+cosim)</span> |
-| Bundle precision **CNT_W** | counter width | majority-vote resolution | next |
-| **Bit-pruning ratio** | 0 / 50 / 75 / 87.5% | runtime mask via `pruning_mask` | next |
+| Bundle precision **CNT_W** | 3 / 4 / 5 / 6 | majority-vote resolution | <span class="warn">running (Python sweep)</span> |
+| **Bit-pruning ratio** | 0 / 50 / 75 / 87.5% | Fisher mask via `pruning_mask` | <span class="warn">running (Python sweep)</span> |
 
 <div class="box">
 
-Map the **accuracy / energy / area** trade-off surface for HDC-on-FPGA. The D-axis is already measured on silicon; pruning + precision axes are next.
+Map the **accuracy / energy / area** trade-off surface for HDC-on-FPGA. D-axis measured on silicon; the **64-cell `run_hook_a_sweep.py` grid** (D × CNT_W × prune) is running (quick-sanity PASS) — feeds accuracy; **INA219** adds the real energy axis.
 
 </div>
 
@@ -303,11 +303,30 @@ Train the mask on some EMG subjects, deploy unchanged on held-out subjects.
 
 ---
 
+## Comparison baselines — why HDC-on-PL <span class="tag">accuracy done</span>
+
+Same **P-may2026** protocol (5 subjects, full TEST). Accuracy complete; energy pending INA219.
+
+| Baseline | Accuracy | Latency / window | Status |
+|----------|----------|------------------|--------|
+| **PL DMA (this work)** | 74.24% (board) | **~4 µs** (batch) | <span class="ok">Phase 3 PASS</span> |
+| **ARM-only HDC** (C, Cortex-A9) | 74.15% | **818 µs** (1,222 win/s) | <span class="ok">200/200 golden</span> |
+| **Tiny int8 MLP** (~5.8k params) | 93.01% fp / 92.99% int8 | — | <span class="ok">full 5 subjects</span> |
+| AXI-Lite PL path | — | ~3 µs | <span class="ok">Phase 1</span> |
+
+<div class="good">
+
+**PL DMA is ~200× faster per window than ARM software** (4 µs vs 818 µs) at matched accuracy (74.24 vs 74.15%). The MLP shows a higher-accuracy NN reference; INA219 will add the **energy** column for the ~10× efficiency claim.
+
+</div>
+
+---
+
 ## Status & roadmap
 
 ![center w:1080](diagrams/roadmap.svg)
 
-Bring-up + all **June** RTL deliverables are **complete and ahead of schedule**. Remaining work is measurement science + the paper.
+Bring-up, all **June** RTL deliverables, **and the comparison baselines** are **complete and ahead of schedule**. Remaining: INA219 energy → finish Hook A sweep → twists → the paper.
 
 ---
 
@@ -318,12 +337,13 @@ Bring-up + all **June** RTL deliverables are **complete and ahead of schedule**.
 - <span class="ok">Phases 1–3 board bring-up; EMG replay 74.24%, Δ0.00% over 658k windows</span>
 - <span class="ok">`pruning_mask.sv` extracted; D-sweep synth + cosim (256–2048)</span>
 - <span class="ok">Python ~90% baselines reproduced</span>
+- <span class="ok">Comparison baselines: ARM HDC (74.15%, 818 µs/win) + tiny int8 MLP (93.0%)</span>
 
 **Next (critical path):**
-1. <span class="warn">INA219 energy measurement</span> (unblocks all Pareto/energy)
-2. Hook A — add CNT_W + pruning axes → board anchors
+1. <span class="warn">INA219 energy measurement</span> (unblocks all Pareto/energy + ARM-vs-PL ~10× claim)
+2. Hook A — `run_hook_a_sweep.py` grid (D × CNT_W × prune) running → board anchors
 3. Twist 1 (informed vs random) — headline figure · Twist 2 (cross-subject)
-4. Baselines (ARM-only HDC, int8 MLP) → paper draft (DATE 2027)
+4. Paper figures + DATE 2027 draft
 
 ---
 

@@ -440,8 +440,8 @@
 <table>
   <tr><th>Axis</th><th>Values</th><th>Mechanism</th><th>Status</th></tr>
   <tr><td>Dimension <strong>D</strong></td><td>256 / 512 / 1024 / 2048</td><td>Parameterised RTL; separate bitstreams (the "D-sweep")</td><td class="ok">DONE — synth + cosim</td></tr>
-  <tr><td>Bundle precision <strong>CNT_W</strong></td><td>counter width</td><td>How finely the majority vote is accumulated</td><td class="muted">next</td></tr>
-  <tr><td>Bit-pruning ratio</td><td>0 / 50 / 75 / 87.5%</td><td>Same bitstream, different mask loaded at runtime via <code>pruning_mask</code></td><td class="muted">next</td></tr>
+  <tr><td>Bundle precision <strong>CNT_W</strong></td><td>3 / 4 / 5 / 6</td><td>How finely the majority vote is accumulated</td><td class="warn">running — Python sweep</td></tr>
+  <tr><td>Bit-pruning ratio</td><td>0 / 50 / 75 / 87.5%</td><td>Same bitstream, different Fisher mask loaded at runtime via <code>pruning_mask</code></td><td class="warn">running — Python sweep</td></tr>
 </table>
 
 <div class="good">
@@ -457,6 +457,15 @@
   <small>LUT/FF scale ~linearly with D (observed). <strong>D=2048 core-only exceeds the device LUT
   budget (111%)</strong> — a genuine, reportable Pareto boundary, not a shipping config. All configs
   meet 100 MHz. Zero DSP / zero BRAM throughout. Source: <code>results/dsweep/</code>.</small>
+</div>
+
+<div class="callout">
+  <strong>CNT_W + pruning axes now in flight (June 2026).</strong> The accuracy sweep is automated:
+  <code>python_ref/run_hook_a_sweep.py</code> evaluates the full <strong>64-cell grid</strong>
+  (D × CNT_W ∈ {3,4,5,6} × keep-ratio ∈ {1, 0.5, 0.25, 0.125}) on the RTL-matched encoder with
+  Fisher-informed masks. Quick-sanity run <strong>PASS</strong>; the full grid is running on the VDI
+  (~45–50 h). Output → <code>results/hook_a/</code>. The OOC LUT figures merge in for the area axis;
+  INA219 adds the measured energy axis.
 </div>
 
 <figure class="nobreak">
@@ -513,29 +522,40 @@
       <li class="ok"><code>pruning_mask.sv</code> extracted + verified</li>
       <li class="ok">D-sweep synth + cosim (256–2048) — D-axis</li>
       <li class="ok">Python ~90% baselines reproduced</li>
+      <li class="ok">ARM-only HDC baseline — 74.15%, 818 µs/win (200/200)</li>
+      <li class="ok">Tiny int8 MLP baseline — 93.01% fp / 92.99% int8</li>
     </ul>
   </div>
   <div>
     <h4>Left to do</h4>
     <ul>
       <li class="warn">INA219 energy measurement (Phase 3 close) — <em>critical blocker</em></li>
-      <li>Hook A Pareto — add CNT_W &amp; pruning axes (D-axis done)</li>
+      <li>Hook A Pareto — CNT_W &amp; pruning sweep <em>running</em> (D-axis done)</li>
       <li>Twist 1 informed-vs-random (headline figure)</li>
       <li>Twist 2 cross-subject (needs 36-subject export)</li>
-      <li>Baselines: ARM-only HDC, tiny int8 MLP</li>
+      <li>ARM vs PL energy (ties to INA219)</li>
       <li>Paper draft (DATE 2027)</li>
     </ul>
   </div>
 </div>
 <div class="good" style="margin-top:6px;">
-  <strong>June RTL gaps now CLOSED.</strong> Both Tier-2 items are done and on GitHub:
-  <code>pruning_mask.sv</code> extracted + verified, and the full D-sweep (synthesis + cosim) recorded
-  in <code>results/dsweep/</code>. The Jun-2026 plan milestone is <strong>met</strong>.
+  <strong>June RTL gaps CLOSED + comparison baselines DONE.</strong> <code>pruning_mask.sv</code> and
+  the full D-sweep (synth + cosim) are in <code>results/dsweep/</code>; the <strong>ARM-only HDC</strong>
+  (74.15%, 818 µs/window, 200/200 golden) and <strong>tiny int8 MLP</strong> (93.01% fp / 92.99% int8)
+  baselines are recorded in <code>results/baselines/</code>. The Jun-2026 plan milestone is <strong>met</strong>.
 </div>
+
+<h4>Comparison baselines (accuracy complete; energy next)</h4>
+<table>
+  <tr><th>Baseline</th><th>Accuracy</th><th>Latency / window</th><th>Note</th></tr>
+  <tr><td><strong>PL DMA (this work)</strong></td><td class="warn">74.24%</td><td><strong>~4 µs</strong> (batch)</td><td>Phase 3 board PASS</td></tr>
+  <tr><td>ARM-only HDC (C, Cortex-A9)</td><td>74.15%</td><td><strong>818 µs</strong> (1,222 win/s)</td><td>200/200 golden; ~200× slower than PL</td></tr>
+  <tr><td>Tiny int8 MLP (~5.8k params)</td><td class="ok">93.01% fp / 92.99% int8</td><td>—</td><td>higher-accuracy NN reference</td></tr>
+</table>
 <p class="muted">
-  Critical path now: <strong>INA219 energy</strong> → Hook A CNT_W/pruning sweep → board anchors →
-  write-up. Bring-up and all June deliverables are complete and <em>ahead</em> of schedule; what
-  remains is the measurement science (energy, pruning study) and the paper.
+  Critical path now: <strong>INA219 energy</strong> (PL + ARM paths) → finish Hook A CNT_W/pruning
+  sweep → board anchors → Twist 1/2 → write-up. Bring-up, all June deliverables, and the baselines are
+  complete and <em>ahead</em> of schedule; what remains is the measurement science and the paper.
 </p>
 
 <!-- ============ 11. Q&A ============ -->
@@ -570,9 +590,10 @@ multipliers; item memories are small enough to infer as LUT ROM. It means the de
 cheapest FPGAs and leaves all DSP/BRAM free for other functions — exactly the edge-efficiency story.</div></div>
 
 <div class="qbox"><div class="q">Q: You're at 96% slice utilisation at D=1024 — can you even do D=2048?</div>
-<div class="a">A: Core-only (out-of-context) D=2048 should fit; the full system with PS+DMA at D=2048 may not, and
-that boundary is itself a reportable Pareto result. The D-sweep synthesis (scripted, ready to run on the
-VDI) will give exact LUT/FF/timing per D to answer this with data.</div></div>
+<div class="a">A: We have the data now. Core-only (out-of-context) D=2048 is <strong>59,261 LUT = 111% of the
+device</strong> — it does <em>not</em> fit standalone, which is itself a reportable Pareto boundary. D=1024
+core-only is 53.8% and closes timing comfortably; the full PS+DMA system at D=1024 is the shipping config.
+All four D points PASS functional cosim (<code>results/dsweep/</code>).</div></div>
 
 <div class="qbox"><div class="q">Q: How do you know the RTL is actually correct?</div>
 <div class="a">A: Every block is checked bit-for-bit against a Python golden model in automated co-simulation
@@ -597,6 +618,13 @@ quantifies how much structure HDC encodings actually carry per bit.</div></div>
 <div class="a">A: That's still a publishable result — it means EMG bit-importance is subject-specific and motivates
 lightweight on-device mask adaptation. We framed Twist 2 so either outcome is a contribution.</div></div>
 
+<div class="qbox"><div class="q">Q: Why HDC at all — wouldn't a small neural net be more accurate?</div>
+<div class="a">A: We measured exactly that. A tiny int8 MLP (~5.8k params) reaches 93% on this task — more accurate, as
+expected. But the HDC story is <em>efficiency</em>, not peak accuracy: the PL HDC core runs at <strong>~4 µs/window,
+zero DSP, zero BRAM</strong>, vs the same HDC algorithm on the ARM CPU at <strong>818 µs/window</strong> (~200× slower).
+The MLP is the accuracy reference; HDC-on-PL is the energy/throughput play. INA219 will quantify the energy gap
+directly. Both baselines are committed in <code>results/baselines/</code>.</div></div>
+
 <div class="qbox"><div class="q">Q: How will you measure energy, and is it credible?</div>
 <div class="a">A: An INA219 current sensor across the Vcc_int shunt, logged during batch inference, giving real
 energy-per-inference — not a vendor estimate. That's the next Phase 3 task and it underpins the whole
@@ -604,9 +632,9 @@ Pareto.</div></div>
 
 <h4>On scope &amp; timeline</h4>
 <div class="qbox"><div class="q">Q: Is this on track for DATE 2027?</div>
-<div class="a">A: Bring-up (Phases 1–3) is done and ahead of schedule. Remaining work is the measurement science
-(D-sweep, energy, Hook A, twists) and the write-up — the August/September blocks in the plan. The hard
-infrastructure risk is retired.</div></div>
+<div class="a">A: Bring-up (Phases 1–3), the D-sweep, and the comparison baselines are done and ahead of schedule.
+Remaining work is the measurement science (INA219 energy, the running Hook A CNT_W/pruning sweep, twists)
+and the write-up — the August/September blocks in the plan. The hard infrastructure risk is retired.</div></div>
 
 <div class="qbox"><div class="q">Q: What's the single biggest risk right now?</div>
 <div class="a">A: Two small ones: (1) D=2048 may not close timing with the full PS+DMA system — mitigated because
@@ -631,7 +659,10 @@ blocks the headline Hook A / Twist 1 results.</div></div>
   <tr><td>Verification</td><td>7 co-sim harnesses + pruning_mask, all bit-exact PASS (Questa + Vivado xsim)</td></tr>
   <tr><td>Pruning module</td><td><code>pruning_mask.sv</code> — 129/129 checks PASS</td></tr>
   <tr><td>D-sweep (OOC synth)</td><td>D=256→2048: 7.3k→59.3k LUT; D=2048 = 111% (Pareto boundary); all PASS cosim</td></tr>
-  <tr><td>Novelty</td><td>Hook A (D×CNT_W×prune Pareto; D-axis done) · Twist 1 (informed vs random, ≥5 pp) · Twist 2 (cross-subject)</td></tr>
+  <tr><td>ARM-only HDC baseline</td><td>74.15% · 818 µs/window (1,222 win/s) · 200/200 golden — ~200× slower than PL DMA</td></tr>
+  <tr><td>Tiny int8 MLP baseline</td><td>93.01% float / 92.99% int8 (~5,805 params, 5 subjects)</td></tr>
+  <tr><td>Hook A sweep</td><td><code>run_hook_a_sweep.py</code> — 64-cell D×CNT_W×prune grid running (quick PASS)</td></tr>
+  <tr><td>Novelty</td><td>Hook A (D×CNT_W×prune Pareto; D-axis done, sweep running) · Twist 1 (informed vs random, ≥5 pp) · Twist 2 (cross-subject)</td></tr>
   <tr><td>Target venue</td><td>DATE 2027 (~Sep 2026 submission)</td></tr>
 </table>
 
