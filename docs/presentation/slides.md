@@ -24,8 +24,10 @@ style: |
   tr:nth-child(even) td { background: #f8fafc; }
   section.lead { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(135deg, #0a2540 0%, #1d4ed8 100%); color: #fff; }
   section.lead h1 { color: #fff; font-size: 52px; }
-  section.lead h2 { color: #cfe0ff; border: none; font-size: 26px; }
-  section.lead p { color: #dbeafe; font-size: 20px; }
+  section.lead h2 { color: #ffffff; border: none; font-size: 26px; }
+  section.lead p { color: #ffffff; font-size: 20px; }
+  section.lead strong { color: #ffffff; }
+  section.lead a { color: #ffffff; text-decoration: underline; }
   .tag { background: #2563eb; color: #fff; font-size: 16px; font-weight: 600; padding: 3px 12px; border-radius: 12px; }
   .ok { color: #047857; font-weight: 700; }
   .warn { color: #b45309; font-weight: 700; }
