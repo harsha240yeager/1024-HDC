@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>1024-HDC — Slide-by-Slide Explainer</title>
+<style>
+  @page { size: A4; margin: 15mm 14mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: #1a2230; font-size: 10.5pt; line-height: 1.5; margin: 0; }
+  h1 { font-size: 22pt; color: #0a2540; margin: 0 0 4px; }
+  h2 { font-size: 13.5pt; color: #fff; background: #0a2540; margin: 0 0 10px; padding: 7px 12px; border-radius: 6px; }
+  h3 { font-size: 11pt; color: #1d4ed8; margin: 14px 0 3px; text-transform: uppercase; letter-spacing: .4px; }
+  p { margin: 6px 0; }
+  ul, ol { margin: 6px 0 6px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  code { background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-family: "Consolas", monospace; font-size: 9pt; color: #b91c1c; }
+  .slide { page-break-inside: avoid; margin: 0 0 20px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px 16px 14px; }
+  .tag { display: inline-block; background: #2563eb; color: #fff; font-size: 8pt; font-weight: 600; padding: 2px 8px; border-radius: 10px; vertical-align: middle; margin-left: 6px; }
+  .muted { color: #64748b; }
+  .say { background: #eff6ff; border-left: 4px solid #2563eb; padding: 8px 13px; margin: 8px 0; border-radius: 0 6px 6px 0; }
+  .qa { background: #fafafa; border: 1px solid #e6ebf2; border-radius: 6px; padding: 8px 12px; margin: 8px 0; }
+  .qa .q { font-weight: 700; color: #0a2540; }
+  .qa .a { margin-top: 3px; }
+  .qa .q::before { content: "Q "; color: #2563eb; font-weight: 800; }
+  .qa .a::before { content: "A "; color: #059669; font-weight: 800; }
+  .cover { text-align: center; padding: 50px 0 20px; }
+  .cover .sub { font-size: 12.5pt; color: #475569; margin-top: 6px; }
+  .cover .meta { margin-top: 34px; font-size: 10pt; color: #64748b; }
+  .pagebreak { page-break-before: always; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9.3pt; }
+  th { background: #0a2540; color: #fff; text-align: left; padding: 5px 8px; }
+  td { border-bottom: 1px solid #e2e8f0; padding: 4px 8px; vertical-align: top; }
+  .num { color: #94a3b8; font-weight: 700; }
+  small { font-size: 8.6pt; }
+  .toc { columns: 2; font-size: 9.4pt; }
+  .toc div { margin: 2px 0; break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="tag" style="font-size:9pt;">DATE 2027 · Advisor Review — Speaker Guide</div>
+  <h1 style="margin-top:16px;">1024-bit HDC Accelerator on Zynq-7020</h1>
+  <div class="sub">Slide-by-slide explainer for <code>HDC_Research_Review.pptx</code></div>
+  <div class="sub" style="font-size:10.5pt; margin-top:10px;">What each slide shows · how to present it · questions the professor may ask (with answers)</div>
+  <div class="meta">
+    Companion to the 22-slide deck · SystemVerilog + Python golden reference<br>
+    Platform: Xilinx Zynq-7020 (ZedBoard) · Vivado 2024.2 · Prepared July 2026
+  </div>
+</div>
+
+<div class="say">
+  <strong>How to use this document.</strong> Each numbered section below corresponds to one slide in
+  <code>HDC_Research_Review.pptx</code>, in order. For every slide you get: <em>What's on the slide</em>
+  (so you can glance and orient), <em>How to explain it</em> (the narration / talking points), and
+  <em>Likely questions</em> the professor may ask with ready answers. Keep the deck open beside this;
+  the section numbers match the slide numbers. If time is short, lead with slides 15–19 (the accuracy
+  story and the research contribution).
+</div>
+
+<h3>Slide index</h3>
+<div class="toc">
+  <div><span class="num">1</span> Title</div>
+  <div><span class="num">2</span> The problem &amp; motivation</div>
+  <div><span class="num">3</span> What is HDC?</div>
+  <div><span class="num">4</span> The four HDC primitives</div>
+  <div><span class="num">5</span> Application — EMG gestures</div>
+  <div><span class="num">6</span> System architecture — PS + PL</div>
+  <div><span class="num">7</span> The encoding datapath</div>
+  <div><span class="num">8</span> Module hierarchy</div>
+  <div><span class="num">9</span> Computational microarchitecture</div>
+  <div><span class="num">10</span> Cycle-level behaviour / FSM</div>
+  <div><span class="num">11</span> Verification — golden reference</div>
+  <div><span class="num">12</span> Verification coverage</div>
+  <div><span class="num">13</span> Board results — 3 paths</div>
+  <div><span class="num">14</span> Resources &amp; the D-sweep</div>
+  <div><span class="num">15</span> The two-baseline accuracy story</div>
+  <div><span class="num">16</span> Why 74% is not a weakness</div>
+  <div><span class="num">17</span> Hook A — 3-axis Pareto</div>
+  <div><span class="num">18</span> Twist 1 &amp; Twist 2</div>
+  <div><span class="num">19</span> Comparison baselines</div>
+  <div><span class="num">20</span> Status &amp; roadmap</div>
+  <div><span class="num">21</span> Summary &amp; next steps</div>
+  <div><span class="num">22</span> Thank you / Q&amp;A</div>
+</div>
+
+<!-- ================= SLIDE 1 ================= -->
+<div class="pagebreak"></div>
+
+<div class="slide">
+<h2>Slide 1 — Title</h2>
+<h3>What's on the slide</h3>
+<p>Project title (<em>1024-bit Hyperdimensional Computing Accelerator on Zynq-7020</em>), the subtitle
+"streaming, bit-exact-verified HDC classifier for EMG hand-gesture recognition", target venue
+<strong>DATE 2027</strong>, and the platform line (ZedBoard, SystemVerilog + Python golden reference).</p>
+<h3>How to explain it</h3>
+<div class="say">
+"This is a hardware accelerator for Hyperdimensional Computing, built and verified on a Zynq FPGA.
+The two words that define the work are <strong>streaming</strong> (data flows through at inference rate
+over DMA) and <strong>bit-exact-verified</strong> (the RTL matches a Python golden model exactly). The
+application is EMG hand-gesture recognition, and I'm targeting DATE 2027."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">What is the one-sentence contribution?</div>
+<div class="a">A measured accuracy/energy/area Pareto for a streaming 1024-bit HDC core on Zynq, plus an
+informed-vs-random bit-pruning result — not a re-port of prior HDC accuracy.</div></div>
+<div class="qa"><div class="q">Why Zyng / ZedBoard specifically?</div>
+<div class="a">It pairs an ARM CPU (PS) with FPGA fabric (PL) on one chip, so I can stream data from software
+to hardware over AXI-DMA and also run a fair ARM-only software baseline on the same silicon.</div></div>
+</div>
+
+<!-- ================= SLIDE 2 ================= -->
+<div class="slide">
+<h2>Slide 2 — The problem &amp; motivation</h2>
+<h3>What's on the slide</h3>
+<p>Three bullets: edge inference must be cheap/low-power; HDC is a bitwise, brain-inspired alternative
+to multiply-heavy CNN/MLP; the application is EMG (Rahimi et al. benchmark). A blue box states the
+<strong>thesis</strong>: a streaming 1024-bit HDC core with zero DSP/BRAM, where per-bit pruning cuts
+energy — the contribution being a measured Pareto.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"Always-on edge devices — prosthetics, wearables — can't afford GPU-style multiply-accumulate. HDC
+replaces that with bitwise operations on long binary vectors, which map beautifully to FPGA logic. I use
+the EMG gesture dataset from Rahimi's 2016 paper because it's the standard HDC-on-EMG benchmark, so I can
+compare directly with the literature."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Why not just use a small neural network?</div>
+<div class="a">We measured one — a tiny int8 MLP hits ~93% (slide 19). HDC's argument isn't peak accuracy, it's
+efficiency: bitwise ops, one-shot training, zero DSP, and tolerance to bit errors that lets us prune
+aggressively. That trade-off is exactly what the Pareto quantifies.</div></div>
+<div class="qa"><div class="q">Is HDC actually used in industry, or is it academic?</div>
+<div class="a">It's still mostly research, but its appeal for ultra-low-power always-on sensing (biosignals,
+IoT) is real. The point of this work is to give hardware designers measured numbers on the energy/accuracy
+trade-off, which is what's missing.</div></div>
+</div>
+
+<!-- ================= SLIDE 3 ================= -->
+<div class="slide">
+<h2>Slide 3 — What is Hyperdimensional Computing?</h2>
+<h3>What's on the slide</h3>
+<p>Four bullets: every concept becomes one 1024-bit hypervector; random vectors are near-orthogonal in
+high dimensions (capacity + noise tolerance); classification is nearest-prototype by Hamming distance;
+the model is Binary Spatter Code (BSC). A green box lists why it suits FPGAs.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"The core idea: in 1024-dimensional binary space, two random vectors differ in about half their bits, so
+they're 'nearly orthogonal'. That gives huge representational capacity and means flipping a few bits barely
+changes a vector's identity — inherent error tolerance. Classifying is just finding the nearest stored
+vector by Hamming distance. I use Binary Spatter Code: binary vectors, XOR binding — the most
+hardware-friendly flavour."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Why 1024 dimensions — why not more or fewer?</div>
+<div class="a">1024 is the sweet spot for this task and it's a clean 16×64-bit word layout for the datapath.
+But D is a parameter — the D-sweep (slide 14) measures 256 to 2048 so the dimension choice is itself a
+result, not an assumption.</div></div>
+<div class="qa"><div class="q">Where does the noise tolerance actually help you?</div>
+<div class="a">It's what makes bit-pruning viable: I can zero out a large fraction of bits in the distance
+computation and still classify correctly, because the class signal is spread across many bits. That's the
+basis of Hook A.</div></div>
+</div>
+
+<!-- ================= SLIDE 4 ================= -->
+<div class="slide">
+<h2>Slide 4 — The four HDC primitives</h2>
+<h3>What's on the slide</h3>
+<p>A table mapping each primitive to its math, meaning, and RTL block: <strong>Bind</strong> (XOR →
+<code>xor_permute_top</code>), <strong>Permute</strong> (cyclic shift → <code>permute_stage</code>),
+<strong>Bundle</strong> (majority → <code>bundle_unit</code>), <strong>Search</strong> (argmin Hamming →
+<code>popcount_am</code>).</p>
+<h3>How to explain it</h3>
+<div class="say">
+"All of HDC is four operations, and each one is a verified RTL block in my design. Bind (XOR) associates
+two concepts, like a channel with its value. Permute (a bit rotation) encodes position. Bundle (bitwise
+majority vote) superposes many vectors into one. Search finds the nearest class prototype. Encoding uses
+the first three; search does the classification. Every one is XOR, shift, or popcount — no multipliers."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Why is XOR the right binding operation?</div>
+<div class="a">XOR is its own inverse and produces a result dissimilar to both inputs, which is exactly the
+algebra binding needs — you can unbind by XORing again, and bound pairs don't collide with their parts.</div></div>
+<div class="qa"><div class="q">Does the majority vote need a tie-break?</div>
+<div class="a">Yes — for an even number of bundled vectors, ties are broken deterministically (matching the
+Python golden), so RTL and reference agree bit-for-bit.</div></div>
+</div>
+
+<!-- ================= SLIDE 5 ================= -->
+<div class="slide">
+<h2>Slide 5 — Application: EMG hand-gesture recognition</h2>
+<h3>What's on the slide</h3>
+<p>The task (4-channel forearm EMG → gestures, for prosthetics) and the 5-step window-to-class pipeline:
+capture window → quantise features to 16 levels → look up item memories → bind/permute/bundle → masked
+Hamming search vs 5 prototypes. A box explains that "training" in HDC is just bundling.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"A short window of the four EMG channels is captured, features are quantised into 16 levels, and each
+(channel, feature, value) triple indexes a hypervector in an item memory. Those are bound, permuted, and
+bundled into one query vector, which is compared to the five gesture prototypes. Training is not gradient
+descent — for each gesture I just bundle its training windows into one prototype. That single-pass
+training is a big part of HDC's appeal."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">How are the item-memory hypervectors generated?</div>
+<div class="a">Random seed-42 vectors (committed, reproducible). They're fixed ROMs in hardware — the same
+seed is used in the Python golden so the two match exactly.</div></div>
+<div class="qa"><div class="q">Only 5 gestures / 5 subjects — is that enough?</div>
+<div class="a">Five classes is the standard benchmark configuration. Five subjects is the current export;
+Twist 2 needs a larger 36-subject export, which is flagged as a known dependency (slides 18, 20).</div></div>
+</div>
+
+<!-- ================= SLIDE 6 ================= -->
+<div class="slide">
+<h2>Slide 6 — System architecture: Zynq PS + PL</h2>
+<h3>What's on the slide</h3>
+<p>The <code>arch.svg</code> block diagram: PS (ARM) streams EMG windows from DDR over AXI-DMA to the PL
+HDC core, which encodes, classifies, and returns labels. Control is AXI4-Lite; data is AXI4-Stream.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"The Zynq is a system-on-chip: hardened ARM (the PS) plus FPGA fabric (the PL). My HDC core lives in the
+PL. The ARM sets things up over AXI4-Lite — loads prototypes and the mask, starts the core — then a DMA
+engine streams windows into the core over AXI4-Stream and results come back. This split is what makes the
+throughput and the fair software comparison possible."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Why separate control (AXI-Lite) from data (AXI-Stream)?</div>
+<div class="a">Control is occasional, register-mapped, latency-insensitive; data is high-rate and
+throughput-critical. Streaming avoids per-window register writes, which is what gets us to ~216k windows/s.</div></div>
+<div class="qa"><div class="q">Is the ARM a bottleneck in the streaming path?</div>
+<div class="a">No — once DMA is running, the ARM just manages descriptors. The batch/scatter-gather path
+(slide 13) keeps the core fed back-to-back.</div></div>
+</div>
+
+<!-- ================= SLIDE 7 ================= -->
+<div class="slide">
+<h2>Slide 7 — The encoding datapath</h2>
+<h3>What's on the slide</h3>
+<p>The <code>pipeline.svg</code> figure showing Eq. (3.1): a 4-channel × 5-feature grid (20 binds),
+position-permuted, bundled into the query HV, with the new <code>pruning_mask</code> gating which bits
+count in the associative-memory distance.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"This is the encoder from the research plan, Equation 3.1. Twenty (channel, feature) pairs are each
+bound to an item-memory vector, permuted by feature position, and all twenty are bundled by majority into
+one 1024-bit query. The orange block is the pruning mask — it decides which bit positions are counted in
+the Hamming distance, and that's the lever for the energy study."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Why 4×5 = 20 binds — where does the 5 come from?</div>
+<div class="a">Five features per channel in the Eq. (3.1) encoding. It's the hardware-faithful encoder; it
+differs from Rahimi's spatial-record encoding, which is the root of the 74-vs-90 accuracy discussion
+(slide 15).</div></div>
+<div class="qa"><div class="q">Does the mask change the encoder output or only the search?</div>
+<div class="a">Only the search — the query HV is unchanged; the mask zeroes gated bits before popcount in the
+AM, so pruning removes switching activity without touching the encode.</div></div>
+</div>
+
+<!-- ================= SLIDE 8 ================= -->
+<div class="slide">
+<h2>Slide 8 — Module hierarchy</h2>
+<h3>What's on the slide</h3>
+<p>The <code>hierarchy.svg</code> tree of RTL modules. A green box highlights that
+<code>pruning_mask.sv</code> is newly extracted as a dedicated module (research-plan §5.3.3), holding the
+D-bit mask and gating Hamming distance, verified bit-exact (129/129 checks PASS).</p>
+<h3>How to explain it</h3>
+<div class="say">
+"This shows how the blocks compose — encoder and associative memory under the core, wrapped by the
+AXI-Lite and stream interfaces. The thing to note is that I pulled the pruning mask out into its own named,
+parameterised module this cycle. Previously it was buried inside the popcount unit; now it's a clean block
+that supports both an AXI word-write port and a full-width parallel load, so the existing verified board
+path is untouched. It passes 129 of 129 checks."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Why extract the mask into its own module now?</div>
+<div class="a">So the pruning study (Hook A) has a clean, independently verifiable interface, and so I can load
+different masks at runtime without rebuilding the bitstream. It also matches the research-plan module map.</div></div>
+<div class="qa"><div class="q">What are the "129 checks"?</div>
+<div class="a">The <code>run_pruning_mask_cosim</code> harness — full-mask loads plus AXI word-addressed writes
+compared bit-for-bit against the Python model.</div></div>
+</div>
+
+<!-- ================= SLIDE 9 ================= -->
+<div class="slide">
+<h2>Slide 9 — Computational microarchitecture (word-serial)</h2>
+<h3>What's on the slide</h3>
+<p>The <code>compute_datapath.svg</code>: the 1024-bit HV is stored as 16×64-bit words; the AM streams one
+64-bit word/cycle — XOR query⊕prototype, AND mask, 64-bit popcount, accumulate distance. A green box
+explains why word-serial (small popcount + accumulator reuse → 0 DSP, easy timing).</p>
+<h3>How to explain it</h3>
+<div class="say">
+"Rather than a giant 1024-bit comparison in one cycle, I process 64 bits per cycle: XOR the query against
+a prototype word, AND with the mask word, popcount the result in a LUT adder tree, and accumulate. Sixteen
+words per class, looped over classes, then argmin. Word-serial means one small popcount and one accumulator
+are reused — that's how we stay at zero DSP, zero BRAM and close timing at 100 MHz. And because the mask
+zeroes bits before the popcount, pruning directly removes switching activity — the energy saving is real,
+not bookkeeping."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Doesn't word-serial hurt throughput vs a parallel tree?</div>
+<div class="a">It trades latency for area and timing, but the pipeline hides it across windows — we still hit
+~216k windows/s. A full parallel popcount would blow up LUTs and timing for little end-to-end gain.</div></div>
+<div class="qa"><div class="q">Why 64-bit words?</div>
+<div class="a">Matches the AXI-Stream data width and gives a clean 16-word HV; the popcount tree for 64 bits fits
+comfortably in LUTs at 100 MHz.</div></div>
+</div>
+
+<!-- ================= SLIDE 10 ================= -->
+<div class="slide">
+<h2>Slide 10 — Cycle-level behaviour: AM FSM &amp; latency</h2>
+<h3>What's on the slide</h3>
+<p>The <code>compute_fsm.svg</code> and a cycle-count table: encode ~23 cycles, bundle combinational,
+classify 264 cycles, ≈287 cycles/window ≈ 2.9 µs @ 100 MHz. A box notes CNT_W and prune ratio are the two
+micro-architectural knobs of Hook A.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"Here's the cycle budget. Encoding a window is about 23 cycles; the masked-Hamming classify over 8 class
+slots is 264 cycles; roughly 287 cycles per window, about 2.9 microseconds at 100 MHz, and it pipelines
+across windows. The two knobs that Hook A turns — the bundle counter width CNT_W and the prune ratio —
+change the datapath's switching and area <em>without</em> changing its structure, so they're clean axes to
+sweep."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">You said 8 classes but only 5 gestures?</div>
+<div class="a">The AM is provisioned for 8 class slots (power-of-two indexing); 5 are used for gestures, the
+rest are unused. The cycle count reflects the provisioned 8.</div></div>
+<div class="qa"><div class="q">What does CNT_W actually change physically?</div>
+<div class="a">The width of the 1024 saturating counters in the bundler. Narrower counters save area/energy but
+can saturate and lose accuracy — which is precisely what the sweep measures.</div></div>
+</div>
+
+<!-- ================= SLIDE 11 ================= -->
+<div class="slide">
+<h2>Slide 11 — Verification: the Python golden reference</h2>
+<h3>What's on the slide</h3>
+<p>The <code>verification.svg</code> flow: a bit-exact Python model (<code>hdc_ref.py</code>) is the single
+source of truth, generating both the stimulus and the expected output so RTL and reference can't drift.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"This is the methodological backbone. There is no hand-written expected output anywhere. The Python model
+generates the random stimulus <em>and</em> computes the expected result; the RTL is fed the same stimulus in
+co-simulation and must match bit-for-bit. So the reference and the hardware physically cannot silently
+diverge — any drift fails a test immediately."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">How do you know the Python model itself is correct?</div>
+<div class="a">It's validated against the literature: the same model reproduces Rahimi's ~90% (slide 15,
+Stage A/B). So the golden is anchored to published results, and the RTL is anchored to the golden.</div></div>
+<div class="qa"><div class="q">Is co-simulation as trustworthy as formal verification?</div>
+<div class="a">It's directed-random with thousands of cases per block and full end-to-end coverage, then
+confirmed on real silicon over 658k windows. For this datapath that's strong evidence; formal could be a
+future add for the control FSMs.</div></div>
+</div>
+
+<!-- ================= SLIDE 12 ================= -->
+<div class="slide">
+<h2>Slide 12 — Verification coverage: 7 + 1 harnesses</h2>
+<h3>What's on the slide</h3>
+<p>A table of the eight co-sim harnesses and case counts (bind/permute 1000, bundle 500, AM 500, encoder
+500, core 500, AXI 200, stream 200, pruning-mask 64), all PASS on Questa and Vivado xsim.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"Every block has its own harness, and there's an end-to-end one and an AXI/stream one, plus the new
+pruning-mask harness. Case counts run up to a thousand. Everything passes on both simulators — Questa and
+Vivado's xsim — so the result isn't tool-specific."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Why different case counts per harness?</div>
+<div class="a">Larger state spaces get more cases (bind/permute 1000); protocol harnesses (AXI/stream) need
+fewer because they test sequences, not arithmetic breadth.</div></div>
+<div class="qa"><div class="q">Do the harnesses cover back-pressure and stalls?</div>
+<div class="a">Yes — <code>run_stream_cosim</code> injects random gaps and back-pressure to prove the stream
+path is robust, not just the happy path.</div></div>
+</div>
+
+<!-- ================= SLIDE 13 ================= -->
+<div class="slide">
+<h2>Slide 13 — Board results: three measurement paths</h2>
+<h3>What's on the slide</h3>
+<p>KPI cards (74.24% board accuracy, Δ0.00% vs golden over 658k windows, ~216k win/s, 0/0 DSP/BRAM) and a
+table comparing Phase 1 (AXI-Lite), Phase 2 (DMA stream), Phase 3 (SG batch) on golden, latency,
+throughput, timing.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"Three ways to drive the <em>same</em> core, each a data point for the paper. Phase 1 is register-mapped
+control — the baseline, 3 µs/window. Phase 2 is the DMA streaming path. Phase 3 is scatter-gather batch,
+the throughput story at ~216k windows/s with positive timing slack. All three pass the 200-case golden, and
+the full EMG replay matches the golden to zero over 658 thousand windows."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Why is Phase 2 slower per window than Phase 1?</div>
+<div class="a">Single-window DMA has descriptor setup overhead; that's why Phase 3 batches many windows through
+a descriptor ring to amortise it and get the real throughput number.</div></div>
+<div class="qa"><div class="q">What does WNS +0.111 ns mean and why care?</div>
+<div class="a">Worst negative slack is positive, so the design meets the 100 MHz timing constraint with
+margin after place-and-route — it's a genuine closed design, not a simulation-only claim.</div></div>
+</div>
+
+<!-- ================= SLIDE 14 ================= -->
+<div class="slide">
+<h2>Slide 14 — Resource utilisation &amp; the D-sweep <span class="tag">June gap CLOSED</span></h2>
+<h3>What's on the slide</h3>
+<p>Integrated utilisation (35,206 LUT = 66.2%, 96.3% slices, 0 DSP/BRAM) and the OOC core-only D-sweep table
+(D = 256/512/1024/2048 → LUT, util, WNS, Fmax, cosim PASS). Note: D=2048 = 111% LUT = a reportable Pareto
+boundary.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"Two things. First, the full system is pure logic — zero DSP, zero BRAM — with the item memory inferred as
+LUT ROM. Second, this is the D-axis of the Pareto, now measured: I synthesised the core out-of-context at
+four dimensions and ran functional co-sim at each. LUTs scale roughly linearly with D. D=1024 fits
+comfortably; D=2048 core-only is 111% of the device — it doesn't fit standalone, and that boundary is
+itself a result worth reporting."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Why is D=1024's WNS the tightest even though it's not the biggest?</div>
+<div class="a">Timing depends on routing/congestion, not just size; D=1024 is the shipping config with the full
+system, so its critical path is the most stressed. All configs still meet 100 MHz.</div></div>
+<div class="qa"><div class="q">Is out-of-context synthesis a fair area measure?</div>
+<div class="a">It isolates the core's logic cleanly for the D-axis comparison. For the deployable number I also
+report the full integrated build (66.2% LUT). Both are on the slide on purpose.</div></div>
+</div>
+
+<!-- ================= SLIDE 15 ================= -->
+<div class="slide">
+<h2>Slide 15 — The two-baseline accuracy story <span class="tag">read carefully</span></h2>
+<h3>What's on the slide</h3>
+<p>A table of three tracks: Stage A MAP (Python, 90.36%), Stage B BSC (Python, 90.30%), RTL encoder
+(Python + board, 74.24%). A red "defense one-liner" box.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"This is the slide to be careful and confident on. I report two accuracy numbers deliberately. In Python I
+reproduce the literature — about 90% — with the same encoding Rahimi used. On the FPGA I run a
+<em>different</em>, hardware-faithful encoder that lands at 74.24%. These are different algorithms, so they
+were never supposed to match. The deliverable is a verified deployment path plus an energy/pruning study —
+not a second copy of the 90% number."
+</div>
+<div class="say" style="border-left-color:#dc2626;background:#fef2f2;">
+<strong>Say the one-liner verbatim:</strong> "We reproduced ~90% in Python matching Rahimi; the FPGA runs a
+different, bit-exact-verified encoder at 74.24%; the contribution is measured energy and informed-pruning
+Pareto on that verified path — not a second accuracy port."
+</div>
+<h3>Likely questions (this slide draws the most)</h3>
+<div class="qa"><div class="q">Rahimi got ~90%. Why is your hardware only 74%?</div>
+<div class="a">Because it's a different encoder (Eq. 3.1 grid vs Rahimi's spatial records), not a degraded
+version. I <em>do</em> reproduce ~90% in Python. The board matches its own golden to Δ0.00% over 658k
+windows, so the system is provably correct; the contribution is relative (pruning, energy), so the absolute
+number doesn't affect the claims.</div></div>
+<div class="qa"><div class="q">Then why not put the 90% encoder on the FPGA?</div>
+<div class="a">It's a richer encoding that costs more logic and design time. I locked down a fully verified
+streaming path first. The research questions don't depend on the absolute encoder, so I can publish on the
+74% path now and upgrade the encoder later — it's on the roadmap.</div></div>
+<div class="qa"><div class="q">Isn't reporting 74% risky for a paper?</div>
+<div class="a">The opposite — the full 74↔90 gap is traced (encoding, item-memory seed, feature handling), so
+reviewers see an honest, debugged pipeline. The headline results are relative gaps, which are robust.</div></div>
+</div>
+
+<!-- ================= SLIDE 16 ================= -->
+<div class="slide">
+<h2>Slide 16 — Why 74% is not a weakness (six points)</h2>
+<h3>What's on the slide</h3>
+<p>Six numbered points: (1) ~90% reproduced in Python; (2) 74% is a different encoder; (3) verification
+fidelity Δ0.00% over 658k; (4) it's a systems study; (5) headline claims are relative; (6) reporting both
+is a credibility strength.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"This is the backup for the previous slide — six ways to say the same thing so I can meet whichever angle
+the question comes from. The anchor is point 3: bit-exact fidelity over 658 thousand real windows. Points
+4 and 5 are the framing: this is a hardware/energy study and the claims are relative, so 74 vs 90 is
+simply the wrong axis to judge it on."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Earlier you mentioned 59% — what was that?</div>
+<div class="a">A prototype-training bug: a saturating 6-bit counter clipped when bundling many samples, plus a
+prototype-load indexing bug. Both fixed and documented; accuracy went to the correct 74.24%. I keep it in
+the log as evidence of a debugged pipeline.</div></div>
+<div class="qa"><div class="q">Which of the six is the strongest point?</div>
+<div class="a">Verification fidelity (point 3) — Δ0.00% over 658k windows proves the deployed system is correct,
+which is the actual engineering deliverable.</div></div>
+</div>
+
+<!-- ================= SLIDE 17 ================= -->
+<div class="slide">
+<h2>Slide 17 — Hook A: 3-axis Pareto <span class="tag">contribution</span></h2>
+<h3>What's on the slide</h3>
+<p>The novelty statement (prior work prunes dimension; the open axis is <em>which</em> bits) and the axis
+table: D (DONE, synth+cosim), CNT_W (running, Python sweep), bit-pruning ratio (running, Python sweep).</p>
+<h3>How to explain it</h3>
+<div class="say">
+"This is the main contribution. Existing FPGA-HDC work prunes the dimension D. The under-explored question
+is not how many bits but <em>which</em> bits. Hook A sweeps three knobs — D, the bundle precision CNT_W,
+and the bit-pruning ratio — and maps the accuracy/energy/area surface. The D-axis is measured on silicon;
+the CNT_W and pruning axes are running now as an automated 64-cell Python sweep, with the quick-sanity run
+already passing. INA219 will add the measured energy axis."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">What exactly is the 64-cell grid?</div>
+<div class="a">4 dimensions × 4 CNT_W values × 4 keep-ratios = 64 configurations, each evaluated over 5 subjects
+on the RTL-matched encoder with Fisher-informed masks. Output lands in <code>results/hook_a/</code>.</div></div>
+<div class="qa"><div class="q">How long does the sweep take and is it done?</div>
+<div class="a">~45–50 h single-core on the VDI; it was ~26% through (up to D=512) at last check, with a
+checkpointed partial JSON so I can preview the Pareto before it finishes.</div></div>
+<div class="qa"><div class="q">How do you get energy without running every cell on hardware?</div>
+<div class="a">Accuracy comes from the Python sweep, area from the D-sweep synthesis, and energy from INA219 on
+a few representative board anchors — I don't need to synthesise all 64.</div></div>
+</div>
+
+<!-- ================= SLIDE 18 ================= -->
+<div class="slide">
+<h2>Slide 18 — Twist 1 &amp; Twist 2</h2>
+<h3>What's on the slide</h3>
+<p><strong>Twist 1</strong>: informed (Fisher-ratio) mask vs random mask at equal density; claim ≥5 pp gap
+at iso-density. <strong>Twist 2</strong>: cross-subject mask transfer; either outcome publishable (needs
+36-subject export; currently 5).</p>
+<h3>How to explain it</h3>
+<div class="say">
+"Two focused experiments on top of Hook A. Twist 1 is the headline: at the same bit-count, does keeping the
+most discriminative bits — ranked by Fisher ratio, between-class over within-class variance — beat a random
+mask? I expect at least a 5-point accuracy gap, which proves bit <em>position</em> carries information.
+Twist 2 asks whether a mask trained on some subjects transfers to unseen ones. If it does, there's a
+universal bit-importance map; if it doesn't, that motivates on-device adaptation — either way it's a
+result."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Why would informed pruning beat random?</div>
+<div class="a">Because hypervector bits aren't equally informative. Fisher ranks bits by class separability;
+keeping high-ranked bits preserves signal while dropping noise-like bits. Random drops both alike. The gap
+quantifies how much structure the encoding carries per bit.</div></div>
+<div class="qa"><div class="q">What if Twist 2 fails to transfer?</div>
+<div class="a">That's still publishable — it means EMG bit-importance is subject-specific and argues for
+lightweight on-device mask adaptation. I framed it so either outcome is a contribution.</div></div>
+<div class="qa"><div class="q">Why do you need 36 subjects for Twist 2 but not Twist 1?</div>
+<div class="a">Twist 1 is a within-run comparison at one config, fine on 5 subjects. Cross-subject transfer
+needs enough held-out subjects to be statistically meaningful, hence the larger export.</div></div>
+</div>
+
+<!-- ================= SLIDE 19 ================= -->
+<div class="slide">
+<h2>Slide 19 — Comparison baselines <span class="tag">accuracy done</span></h2>
+<h3>What's on the slide</h3>
+<p>Table: PL DMA (this work) 74.24% @ ~4 µs; ARM-only HDC 74.15% @ 818 µs (1,222 win/s), 200/200 golden;
+tiny int8 MLP 93.01% fp / 92.99% int8; AXI-Lite path ~3 µs. Green box: PL DMA ~200× faster than ARM at
+matched accuracy; INA219 adds energy.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"To make the efficiency argument fair I built the obvious alternatives. The <em>same</em> HDC algorithm in
+C on the ARM core hits essentially the same accuracy (74.15 vs 74.24) but takes 818 microseconds per window
+— the FPGA path is about 200× faster. And a tiny int8 MLP reaches 93%, which is the honest 'a small NN is
+more accurate' point — but it doesn't have HDC's bitwise, zero-DSP, prune-friendly profile. Accuracy for
+all baselines is done and committed; the energy column comes from INA219 next."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Is the 200× speedup a fair comparison?</div>
+<div class="a">Yes — identical algorithm, identical protocol, same silicon (Cortex-A9 vs PL on one Zynq), and
+the ARM version passes the same 200-case golden. It isolates the hardware acceleration.</div></div>
+<div class="qa"><div class="q">The MLP is more accurate — doesn't that undercut HDC?</div>
+<div class="a">No — it sets the accuracy reference honestly. HDC's case is efficiency and robustness, which the
+energy Pareto will quantify. Reporting the MLP strengthens credibility rather than hiding the trade-off.</div></div>
+<div class="qa"><div class="q">Why is int8 MLP accuracy basically equal to float here?</div>
+<div class="a">Post-training int8 quantisation on a small model with this feature set barely moves accuracy
+(93.01 → 92.99%); the drop would grow on harder tasks. The number is measured over the full 5-subject TEST
+split.</div></div>
+</div>
+
+<!-- ================= SLIDE 20 ================= -->
+<div class="slide">
+<h2>Slide 20 — Status &amp; roadmap</h2>
+<h3>What's on the slide</h3>
+<p>The <code>roadmap.svg</code> gantt: <em>Done</em> — golden + baselines, RTL + cosim, pruning_mask +
+D-sweep, Phases 1–3, EMG replay, comparison baselines; <em>Next</em> — INA219 energy, Hook A sweep, Twist
+1/2; <em>Paper</em> — figures + DATE draft.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"Where things stand: all bring-up, verification, the D-sweep, and the comparison baselines are done and
+ahead of the plan. The active items are the INA219 energy measurement and the running Hook A sweep, then
+the two twists, then the write-up. The hard infrastructure risk is retired — what's left is measurement
+science and the paper."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">Are you on track for DATE 2027?</div>
+<div class="a">Yes — the engineering is complete and ahead of schedule; the remaining Aug/Sep blocks are
+measurement and writing, which are lower-risk.</div></div>
+<div class="qa"><div class="q">What's the single biggest risk right now?</div>
+<div class="a">Two small ones: the INA219 hardware needs to arrive and be wired, and Twist 2 needs the
+36-subject export. Neither blocks the headline Hook A / Twist 1 results.</div></div>
+</div>
+
+<!-- ================= SLIDE 21 ================= -->
+<div class="slide">
+<h2>Slide 21 — Summary &amp; next steps</h2>
+<h3>What's on the slide</h3>
+<p>"Done &amp; verified" list (RTL + 8 harnesses, Phases 1–3 + EMG replay, pruning_mask + D-sweep, Python
+~90% baselines, comparison baselines) and the critical path: INA219 energy → Hook A sweep → Twist 1/2 →
+paper.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"To wrap: the hardware is done and provably correct, the D-axis and the baselines are measured, and the
+research machinery — the pruning mask and the sweep — is in place and running. The critical path to the
+paper is short: energy measurement unblocks every Pareto plot, the sweep finishes the accuracy grid, the
+twists give the headline figures, and then it's writing."
+</div>
+<h3>Likely questions</h3>
+<div class="qa"><div class="q">If you could only finish one thing next, what is it?</div>
+<div class="a">INA219 energy — it unblocks the energy axis of every Pareto figure and the ARM-vs-PL efficiency
+claim, which are the paper's core.</div></div>
+<div class="qa"><div class="q">What can proceed in parallel with the sweep?</div>
+<div class="a">The energy measurement (board + I²C), a single-point Twist 1 run, and a Pareto preview from the
+checkpointed partial results — none of those wait on the full grid.</div></div>
+</div>
+
+<!-- ================= SLIDE 22 ================= -->
+<div class="slide">
+<h2>Slide 22 — Thank you / Q&amp;A</h2>
+<h3>What's on the slide</h3>
+<p>Closing lead slide: hardware is done and provably correct (bit-exact on 658k windows); 74% is a faithful
+hardware encoder; the research is the energy/accuracy Pareto + informed-pruning result.</p>
+<h3>How to explain it</h3>
+<div class="say">
+"Close on the three sentences that survive if they remember nothing else: the hardware works and is
+bit-exact over 658 thousand windows; 74% is a faithful encoder, not a failure, and I already match ~90% in
+Python; and the contribution is the energy/accuracy Pareto plus the informed-pruning result — which stand
+regardless of the absolute accuracy."
+</div>
+<h3>Likely closing questions</h3>
+<div class="qa"><div class="q">What would make this a strong DATE paper specifically?</div>
+<div class="a">A clean Pareto with measured silicon energy, the ≥5 pp informed-vs-random result, and the
+zero-DSP/200×-vs-ARM efficiency story — a hardware contribution with real measurements, not just accuracy.</div></div>
+<div class="qa"><div class="q">What's the next milestone I'll see from you?</div>
+<div class="a">The completed Hook A sweep with a first Pareto figure, and the INA219 energy-per-window numbers
+for the PL and ARM paths.</div></div>
+</div>
+
+<p class="muted" style="margin-top:24px; text-align:center; font-size:8.5pt;">
+  Companion to <code>HDC_Research_Review.pptx</code> · 1024-HDC project · sources: slides.md, README.md,
+  docs/Baseline_vs_RTL_Encoder.md, results/
+</p>
+
+</body>
+</html>
