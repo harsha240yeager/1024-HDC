@@ -38,7 +38,7 @@ the PS over **AXI4-Lite** and fed at inference rate over **AXI4-Stream + DMA**.
 *Last updated: July 2026.*
 
 **Done:** RTL + verification + Zynq bring-up (Phases 1–3) + **`pruning_mask.sv`**
-(cosim PASS) + **D-sweep** (functional cosim + OOC synth) + Tier 4 baselines (ARM HDC + MLP)
+(cosim PASS) + **D-sweep** (functional cosim + OOC synth) + comparison baselines (ARM HDC + MLP)
 + **Hook A full Python sweep** (64 configs × 5 subjects, **320 rows**, ~44 h, 2026-07-01).
 **Next:** Pareto figure, INA219 energy, on-board anchor replays (A/B/C below), Twist 1/2, write-up.
 
@@ -134,7 +134,7 @@ At **D=1024, CNT_W≥4**, accuracy is **flat at 74.15%** from 0% → **87.5%** p
 
 Full Pareto table + area ladder: [`results/hook_a/README.md`](results/hook_a/README.md).
 
-### Tier 4 — comparison baselines
+### Comparison baselines
 
 Same **P-may2026** protocol as board replay. Details in [`results/baselines/`](results/baselines/).
 
@@ -314,50 +314,30 @@ in [`results/phase3/README.md`](results/phase3/README.md).
 ## Roadmap
 
 Hook A is re-targeted (June 2026, Option A) against the **74.24% RTL baseline**;
-the absolute ≥92% target is retired for the silicon path.
+the absolute ≥92% target is retired for the silicon path. Completed work is listed
+in [Status](#status) above — the open items are grouped by priority below.
 
-**Done:** bring-up, verification, **`pruning_mask.sv`**, **D-sweep**, Tier 4 baselines,
-and **Hook A full Python sweep** (320 rows, 64 configs, 2026-07-01).
-**Remaining:** Pareto figure, INA219 energy, on-board anchor replays, Twist 1/2, DATE write-up.
+### Now — unblocks the paper's energy axis
 
-**Tier 1 — finish Phase 3 infrastructure**
-- [ ] Energy (INA219 + shunt) — wire per [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md), log with [`scripts/ina219_log.py`](scripts/ina219_log.py), fill [`results/phase3/energy_batch.txt`](results/phase3/energy_batch.txt). *Blocks Pareto energy axis and ARM-vs-PL ~10× claim.*
+- [ ] **INA219 energy** (PL batch + ARM path). Wire per [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md), log with [`scripts/ina219_log.py`](scripts/ina219_log.py) → [`results/phase3/energy_batch.txt`](results/phase3/energy_batch.txt). *Also settles the ARM-vs-PL ~10× claim.*
+- [ ] **On-board anchor replay** — reprogram the D=1024 pruning mask and replay EMG at anchors A/B/C (all **74.15%** in Python):
 
-**Tier 3 — research contributions**
-- [x] Hook A Python sweep — 320 rows, 64 configs, ~44 h ([`results/hook_a/`](results/hook_a/))
-- [ ] Hook A Pareto figure — accuracy × LUT × energy_proxy; overlay INA219 at anchors A/B/C
-- [ ] Hook A on-board anchors @ D=1024:
+  | Anchor | keep | Prune |
+  |--------|------|-------|
+  | A — baseline | 1.0 | 0% |
+  | B — knee | 0.5 | 50% |
+  | C — aggressive | 0.125 | 87.5% |
 
-  | Anchor | keep | Prune | Python acc |
-  |--------|------|-------|------------|
-  | A — baseline | 1.0 | 0% | 74.15% |
-  | B — knee | 0.5 | 50% | 74.15% |
-  | C — aggressive | 0.125 | 87.5% | 74.15% |
+- [ ] **Hook A Pareto figure** — accuracy × LUT × energy proxy from [`results/hook_a/sweep_summary.csv`](results/hook_a/sweep_summary.csv); overlay measured INA219 at the anchors.
 
-- [ ] Twist 1 — informed vs random pruning at iso-density (target ≥5 pp) @ D=1024, keep=0.5
-- [ ] Twist 2 — cross-subject mask transfer (target ≤3 pp); pilot on 5 subjects
+### Then — paper experiments
 
-**Tier 4 — comparison baselines (accuracy complete)**
-- [x] ARM HDC accuracy — 74.15% spatial mean (host C verify)
-- [x] ARM HDC on-board timing — 819 µs/window, 200/200 golden on Cortex-A9
-- [x] Tiny int8 MLP — 93.01% float / 92.99% int8, full 5 subjects
-- [x] AXI-Lite PL path — Phase 1 baseline
-- [ ] ARM vs PL energy (INA219) — ties to Tier 1
+- [ ] **Twist 1** — informed vs random pruning at iso-density (target ≥5 pp) @ D=1024, keep=0.5.
+- [ ] **Twist 2** — cross-subject mask transfer (target ≤3 pp); pilot on 5 subjects.
 
-**Tier 5 — write-up**
-- [ ] Paper figures — Pareto (accuracy × energy × LUT), Twist 1/2, Fisher heatmap, baseline table
-- [ ] DATE draft (~Sep 2026) — fold in [`docs/Baseline_vs_RTL_Encoder.md`](docs/Baseline_vs_RTL_Encoder.md)
+### Paper — Sep 2026
 
-### Next steps (post-sweep)
-
-| Task | Resource | Priority |
-|------|----------|----------|
-| INA219 energy (PL batch + ARM path) | Board + I²C | **High** |
-| On-board anchor replay (A/B/C) | Board | High |
-| Pareto figure from `sweep_summary.csv` | Python/matplotlib | High |
-| Twist 1 @ D=1024, keep=0.5 | ~2–4 h Python | Medium |
-| Twist 2 pilot (5 subjects) | Python | Medium |
-| DATE draft | — | Sep 2026 |
+- [ ] Figures (Pareto, Twist 1/2, Fisher heatmap, baseline table) + DATE draft — fold in [`docs/Baseline_vs_RTL_Encoder.md`](docs/Baseline_vs_RTL_Encoder.md).
 
 ### Plan vs actual (research plan §9.3)
 
@@ -367,7 +347,7 @@ and **Hook A full Python sweep** (320 rows, 64 configs, 2026-07-01).
 | Jun 2026 | Core RTL + co-sim; D verified | ✅ `pruning_mask.sv` + D-sweep cosim/synth PASS |
 | Jul 2026 | Stream wrapper + DMA bring-up | ✅ Ahead — Phases 2–3, EMG replay PASS |
 | Jul 2026 | Hook A full Python Pareto sweep | ✅ 320 rows, ~44 h (2026-07-01) |
-| Aug 2026 | Twist 1/2 + baselines + INA219 power | 🔄 Tier 4 accuracy ✅; energy + twists + figure pending |
+| Aug 2026 | Twist 1/2 + baselines + INA219 power | 🔄 Baseline accuracy ✅; energy + twists + figure pending |
 | Sep 2026 | Paper draft + DATE submit | ⏳ Not started |
 
 ---
