@@ -1,1 +1,2 @@
 numpy>=1.24
+matplotlib>=3.7   # python_ref/plot_results.py — paper figures
