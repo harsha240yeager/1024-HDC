@@ -101,7 +101,7 @@ reportable Pareto boundary.
 
 RTL-matched `hdc_ref` encoder on the frozen **P-may2026** protocol (5 subjects, full
 TEST split). Informed Fisher masks from pooled TRAIN windows; area proxy merged from
-[`results/dsweep/`](results/dsweep/); on-silicon energy deferred (INA219).
+[`results/dsweep/`](results/dsweep/); PL batch energy measured on silicon (INA219, J21, 2026-07-02).
 
 | Mode | Command | Status |
 |------|---------|--------|
@@ -123,7 +123,7 @@ Config: [`python_ref/config/hook_a_sweep.json`](python_ref/config/hook_a_sweep.j
 | CNT_W=3 (all D) | **59.48%** (bundle-precision floor) |
 
 At **D=1024, CNT_W≥4**, accuracy is **flat at 74.15%** from 0% → **87.5%** pruning
-(energy proxy `(D/1024)×keep_ratio` scales down; replace with INA219 at board anchors).
+(energy proxy `(D/1024)×keep_ratio`; measured INA219 at baseline anchor A — see below).
 
 **On-board anchor picks** (D=1024 bitstream — reprogram pruning mask before each EMG replay):
 
@@ -139,15 +139,16 @@ Full Pareto table + area ladder: [`results/hook_a/README.md`](results/hook_a/REA
 
 Same **P-may2026** protocol as board replay. Details in [`results/baselines/`](results/baselines/).
 
-| Baseline | Accuracy (spatial mean) | On-board latency | Status |
-|----------|-------------------------|------------------|--------|
-| Board RTL encoder (reference) | **74.24%** | ~4 µs/window (batch) | ✅ Phase 3 EMG replay PASS |
-| ARM HDC (`sw/hdc_arm_ref.c`) | 74.15% | **819 µs**/window (mean) | ✅ Host + board 200/200 golden |
-| Tiny int8 MLP (~5.8k params) | 93.01% float / 92.99% int8 | — | ✅ Full 5 subjects, 25 epochs |
-| AXI-Lite PL path | — | ~3 µs/window | ✅ Phase 1 latency baseline |
+| Baseline | Accuracy (spatial mean) | On-board latency | Energy (12 V, J21) | Status |
+|----------|-------------------------|------------------|--------------------|--------|
+| Board RTL encoder (reference) | **74.24%** | ~4 µs/window (batch) | **11.9 ± 0.04 µJ/w** (PL batch, 3 runs) | ✅ Phase 3 EMG replay PASS |
+| ARM HDC (`sw/hdc_arm_ref.c`) | 74.15% | **819 µs**/window (mean) | — (measurement pending) | ✅ Host + board 200/200 golden |
+| Tiny int8 MLP (~5.8k params) | 93.01% float / 92.99% int8 | — | — | ✅ Full 5 subjects, 25 epochs |
+| AXI-Lite PL path | — | ~3 µs/window | — | ✅ Phase 1 latency baseline |
 
 PL DMA batch is **~200×** faster per window than ARM software (819 µs vs ~4 µs).
-*Pending:* INA219 energy on both paths for the ~10× energy claim.
+*Pending:* ARM-path INA219 series for the ~10× **energy** claim (latency ratio already measured).
+Details: [`results/phase3/energy_summary.txt`](results/phase3/energy_summary.txt).
 Runners: [`python_ref/run_arm_hdc_baseline.py`](python_ref/run_arm_hdc_baseline.py),
 [`python_ref/run_mlp_baseline.py`](python_ref/run_mlp_baseline.py),
 [`python_ref/run_baselines.py`](python_ref/run_baselines.py).
@@ -186,6 +187,20 @@ On-board ARM timing: `bash board/HDC_DMA/run_arm_bench.sh`.
 
 Evidence: [`results/phase3/board_emg_replay.txt`](results/phase3/board_emg_replay.txt).
 The board reproduces its Python golden **exactly** over 658k real EMG windows.
+
+### Phase 3 — measured energy (PL batch, INA219 + J21)
+
+Whole-board **12 V input** via ZedBoard J21 sense; Raspberry Pi I²C logger; batch integration
+(scales by ~926 µs bench duration, not full 30 s log). Three runs on **2026-07-02**:
+
+| Metric | Value | Notes |
+|--------|-------|-------|
+| Static power (PL programmed, idle) | **2556 ± 8 mW** | ~2.56 W @ 12 V — PS + PL leakage |
+| Total energy / window (batch amortized) | **11.9 ± 0.04 µJ** | `P_static × t_batch / 200` |
+| Dynamic increment / window | **0.17 ± 0.19 µJ** | Noisy — burst undersampled @ 100 Hz |
+
+Full analysis: [`results/phase3/energy_summary.txt`](results/phase3/energy_summary.txt) ·
+runs: [`results/phase3/energy_runs/`](results/phase3/energy_runs/).
 
 ---
 
@@ -227,7 +242,7 @@ encoding) is retired for the silicon path (June 2026, Option A).
 | `python_ref/` | Golden model, EMG baselines, Hook A sweep, Tier 4 runners (`run_*_baseline.py`) |
 | `scripts/` | Golden prep, JTAG runners, EMG export, `build_hdc_arm_host.sh`, energy tooling (`ina219_log.py`) |
 | `board/HDC_DMA/` | ZedBoard Vitis workspace: platform, ELFs, JTAG run scripts |
-| `results/` | Per-phase board / synthesis logs + [`hook_a/`](results/hook_a/) + [`phase3/energy_setup.md`](results/phase3/energy_setup.md) |
+| `results/` | Phase logs, [`hook_a/`](results/hook_a/), [`baselines/`](results/baselines/), [`phase3/energy_setup.md`](results/phase3/energy_setup.md), [`phase3/energy_runs/`](results/phase3/energy_runs/) |
 | `docs/` | Research plan, `Baseline_vs_RTL_Encoder.md`, protocol/flow PDFs, end-to-end guide |
 | `vivado_pack/` | Vivado bring-up bundle |
 
@@ -312,24 +327,12 @@ in [`results/phase3/README.md`](results/phase3/README.md).
 
 ### 6 · Energy measurement (INA219)
 
-See [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md) and
-[`results/phase3/energy_cal.env`](results/phase3/energy_cal.env) (J21 calibration).
+**Measured (2026-07-02):** PL batch **2556 ± 8 mW** static; **11.9 ± 0.04 µJ/window** — see
+[`results/phase3/energy_summary.txt`](results/phase3/energy_summary.txt).
 
-**Lab setup:** Raspberry Pi (I²C) + ZedBoard J21 sense + Ubuntu JTAG bench.
-**Repeat 3×** at the same config for mean ± std; keep `INA219_CAL_REF_MV` fixed unless wiring changes.
-
-```bash
-# Pi
-source results/phase3/energy_cal.env
-bash scripts/run_energy_log_pi.sh
-
-# Ubuntu (on countdown, after run_phase3_program_pl.sh once per session)
-bash board/HDC_DMA/run_phase3_bench_load.sh
-# → results/phase3/energy_batch.txt
-```
-
-Ubuntu all-in-one (USB-I2C): `bash scripts/run_energy_measure.sh`
-ARM comparison path: `run_arm_bench.sh` (pending second energy series).
+Full wiring, Pi setup, and commands: [Energy measurement (INA219 + Raspberry Pi)](#energy-measurement-ina219--raspberry-pi).
+Quick re-run: `source results/phase3/energy_cal.env && bash scripts/run_energy_log_pi.sh` (Pi) +
+`bash board/HDC_DMA/run_phase3_bench_load.sh` (Ubuntu on countdown).
 
 ---
 
@@ -360,8 +363,9 @@ J21 pin 1    → INA219 Vin+           Pi pin 3 (SDA)  → INA219 SDA
 J21 pin 2    → INA219 Vin−           Pi pin 5 (SCL)  → INA219 SCL
 ```
 
-**Critical:** `export INA219_SHUNT_MOHM=10` (ZedBoard J21 shunt). Using `100` makes
-current/power **10× too low**.
+**Calibration:** `source results/phase3/energy_cal.env` sets `INA219_SHUNT_MOHM=10`
+(ZedBoard J21) and `INA219_CAL_REF_MV=2.0`. Do not use `SHUNT=100` unless using the
+inline Adafruit-shunt fallback.
 
 ### Pi — one-time setup
 
@@ -399,18 +403,17 @@ source results/phase3/energy_cal.env   # INA219_CAL_REF_MV=2.0, SHUNT_MOHM=10
 bash scripts/run_energy_log_pi.sh
 ```
 
-**Outputs:** `results/phase3/logs/ina219_static.csv`, `ina219_batch.csv`,
-`results/phase3/energy_batch.txt`. Measured **2026-07-02 (3 runs):** static
-**2556 ± 8 mW**; **11.9 ± 0.04 µJ/window** (batch integration, see
-[`energy_summary.txt`](results/phase3/energy_summary.txt)).
+**Measured (2026-07-02, 3/3 runs):** static **2556 ± 8 mW**; total **11.9 ± 0.04 µJ/window**
+(batch integration — [`energy_summary.txt`](results/phase3/energy_summary.txt),
+raw runs in [`energy_runs/`](results/phase3/energy_runs/)).
 
 **Scripts:** [`ina219_log.py`](scripts/ina219_log.py),
 [`run_energy_log_pi.sh`](scripts/run_energy_log_pi.sh) (Pi),
 [`run_energy_measure.sh`](scripts/run_energy_measure.sh) (Ubuntu USB-I2C all-in-one),
 [`energy_preflight.sh`](scripts/energy_preflight.sh).
 
-Repeat **3×** for mean ± std. *Pending:* ARM-path energy (`run_arm_bench.sh`) for the
-~10× PL-vs-ARM claim; Hook A anchor energies at keep 1.0 / 0.5 / 0.125.
+*Still pending:* ARM-path energy (`run_arm_bench.sh`) for the ~10× claim; Hook A anchor
+energies at keep 0.5 / 0.125 (pruning mask reprogram).
 
 ---
 
