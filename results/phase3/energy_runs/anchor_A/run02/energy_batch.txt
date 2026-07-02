@@ -1,0 +1,25 @@
+Phase 3 — Energy measurement results
+=====================================
+Date: 2026-07-02T20:20:17
+Status: MEASURED
+
+Hardware
+--------
+Shunt (mOhm): 10.0
+V rail (V):   12.0
+Sensor:       INA219
+Integrate:    batch
+
+Batch inference (DMA stream path)
+---------------------------------
+Batch windows:      200
+Batch duration (ms): 0.926
+Static power (mW):  2584.273
+Total batch energy (mJ): 2.393037
+Dynamic increment (mJ): 0.000000
+Total energy per window (uJ): 11.965
+Dynamic energy per window (uJ): 0.000000
+
+Notes
+-----
+Integrated from /home/bsp-lab/1024-HDC/results/phase3/energy_runs/anchor_A/run02/ina219_batch.csv.integrate_mode=batch locate@0.00s active_mean=2506.3mW. cal_ref_mv=2 anchor=A mask=pooled_fisher golden+emg batch=0.926ms windows=200 cal_ref_mv=2.0

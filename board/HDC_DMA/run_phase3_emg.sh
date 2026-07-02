@@ -5,7 +5,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$ROOT/../.." && pwd)"
 LOG_DIR="${HDC_LOG_DIR:-/tmp/hdc_phase3_emg}"
-RESULTS="$REPO/results/phase3/board_emg_replay.txt"
+RESULTS="${HDC_EMG_RESULTS:-$REPO/results/phase3/board_emg_replay.txt}"
 ARCHIVE_DIR="$REPO/results/phase3/logs"
 
 # shellcheck source=/dev/null

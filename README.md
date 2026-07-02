@@ -42,7 +42,7 @@ the PS over **AXI4-Lite** and fed at inference rate over **AXI4-Stream + DMA**.
 **Done:** RTL + verification + Zynq bring-up (Phases 1–3) + **`pruning_mask.sv`**
 (cosim PASS) + **D-sweep** (functional cosim + OOC synth) + comparison baselines (ARM HDC + MLP)
 + **Hook A full Python sweep** (64 configs × 5 subjects, **320 rows**, ~44 h, 2026-07-01).
-**Next:** Pareto figure (Hook A + measured energy), on-board anchor replays (A/B/C), ARM energy path, Twist 1/2, write-up.
+**Next:** On-board anchor EMG replays (A/B/C), Hook A Pareto figure (measured energy), Twist 1/2, write-up.
 
 | Area | State |
 |------|-------|
@@ -56,7 +56,8 @@ the PS over **AXI4-Lite** and fed at inference rate over **AXI4-Stream + DMA**.
 | ARM HDC baseline (C) | ✅ 74.15% accuracy · 819 µs/window on-board (200/200 golden) |
 | Tiny int8 MLP baseline | ✅ 93.01% float / 92.99% int8 (5 subjects, full TEST) |
 | Hook A — Python Pareto sweep (D × CNT_W × pruning) | ✅ Complete (~44 h; [`results/hook_a/`](results/hook_a/)) |
-| Phase 3 — energy (INA219 + Pi, J21) | ✅ **3/3 runs** — static **2556 ± 8 mW**; **11.9 ± 0.04 µJ/window** (batch integration); [`energy_summary.txt`](results/phase3/energy_summary.txt) |
+| Phase 3 — energy (INA219 + Pi, J21, pooled Fisher mask) | ✅ **A/B/C/ARM 3× each** — PL **~12 µJ/w**; ARM **~2088 µJ/w**; [`energy_summary.txt`](results/phase3/energy_summary.txt) |
+| Phase 3 — on-board anchor EMG replays (A/B/C) | ⏳ Pending |
 | Twist 1 · Twist 2 (paper experiments) | ⏳ Not started |
 
 ---
@@ -401,104 +402,83 @@ bash board/HDC_DMA/run_phase3_bench_load.sh          # dynamic capture (ELF relo
 ```bash
 cd ~/1024-HDC
 source results/phase3/energy_cal.env   # INA219_CAL_REF_MV=2.0, SHUNT_MOHM=10
-bash scripts/run_energy_log_pi.sh
+bash scripts/run_energy_log_pi.sh      # manual single run
+# or full self-consistent campaign (A→B→C→ARM, 3× each):
+bash scripts/run_energy_only.sh
 ```
 
-**Measured (2026-07-02, 3/3 runs):** static **2556 ± 8 mW**; total **11.9 ± 0.04 µJ/window**
-(batch integration — [`energy_summary.txt`](results/phase3/energy_summary.txt),
-raw runs in [`energy_runs/`](results/phase3/energy_runs/)).
+**Automated campaign** (Pi + Ubuntu, same pooled Fisher mask in `golden_vectors.h` + `emg_board_vectors.h`):
+
+```bash
+bash scripts/run_energy_one_run.sh     # one run (set ENERGY_RUN_DIR, ENERGY_BENCH_CMD, …)
+bash scripts/run_energy_only.sh        # full campaign → PAUSE_FOR_REVIEW
+bash scripts/run_after_energy_review.sh  # after review: golden_expect, EMG anchors
+```
+
+**Measured 2026-07-02** (batch integration, J21, cal `ref=2.0 mV`, n=3 per anchor):
+
+| Anchor | keep | Static (mW) | Total (µJ/window) |
+|--------|------|-------------|-------------------|
+| **A** — PL baseline | 1.0 | 2586 ± 17 | **11.98 ± 0.07** |
+| **B** — knee | 0.5 | 2570 ± 8 | **11.90 ± 0.04** |
+| **C** — aggressive | 0.125 | 2551 ± 25 | **11.81 ± 0.12** |
+| **ARM** — PS software | 1.0 | 2553 ± 8 | **2088 ± 6** |
+
+PL total µJ/w is static-dominated (~926 µs batch slot); ARM uses ~164 ms batch / 200 windows.
+Per-run data: [`results/phase3/energy_runs/anchor_*/`](results/phase3/energy_runs/). Summary: [`energy_summary.txt`](results/phase3/energy_summary.txt).
 
 **Scripts:** [`ina219_log.py`](scripts/ina219_log.py),
 [`run_energy_log_pi.sh`](scripts/run_energy_log_pi.sh) (Pi),
-[`run_energy_measure.sh`](scripts/run_energy_measure.sh) (Ubuntu USB-I2C all-in-one),
+[`run_energy_one_run.sh`](scripts/run_energy_one_run.sh),
+[`patch_emg_anchor.py`](scripts/patch_emg_anchor.py),
+[`run_phase3_bench_load_energy.sh`](board/HDC_DMA/run_phase3_bench_load_energy.sh),
 [`energy_preflight.sh`](scripts/energy_preflight.sh).
 
-*Still pending:* ARM-path energy (`run_arm_bench.sh`); anchor **B/C** energy (keep 0.5 / 0.125);
-see [limitations and mitigations](#energy--limitations-mitigations-open-work) below.
+See [Energy — limitations, mitigations, open work](#energy--limitations-mitigations-open-work) for
+how to read these numbers and what remains.
 
 ---
 
 ## Energy — limitations, mitigations, open work
 
-Measured PL batch energy is **repeatable and methodologically sound**, but the headline
-**11.9 µJ/window** must be read correctly — and several gaps remain before the DATE energy
-/Pareto claims are complete.
+Measured energy is **repeatable and methodologically sound**, but headline **total µJ/window**
+must be read correctly — several gaps remain before the DATE Pareto claims are complete.
 
 ### How to read the numbers
 
-| Metric | Value | Meaning |
-|--------|-------|---------|
-| Static power | **2556 ± 8 mW** | Whole board @ 12 V (J21), PL programmed, idle |
-| Total µJ/window | **11.9 ± 0.04** | **Static-dominated:** ≈ `P_static × t_batch / 200` with **t_batch ≈ 926 µs** |
-| Dynamic increment | **0.17 ± 0.19 µJ** | Increment above idle during burst — **noisy** (burst undersampled @ 100 Hz) |
+| Metric | PL (A/B/C) | ARM | Meaning |
+|--------|------------|-----|---------|
+| Static power | **~2550–2590 mW** | **~2553 mW** | Whole board @ 12 V (J21), PL programmed |
+| Total µJ/window | **~12** | **~2088** | ≈ `P_static × t_batch / 200` (926 µs PL; ~164 ms ARM) |
+| Dynamic increment | **0.07–0.49** (noisy) | **~111 ± 61** | Above idle during burst — undersampled @ 100 Hz |
 
 **Not claimed:** “PL dynamic switching = 12 µJ.” **Claimed:** system amortized energy at batch
-throughput (~216k win/s), with excellent 3-run repeatability (±0.3%).
+throughput, with 3-run repeatability. ARM/PL **~175×** energy ratio matches batch **duration** ratio.
 
-Single-window DMA latency is **~58 µs** ([`board_bench.txt`](results/phase3/board_bench.txt));
-static-dominated upper bound ≈ **150 µJ/window** if not batched — batching is essential.
+Single-window DMA latency **~58 µs**; static-dominated upper bound ≈ **150 µJ/window** without batching.
 
 ### Known limitations
 
 | Limitation | Impact |
 |------------|--------|
-| **Static dominates** | ~12 µJ/w is mostly idle power over a ~1 ms batch slot, not isolated PL dynamic draw |
-| **100 Hz undersampling** | ~926 µs burst vs ~10 ms sample period → dynamic increment unreliable as headline |
-| **Whole-board 12 V (J21)** | PS + DDR + I/O included; not Vcc_int-only PL power |
-| **One silicon config** | Measured only at anchor **A** (D=1024, keep=1.0); B/C pruning energy not on board |
-| **ARM energy missing** | ~**200×** latency ratio measured; **energy ratio not yet measured** |
-| **Hook A energy mostly proxy** | 64-cell Python sweep; one measured point replaces proxy at baseline only |
-| **5 subjects** | Hook A / Twist 2 pilot scale; full 36-subject export not done |
-| **74% vs ~90% (encoder)** | Different Eq. (3.1) grid vs literature spatial record — see [two-baseline story](#accuracy-the-two-baseline-story) |
+| **Static dominates PL total** | A/B/C all ~12 µJ/w — pruning does not show in **total** metric |
+| **100 Hz undersampling** | Dynamic increment unreliable as headline |
+| **Whole-board 12 V (J21)** | PS + DDR + I/O included |
+| **Hook A energy proxy** | 64-cell Python sweep; **four measured** anchor points on silicon |
+| **5 subjects** | Hook A / Twist 2 pilot scale |
+| **74% vs ~90% (encoder)** | See [two-baseline story](#accuracy-the-two-baseline-story) |
 
-Legacy full-log integration (~2240 µJ/w) was **wrong ~190×** — fixed by batch-scoped integration
-(`--integrate-mode batch` in [`ina219_log.py`](scripts/ina219_log.py)). Do not use.
-
-### Mitigations (addressable vs reframe)
-
-**Fully addressable in lab**
-
-| Gap | Action |
-|-----|--------|
-| ARM vs PL energy | INA219 3× while running `run_arm_bench.sh`, same J21 + [`energy_cal.env`](results/phase3/energy_cal.env) |
-| Pruning energy story | Measure anchors **B/C** (reprogram mask, 3× each) |
-| Pareto figure | Overlay **11.9 µJ** (+ B/C if measured) on [`hook_a/sweep_summary.csv`](results/hook_a/sweep_summary.csv) + LUT from [`dsweep/`](results/dsweep/) |
-| On-board accuracy at prune | EMG replay at anchors A/B/C |
-| Twist 1 headline | Python informed vs random @ D=1024, keep=0.5 (~2–4 h) |
-
-**Partially addressable (improve, not perfect)**
-
-| Gap | Action |
-|-----|--------|
-| Noisy dynamic µJ | Faster INA219 logging, scope on J21 during burst, or sustained back-to-back batches |
-| Batch vs single-window | Report both **~12 µJ** (batch) and **~150 µJ** bound (58 µs × P_static) |
-| Pruning may not cut 12 V µJ | If B/C flat: pivot to **accuracy–area** Pareto + latency; note static masks PL savings |
-| Twist 2 | 5-subject pilot; full claim needs 36-subject export |
-
-**Reframe only (state in paper Limitations)**
-
-| Topic | Paper stance |
-|-------|----------------|
-| 74% vs 90% | Verified **deployment path** + systems study, not literature-accuracy port |
-| J21 vs PL-only rail | System-level Zynq measurement; scope stated explicitly |
-| vs tiny MLP (93%) | HDC: no training, zero DSP, streaming, fixed logic — different deployment class |
-| ZedBoard vs wearable | Reference platform + reproducible methodology |
+Legacy full-log integration (~2240 µJ/w) was **wrong ~190×** — use `--integrate-mode batch` only.
 
 ### Remaining work (priority)
 
-**Critical path (energy + paper figures)**
+**Critical path**
 
-1. ARM energy series (3×) — PL vs ARM efficiency
-2. Hook A Pareto figure with measured µJ at D=1024 (± B/C)
-3. Anchor B/C INA219 + on-board EMG replay
-4. Twist 1 @ keep=0.5
+1. On-board EMG anchor replays A/B/C (`run_anchor_replay.sh`)
+2. Hook A Pareto figure with **measured** µJ at A/B/C + ARM
+3. Twist 1 @ keep=0.5
 
-**Then**
-
-5. Twist 2 pilot (5 subjects)
-6. Optional: faster logging / scope for dynamic increment figure
-7. DATE draft + figures (Fisher heatmap, baseline table, limitations subsection)
-
+**Then:** Twist 2 pilot · DATE draft · optional faster logging for dynamic increment figure
 ---
 
 ## Roadmap
@@ -509,10 +489,8 @@ in [Status](#status) above — the open items are grouped by priority below.
 
 ### Now — unblocks the paper's energy axis
 
-- [x] **INA219 energy — PL batch (3/3 runs)** — J21 + Pi, 2026-07-02 → [`energy_runs/`](results/phase3/energy_runs/), [`energy_summary.txt`](results/phase3/energy_summary.txt)
-- [ ] **ARM energy (3×)** — `run_arm_bench.sh` + same J21 method → PL vs ARM joules/window
-- [ ] **Anchor B/C energy (3× each)** — keep 0.5 / 0.125; test if pruning cuts measured µJ
-- [ ] **On-board anchor EMG replay** — A/B/C (pruning mask reprogram):
+- [x] **INA219 energy — anchors A/B/C + ARM (3× each)** — pooled Fisher mask, 2026-07-02 → [`energy_runs/anchor_*/`](results/phase3/energy_runs/), [`energy_summary.txt`](results/phase3/energy_summary.txt). PL **~12 µJ/w**; ARM **~2088 µJ/w**.
+- [ ] **On-board anchor EMG replay** — A/B/C (Python **74.15%** each):
 
   | Anchor | keep | Prune |
   |--------|------|-------|
@@ -520,10 +498,11 @@ in [Status](#status) above — the open items are grouped by priority below.
   | B — knee | 0.5 | 50% |
   | C — aggressive | 0.125 | 87.5% |
 
-- [ ] **Hook A Pareto figure** — accuracy × LUT × **measured** µJ (not proxy at anchor A)
+  ```bash
+  bash board/HDC_DMA/run_anchor_replay.sh ALL
+  ```
 
-See [Energy — limitations, mitigations, open work](#energy--limitations-mitigations-open-work) for
-scope, mitigations, and what is reframe-only vs measurable.
+- [ ] **Hook A Pareto figure** — accuracy × LUT × **measured** µJ from [`hook_a/sweep_summary.csv`](results/hook_a/sweep_summary.csv) + anchor energy table.
 
 ### Then — paper experiments
 
@@ -542,7 +521,7 @@ scope, mitigations, and what is reframe-only vs measurable.
 | Jun 2026 | Core RTL + co-sim; D verified | ✅ `pruning_mask.sv` + D-sweep cosim/synth PASS |
 | Jul 2026 | Stream wrapper + DMA bring-up | ✅ Ahead — Phases 2–3, EMG replay PASS |
 | Jul 2026 | Hook A full Python Pareto sweep | ✅ 320 rows, ~44 h (2026-07-01) |
-| Aug 2026 | Twist 1/2 + baselines + INA219 power | 🔄 PL energy **3/3 ✅**; ARM energy + twists + figure pending |
+| Aug 2026 | Twist 1/2 + baselines + INA219 power | 🔄 Energy **A/B/C/ARM ✅**; EMG anchor replays + Pareto figure pending |
 | Sep 2026 | Paper draft + DATE submit | ⏳ Not started |
 
 ---
