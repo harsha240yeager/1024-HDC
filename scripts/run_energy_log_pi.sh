@@ -13,7 +13,7 @@
 #
 # Usage:
 #   export INA219_BUS=1          # default on Pi
-#   export INA219_SHUNT_MOHM=100
+#   export INA219_SHUNT_MOHM=10   # ZedBoard J21 (100 = Adafruit inline fallback)
 #   export INA219_V_RAIL=12.0
 #   bash scripts/run_energy_log_pi.sh
 #
@@ -27,7 +27,7 @@ SUMMARY="$ROOT/results/phase3/energy_batch.txt"
 
 BUS="${INA219_BUS:-1}"
 ADDR="${INA219_ADDR:-0x40}"
-SHUNT="${INA219_SHUNT_MOHM:-100}"
+SHUNT="${INA219_SHUNT_MOHM:-10}"
 V_RAIL="${INA219_V_RAIL:-12.0}"
 STATIC_S="${INA219_STATIC_S:-10}"
 BATCH_LOG_S="${INA219_BATCH_LOG_S:-30}"

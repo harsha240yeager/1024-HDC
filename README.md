@@ -28,6 +28,7 @@ the PS over **AXI4-Lite** and fed at inference rate over **AXI4-Stream + DMA**.
 - [Accuracy: the two-baseline story](#accuracy-the-two-baseline-story)
 - [Repository layout](#repository-layout)
 - [Quick start](#quick-start)
+- [Energy measurement (INA219 + Raspberry Pi)](#energy-measurement-ina219--raspberry-pi)
 - [Roadmap](#roadmap)
 - [License](#license)
 
@@ -54,7 +55,7 @@ the PS over **AXI4-Lite** and fed at inference rate over **AXI4-Stream + DMA**.
 | ARM HDC baseline (C) | ✅ 74.15% accuracy · 819 µs/window on-board (200/200 golden) |
 | Tiny int8 MLP baseline | ✅ 93.01% float / 92.99% int8 (5 subjects, full TEST) |
 | Hook A — Python Pareto sweep (D × CNT_W × pruning) | ✅ Complete (~44 h; [`results/hook_a/`](results/hook_a/)) |
-| Phase 3 — energy (INA219) | ⏳ Tooling ready; measurement pending |
+| Phase 3 — energy (INA219 + Pi) | ⏳ Tooling + wiring guide ready; bench measurement pending |
 | Twist 1 · Twist 2 (paper experiments) | ⏳ Not started |
 
 ---
@@ -226,7 +227,7 @@ encoding) is retired for the silicon path (June 2026, Option A).
 | `python_ref/` | Golden model, EMG baselines, Hook A sweep, Tier 4 runners (`run_*_baseline.py`) |
 | `scripts/` | Golden prep, JTAG runners, EMG export, `build_hdc_arm_host.sh`, energy tooling (`ina219_log.py`) |
 | `board/HDC_DMA/` | ZedBoard Vitis workspace: platform, ELFs, JTAG run scripts |
-| `results/` | Per-phase board / synthesis logs + [`hook_a/`](results/hook_a/) sweep + [`baselines/`](results/baselines/) |
+| `results/` | Per-phase board / synthesis logs + [`hook_a/`](results/hook_a/) + [`phase3/energy_setup.md`](results/phase3/energy_setup.md) |
 | `docs/` | Research plan, `Baseline_vs_RTL_Encoder.md`, protocol/flow PDFs, end-to-end guide |
 | `vivado_pack/` | Vivado bring-up bundle |
 
@@ -311,6 +312,87 @@ in [`results/phase3/README.md`](results/phase3/README.md).
 
 ---
 
+## Energy measurement (INA219 + Raspberry Pi)
+
+Measure **whole-board 12 V input power** on ZedBoard using an [INA219](https://www.adafruit.com/product/904)
+breakout and a **Raspberry Pi** as the I²C host. Ubuntu (`bsp-lab`) still runs JTAG/bench
+over USB — a **two-machine** workflow coordinated by hand.
+
+**Full wiring, connectors, and safety:** [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md)
+
+### Hardware
+
+| Item | Role |
+|------|------|
+| INA219 breakout | I²C power sensor (address `0x40`) |
+| Raspberry Pi (3/4/5) | I²C host — runs `ina219_log.py` |
+| Jumper wires | Pi → INA219 (3.3 V I²C); INA219 Vin+/Vin− → **J21** on ZedBoard |
+| ZedBoard | **J20** barrel (12 V), **J21** current sense (10 mΩ shunt), **J3/J4** GND |
+
+Power the ZedBoard **normally through J20**. The INA219 **does not** break the 12 V cable —
+it senses differential voltage across **J21** (silkscreen: *current sense*).
+
+```text
+12 V adapter → J20 (barrel)          Pi pin 1 (3.3V) → INA219 VCC
+12 V (−)     → ZedBoard GND          Pi pin 6 (GND)  → INA219 GND + ZedBoard GND
+J21 pin 1    → INA219 Vin+           Pi pin 3 (SDA)  → INA219 SDA
+J21 pin 2    → INA219 Vin−           Pi pin 5 (SCL)  → INA219 SCL
+```
+
+**Critical:** `export INA219_SHUNT_MOHM=10` (ZedBoard J21 shunt). Using `100` makes
+current/power **10× too low**.
+
+### Pi — one-time setup
+
+```bash
+sudo raspi-config          # Interface Options → I2C → Enable → reboot
+sudo apt install -y python3-pip i2c-tools git
+pip3 install smbus2
+sudo usermod -aG i2c $USER   # log out and back in
+
+git clone https://github.com/harsha240yeager/1024-HDC.git ~/1024-HDC
+cd ~/1024-HDC && git pull
+
+i2cdetect -y 1             # expect 0x40
+bash scripts/energy_preflight.sh   # must PASS
+```
+
+### Measurement day (Pi + Ubuntu)
+
+**Ubuntu** — program PL once, then run bench on Pi countdown:
+
+```bash
+cd ~/1024-HDC
+export HDC_VIVADO_ROOT="/path/to/FInal_HDC"
+cd board/HDC_DMA && bash build_sw.sh && cd ../..
+bash board/HDC_DMA/run_phase3_program_pl.sh          # idle static baseline
+# when Pi counts down:
+bash board/HDC_DMA/run_phase3_bench_load.sh          # dynamic capture (ELF reload only)
+```
+
+**Raspberry Pi** — log static + dynamic power:
+
+```bash
+cd ~/1024-HDC
+export INA219_BUS=1
+export INA219_SHUNT_MOHM=10
+export INA219_V_RAIL=12.0
+bash scripts/run_energy_log_pi.sh
+```
+
+**Outputs:** `results/phase3/logs/ina219_static.csv`, `ina219_batch.csv`,
+`results/phase3/energy_batch.txt` (static mW, dynamic mJ, µJ/window).
+
+**Scripts:** [`ina219_log.py`](scripts/ina219_log.py),
+[`run_energy_log_pi.sh`](scripts/run_energy_log_pi.sh) (Pi),
+[`run_energy_measure.sh`](scripts/run_energy_measure.sh) (Ubuntu USB-I2C all-in-one),
+[`energy_preflight.sh`](scripts/energy_preflight.sh).
+
+Repeat **3×** for mean ± std. *Pending:* ARM-path energy (`run_arm_bench.sh`) for the
+~10× PL-vs-ARM claim; Hook A anchor energies at keep 1.0 / 0.5 / 0.125.
+
+---
+
 ## Roadmap
 
 Hook A is re-targeted (June 2026, Option A) against the **74.24% RTL baseline**;
@@ -319,7 +401,11 @@ in [Status](#status) above — the open items are grouped by priority below.
 
 ### Now — unblocks the paper's energy axis
 
-- [ ] **INA219 energy** (PL batch + ARM path). Wire per [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md), log with [`scripts/ina219_log.py`](scripts/ina219_log.py) → [`results/phase3/energy_batch.txt`](results/phase3/energy_batch.txt). *Also settles the ARM-vs-PL ~10× claim.*
+- [ ] **INA219 energy** (PL batch + ARM path). **Pi + J21 wiring guide:**
+  [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md) ·
+  Pi: `run_energy_log_pi.sh` · Ubuntu: `run_phase3_program_pl.sh` +
+  `run_phase3_bench_load.sh` → [`results/phase3/energy_batch.txt`](results/phase3/energy_batch.txt).
+  *Set `INA219_SHUNT_MOHM=10`.*
 - [ ] **On-board anchor replay** — reprogram the D=1024 pruning mask and replay EMG at anchors A/B/C (all **74.15%** in Python):
 
   | Anchor | keep | Prune |

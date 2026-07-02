@@ -10,7 +10,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUS="${INA219_BUS:-}"
 ADDR="${INA219_ADDR:-0x40}"
-SHUNT="${INA219_SHUNT_MOHM:-100}"
+SHUNT="${INA219_SHUNT_MOHM:-10}"
 
 echo "=== Energy measurement preflight ==="
 echo ""
@@ -105,14 +105,15 @@ echo "$probe_out"
 echo ""
 echo "=== Preflight PASS ==="
 echo ""
-echo "Next (12 V input method):"
+echo "Next (J21 current-sense tap on ZedBoard):"
 if [[ -r /proc/device-tree/model ]] && grep -qi raspberry /proc/device-tree/model 2>/dev/null; then
   echo "  export INA219_BUS=${BUS:-1}"
+  echo "  export INA219_SHUNT_MOHM=10    # J21 on-board (100 = Adafruit inline)"
   echo "  bash scripts/run_energy_log_pi.sh"
   echo "  (run bench on Ubuntu: bash board/HDC_DMA/run_phase3_bench_load.sh)"
 else
   echo "  export INA219_BUS=${BUS:-<bus from above>}"
-  echo "  export INA219_SHUNT_MOHM=100"
+  echo "  export INA219_SHUNT_MOHM=10    # J21 on-board (100 = Adafruit inline)"
   echo "  export INA219_V_RAIL=12.0"
   echo "  bash scripts/run_energy_measure.sh"
 fi

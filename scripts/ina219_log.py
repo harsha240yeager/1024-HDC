@@ -201,7 +201,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="INA219 logger for Phase 3 energy")
     parser.add_argument("--bus", type=int, default=1, help="I2C bus number (/dev/i2c-N)")
     parser.add_argument("--address", type=lambda x: int(x, 0), default=0x40, help="INA219 I2C address")
-    parser.add_argument("--shunt-mohm", type=float, default=100.0, help="Shunt resistor (milliohm)")
+    parser.add_argument("--shunt-mohm", type=float, default=10.0, help="Shunt (mOhm): 10=ZedBoard J21, 100=Adafruit inline")
     parser.add_argument("--v-rail", type=float, default=1.0, help="Monitored rail voltage (V), for records")
     parser.add_argument("--duration", type=float, default=30.0, help="Log duration (seconds)")
     parser.add_argument("--rate-hz", type=float, default=100.0, help="Sample rate")
