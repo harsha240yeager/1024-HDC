@@ -174,6 +174,34 @@ Default shunt: **10 mΩ** (J21). Use `INA219_SHUNT_MOHM=100` only for inline Ada
 
 ---
 
+### J21 sense-wire calibration (if multimeter ≠ INA219)
+
+Loose dupont on J21 can make the INA219 read ~10×–20× low while a multimeter on
+J21 is correct. Scale **shunt/current/power** (not `bus_v`) to match a one-time
+multimeter reading at idle:
+
+```bash
+# Auto: measure mV on J21 with SW8 ON, then:
+export INA219_CAL_REF_MV=2.0    # your multimeter reading
+export INA219_SHUNT_MOHM=10
+python3 scripts/ina219_log.py --bus 1 --shunt-mohm 10 --cal-ref-mv 2.0 --duration 3 --out /tmp/j21.csv
+
+# Manual gain (ref_mV / raw_mV), e.g. 2.0 / 0.09 ≈ 22.2:
+export INA219_CAL_GAIN=22.2
+```
+
+Legacy `--integrate-mode full` integrated the entire 30 s log (wrong for per-window
+claims). Default **`batch`** scales by `batch_duration_ms` from `board_bench.txt`:
+
+```bash
+python3 scripts/ina219_log.py --integrate results/phase3/logs/ina219_batch.csv \
+  --static-csv results/phase3/logs/ina219_static.csv \
+  --batch-windows 200 --integrate-mode batch
+```
+
+At 100 Hz sampling the ~926 µs DMA burst is undersampled; report **total energy per
+window** (~12 µJ) as the primary anchor.
+
 ## Safety
 
 - Verify INA219 + J21 wiring **before** applying 12 V at J20.

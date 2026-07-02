@@ -15,11 +15,17 @@
 #   export INA219_BUS=1          # default on Pi
 #   export INA219_SHUNT_MOHM=10   # ZedBoard J21 (100 = Adafruit inline fallback)
 #   export INA219_V_RAIL=12.0
+#   export INA219_CAL_REF_MV=2.0  # multimeter mV on J21 at idle (auto gain)
 #   bash scripts/run_energy_log_pi.sh
 #
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+CAL_ENV="$ROOT/results/phase3/energy_cal.env"
+if [[ -f "$CAL_ENV" ]]; then
+  # shellcheck source=/dev/null
+  source "$CAL_ENV"
+fi
 LOG_DIR="${ENERGY_LOG_DIR:-$ROOT/results/phase3/logs}"
 STATIC_CSV="$LOG_DIR/ina219_static.csv"
 BATCH_CSV="$LOG_DIR/ina219_batch.csv"
@@ -29,15 +35,33 @@ BUS="${INA219_BUS:-1}"
 ADDR="${INA219_ADDR:-0x40}"
 SHUNT="${INA219_SHUNT_MOHM:-10}"
 V_RAIL="${INA219_V_RAIL:-12.0}"
+CAL_GAIN="${INA219_CAL_GAIN:-}"
+CAL_REF_MV="${INA219_CAL_REF_MV:-}"
+# J21 (10 mOhm): always calibrate unless manual gain is set
+if [[ "$SHUNT" == "10" && -z "$CAL_GAIN" && -z "$CAL_REF_MV" ]]; then
+  CAL_REF_MV="2.0"
+fi
 STATIC_S="${INA219_STATIC_S:-10}"
 BATCH_LOG_S="${INA219_BATCH_LOG_S:-30}"
 BATCH_WINDOWS="${INA219_BATCH_WINDOWS:-200}"
 COUNTDOWN="${ENERGY_BENCH_COUNTDOWN:-5}"
 
+CAL_ARGS=()
+if [[ -n "$CAL_GAIN" ]]; then
+  CAL_ARGS+=(--cal-gain "$CAL_GAIN")
+elif [[ -n "$CAL_REF_MV" ]]; then
+  CAL_ARGS+=(--cal-ref-mv "$CAL_REF_MV")
+fi
+
 mkdir -p "$LOG_DIR"
 
 echo "=== Raspberry Pi energy logger ==="
 echo "  I2C bus=$BUS  shunt=${SHUNT}mOhm  v_rail=${V_RAIL}V"
+if [[ -n "$CAL_GAIN" ]]; then
+  echo "  cal_gain=${CAL_GAIN}x (manual)"
+elif [[ -n "$CAL_REF_MV" ]]; then
+  echo "  cal_ref_mv=${CAL_REF_MV} (auto gain from multimeter)"
+fi
 echo "  logs → $LOG_DIR"
 echo ""
 
@@ -54,6 +78,7 @@ echo "On Ubuntu FIRST (if not done): bash board/HDC_DMA/run_phase3_program_pl.sh
 echo "Then ensure no bench is running. Logging ${STATIC_S}s..."
 python3 "$ROOT/scripts/ina219_log.py" \
   --bus "$BUS" --address "$ADDR" --shunt-mohm "$SHUNT" \
+  "${CAL_ARGS[@]}" \
   --duration "$STATIC_S" --out "$STATIC_CSV"
 echo "Static CSV: $STATIC_CSV"
 echo ""
@@ -72,6 +97,7 @@ done
 
 python3 "$ROOT/scripts/ina219_log.py" \
   --bus "$BUS" --address "$ADDR" --shunt-mohm "$SHUNT" \
+  "${CAL_ARGS[@]}" \
   --duration "$BATCH_LOG_S" --out "$BATCH_CSV" &
 LOG_PID=$!
 
@@ -100,8 +126,18 @@ INTEGRATE_ARGS=(
   --batch-windows "$BATCH_WINDOWS"
   --summary-out "$SUMMARY"
 )
+if [[ -n "$CAL_GAIN" ]]; then
+  INTEGRATE_NOTE="J21 calibrated: cal_gain=${CAL_GAIN}x"
+elif [[ -n "$CAL_REF_MV" ]]; then
+  INTEGRATE_NOTE="J21 calibrated: cal_ref_mv=${CAL_REF_MV} mV (gain applied at log time)"
+else
+  INTEGRATE_NOTE=""
+fi
 if [[ -n "$BATCH_MS" ]]; then
   INTEGRATE_ARGS+=(--batch-duration-ms "$BATCH_MS")
+fi
+if [[ -n "$INTEGRATE_NOTE" ]]; then
+  INTEGRATE_ARGS+=(--notes "$INTEGRATE_NOTE")
 fi
 
 python3 "$ROOT/scripts/ina219_log.py" "${INTEGRATE_ARGS[@]}"

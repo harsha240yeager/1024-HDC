@@ -1,0 +1,29 @@
+Phase 3 — Energy measurement summary (3 runs, batch integration)
+==============================================================
+Date: 2026-07-02
+Method: ZedBoard J21 + INA219 on Raspberry Pi, INA219_CAL_REF_MV=2.0 mV
+Integration: batch mode — energy scaled to batch_duration_ms from board_bench
+  (not full 30 s log ÷ 200). See scripts/ina219_log.py --integrate-mode batch.
+
+Per-run results
+---------------
+Run 1 (926 µs bench): static=2561.3 mW  total=11.86 µJ/w  dynamic=0.048 µJ/w
+Run 2 (926 µs bench): static=2562.4 mW  total=11.86 µJ/w  dynamic=0.439 µJ/w
+Run 3 (940 µs bench): static=2543.9 mW  total=11.96 µJ/w  dynamic=0.011 µJ/w
+
+Aggregate (n=3)
+---------------
+Static power (mW):           2555.9 ± 8.5
+Total energy per window (µJ):  11.89 ± 0.04   ← P_static × t_batch / 200
+Dynamic increment (µJ/window):  0.166 ± 0.194  ← (P_active − P_static) × t_batch / 200
+
+Paper anchors (PL batch, D=1024, keep=1.0)
+------------------------------------------
+Input static power: ~2.56 W @ 12 V (J21, calibrated)
+Total board energy during batch slot: ~12 µJ/inference (amortized over 200 windows)
+Incremental dynamic (above idle during batch): ~0.05–0.44 µJ/window (noisy at 100 Hz)
+
+Note: DMA burst is ~926 µs; INA219 logs at 100 Hz so the burst is undersampled.
+Total-energy metric is the defensible anchor; dynamic increment is a lower bound.
+
+Legacy (wrong) full-log integration gave ~2240 µJ/w — do not use.

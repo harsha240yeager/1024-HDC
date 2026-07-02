@@ -41,7 +41,7 @@ the PS over **AXI4-Lite** and fed at inference rate over **AXI4-Stream + DMA**.
 **Done:** RTL + verification + Zynq bring-up (Phases 1–3) + **`pruning_mask.sv`**
 (cosim PASS) + **D-sweep** (functional cosim + OOC synth) + comparison baselines (ARM HDC + MLP)
 + **Hook A full Python sweep** (64 configs × 5 subjects, **320 rows**, ~44 h, 2026-07-01).
-**Next:** Pareto figure, INA219 energy, on-board anchor replays (A/B/C below), Twist 1/2, write-up.
+**Next:** Pareto figure (Hook A + measured energy), on-board anchor replays (A/B/C), ARM energy path, Twist 1/2, write-up.
 
 | Area | State |
 |------|-------|
@@ -55,7 +55,7 @@ the PS over **AXI4-Lite** and fed at inference rate over **AXI4-Stream + DMA**.
 | ARM HDC baseline (C) | ✅ 74.15% accuracy · 819 µs/window on-board (200/200 golden) |
 | Tiny int8 MLP baseline | ✅ 93.01% float / 92.99% int8 (5 subjects, full TEST) |
 | Hook A — Python Pareto sweep (D × CNT_W × pruning) | ✅ Complete (~44 h; [`results/hook_a/`](results/hook_a/)) |
-| Phase 3 — energy (INA219 + Pi) | ⏳ Tooling + wiring guide ready; bench measurement pending |
+| Phase 3 — energy (INA219 + Pi, J21) | ✅ **3/3 runs** — static **2556 ± 8 mW**; **11.9 ± 0.04 µJ/window** (batch integration); [`energy_summary.txt`](results/phase3/energy_summary.txt) |
 | Twist 1 · Twist 2 (paper experiments) | ⏳ Not started |
 
 ---
@@ -312,18 +312,24 @@ in [`results/phase3/README.md`](results/phase3/README.md).
 
 ### 6 · Energy measurement (INA219)
 
-See [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md).
+See [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md) and
+[`results/phase3/energy_cal.env`](results/phase3/energy_cal.env) (J21 calibration).
+
+**Lab setup:** Raspberry Pi (I²C) + ZedBoard J21 sense + Ubuntu JTAG bench.
+**Repeat 3×** at the same config for mean ± std; keep `INA219_CAL_REF_MV` fixed unless wiring changes.
 
 ```bash
-pip install smbus2
-bash scripts/energy_preflight.sh                        # verify INA219 on I2C
-export INA219_BUS=10                                    # from preflight output
-bash scripts/run_energy_measure.sh                        # Ubuntu all-in-one
+# Pi
+source results/phase3/energy_cal.env
+bash scripts/run_energy_log_pi.sh
+
+# Ubuntu (on countdown, after run_phase3_program_pl.sh once per session)
+bash board/HDC_DMA/run_phase3_bench_load.sh
 # → results/phase3/energy_batch.txt
 ```
 
-Pi + Ubuntu split: `bash scripts/run_energy_log_pi.sh` on the Pi (see setup doc).
-Repeat with `run_arm_bench.sh` for ARM vs PL comparison (~10× energy claim).
+Ubuntu all-in-one (USB-I2C): `bash scripts/run_energy_measure.sh`
+ARM comparison path: `run_arm_bench.sh` (pending second energy series).
 
 ---
 
@@ -385,18 +391,18 @@ bash board/HDC_DMA/run_phase3_program_pl.sh          # idle static baseline
 bash board/HDC_DMA/run_phase3_bench_load.sh          # dynamic capture (ELF reload only)
 ```
 
-**Raspberry Pi** — log static + dynamic power:
+**Raspberry Pi** — log static + dynamic power (calibration in [`energy_cal.env`](results/phase3/energy_cal.env)):
 
 ```bash
 cd ~/1024-HDC
-export INA219_BUS=1
-export INA219_SHUNT_MOHM=10
-export INA219_V_RAIL=12.0
+source results/phase3/energy_cal.env   # INA219_CAL_REF_MV=2.0, SHUNT_MOHM=10
 bash scripts/run_energy_log_pi.sh
 ```
 
 **Outputs:** `results/phase3/logs/ina219_static.csv`, `ina219_batch.csv`,
-`results/phase3/energy_batch.txt` (static mW, dynamic mJ, µJ/window).
+`results/phase3/energy_batch.txt`. Measured **2026-07-02 (3 runs):** static
+**2556 ± 8 mW**; **11.9 ± 0.04 µJ/window** (batch integration, see
+[`energy_summary.txt`](results/phase3/energy_summary.txt)).
 
 **Scripts:** [`ina219_log.py`](scripts/ina219_log.py),
 [`run_energy_log_pi.sh`](scripts/run_energy_log_pi.sh) (Pi),
@@ -416,11 +422,7 @@ in [Status](#status) above — the open items are grouped by priority below.
 
 ### Now — unblocks the paper's energy axis
 
-- [ ] **INA219 energy** (PL batch + ARM path). **Pi + J21 wiring guide:**
-  [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md) ·
-  Pi: `run_energy_log_pi.sh` · Ubuntu: `run_phase3_program_pl.sh` +
-  `run_phase3_bench_load.sh` → [`results/phase3/energy_batch.txt`](results/phase3/energy_batch.txt).
-  *Set `INA219_SHUNT_MOHM=10`.*
+- [x] **INA219 energy — PL batch (3/3 runs)** — J21 + Pi, cal `ref=2.0 mV`, 2026-07-02 → [`results/phase3/energy_runs/`](results/phase3/energy_runs/), summary [`energy_summary.txt`](results/phase3/energy_summary.txt). Wiring: [`energy_setup.md`](results/phase3/energy_setup.md). ARM path still pending for ~10× claim.
 - [ ] **On-board anchor replay** — reprogram the D=1024 pruning mask and replay EMG at anchors A/B/C (all **74.15%** in Python):
 
   | Anchor | keep | Prune |
@@ -448,7 +450,7 @@ in [Status](#status) above — the open items are grouped by priority below.
 | Jun 2026 | Core RTL + co-sim; D verified | ✅ `pruning_mask.sv` + D-sweep cosim/synth PASS |
 | Jul 2026 | Stream wrapper + DMA bring-up | ✅ Ahead — Phases 2–3, EMG replay PASS |
 | Jul 2026 | Hook A full Python Pareto sweep | ✅ 320 rows, ~44 h (2026-07-01) |
-| Aug 2026 | Twist 1/2 + baselines + INA219 power | 🔄 Baseline accuracy ✅; energy + twists + figure pending |
+| Aug 2026 | Twist 1/2 + baselines + INA219 power | 🔄 PL energy **3/3 ✅**; ARM energy + twists + figure pending |
 | Sep 2026 | Paper draft + DATE submit | ⏳ Not started |
 
 ---
