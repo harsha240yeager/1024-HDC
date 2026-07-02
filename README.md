@@ -310,6 +310,21 @@ bash run_phase3_emg.sh           # full EMG replay          → results/phase3/b
 Full EMG export (one-time ~4 h) and the prototype-fix / DDR-split flow are documented
 in [`results/phase3/README.md`](results/phase3/README.md).
 
+### 6 · Energy measurement (INA219)
+
+See [`results/phase3/energy_setup.md`](results/phase3/energy_setup.md).
+
+```bash
+pip install smbus2
+bash scripts/energy_preflight.sh                        # verify INA219 on I2C
+export INA219_BUS=10                                    # from preflight output
+bash scripts/run_energy_measure.sh                        # Ubuntu all-in-one
+# → results/phase3/energy_batch.txt
+```
+
+Pi + Ubuntu split: `bash scripts/run_energy_log_pi.sh` on the Pi (see setup doc).
+Repeat with `run_arm_bench.sh` for ARM vs PL comparison (~10× energy claim).
+
 ---
 
 ## Energy measurement (INA219 + Raspberry Pi)
