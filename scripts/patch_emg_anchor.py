@@ -5,8 +5,15 @@ Board EMG replay scores against ground-truth labels; only emg_mask64 and
 EMG_EXPORT_REF_ACCURACY_X1000 must change between anchors A/B/C. Levels,
 protos, and emg_board_vectors.bin stay the same.
 
-Mask: pooled Fisher-informed over all subjects' TRAIN windows (one global mask
-for the whole replay, matching a single hdc_load_mask_from64 on silicon).
+Mask (silicon): one **pooled** Fisher-informed mask over all subjects' TRAIN
+windows — a single hdc_load_mask_from64 for the full replay.
+
+Anchor A (keep=1.0): Fisher at 100% keep is a **full mask** (all bits set).
+Scores are not computed; the result is identical to mask_from_scores(..., 1.0).
+
+Hook A Python sweep (results/hook_a/) uses **per-subject** Fisher masks, then
+means accuracy across subjects. At keep=1.0 both paths yield all-ones; at B/C
+the bit patterns can differ — state measured board acc vs Hook A 74.15% targets.
 
 Usage:
   python3 scripts/patch_emg_anchor.py --anchor B
@@ -105,6 +112,7 @@ def build_pooled_fisher_mask(
     keep_ratio: float,
 ) -> np.ndarray:
     if keep_ratio >= 1.0 - 1e-9:
+        # Degenerate Fisher case: 100% keep == all-ones (same as mask_from_scores(..., 1.0)).
         return np.ones(cfg.D, dtype=np.uint8)
 
     mem = ItemMemory(cfg)

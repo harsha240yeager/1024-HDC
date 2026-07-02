@@ -112,7 +112,7 @@ Outputs: [`results/hook_a/sweep_summary.csv`](results/hook_a/sweep_summary.csv).
 
 | Reference | Spatial mean |
 |-----------|--------------|
-| D=1024, CNT_W=6, keep=1.0 (Python / silicon path) | **74.15%** |
+| D=1024, CNT_W=6, keep=1.0 (Python spatial mean) | **74.15%** |
 | Board RTL EMG replay (keep=1.0) | **74.24%** |
 | Best grid point (D=2048, CNT_W≥4) | **77.62%** (59k LUT — OOC only) |
 | CNT_W=3 (all D) | **59.48%** (bundle-precision floor) |
@@ -122,11 +122,15 @@ Measured J21 energy at anchors A/B/C is also **flat ~12 µJ/w** (static-dominate
 
 **Silicon anchor picks** (D=1024, reprogram pruning mask before each run):
 
-| Anchor | keep | Prune | Python acc | Measured µJ/w | Role |
-|--------|------|-------|------------|---------------|------|
-| **A** — baseline | 1.0 | 0% | 74.15% | 11.98 ± 0.07 | Reference replay |
-| **B** — knee | 0.5 | 50% | 74.15% | 11.90 ± 0.04 | Same acc; area proxy ↓2× |
-| **C** — aggressive | 0.125 | 87.5% | 74.15% | 11.81 ± 0.12 | Max prune, zero acc drop |
+| Anchor | keep | Prune | Hook A target | Measured µJ/w | Role |
+|--------|------|-------|---------------|---------------|------|
+| **A** — baseline | 1.0 | 0% | 74.15% | 11.98 ± 0.07 | Full mask (keep=1.0 = all-ones) |
+| **B** — knee | 0.5 | 50% | 74.15% | 11.90 ± 0.04 | Pooled Fisher on silicon |
+| **C** — aggressive | 0.125 | 87.5% | 74.15% | 11.81 ± 0.12 | Max prune; board PASS vs export ref |
+
+**Mask note:** Hook A Python uses **per-subject** Fisher masks; silicon uses one **pooled**
+Fisher mask (`patch_emg_anchor.py`). At keep=1.0 both are all-ones; at B/C bit patterns
+can differ — document measured board accuracy in Limitations if needed.
 
 Full table: [`results/hook_a/README.md`](results/hook_a/README.md).
 
@@ -317,9 +321,10 @@ Calibration: `source results/phase3/energy_cal.env` (`SHUNT_MOHM=10`, `CAL_REF_M
 | Hook A grid | 64 Python configs; **four measured** silicon points (A/B/C/ARM) |
 | Subjects | 5 in Hook A; Twist 2 pilot scale |
 | 74% vs ~90% | Different encoder by design — see [two-baseline story](#accuracy-the-two-baseline-story) |
+| Fisher masks | Hook A Python: **per-subject** Fisher; silicon: **pooled** Fisher — same at keep=1.0, may differ at B/C |
+| Lab hardware | Pi + INA219 **not required** for remaining critical path — reconnect only for optional dynamic-power logging or re-measurement |
 
 Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
-
 ---
 
 ## Roadmap
@@ -328,6 +333,7 @@ Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
 
 - [x] INA219 energy — anchors A/B/C + ARM (3× each, 2026-07-02)
 - [ ] On-board EMG replay at anchors A/B/C — `bash board/HDC_DMA/run_anchor_replay.sh ALL`
+  (Hook A targets ~74.15%; board PASS vs export ref; see [`anchors/README.md`](results/phase3/anchors/README.md))
 - [ ] Hook A Pareto figure — accuracy × LUT × measured µJ
 
 ### Then
