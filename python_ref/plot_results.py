@@ -191,7 +191,7 @@ def fig_per_subject(d: dict, out: Path) -> None:
     w = 0.38
 
     fig, ax = plt.subplots(figsize=(7.5, 4.2))
-    ax.bar(x - w / 2, hdc, w, label="HDC (RTL / ARM)", color="#4c78a8")
+    ax.bar(x - w / 2, hdc, w, label="ARM HDC ref (host sim)", color="#4c78a8")
     ax.bar(x + w / 2, mlp, w, label="Tiny int8 MLP", color="#59a14f")
     for i, (h, m) in enumerate(zip(hdc, mlp)):
         ax.text(i - w / 2, h + 0.6, f"{h:.1f}", ha="center", va="bottom", fontsize=7)
@@ -231,10 +231,16 @@ def fig_hook_a_acc_vs_d(rows: list[dict], out: Path) -> None:
     cnts = sorted({r["cnt_w"] for r in keep1})
 
     fig, ax = plt.subplots(figsize=(6.8, 4.2))
+    # CNT_W=4/5/6 are identical in sweep — collapse to two legend entries.
+    by_curve: dict[tuple[float, ...], list[int]] = {}
     for c in cnts:
-        ys = [next(r["acc"] for r in keep1 if r["D"] == D and r["cnt_w"] == c) for D in Ds]
-        style = "o-" if c != 3 else "o--"
-        ax.plot([str(D) for D in Ds], ys, style, lw=1.6, ms=5, label=f"CNT_W={c}")
+        ys = tuple(next(r["acc"] for r in keep1 if r["D"] == D and r["cnt_w"] == c) for D in Ds)
+        by_curve.setdefault(ys, []).append(c)
+    for ys, cs in by_curve.items():
+        lo, hi = min(cs), max(cs)
+        label = f"CNT_W={lo}" if lo == hi else f"CNT_W={lo}–{hi}"
+        style = "o--" if lo == 3 else "o-"
+        ax.plot([str(D) for D in Ds], list(ys), style, lw=1.6, ms=5, label=label)
     ax.set_xlabel("Hypervector dimension D")
     ax.set_ylabel("Spatial mean accuracy (%)")
     ax.set_title("Hook A — accuracy vs D and bundle-counter width")
@@ -287,12 +293,23 @@ def fig_hook_a_pruning(rows: list[dict], out: Path) -> None:
     fig, ax = plt.subplots(figsize=(6.8, 4.2))
     ax.plot(prune, acc, "o-", color="#59a14f", lw=1.8, ms=6, label="Accuracy (%)")
     ax.plot(prune, energy, "s--", color="#4c78a8", lw=1.6, ms=5,
-            label="Energy proxy (% of full)")
+            label="Python energy proxy (% of full)")
     ax.set_xlabel("Bits pruned (%) — informed Fisher mask")
     ax.set_ylabel("Percent")
     ax.set_ylim(0, 100)
-    ax.set_title("Hook A — pruning is free: accuracy flat, energy proxy 8×↓ (D=1024)")
+    ax.set_title("Hook A — pruning is free @ D=1024 (Python sweep)")
     ax.legend(loc="center left", fontsize=8)
+    ax.text(
+        0.98,
+        0.05,
+        "Energy line = Python dynamic proxy (8×↓ at keep=0.125).\n"
+        "Measured PL J21 batch ≈ flat ~12 µJ (static-dominated).",
+        transform=ax.transAxes,
+        ha="right",
+        va="bottom",
+        fontsize=7,
+        color="0.35",
+    )
     _save(fig, out, "hookA_pruning")
 
 
@@ -342,11 +359,21 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
         fontsize=7,
         color="#b4413c",
     )
-    ax.set_xlabel("Slice LUTs (thousands)")
+    ax.set_xlabel("Slice LUTs (thousands) — curve: OOC estimate; ★: placed post-route")
     ax.set_ylabel("Spatial / board accuracy (%)")
-    ax.set_title("(a) Accuracy vs area — D sweep + deployed bitstream")
+    ax.set_title("(a) Accuracy vs area — Python OOC sweep + placed silicon")
     ax.legend(loc="lower right", fontsize=7)
     ax.set_ylim(58, 82)
+    ax.text(
+        0.02,
+        0.02,
+        "Blue line: Python spatial mean (OOC LUTs).\n"
+        f"Red ★: board EMG replay @ D=1024 ({DEPLOY_LUTS // 1000}k placed LUTs).",
+        transform=ax.transAxes,
+        fontsize=7,
+        va="bottom",
+        color="0.35",
+    )
 
     # --- (b) Measured energy at D=1024 anchors (board accuracy) ---
     ax = axes[1]
@@ -379,28 +406,12 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
         label="ARM PS software",
     )
     ax.annotate(
-        "ARM",
+        "ARM (host acc)",
         xy=(arm["uj"], arm["acc"]),
         xytext=(8, -10),
         textcoords="offset points",
         fontsize=7,
     )
-    # Python proxy at D=1024 (CNT_W=6) — same accuracy, scaled proxy on secondary axis note
-    proxy_pts = sorted(
-        (r for r in rows if r["D"] == 1024 and r["cnt_w"] == 6),
-        key=lambda r: r["keep"],
-        reverse=True,
-    )
-    ax2 = ax.twiny()
-    proxy_x = [p["uj"] for p in pl if p["anchor"] == "A"]
-    if proxy_x:
-        base_uj = proxy_x[0]
-        ax2.set_xlim(ax.get_xlim())
-        for r in proxy_pts:
-            px = base_uj * r["energy"]  # energy_proxy_d_keep at D=1024
-            ax2.axvline(px, color="0.75", ls=":", lw=0.8)
-        ax2.set_xlabel("Python energy proxy × anchor-A µJ (dashed)", fontsize=8, color="0.45")
-        ax2.tick_params(axis="x", labelsize=7, colors="0.45")
     ax.set_xscale("log")
     ax.set_xlabel("Measured total energy (µJ/window, J21 batch)")
     ax.set_ylabel("Board / baseline accuracy (%)")
@@ -410,8 +421,9 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
     ax.text(
         0.02,
         0.02,
-        "PL A/B/C: informed Fisher keep 1.0 / 0.5 / 0.125\n"
-        "Accuracy flat; J21 energy ≈ static × batch slot",
+        "PL A/B/C: board EMG replay, Fisher keep 1.0 / 0.5 / 0.125.\n"
+        "Acc flat; J21 energy ≈ static × batch slot (~12 µJ).\n"
+        "ARM acc = host libhdc_arm_ref (no full board EMG replay).",
         transform=ax.transAxes,
         fontsize=7,
         va="bottom",
@@ -440,9 +452,12 @@ def fig_fisher_heatmap(fisher: dict, out: Path) -> None:
 
     ax = axes[0, 1]
     rank = np.argsort(-fisher["scores"])
-    ax.plot(np.arange(1, 1025), fisher["scores"][rank], color="#4c78a8", lw=1.2)
+    ranked = fisher["scores"][rank]
+    n_nonzero = int((fisher["scores"] > 0).sum())
+    ax.plot(np.arange(1, 1025), ranked, color="#4c78a8", lw=1.2)
     ax.axvline(512, color="#f28e2b", ls="--", lw=1, label="keep=0.5 (512 bits)")
     ax.axvline(128, color="#e15759", ls="--", lw=1, label="keep=0.125 (128 bits)")
+    ax.axvline(n_nonzero + 0.5, color="0.55", ls=":", lw=0.9, label=f"score=0 after rank {n_nonzero}")
     ax.set_xlabel("Rank (1 = highest Fisher score)")
     ax.set_ylabel("Fisher score")
     ax.set_title("(b) Score rank — anchor cutoffs")
@@ -459,10 +474,13 @@ def fig_fisher_heatmap(fisher: dict, out: Path) -> None:
         ax.set_xlabel("Bit in word")
         ax.set_ylabel("Word")
         n_keep = int(mask.sum())
+        tie_note = ""
+        if n_keep == 512:
+            tie_note = f"\n{512 - n_nonzero} zero-score bits by index order"
         ax.text(
             0.02,
             0.98,
-            f"keep {n_keep}/1024 ({100.0 * n_keep / 1024:.1f}%)",
+            f"keep {n_keep}/1024 ({100.0 * n_keep / 1024:.1f}%){tie_note}",
             transform=ax.transAxes,
             va="top",
             fontsize=8,
@@ -476,6 +494,16 @@ def fig_fisher_heatmap(fisher: dict, out: Path) -> None:
         "Fisher-informed pruning masks — pooled TRAIN (same method as silicon anchors B/C)",
         fontsize=11,
         y=1.02,
+    )
+    fig.text(
+        0.5,
+        -0.02,
+        f"{n_nonzero}/1024 bits have Fisher score > 0; "
+        "keep=0.5 mask (c) fills remainder at score=0 by bit index. "
+        "Mask (d) matches silicon anchor C bitstream.",
+        ha="center",
+        fontsize=8,
+        color="0.4",
     )
     _save(fig, out, "fisher_heatmap")
 
@@ -531,13 +559,22 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     fig.suptitle(
         "Comparison baselines — P-may2026, 5 subjects (HDC vs MLP deployment class)",
         fontsize=11,
-        y=1.02,
+        y=1.04,
+    )
+    fig.text(
+        0.5,
+        -0.02,
+        "PL acc: board EMG replay · ARM acc: host libhdc_arm_ref sim · "
+        "PL/ARM latency & energy: measured on ZedBoard (INA219 J21)",
+        ha="center",
+        fontsize=8,
+        color="0.4",
     )
     _save(fig, out, "baselines_bar")
 
 
 def _save(fig, out: Path, name: str) -> None:
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.03, 1, 0.98))
     for ext in ("png", "pdf"):
         p = out / f"{name}.{ext}"
         fig.savefig(p, dpi=200 if ext == "png" else None, bbox_inches="tight")
