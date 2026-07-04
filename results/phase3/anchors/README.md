@@ -3,11 +3,18 @@
 Reprogram the **global pruning mask** (`emg_mask64`) and replay full EMG on silicon.
 Same Phase 3 bitstream; levels/protos/DDR bin unchanged.
 
-| Anchor | keep | Prune | Hook A Python target |
-|--------|------|-------|----------------------|
-| A | 1.0 | 0% | ~74.15% |
-| B | 0.5 | 50% | ~74.15% |
-| C | 0.125 | 87.5% | ~74.15% |
+## Measured results (2026-07-03/04)
+
+Pooled Fisher mask · 658,004 windows · PASS = board within **0.5%** of patched export ref.
+
+| Anchor | keep | Prune | Board acc | Export ref | Δ | Log |
+|--------|------|-------|-----------|------------|---|-----|
+| **A** | 1.0 | 0% | **74.24%** | 74.24% | 0.00% | [`anchor_A/board_emg_replay.txt`](anchor_A/board_emg_replay.txt) |
+| **B** | 0.5 | 50% | **74.24%** | 74.24% | 0.00% | [`anchor_B/board_emg_replay.txt`](anchor_B/board_emg_replay.txt) |
+| **C** | 0.125 | 87.5% | **74.32%** | 74.32% | 0.00% | [`anchor_C/board_emg_replay.txt`](anchor_C/board_emg_replay.txt) |
+
+Accuracy is **flat across prune levels** (expected with informed Fisher at D=1024; matches Hook A Python).
+Energy at J21 was flat ~12 µJ/w at A/B/C — see [`../energy_summary.txt`](../energy_summary.txt).
 
 ## Mask consistency (silicon vs Hook A Python)
 
@@ -16,8 +23,7 @@ Same Phase 3 bitstream; levels/protos/DDR bin unchanged.
 | **A** | keep=1.0 → **full mask** (Fisher scores not computed) | per-subject Fisher @ keep=1.0 → all-ones | **Yes** |
 | **B, C** | **pooled** Fisher over all subjects' TRAIN windows | **per-subject** Fisher, spatial mean in sweep | **May differ** |
 
-Board PASS is vs **patched export ref** (0.5% tol), not vs Hook A's 74.15% literally.
-Original RTL baseline replay remains **74.24%** — see [two-baseline story](../../../README.md#accuracy-the-two-baseline-story).
+Board PASS is vs **patched export ref**, not vs Hook A's 74.15% Python mean alone.
 
 ## Run
 
@@ -29,23 +35,15 @@ bash board/HDC_DMA/run_anchor_replay.sh C    # aggressive
 bash board/HDC_DMA/run_anchor_replay.sh ALL  # sequential A → B → C
 ```
 
-Outputs:
+Resume board only after patch (skip ~2 h recompute):
 
-- `anchors/anchor_A/board_emg_replay.txt`
-- `anchors/anchor_B/board_emg_replay.txt`
-- `anchors/anchor_C/board_emg_replay.txt`
+```bash
+HDC_ANCHOR_SKIP_PATCH=1 bash board/HDC_DMA/run_anchor_replay.sh B
+```
 
-Pass: board accuracy within **0.5%** of patched export ref (same gate as main EMG replay).
-
-## Manual steps
+## Manual patch
 
 ```bash
 python3 scripts/patch_emg_anchor.py --anchor B
 # rebuild EMG ELF + run_phase3_emg.sh (see run_anchor_replay.sh)
-```
-
-Patch only (no accuracy recompute — dev):
-
-```bash
-python3 scripts/patch_emg_anchor.py --anchor B --skip-accuracy
 ```

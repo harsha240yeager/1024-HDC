@@ -43,8 +43,8 @@ run_one_anchor() {
 
   echo "=== Anchor ${id}: keep_ratio=${keep} ==="
 
-  if [[ "$id" == "A" && "${HDC_ANCHOR_SKIP_PATCH:-0}" == "1" ]]; then
-    echo "Skipping mask patch for anchor A (HDC_ANCHOR_SKIP_PATCH=1)"
+  if [[ "${HDC_ANCHOR_SKIP_PATCH:-0}" == "1" ]]; then
+    echo "Skipping mask patch for anchor ${id} (HDC_ANCHOR_SKIP_PATCH=1)"
   else
     echo "Patching mask + export ref ..."
     python3 "$REPO/scripts/patch_emg_anchor.py" --anchor "$id" --keep-ratio "$keep"
