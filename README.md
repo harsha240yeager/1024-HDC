@@ -338,7 +338,7 @@ Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
 
 - [x] INA219 energy — anchors A/B/C + ARM (3× each, 2026-07-02)
 - [x] On-board EMG replay at anchors A/B/C — 2026-07-03/04 → [`anchors/anchor_*/board_emg_replay.txt`](results/phase3/anchors/)
-- [ ] Hook A Pareto figure — accuracy × LUT × measured µJ (A/B/C/ARM)
+- [x] Hook A Pareto figure — [`results/figures/hookA_pareto_measured.png`](results/figures/hookA_pareto_measured.png) (`python_ref/plot_results.py`)
 
 ### Then
 
@@ -353,7 +353,7 @@ Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
 |-------|---------|--------|
 | May–Jun 2026 | Golden + RTL + D-sweep | ✅ |
 | Jul 2026 | DMA bring-up + Hook A sweep | ✅ |
-| Aug 2026 | INA219 + twists + figures | 🔄 Anchors **✅** · Pareto figure + Twist 1/2 pending |
+| Aug 2026 | INA219 + twists + figures | 🔄 Pareto figure **✅** · Twist 1/2 pending |
 | Sep 2026 | DATE draft | ⏳ |
 
 ---
