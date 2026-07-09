@@ -15,8 +15,8 @@ hypervectors (Binary Spatter Code model). It is controlled from the PS over
 > 1. **Hook A** — measured accuracy / energy / area Pareto on Zynq (D × CNT_W × Fisher keep);
 >    silicon anchors show **iso-accuracy pruning** and **~175×** PL vs ARM energy.
 > 2. **Twist 1** — at **iso-density**, Fisher-informed masks **preserve** full accuracy while
->    **random** masks drop (**+1.7 pp** mean; up to **+3.6 pp** per subject) → *bit position
->    matters, not only bit count.*
+>    **random** masks collapse (**+8.6 pp** at keep=0.125 / 128 bits; **+1.7 pp** at keep=0.5) →
+>    *bit position matters, not only bit count.*
 > 3. **Twist 2** (pending) — cross-subject mask transfer.
 > Deployment path is the **74.24% RTL encoder**, not a re-port of prior ~90% FPGA-HDC accuracy.
 
@@ -63,7 +63,7 @@ hypervectors (Binary Spatter Code model). It is controlled from the PS over
 | Tiny int8 MLP baseline | ✅ 93.01% float / 92.99% int8 |
 | On-board anchor EMG replays (A/B/C) | ✅ **74.24–74.32%**, flat vs prune — [`anchors/`](results/phase3/anchors/) |
 | Twist 1 @ keep=0.5 (informed vs random) | ✅ **+1.70 pp** mean gap · [`results/twist1/`](results/twist1/) |
-| Twist 1 @ keep=0.125 | 🔄 follow-up (anchor C density) |
+| Twist 1 @ keep=0.125 (anchor C density) | ✅ **+8.63 pp** mean gap · [`results/twist1_keep0125/`](results/twist1_keep0125/) |
 | Twist 2 — cross-subject masks | ⏳ Not started |
 
 ---
@@ -147,36 +147,41 @@ Full table: [`results/hook_a/README.md`](results/hook_a/README.md).
 
 ### Twist 1 — informed vs random @ iso-density
 
-Same **D=1024, CNT_W=6** RTL encoder · per-subject Fisher mask from TRAIN · evaluate on TEST ·
-**512/1024 bits kept** (anchor B density). Five random masks per subject (seeds 0–4), same density.
+Same **D=1024, CNT_W=6** RTL encoder · per-subject Fisher mask from TRAIN · evaluate on TEST.
+Five random masks per subject (seeds 0–4), **identical kept-bit count** as Fisher informed.
 
 ```bash
 python3 python_ref/run_twist1_sweep.py --quick   # pipeline sanity only (capped windows)
-python3 python_ref/run_twist1_sweep.py           # full 5 subjects (~3 h)
+python3 python_ref/run_twist1_sweep.py           # keep=0.5, full 5 subjects (~3 h)
 python3 python_ref/run_twist1_sweep.py --keep 0.125 --out-dir results/twist1_keep0125
 ```
 
-**Headline (5-subject mean, 2026-07-08):**
+**@ keep=0.5 (512 bits, anchor B) — 2026-07-08:**
 
 | Mask | Spatial mean accuracy |
 |------|----------------------|
-| Unpruned (keep=1.0) | **74.15%** |
-| Fisher informed @ 50% | **74.15%** (no drop — matches Hook A) |
-| Random @ 50% (mean over seeds) | **72.44% ± 1.57 pp** |
-| **Gap (informed − random)** | **+1.70 pp** |
+| Fisher informed | **74.15%** (no drop — matches Hook A) |
+| Random (mean over seeds) | **72.44% ± 1.57 pp** |
+| **Gap** | **+1.70 pp** |
 
-Per-subject gap: S1 +1.6 · S2 **+3.6** · S3 +1.1 · S4 +0.1 · S5 +2.0 pp.
+**@ keep=0.125 (128 bits, anchor C) — 2026-07-09 — headline novelty result:**
 
-**Novelty framing (paper):** Hook A shows informed pruning is **accuracy-neutral** to 50% (and on
-silicon to 12.5%). Twist 1 shows that at the **same bit budget**, **which** bits are kept still
-matters: random selection costs **~1.7 pp** on average (up to **~3.6 pp** on harder subjects).
-The original ≥5 pp aspirational target is **not met at keep=0.5** because informed pruning is
-already lossless — the observable gap is bounded by how much random hurts (~1.7 pp). A follow-up
-at **keep=0.125** (128 bits, anchor C) tests whether the gap widens under aggressive pruning.
+| Mask | Spatial mean accuracy |
+|------|----------------------|
+| Fisher informed | **74.15%** (still lossless — matches Hook A + silicon anchor C) |
+| Random (mean over seeds) | **65.51% ± 2.85 pp** |
+| **Gap** | **+8.63 pp** ✅ (≥5 pp target **met**) |
 
-Evidence: [`results/twist1/twist1_results.json`](results/twist1/twist1_results.json),
-[`results/twist1/full_run.log`](results/twist1/full_run.log),
-figure [`results/figures/twist1_informed_vs_random.png`](results/figures/twist1_informed_vs_random.png).
+Per-subject gap @ keep=0.125: S1 +7.2 · S2 **+13.0** · S3 **+12.3** · S4 +3.5 · S5 +7.2 pp.
+
+**Paper framing:** Hook A + silicon show **informed** Fisher pruning is accuracy-neutral to
+87.5% prune. Twist 1 proves **bit selection** still matters at iso-density: random masks at
+**128 bits** cost **~8.6 pp** while informed keeps **74.15%** — the DATE novelty claim. At
+**512 bits** the gap is smaller (+1.7 pp) because random still retains enough signal.
+
+Evidence: [`results/twist1/`](results/twist1/) · [`results/twist1_keep0125/`](results/twist1_keep0125/) ·
+figures [`twist1_informed_vs_random_keep0125.png`](results/figures/twist1_informed_vs_random_keep0125.png)
+(primary), [`twist1_informed_vs_random.png`](results/figures/twist1_informed_vs_random.png) (supplementary).
 
 ### Comparison baselines
 
@@ -382,8 +387,8 @@ Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
 
 ### Then
 
-- [x] **Twist 1 @ keep=0.5** — informed vs random · **+1.70 pp** mean → [`results/twist1/`](results/twist1/)
-- [ ] **Twist 1 @ keep=0.125** — aggressive prune (anchor C density)
+- [x] **Twist 1 @ keep=0.5** — **+1.70 pp** → [`results/twist1/`](results/twist1/)
+- [x] **Twist 1 @ keep=0.125** — **+8.63 pp** ✅ ≥5 pp target → [`results/twist1_keep0125/`](results/twist1_keep0125/)
 - [ ] **Twist 2** — cross-subject mask transfer (pilot, 5 subjects)
 
 ### Paper (Sep 2026)
@@ -395,7 +400,7 @@ Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
 |-------|---------|--------|
 | May–Jun 2026 | Golden + RTL + D-sweep | ✅ |
 | Jul 2026 | DMA bring-up + Hook A sweep | ✅ |
-| Aug 2026 | INA219 + twists + figures | 🔄 Twist 1 **✅** · keep=0.125 + Twist 2 pending |
+| Aug 2026 | INA219 + twists + figures | 🔄 Twist 1 **✅** (keep=0.125 **+8.6 pp**) · Twist 2 pending |
 | Sep 2026 | DATE draft | ⏳ |
 
 ---

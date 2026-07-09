@@ -574,14 +574,14 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     _save(fig, out, "baselines_bar")
 
 
-def load_twist1() -> dict | None:
-    path = REPO / "results/twist1/twist1_results.json"
+def load_twist1(rel: str = "results/twist1/twist1_results.json") -> dict | None:
+    path = REPO / rel
     if not path.is_file():
         return None
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def fig_twist1(data: dict, out: Path) -> None:
+def fig_twist1(data: dict, out: Path, name: str = "twist1_informed_vs_random") -> None:
     """Twist 1 — Fisher informed vs random mask at identical keep ratio (D=1024)."""
     meta = data["meta"]
     rows = data["per_subject"]
@@ -623,7 +623,7 @@ def fig_twist1(data: dict, out: Path) -> None:
         fontsize=11,
         y=1.02,
     )
-    _save(fig, out, "twist1_informed_vs_random")
+    _save(fig, out, name)
 
 
 def _save(fig, out: Path, name: str) -> None:
@@ -661,6 +661,15 @@ def main() -> None:
         fig_twist1(twist1, out)
     else:
         print("  skip twist1_informed_vs_random (missing results/twist1/twist1_results.json)")
+    twist1_aggressive = load_twist1("results/twist1_keep0125/twist1_results.json")
+    if twist1_aggressive:
+        fig_twist1(
+            twist1_aggressive,
+            out,
+            name="twist1_informed_vs_random_keep0125",
+        )
+    else:
+        print("  skip twist1 keep=0.125 figure (missing results/twist1_keep0125/)")
 
     if args.show:
         plt.show()

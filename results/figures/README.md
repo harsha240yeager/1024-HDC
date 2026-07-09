@@ -17,11 +17,13 @@ python3 python_ref/plot_results.py --out results/figures
 | `spatial_vs_spatiotemporal.png` | MAP vs BSC spatial/temporal |
 | **`fisher_heatmap.png`** | **Fisher masks** — (a) pooled score heatmap 16×64; (b) rank + anchor cutoffs; (c–d) informed masks @ keep=0.5 / 0.125 |
 | **`baselines_bar.png`** | **Deployment baselines** — PL board vs ARM host sim vs MLP; latency/energy measured ZedBoard |
-| **`twist1_informed_vs_random.png`** | **Twist 1** — Fisher informed vs random @ keep=0.5 (iso-density, per-subject) |
+| **`twist1_informed_vs_random.png`** | Twist 1 @ keep=0.5 — supplementary (+1.7 pp gap) |
+| **`twist1_informed_vs_random_keep0125.png`** | **Twist 1 headline** @ keep=0.125 — informed vs random (+8.6 pp) |
 
 Sources: [`hook_a/sweep_summary.csv`](../hook_a/sweep_summary.csv),
 [`hook_a/fisher_pooled.npz`](../hook_a/fisher_pooled.npz) (from `scripts/export_fisher_pooled.py`),
 [`phase3/energy_summary.txt`](../phase3/energy_summary.txt),
 [`phase3/anchors/`](../phase3/anchors/),
 [`baselines/`](../baselines/),
-[`twist1/`](../twist1/).
+[`twist1/`](../twist1/),
+[`twist1_keep0125/`](../twist1_keep0125/).
