@@ -14,6 +14,7 @@ Sources:
   results/phase3/energy_summary.txt        measured INA219 anchors A/B/C/ARM
   results/phase3/anchors/anchor_*/board_emg_replay.txt  on-board accuracy
   results/hook_a/fisher_pooled.npz           pooled Fisher scores + masks (export script)
+  results/twist1/twist1_results.json         Twist 1 informed vs random @ keep=0.5
 
 Usage (from repo root):
   python3 python_ref/plot_results.py
@@ -573,6 +574,58 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     _save(fig, out, "baselines_bar")
 
 
+def load_twist1() -> dict | None:
+    path = REPO / "results/twist1/twist1_results.json"
+    if not path.is_file():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def fig_twist1(data: dict, out: Path) -> None:
+    """Twist 1 — Fisher informed vs random mask at identical keep ratio (D=1024)."""
+    meta = data["meta"]
+    rows = data["per_subject"]
+    subs = [f"S{r['subject']}" for r in rows]
+    x = np.arange(len(subs))
+    w = 0.36
+    informed = [100.0 * r["informed_accuracy"] for r in rows]
+    random_m = [100.0 * r["random_accuracy_mean"] for r in rows]
+    mean_gap = meta["mean_gap_pp"]
+    target = meta.get("target_gap_pp", 5.0)
+
+    fig, ax = plt.subplots(figsize=(7.5, 4.2))
+    ax.bar(x - w / 2, informed, w, label="Fisher informed", color="#4c78a8")
+    ax.bar(x + w / 2, random_m, w, label="Random (mean over seeds)", color="#e15759")
+    for i, (inf, rnd) in enumerate(zip(informed, random_m)):
+        ax.text(i - w / 2, inf + 0.3, f"{inf:.1f}", ha="center", va="bottom", fontsize=7)
+        ax.text(i + w / 2, rnd + 0.3, f"{rnd:.1f}", ha="center", va="bottom", fontsize=7)
+        ax.text(i, max(inf, rnd) + 2.0, f"Δ{inf - rnd:+.1f}", ha="center", fontsize=7, color="0.35")
+    ax.set_xticks(x, subs)
+    ax.set_ylabel("Spatial accuracy (%)")
+    ax.set_ylim(55, 85)
+    ax.set_title(
+        f"Twist 1 — informed vs random @ keep={meta['keep_ratio']} "
+        f"(D={meta['D']}, CNT_W={meta['cnt_w']})"
+    )
+    ax.legend(loc="lower left", fontsize=8)
+    ax.text(
+        0.98,
+        0.98,
+        f"Mean gap: {mean_gap:+.2f} pp\nTarget: ≥ {target:.0f} pp",
+        transform=ax.transAxes,
+        ha="right",
+        va="top",
+        fontsize=8,
+        bbox=dict(boxstyle="round", facecolor="white", alpha=0.85),
+    )
+    fig.suptitle(
+        "Twist 1 — bit selection matters at iso-density (per-subject Fisher masks)",
+        fontsize=11,
+        y=1.02,
+    )
+    _save(fig, out, "twist1_informed_vs_random")
+
+
 def _save(fig, out: Path, name: str) -> None:
     fig.tight_layout(rect=(0, 0.03, 1, 0.98))
     for ext in ("png", "pdf"):
@@ -603,6 +656,11 @@ def main() -> None:
     fig_hook_a_pareto_measured(hook, load_measured_silicon(), out)
     fig_fisher_heatmap(load_fisher_pooled(), out)
     fig_baselines_bar(load_baseline_systems(), out)
+    twist1 = load_twist1()
+    if twist1:
+        fig_twist1(twist1, out)
+    else:
+        print("  skip twist1_informed_vs_random (missing results/twist1/twist1_results.json)")
 
     if args.show:
         plt.show()

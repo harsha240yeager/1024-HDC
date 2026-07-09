@@ -1,0 +1,235 @@
+======================================================================
+Twist 1 — informed vs random pruning (hdc_ref / RTL encoder)
+  D=1024  CNT_W=6  keep=0.5  seeds=[0, 1, 2, 3, 4]
+  subjects: [1, 2, 3, 4, 5]
+  max_train: all  max_test: all
+======================================================================
+
+== subject 1 ==
+    subject 1: train=37206 test=148831
+      encode s1/train: 1860/37206
+      encode s1/train: 3720/37206
+      encode s1/train: 5580/37206
+      encode s1/train: 7440/37206
+      encode s1/train: 9300/37206
+      encode s1/train: 11160/37206
+      encode s1/train: 13020/37206
+      encode s1/train: 14880/37206
+      encode s1/train: 16740/37206
+      encode s1/train: 18600/37206
+      encode s1/train: 20460/37206
+      encode s1/train: 22320/37206
+      encode s1/train: 24180/37206
+      encode s1/train: 26040/37206
+      encode s1/train: 27900/37206
+      encode s1/train: 29760/37206
+      encode s1/train: 31620/37206
+      encode s1/train: 33480/37206
+      encode s1/train: 35340/37206
+      encode s1/train: 37200/37206
+      encode s1/test: 7441/148831
+      encode s1/test: 14882/148831
+      encode s1/test: 22323/148831
+      encode s1/test: 29764/148831
+      encode s1/test: 37205/148831
+      encode s1/test: 44646/148831
+      encode s1/test: 52087/148831
+      encode s1/test: 59528/148831
+      encode s1/test: 66969/148831
+      encode s1/test: 74410/148831
+      encode s1/test: 81851/148831
+      encode s1/test: 89292/148831
+      encode s1/test: 96733/148831
+      encode s1/test: 104174/148831
+      encode s1/test: 111615/148831
+      encode s1/test: 119056/148831
+      encode s1/test: 126497/148831
+      encode s1/test: 133938/148831
+      encode s1/test: 141379/148831
+      encode s1/test: 148820/148831
+    informed=78.53%  random=76.90%  gap=+1.63 pp
+
+== subject 2 ==
+    subject 2: train=34782 test=139135
+      encode s2/train: 1739/34782
+      encode s2/train: 3478/34782
+      encode s2/train: 5217/34782
+      encode s2/train: 6956/34782
+      encode s2/train: 8695/34782
+      encode s2/train: 10434/34782
+      encode s2/train: 12173/34782
+      encode s2/train: 13912/34782
+      encode s2/train: 15651/34782
+      encode s2/train: 17390/34782
+      encode s2/train: 19129/34782
+      encode s2/train: 20868/34782
+      encode s2/train: 22607/34782
+      encode s2/train: 24346/34782
+      encode s2/train: 26085/34782
+      encode s2/train: 27824/34782
+      encode s2/train: 29563/34782
+      encode s2/train: 31302/34782
+      encode s2/train: 33041/34782
+      encode s2/train: 34780/34782
+      encode s2/test: 6956/139135
+      encode s2/test: 13912/139135
+      encode s2/test: 20868/139135
+      encode s2/test: 27824/139135
+      encode s2/test: 34780/139135
+      encode s2/test: 41736/139135
+      encode s2/test: 48692/139135
+      encode s2/test: 55648/139135
+      encode s2/test: 62604/139135
+      encode s2/test: 69560/139135
+      encode s2/test: 76516/139135
+      encode s2/test: 83472/139135
+      encode s2/test: 90428/139135
+      encode s2/test: 97384/139135
+      encode s2/test: 104340/139135
+      encode s2/test: 111296/139135
+      encode s2/test: 118252/139135
+      encode s2/test: 125208/139135
+      encode s2/test: 132164/139135
+      encode s2/test: 139120/139135
+    informed=71.32%  random=67.73%  gap=+3.59 pp
+
+== subject 3 ==
+    subject 3: train=34391 test=137573
+      encode s3/train: 1719/34391
+      encode s3/train: 3438/34391
+      encode s3/train: 5157/34391
+      encode s3/train: 6876/34391
+      encode s3/train: 8595/34391
+      encode s3/train: 10314/34391
+      encode s3/train: 12033/34391
+      encode s3/train: 13752/34391
+      encode s3/train: 15471/34391
+      encode s3/train: 17190/34391
+      encode s3/train: 18909/34391
+      encode s3/train: 20628/34391
+      encode s3/train: 22347/34391
+      encode s3/train: 24066/34391
+      encode s3/train: 25785/34391
+      encode s3/train: 27504/34391
+      encode s3/train: 29223/34391
+      encode s3/train: 30942/34391
+      encode s3/train: 32661/34391
+      encode s3/train: 34380/34391
+      encode s3/test: 6878/137573
+      encode s3/test: 13756/137573
+      encode s3/test: 20634/137573
+      encode s3/test: 27512/137573
+      encode s3/test: 34390/137573
+      encode s3/test: 41268/137573
+      encode s3/test: 48146/137573
+      encode s3/test: 55024/137573
+      encode s3/test: 61902/137573
+      encode s3/test: 68780/137573
+      encode s3/test: 75658/137573
+      encode s3/test: 82536/137573
+      encode s3/test: 89414/137573
+      encode s3/test: 96292/137573
+      encode s3/test: 103170/137573
+      encode s3/test: 110048/137573
+      encode s3/test: 116926/137573
+      encode s3/test: 123804/137573
+      encode s3/test: 130682/137573
+      encode s3/test: 137560/137573
+    informed=82.26%  random=81.14%  gap=+1.12 pp
+
+== subject 4 ==
+    subject 4: train=33582 test=134335
+      encode s4/train: 1679/33582
+      encode s4/train: 3358/33582
+      encode s4/train: 5037/33582
+      encode s4/train: 6716/33582
+      encode s4/train: 8395/33582
+      encode s4/train: 10074/33582
+      encode s4/train: 11753/33582
+      encode s4/train: 13432/33582
+      encode s4/train: 15111/33582
+      encode s4/train: 16790/33582
+      encode s4/train: 18469/33582
+      encode s4/train: 20148/33582
+      encode s4/train: 21827/33582
+      encode s4/train: 23506/33582
+      encode s4/train: 25185/33582
+      encode s4/train: 26864/33582
+      encode s4/train: 28543/33582
+      encode s4/train: 30222/33582
+      encode s4/train: 31901/33582
+      encode s4/train: 33580/33582
+      encode s4/test: 6716/134335
+      encode s4/test: 13432/134335
+      encode s4/test: 20148/134335
+      encode s4/test: 26864/134335
+      encode s4/test: 33580/134335
+      encode s4/test: 40296/134335
+      encode s4/test: 47012/134335
+      encode s4/test: 53728/134335
+      encode s4/test: 60444/134335
+      encode s4/test: 67160/134335
+      encode s4/test: 73876/134335
+      encode s4/test: 80592/134335
+      encode s4/test: 87308/134335
+      encode s4/test: 94024/134335
+      encode s4/test: 100740/134335
+      encode s4/test: 107456/134335
+      encode s4/test: 114172/134335
+      encode s4/test: 120888/134335
+      encode s4/test: 127604/134335
+      encode s4/test: 134320/134335
+    informed=64.21%  random=64.07%  gap=+0.14 pp
+
+== subject 5 ==
+    subject 5: train=24531 test=98130
+      encode s5/train: 1226/24531
+      encode s5/train: 2452/24531
+      encode s5/train: 3678/24531
+      encode s5/train: 4904/24531
+      encode s5/train: 6130/24531
+      encode s5/train: 7356/24531
+      encode s5/train: 8582/24531
+      encode s5/train: 9808/24531
+      encode s5/train: 11034/24531
+      encode s5/train: 12260/24531
+      encode s5/train: 13486/24531
+      encode s5/train: 14712/24531
+      encode s5/train: 15938/24531
+      encode s5/train: 17164/24531
+      encode s5/train: 18390/24531
+      encode s5/train: 19616/24531
+      encode s5/train: 20842/24531
+      encode s5/train: 22068/24531
+      encode s5/train: 23294/24531
+      encode s5/train: 24520/24531
+      encode s5/test: 4906/98130
+      encode s5/test: 9812/98130
+      encode s5/test: 14718/98130
+      encode s5/test: 19624/98130
+      encode s5/test: 24530/98130
+      encode s5/test: 29436/98130
+      encode s5/test: 34342/98130
+      encode s5/test: 39248/98130
+      encode s5/test: 44154/98130
+      encode s5/test: 49060/98130
+      encode s5/test: 53966/98130
+      encode s5/test: 58872/98130
+      encode s5/test: 63778/98130
+      encode s5/test: 68684/98130
+      encode s5/test: 73590/98130
+      encode s5/test: 78496/98130
+      encode s5/test: 83402/98130
+      encode s5/test: 88308/98130
+      encode s5/test: 93214/98130
+      encode s5/test: 98120/98130
+    informed=74.41%  random=72.37%  gap=+2.05 pp
+
+======================================================================
+Done in 10372.2s
+  Informed mean: 74.15%
+  Random mean:   72.44%
+  Gap:           +1.70 pp  (target ≥ 5 pp)
+  Target met:    NO
+  /home/bsp-lab/1024-HDC/results/twist1/twist1_results.json
+======================================================================

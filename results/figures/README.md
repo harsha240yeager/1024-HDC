@@ -17,9 +17,11 @@ python3 python_ref/plot_results.py --out results/figures
 | `spatial_vs_spatiotemporal.png` | MAP vs BSC spatial/temporal |
 | **`fisher_heatmap.png`** | **Fisher masks** — (a) pooled score heatmap 16×64; (b) rank + anchor cutoffs; (c–d) informed masks @ keep=0.5 / 0.125 |
 | **`baselines_bar.png`** | **Deployment baselines** — PL board vs ARM host sim vs MLP; latency/energy measured ZedBoard |
+| **`twist1_informed_vs_random.png`** | **Twist 1** — Fisher informed vs random @ keep=0.5 (iso-density, per-subject) |
 
 Sources: [`hook_a/sweep_summary.csv`](../hook_a/sweep_summary.csv),
 [`hook_a/fisher_pooled.npz`](../hook_a/fisher_pooled.npz) (from `scripts/export_fisher_pooled.py`),
 [`phase3/energy_summary.txt`](../phase3/energy_summary.txt),
 [`phase3/anchors/`](../phase3/anchors/),
-[`baselines/`](../baselines/).
+[`baselines/`](../baselines/),
+[`twist1/`](../twist1/).

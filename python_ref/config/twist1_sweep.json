@@ -1,0 +1,19 @@
+{
+  "name": "Twist 1 — informed vs random pruning @ iso-density",
+  "description": "RTL-matched hdc_ref on EMG TEST split (P-may2026). Same keep ratio, Fisher-informed vs random bit mask.",
+  "engine": "hdc_ref",
+  "item_mem_seed": 42,
+  "protocol_config": "emg_baseline.json",
+  "subjects": [1, 2, 3, 4, 5],
+  "D": 1024,
+  "cnt_w": 6,
+  "keep_ratio": 0.5,
+  "random_seeds": [0, 1, 2, 3, 4],
+  "target_gap_pp": 5.0,
+  "quick": {
+    "subjects": [1, 2],
+    "max_train_windows_per_subject": 3000,
+    "max_test_windows_per_subject": 3000,
+    "random_seeds": [0, 1]
+  }
+}

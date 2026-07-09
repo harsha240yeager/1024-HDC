@@ -11,10 +11,14 @@ hypervectors (Binary Spatter Code model). It is controlled from the PS over
 **AXI4-Lite** and fed at inference rate over **AXI4-Stream + DMA**.
 
 > **Target venue:** DATE 2027 (~Sep 2026 submission).
-> **Contribution:** a three-axis accuracy / energy / area Pareto study
-> (dimension × bundle precision × bit-pruning), plus informed-vs-random pruning
-> and cross-subject mask transfer on measured Zynq energy — *not* a re-port of
-> prior FPGA-HDC accuracy.
+> **Contributions:**
+> 1. **Hook A** — measured accuracy / energy / area Pareto on Zynq (D × CNT_W × Fisher keep);
+>    silicon anchors show **iso-accuracy pruning** and **~175×** PL vs ARM energy.
+> 2. **Twist 1** — at **iso-density**, Fisher-informed masks **preserve** full accuracy while
+>    **random** masks drop (**+1.7 pp** mean; up to **+3.6 pp** per subject) → *bit position
+>    matters, not only bit count.*
+> 3. **Twist 2** (pending) — cross-subject mask transfer.
+> Deployment path is the **74.24% RTL encoder**, not a re-port of prior ~90% FPGA-HDC accuracy.
 
 **Platform:** ZedBoard `xc7z020clg484-1` @ 100 MHz PL · Vivado 2024.2 · ModelSim/Questa
 **Repo:** [`harsha240yeager/1024-HDC`](https://github.com/harsha240yeager/1024-HDC)
@@ -40,10 +44,11 @@ hypervectors (Binary Spatter Code model). It is controlled from the PS over
 *Last updated: July 2026.*
 
 **Done:** RTL verification · Phases 1–3 Zynq bring-up · D-sweep · Hook A Python sweep
-(320 rows) · comparison baselines (ARM HDC + MLP) · **INA219 energy at anchors A/B/C + ARM**
-(3× each, pooled Fisher mask, 2026-07-02) · **On-board EMG anchor replays A/B/C** (2026-07-03/04).
+(64 configs) · comparison baselines (ARM HDC + MLP) · **INA219 energy at anchors A/B/C + ARM**
+(3× each, 2026-07-02) · **On-board EMG anchor replays A/B/C** (2026-07-03/04) · paper figures
+(Pareto, Fisher heatmap, baselines) · **Twist 1 @ keep=0.5** (2026-07-08).
 
-**Next:** Hook A Pareto figure · Twist 1/2 · DATE draft.
+**Next:** Twist 1 @ keep=0.125 (aggressive prune) · Twist 2 · DATE draft.
 
 | Area | State |
 |------|-------|
@@ -57,7 +62,9 @@ hypervectors (Binary Spatter Code model). It is controlled from the PS over
 | ARM HDC baseline | ✅ 74.15% · 819 µs/window · 200/200 golden |
 | Tiny int8 MLP baseline | ✅ 93.01% float / 92.99% int8 |
 | On-board anchor EMG replays (A/B/C) | ✅ **74.24–74.32%**, flat vs prune — [`anchors/`](results/phase3/anchors/) |
-| Twist 1 · Twist 2 | ⏳ Not started |
+| Twist 1 @ keep=0.5 (informed vs random) | ✅ **+1.70 pp** mean gap · [`results/twist1/`](results/twist1/) |
+| Twist 1 @ keep=0.125 | 🔄 follow-up (anchor C density) |
+| Twist 2 — cross-subject masks | ⏳ Not started |
 
 ---
 
@@ -137,6 +144,39 @@ Fisher mask (`patch_emg_anchor.py`). At keep=1.0 both are all-ones; at B/C bit p
 can differ — document measured board accuracy in Limitations if needed.
 
 Full table: [`results/hook_a/README.md`](results/hook_a/README.md).
+
+### Twist 1 — informed vs random @ iso-density
+
+Same **D=1024, CNT_W=6** RTL encoder · per-subject Fisher mask from TRAIN · evaluate on TEST ·
+**512/1024 bits kept** (anchor B density). Five random masks per subject (seeds 0–4), same density.
+
+```bash
+python3 python_ref/run_twist1_sweep.py --quick   # pipeline sanity only (capped windows)
+python3 python_ref/run_twist1_sweep.py           # full 5 subjects (~3 h)
+python3 python_ref/run_twist1_sweep.py --keep 0.125 --out-dir results/twist1_keep0125
+```
+
+**Headline (5-subject mean, 2026-07-08):**
+
+| Mask | Spatial mean accuracy |
+|------|----------------------|
+| Unpruned (keep=1.0) | **74.15%** |
+| Fisher informed @ 50% | **74.15%** (no drop — matches Hook A) |
+| Random @ 50% (mean over seeds) | **72.44% ± 1.57 pp** |
+| **Gap (informed − random)** | **+1.70 pp** |
+
+Per-subject gap: S1 +1.6 · S2 **+3.6** · S3 +1.1 · S4 +0.1 · S5 +2.0 pp.
+
+**Novelty framing (paper):** Hook A shows informed pruning is **accuracy-neutral** to 50% (and on
+silicon to 12.5%). Twist 1 shows that at the **same bit budget**, **which** bits are kept still
+matters: random selection costs **~1.7 pp** on average (up to **~3.6 pp** on harder subjects).
+The original ≥5 pp aspirational target is **not met at keep=0.5** because informed pruning is
+already lossless — the observable gap is bounded by how much random hurts (~1.7 pp). A follow-up
+at **keep=0.125** (128 bits, anchor C) tests whether the gap widens under aggressive pruning.
+
+Evidence: [`results/twist1/twist1_results.json`](results/twist1/twist1_results.json),
+[`results/twist1/full_run.log`](results/twist1/full_run.log),
+figure [`results/figures/twist1_informed_vs_random.png`](results/figures/twist1_informed_vs_random.png).
 
 ### Comparison baselines
 
@@ -342,18 +382,20 @@ Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
 
 ### Then
 
-- [ ] **Twist 1** — informed vs random @ D=1024, keep=0.5 (target ≥5 pp)
+- [x] **Twist 1 @ keep=0.5** — informed vs random · **+1.70 pp** mean → [`results/twist1/`](results/twist1/)
+- [ ] **Twist 1 @ keep=0.125** — aggressive prune (anchor C density)
 - [ ] **Twist 2** — cross-subject mask transfer (pilot, 5 subjects)
 
 ### Paper (Sep 2026)
 
-- [ ] Figures + DATE draft — Pareto, twists, Fisher heatmap, baseline table, limitations
+- [x] Core figures — Pareto, Fisher heatmap, baselines, Twist 1 bar
+- [ ] DATE draft + limitations section
 
 | Month | Planned | Status |
 |-------|---------|--------|
 | May–Jun 2026 | Golden + RTL + D-sweep | ✅ |
 | Jul 2026 | DMA bring-up + Hook A sweep | ✅ |
-| Aug 2026 | INA219 + twists + figures | 🔄 Pareto figure **✅** · Twist 1/2 pending |
+| Aug 2026 | INA219 + twists + figures | 🔄 Twist 1 **✅** · keep=0.125 + Twist 2 pending |
 | Sep 2026 | DATE draft | ⏳ |
 
 ---
