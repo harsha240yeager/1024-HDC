@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "generated_at": "2026-07-09T18:30:02Z",
+    "engine": "hdc_ref",
+    "protocol": "P-may2026",
+    "target_gap_pp": 3.0,
+    "generalises": true,
+    "elapsed_s": 10069.5,
+    "max_train_windows_per_subject": null,
+    "max_test_windows_per_subject": null
+  },
+  "result": {
+    "train_subjects": [
+      1,
+      2,
+      3
+    ],
+    "test_subjects": [
+      4,
+      5
+    ],
+    "D": 1024,
+    "cnt_w": 6,
+    "keep_ratio": 0.125,
+    "n_keep": 128,
+    "pooled_train_windows": 106379,
+    "per_test_subject": [
+      {
+        "subject": 4,
+        "n_test": 134335,
+        "unpruned_accuracy": 0.6421036959839208,
+        "local_oracle_accuracy": 0.6421036959839208,
+        "pooled_transfer_accuracy": 0.6358060073696357,
+        "gap_local_minus_pooled_pp": 0.6297688614285146
+      },
+      {
+        "subject": 5,
+        "n_test": 98130,
+        "unpruned_accuracy": 0.7441149495567105,
+        "local_oracle_accuracy": 0.7441149495567105,
+        "pooled_transfer_accuracy": 0.7332619993885662,
+        "gap_local_minus_pooled_pp": 1.085295016814436
+      }
+    ],
+    "mean_unpruned_accuracy": 0.6931093227703157,
+    "mean_local_oracle_accuracy": 0.6931093227703157,
+    "mean_pooled_transfer_accuracy": 0.684534003379101,
+    "mean_gap_local_minus_pooled_pp": 0.8575319391214697
+  }
+}

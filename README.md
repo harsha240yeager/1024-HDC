@@ -17,7 +17,8 @@ hypervectors (Binary Spatter Code model). It is controlled from the PS over
 > 2. **Twist 1** — at **iso-density**, Fisher-informed masks **preserve** full accuracy while
 >    **random** masks collapse (**+8.6 pp** at keep=0.125 / 128 bits; **+1.7 pp** at keep=0.5) →
 >    *bit position matters, not only bit count.*
-> 3. **Twist 2** (pending) — cross-subject mask transfer.
+> 3. **Twist 2** — pooled Fisher mask trained on subjects **1–3** transfers to held-out **4–5**
+>    with only **+0.86 pp** loss vs local oracle @ keep=0.125 → *deployable shared mask.*
 > Deployment path is the **74.24% RTL encoder**, not a re-port of prior ~90% FPGA-HDC accuracy.
 
 **Platform:** ZedBoard `xc7z020clg484-1` @ 100 MHz PL · Vivado 2024.2 · ModelSim/Questa
@@ -43,12 +44,10 @@ hypervectors (Binary Spatter Code model). It is controlled from the PS over
 
 *Last updated: July 2026.*
 
-**Done:** RTL verification · Phases 1–3 Zynq bring-up · D-sweep · Hook A Python sweep
-(64 configs) · comparison baselines (ARM HDC + MLP) · **INA219 energy at anchors A/B/C + ARM**
-(3× each, 2026-07-02) · **On-board EMG anchor replays A/B/C** (2026-07-03/04) · paper figures
-(Pareto, Fisher heatmap, baselines) · **Twist 1 @ keep=0.5** (2026-07-08).
+**Done:** RTL · Zynq Phases 1–3 · Hook A · INA219 energy · anchor replays A/B/C · paper figures ·
+**Twist 1** (+8.6 pp @ keep=0.125) · **Twist 2** (+0.86 pp cross-subject gap, 2026-07-09).
 
-**Next:** Twist 1 @ keep=0.125 (aggressive prune) · Twist 2 · DATE draft.
+**Next:** DATE draft.
 
 | Area | State |
 |------|-------|
@@ -64,7 +63,7 @@ hypervectors (Binary Spatter Code model). It is controlled from the PS over
 | On-board anchor EMG replays (A/B/C) | ✅ **74.24–74.32%**, flat vs prune — [`anchors/`](results/phase3/anchors/) |
 | Twist 1 @ keep=0.5 (informed vs random) | ✅ **+1.70 pp** mean gap · [`results/twist1/`](results/twist1/) |
 | Twist 1 @ keep=0.125 (anchor C density) | ✅ **+8.63 pp** mean gap · [`results/twist1_keep0125/`](results/twist1_keep0125/) |
-| Twist 2 — cross-subject masks | ⏳ Not started |
+| Twist 2 — cross-subject transfer (S1–3 → S4–5) | ✅ **+0.86 pp** gap, generalises · [`results/twist2/`](results/twist2/) |
 
 ---
 
@@ -182,6 +181,35 @@ Per-subject gap @ keep=0.125: S1 +7.2 · S2 **+13.0** · S3 **+12.3** · S4 +3.5
 Evidence: [`results/twist1/`](results/twist1/) · [`results/twist1_keep0125/`](results/twist1_keep0125/) ·
 figures [`twist1_informed_vs_random_keep0125.png`](results/figures/twist1_informed_vs_random_keep0125.png)
 (primary), [`twist1_informed_vs_random.png`](results/figures/twist1_informed_vs_random.png) (supplementary).
+
+### Twist 2 — cross-subject mask transfer
+
+Train informed Fisher mask on **TRAIN** windows from subjects **{1, 2, 3}**; evaluate on held-out
+**TEST** split of subjects **{4, 5}**. Each test subject uses **own prototypes** — only the mask
+is transferred. **keep=0.125** (128 bits, anchor C density).
+
+```bash
+python3 python_ref/run_twist2_sweep.py --quick
+python3 python_ref/run_twist2_sweep.py
+```
+
+**Headline (held-out test mean, 2026-07-09):**
+
+| Condition | Spatial mean accuracy |
+|-----------|----------------------|
+| Unpruned / local oracle @ 128 bits | **69.31%** (lossless vs unpruned on S4/S5) |
+| Pooled transfer (mask from S1–3) | **68.45%** |
+| **Gap (local − pooled)** | **+0.86 pp** ✅ (≤3 pp → **generalises**) |
+
+Per subject: S4 +0.63 pp · S5 +1.09 pp. Pooled mask source: **106,379** TRAIN windows (S1–3).
+
+**Paper framing:** A single pooled Fisher mask can be deployed across subjects without
+per-user mask calibration — gap is well below the 3 pp pilot threshold. Complements Twist 1
+(bit selection) and Hook A (iso-accuracy pruning on silicon).
+
+Evidence: [`results/twist2/twist2_results.json`](results/twist2/twist2_results.json),
+[`results/twist2/full_run.log`](results/twist2/full_run.log),
+figure [`twist2_cross_subject.png`](results/figures/twist2_cross_subject.png).
 
 ### Comparison baselines
 
@@ -389,18 +417,18 @@ Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
 
 - [x] **Twist 1 @ keep=0.5** — **+1.70 pp** → [`results/twist1/`](results/twist1/)
 - [x] **Twist 1 @ keep=0.125** — **+8.63 pp** ✅ ≥5 pp target → [`results/twist1_keep0125/`](results/twist1_keep0125/)
-- [ ] **Twist 2** — cross-subject mask transfer (pilot, 5 subjects)
+- [x] **Twist 2** — cross-subject S1–3 → S4–5 · **+0.86 pp** → [`results/twist2/`](results/twist2/)
 
 ### Paper (Sep 2026)
 
-- [x] Core figures — Pareto, Fisher heatmap, baselines, Twist 1 bar
+- [x] Core figures — Pareto, Fisher, baselines, Twist 1, Twist 2
 - [ ] DATE draft + limitations section
 
 | Month | Planned | Status |
 |-------|---------|--------|
 | May–Jun 2026 | Golden + RTL + D-sweep | ✅ |
 | Jul 2026 | DMA bring-up + Hook A sweep | ✅ |
-| Aug 2026 | INA219 + twists + figures | 🔄 Twist 1 **✅** (keep=0.125 **+8.6 pp**) · Twist 2 pending |
+| Aug 2026 | INA219 + twists + figures | ✅ Twist 1 + Twist 2 complete |
 | Sep 2026 | DATE draft | ⏳ |
 
 ---

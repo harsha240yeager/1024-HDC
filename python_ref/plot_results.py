@@ -15,6 +15,7 @@ Sources:
   results/phase3/anchors/anchor_*/board_emg_replay.txt  on-board accuracy
   results/hook_a/fisher_pooled.npz           pooled Fisher scores + masks (export script)
   results/twist1/twist1_results.json         Twist 1 informed vs random @ keep=0.5
+  results/twist2/twist2_results.json         Twist 2 cross-subject mask transfer
 
 Usage (from repo root):
   python3 python_ref/plot_results.py
@@ -626,6 +627,61 @@ def fig_twist1(data: dict, out: Path, name: str = "twist1_informed_vs_random") -
     _save(fig, out, name)
 
 
+def load_twist2() -> dict | None:
+    path = REPO / "results/twist2/twist2_results.json"
+    if not path.is_file():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def fig_twist2(data: dict, out: Path) -> None:
+    """Twist 2 — local oracle vs pooled cross-subject mask on held-out subjects."""
+    meta = data["meta"]
+    result = data["result"]
+    rows = result["per_test_subject"]
+    subs = [f"S{r['subject']}" for r in rows]
+    x = np.arange(len(subs))
+    w = 0.36
+    local = [100.0 * r["local_oracle_accuracy"] for r in rows]
+    pooled = [100.0 * r["pooled_transfer_accuracy"] for r in rows]
+    mean_gap = result["mean_gap_local_minus_pooled_pp"]
+    target = meta.get("target_gap_pp", 3.0)
+    train_s = ",".join(str(s) for s in result["train_subjects"])
+
+    fig, ax = plt.subplots(figsize=(7.5, 4.2))
+    ax.bar(x - w / 2, local, w, label="Local oracle (own-subject mask)", color="#4c78a8")
+    ax.bar(x + w / 2, pooled, w, label=f"Pooled transfer (train S{train_s})", color="#59a14f")
+    for i, (loc, pool) in enumerate(zip(local, pooled)):
+        ax.text(i - w / 2, loc + 0.3, f"{loc:.1f}", ha="center", va="bottom", fontsize=7)
+        ax.text(i + w / 2, pool + 0.3, f"{pool:.1f}", ha="center", va="bottom", fontsize=7)
+        ax.text(i, max(loc, pool) + 2.0, f"Δ{loc - pool:+.1f}", ha="center", fontsize=7, color="0.35")
+    ax.set_xticks(x, subs)
+    ax.set_ylabel("Spatial accuracy (%)")
+    ax.set_ylim(55, 90)
+    ax.set_title(
+        f"Twist 2 — cross-subject mask @ keep={result['keep_ratio']} "
+        f"(D={result['D']}, CNT_W={result['cnt_w']})"
+    )
+    ax.legend(loc="lower left", fontsize=8)
+    verdict = "generalises" if meta.get("generalises") else "per-subject cal."
+    ax.text(
+        0.98,
+        0.98,
+        f"Mean gap: {mean_gap:+.2f} pp\nTarget |gap| ≤ {target:.0f} pp → {verdict}",
+        transform=ax.transAxes,
+        ha="right",
+        va="top",
+        fontsize=8,
+        bbox=dict(boxstyle="round", facecolor="white", alpha=0.85),
+    )
+    fig.suptitle(
+        "Twist 2 — pooled Fisher mask trained on subject subset, tested on held-out subjects",
+        fontsize=11,
+        y=1.02,
+    )
+    _save(fig, out, "twist2_cross_subject")
+
+
 def _save(fig, out: Path, name: str) -> None:
     fig.tight_layout(rect=(0, 0.03, 1, 0.98))
     for ext in ("png", "pdf"):
@@ -670,6 +726,11 @@ def main() -> None:
         )
     else:
         print("  skip twist1 keep=0.125 figure (missing results/twist1_keep0125/)")
+    twist2 = load_twist2()
+    if twist2:
+        fig_twist2(twist2, out)
+    else:
+        print("  skip twist2_cross_subject (missing results/twist2/twist2_results.json)")
 
     if args.show:
         plt.show()

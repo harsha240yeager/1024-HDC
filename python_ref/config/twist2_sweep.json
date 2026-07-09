@@ -1,0 +1,20 @@
+{
+  "name": "Twist 2 — cross-subject Fisher mask transfer",
+  "description": "Train informed mask on subject subset TRAIN windows; evaluate on held-out subjects TEST split.",
+  "engine": "hdc_ref",
+  "item_mem_seed": 42,
+  "protocol_config": "emg_baseline.json",
+  "subjects": [1, 2, 3, 4, 5],
+  "train_subjects": [1, 2, 3],
+  "test_subjects": [4, 5],
+  "D": 1024,
+  "cnt_w": 6,
+  "keep_ratio": 0.125,
+  "target_gap_pp": 3.0,
+  "quick": {
+    "train_subjects": [1],
+    "test_subjects": [2],
+    "max_train_windows_per_subject": 2000,
+    "max_test_windows_per_subject": 2000
+  }
+}

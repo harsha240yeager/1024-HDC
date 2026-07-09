@@ -19,6 +19,7 @@ python3 python_ref/plot_results.py --out results/figures
 | **`baselines_bar.png`** | **Deployment baselines** — PL board vs ARM host sim vs MLP; latency/energy measured ZedBoard |
 | **`twist1_informed_vs_random.png`** | Twist 1 @ keep=0.5 — supplementary (+1.7 pp gap) |
 | **`twist1_informed_vs_random_keep0125.png`** | **Twist 1 headline** @ keep=0.125 — informed vs random (+8.6 pp) |
+| **`twist2_cross_subject.png`** | **Twist 2** — local oracle vs pooled mask transfer (S1–3 → S4–5, +0.86 pp) |
 
 Sources: [`hook_a/sweep_summary.csv`](../hook_a/sweep_summary.csv),
 [`hook_a/fisher_pooled.npz`](../hook_a/fisher_pooled.npz) (from `scripts/export_fisher_pooled.py`),
@@ -26,4 +27,5 @@ Sources: [`hook_a/sweep_summary.csv`](../hook_a/sweep_summary.csv),
 [`phase3/anchors/`](../phase3/anchors/),
 [`baselines/`](../baselines/),
 [`twist1/`](../twist1/),
-[`twist1_keep0125/`](../twist1_keep0125/).
+[`twist1_keep0125/`](../twist1_keep0125/),
+[`twist2/`](../twist2/).
