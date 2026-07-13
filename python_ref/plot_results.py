@@ -427,21 +427,13 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
     pl = [p for p in silicon if p["path"] == "PL"]
     arm = next(p for p in silicon if p["path"] == "ARM")
 
-    if PAPER_MODE:
-        fig, axes = plt.subplots(1, 2, figsize=(IEEE_COL_W, 1.75))
-        fig.subplots_adjust(wspace=0.42)
-    else:
-        fig, axes = plt.subplots(1, 2, figsize=(12.5, 4.8))
-
     luts_k = [r["luts"] / 1000 for r in ladder]
     acc_py = [r["acc"] for r in ladder]
-    py_label = "Python OOC" if PAPER_MODE else "Python sweep (CNT_W=6, keep=1.0)"
-    ann_fs = 5 if PAPER_MODE else 7
+    d1024 = next(r for r in ladder if r["D"] == 1024)
 
-    # --- (a) Accuracy vs OOC slice LUTs ---
-    ax = axes[0]
-    ax.plot(luts_k, acc_py, "o-", color="#4c78a8", lw=1.2, ms=3 if PAPER_MODE else 6, label=py_label)
     if PAPER_MODE:
+        fig, ax = plt.subplots(figsize=(IEEE_COL_W, 1.65))
+        ax.plot(luts_k, acc_py, "o-", color="#4c78a8", lw=1.2, ms=3, label="Python OOC")
         for r in ladder:
             if r["D"] in (1024, 2048):
                 ax.annotate(
@@ -449,33 +441,19 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
                     xy=(r["luts"] / 1000, r["acc"]),
                     xytext=(4, -7 if r["D"] == 1024 else 5),
                     textcoords="offset points",
-                    fontsize=ann_fs,
+                    fontsize=5,
                     color="#b4413c" if r["D"] == 2048 else "0.35",
                 )
-    else:
-        for r in ladder:
-            over = r["luts"] > DEVICE_LUT_BUDGET
-            ax.annotate(
-                f"D={r['D']}",
-                xy=(r["luts"] / 1000, r["acc"]),
-                xytext=(3, -9 if not over else 3),
-                textcoords="offset points",
-                fontsize=ann_fs,
-                color="#b4413c" if over else "0.25",
-            )
-    d1024 = next(r for r in ladder if r["D"] == 1024)
-    sil_label = "Silicon" if PAPER_MODE else f"Silicon EMG @ D=1024 ({DEPLOY_LUTS // 1000}k LUT, placed)"
-    ax.scatter(
-        [DEPLOY_LUTS / 1000],
-        [pl[0]["acc"] if pl else d1024["acc"]],
-        s=55 if PAPER_MODE else 120,
-        c="#e15759",
-        marker="*",
-        zorder=5,
-        label=sil_label,
-    )
-    ax.axvline(DEVICE_LUT_BUDGET / 1000, color="#b4413c", ls="--", lw=0.7, alpha=0.65)
-    if PAPER_MODE:
+        ax.scatter(
+            [DEPLOY_LUTS / 1000],
+            [pl[0]["acc"] if pl else d1024["acc"]],
+            s=55,
+            c="#e15759",
+            marker="*",
+            zorder=5,
+            label="Silicon",
+        )
+        ax.axvline(DEVICE_LUT_BUDGET / 1000, color="#b4413c", ls="--", lw=0.7, alpha=0.65)
         ax.text(
             DEVICE_LUT_BUDGET / 1000,
             59.5,
@@ -486,34 +464,68 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
             fontsize=5,
             color="#b4413c",
         )
-    else:
-        ax.text(
-            DEVICE_LUT_BUDGET / 1000 - 0.8,
-            60.5,
-            "xc7z020\nLUT budget",
-            rotation=90,
-            va="bottom",
-            ha="right",
-            fontsize=7,
-            color="#b4413c",
+        ax.set_xlabel("LUTs (k)")
+        ax.set_ylabel("Accuracy (%)")
+        ax.legend(loc="lower right", fontsize=5, frameon=False)
+        ax.set_ylim(58, 80)
+        ax.tick_params(labelsize=6)
+        _save(fig, out, "hookA_pareto_measured")
+        return
+
+    fig, axes = plt.subplots(1, 2, figsize=(12.5, 4.8))
+    py_label = "Python sweep (CNT_W=6, keep=1.0)"
+    ann_fs = 7
+
+    # --- (a) Accuracy vs OOC slice LUTs ---
+    ax = axes[0]
+    ax.plot(luts_k, acc_py, "o-", color="#4c78a8", lw=1.2, ms=6, label=py_label)
+    for r in ladder:
+        over = r["luts"] > DEVICE_LUT_BUDGET
+        ax.annotate(
+            f"D={r['D']}",
+            xy=(r["luts"] / 1000, r["acc"]),
+            xytext=(3, -9 if not over else 3),
+            textcoords="offset points",
+            fontsize=ann_fs,
+            color="#b4413c" if over else "0.25",
         )
-    ax.set_xlabel("LUTs (k)" if PAPER_MODE else "Slice LUTs (thousands) — curve: OOC estimate; *: placed post-route")
-    ax.set_ylabel("Accuracy (%)" if PAPER_MODE else "Spatial / board accuracy (%)")
+    sil_label = f"Silicon EMG @ D=1024 ({DEPLOY_LUTS // 1000}k LUT, placed)"
+    ax.scatter(
+        [DEPLOY_LUTS / 1000],
+        [pl[0]["acc"] if pl else d1024["acc"]],
+        s=120,
+        c="#e15759",
+        marker="*",
+        zorder=5,
+        label=sil_label,
+    )
+    ax.axvline(DEVICE_LUT_BUDGET / 1000, color="#b4413c", ls="--", lw=0.8, alpha=0.7)
+    ax.text(
+        DEVICE_LUT_BUDGET / 1000 - 0.8,
+        60.5,
+        "xc7z020\nLUT budget",
+        rotation=90,
+        va="bottom",
+        ha="right",
+        fontsize=7,
+        color="#b4413c",
+    )
+    ax.set_xlabel("Slice LUTs (thousands) — curve: OOC estimate; *: placed post-route")
+    ax.set_ylabel("Spatial / board accuracy (%)")
     set_figure_title(ax, "(a)", "(a) Accuracy vs area — Python OOC sweep + placed silicon")
-    ax.legend(loc="lower right", fontsize=5 if PAPER_MODE else 7, frameon=False)
-    ax.set_ylim(58, 80 if PAPER_MODE else 82)
-    ax.tick_params(labelsize=6 if PAPER_MODE else 9)
-    if not PAPER_MODE:
-        ax.text(
-            0.02,
-            0.02,
-            "Blue line: Python spatial mean (OOC LUTs).\n"
-            f"Red *: board EMG replay @ D=1024 ({DEPLOY_LUTS // 1000}k placed LUTs).",
-            transform=ax.transAxes,
-            fontsize=7,
-            va="bottom",
-            color="0.35",
-        )
+    ax.legend(loc="lower right", fontsize=7, frameon=False)
+    ax.set_ylim(58, 82)
+    ax.tick_params(labelsize=9)
+    ax.text(
+        0.02,
+        0.02,
+        "Blue line: Python spatial mean (OOC LUTs).\n"
+        f"Red *: board EMG replay @ D=1024 ({DEPLOY_LUTS // 1000}k placed LUTs).",
+        transform=ax.transAxes,
+        fontsize=7,
+        va="bottom",
+        color="0.35",
+    )
 
     # --- (b) Measured energy at D=1024 anchors ---
     ax = axes[1]
@@ -523,77 +535,59 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
             p["acc"],
             xerr=p["uj_std"],
             fmt="o",
-            ms=4 if PAPER_MODE else 8,
-            capsize=1.5 if PAPER_MODE else 3,
+            ms=8,
+            capsize=3,
             color="#4c78a8",
-            label="PL DMA batch" if p["anchor"] == "A" and not PAPER_MODE else None,
+            label="PL DMA batch" if p["anchor"] == "A" else None,
         )
-        if PAPER_MODE:
-            ax.annotate(
-                p["anchor"],
-                xy=(p["uj"], p["acc"]),
-                xytext=(2, 2),
-                textcoords="offset points",
-                fontsize=5,
-            )
-        else:
-            ax.annotate(
-                f"{p['anchor']} (keep={p['keep']})",
-                xy=(p["uj"], p["acc"]),
-                xytext=(8, 6),
-                textcoords="offset points",
-                fontsize=7,
-            )
+        ax.annotate(
+            f"{p['anchor']} (keep={p['keep']})",
+            xy=(p["uj"], p["acc"]),
+            xytext=(8, 6),
+            textcoords="offset points",
+            fontsize=7,
+        )
     ax.errorbar(
         arm["uj"],
         arm["acc"],
         xerr=arm["uj_std"],
         fmt="s",
-        ms=4 if PAPER_MODE else 8,
-        capsize=1.5 if PAPER_MODE else 3,
+        ms=8,
+        capsize=3,
         color="#e15759",
-        label="ARM" if PAPER_MODE else "ARM PS software",
+        label="ARM PS software",
     )
-    if not PAPER_MODE:
-        ax.annotate(
-            "ARM (host acc)",
-            xy=(arm["uj"], arm["acc"]),
-            xytext=(8, -10),
-            textcoords="offset points",
-            fontsize=7,
-        )
+    ax.annotate(
+        "ARM (host acc)",
+        xy=(arm["uj"], arm["acc"]),
+        xytext=(8, -10),
+        textcoords="offset points",
+        fontsize=7,
+    )
     ax.set_xscale("log")
-    ax.set_xlabel("Energy (µJ/w)" if PAPER_MODE else "Measured total energy (µJ/window, J21 batch)")
-    ax.set_ylabel("Accuracy (%)" if PAPER_MODE else "Board / baseline accuracy (%)")
+    ax.set_xlabel("Measured total energy (µJ/window, J21 batch)")
+    ax.set_ylabel("Board / baseline accuracy (%)")
     set_figure_title(ax, "(b)", "(b) Measured energy — flat PL, ARM ~175× (static-dominated PL)")
-    if PAPER_MODE:
-        ax.legend(loc="lower left", fontsize=5, frameon=False, handles=[
-            plt.Line2D([0], [0], marker="o", color="#4c78a8", ls="", ms=4, label="PL"),
-            plt.Line2D([0], [0], marker="s", color="#e15759", ls="", ms=4, label="ARM"),
-        ])
-    else:
-        ax.legend(loc="lower left", fontsize=7)
-    ax.set_ylim(73.85, 74.45 if PAPER_MODE else 74.6)
-    ax.tick_params(labelsize=6 if PAPER_MODE else 9)
-    if not PAPER_MODE:
-        ax.text(
-            0.02,
-            0.02,
-            "PL A/B/C: board EMG replay, Fisher keep 1.0 / 0.5 / 0.125.\n"
-            "Acc flat; J21 energy ≈ static × batch slot (~12 µJ).\n"
-            "ARM acc = host libhdc_arm_ref (no full board EMG replay).",
-            transform=ax.transAxes,
-            fontsize=7,
-            va="bottom",
-            color="0.35",
-        )
+    ax.legend(loc="lower left", fontsize=7)
+    ax.set_ylim(73.8, 74.6)
+    ax.tick_params(labelsize=9)
+    ax.text(
+        0.02,
+        0.02,
+        "PL A/B/C: board EMG replay, Fisher keep 1.0 / 0.5 / 0.125.\n"
+        "Acc flat; J21 energy ≈ static × batch slot (~12 µJ).\n"
+        "ARM acc = host libhdc_arm_ref (no full board EMG replay).",
+        transform=ax.transAxes,
+        fontsize=7,
+        va="bottom",
+        color="0.35",
+    )
 
-    if not PAPER_MODE:
-        fig.suptitle(
-            "Hook A Pareto — Python design space and measured ZedBoard anchors (2026-07)",
-            fontsize=11,
-            y=1.02,
-        )
+    fig.suptitle(
+        "Hook A Pareto — Python design space and measured ZedBoard anchors (2026-07)",
+        fontsize=11,
+        y=1.02,
+    )
     _save(fig, out, "hookA_pareto_measured")
 
 
