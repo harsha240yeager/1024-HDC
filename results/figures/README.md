@@ -4,6 +4,7 @@ Generated from committed `results/` data only — nothing recomputed.
 
 ```bash
 python3 python_ref/plot_results.py              # 300 dpi (default)
+python3 python_ref/plot_results.py --paper      # IEEE single-column: no suptitles, compact size
 python3 python_ref/plot_results.py --dpi 600    # extra-high PNG rasterization
 python3 python_ref/plot_results.py --out results/figures
 ```

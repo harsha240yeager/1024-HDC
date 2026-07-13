@@ -232,7 +232,7 @@ def fig_per_subject(d: dict, out: Path) -> None:
     x = np.arange(len(subs))
     w = 0.38
 
-    fig, ax = plt.subplots(figsize=(7.5, 4.2))
+    fig, ax = plt.subplots(figsize=(3.5, 2.2) if PAPER_MODE else (8.5, 4.8))
     ax.bar(x - w / 2, hdc, w, label="ARM HDC ref (host sim)", color="#4c78a8")
     ax.bar(x + w / 2, mlp, w, label="Tiny int8 MLP", color="#59a14f")
     for i, (h, m) in enumerate(zip(hdc, mlp)):
@@ -363,7 +363,7 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
     pl = [p for p in silicon if p["path"] == "PL"]
     arm = next(p for p in silicon if p["path"] == "ARM")
 
-    fig, axes = plt.subplots(1, 2, figsize=(11.0, 4.4))
+    fig, axes = plt.subplots(1, 2, figsize=(3.5, 2.3) if PAPER_MODE else (12.5, 4.8))
 
     # --- (a) Accuracy vs OOC slice LUTs (D sweep) + deployed D=1024 ---
     ax = axes[0]
@@ -403,19 +403,20 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
     )
     ax.set_xlabel("Slice LUTs (thousands) — curve: OOC estimate; *: placed post-route")
     ax.set_ylabel("Spatial / board accuracy (%)")
-    ax.set_title("(a) Accuracy vs area — Python OOC sweep + placed silicon")
+    set_figure_title(ax, "(a)", "(a) Accuracy vs area — Python OOC sweep + placed silicon")
     ax.legend(loc="lower right", fontsize=7)
     ax.set_ylim(58, 82)
-    ax.text(
-        0.02,
-        0.02,
-        "Blue line: Python spatial mean (OOC LUTs).\n"
-        f"Red *: board EMG replay @ D=1024 ({DEPLOY_LUTS // 1000}k placed LUTs).",
-        transform=ax.transAxes,
-        fontsize=7,
-        va="bottom",
-        color="0.35",
-    )
+    if not PAPER_MODE:
+        ax.text(
+            0.02,
+            0.02,
+            "Blue line: Python spatial mean (OOC LUTs).\n"
+            f"Red *: board EMG replay @ D=1024 ({DEPLOY_LUTS // 1000}k placed LUTs).",
+            transform=ax.transAxes,
+            fontsize=7,
+            va="bottom",
+            color="0.35",
+        )
 
     # --- (b) Measured energy at D=1024 anchors (board accuracy) ---
     ax = axes[1]
@@ -457,37 +458,39 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
     ax.set_xscale("log")
     ax.set_xlabel("Measured total energy (µJ/window, J21 batch)")
     ax.set_ylabel("Board / baseline accuracy (%)")
-    ax.set_title("(b) Measured energy — flat PL, ARM ~175× (static-dominated PL)")
+    set_figure_title(ax, "(b)", "(b) Measured energy — flat PL, ARM ~175× (static-dominated PL)")
     ax.legend(loc="lower left", fontsize=7)
     ax.set_ylim(73.8, 74.6)
-    ax.text(
-        0.02,
-        0.02,
-        "PL A/B/C: board EMG replay, Fisher keep 1.0 / 0.5 / 0.125.\n"
-        "Acc flat; J21 energy ≈ static × batch slot (~12 µJ).\n"
-        "ARM acc = host libhdc_arm_ref (no full board EMG replay).",
-        transform=ax.transAxes,
-        fontsize=7,
-        va="bottom",
-        color="0.35",
-    )
+    if not PAPER_MODE:
+        ax.text(
+            0.02,
+            0.02,
+            "PL A/B/C: board EMG replay, Fisher keep 1.0 / 0.5 / 0.125.\n"
+            "Acc flat; J21 energy ≈ static × batch slot (~12 µJ).\n"
+            "ARM acc = host libhdc_arm_ref (no full board EMG replay).",
+            transform=ax.transAxes,
+            fontsize=7,
+            va="bottom",
+            color="0.35",
+        )
 
-    fig.suptitle(
-        "Hook A Pareto — Python design space and measured ZedBoard anchors (2026-07)",
-        fontsize=11,
-        y=1.02,
-    )
+    if not PAPER_MODE:
+        fig.suptitle(
+            "Hook A Pareto — Python design space and measured ZedBoard anchors (2026-07)",
+            fontsize=11,
+            y=1.02,
+        )
     _save(fig, out, "hookA_pareto_measured")
 
 
 def fig_fisher_heatmap(fisher: dict, out: Path) -> None:
     """Pooled Fisher scores + informed keep masks (silicon mask layout 16×64 bits)."""
     scores = fisher["scores_2d"]
-    fig, axes = plt.subplots(2, 2, figsize=(10.0, 6.5), gridspec_kw={"height_ratios": [1.2, 1]})
+    fig, axes = plt.subplots(2, 2, figsize=(3.5, 3.4) if PAPER_MODE else (11.5, 7.5), gridspec_kw={"height_ratios": [1.2, 1]})
 
     ax = axes[0, 0]
     im = ax.imshow(scores, aspect="auto", cmap="viridis", interpolation="nearest")
-    ax.set_title("(a) Pooled Fisher score (TRAIN, 5 subjects)")
+    set_figure_title(ax, "(a)", "(a) Pooled Fisher score (TRAIN, 5 subjects)")
     ax.set_xlabel("Bit index within 64-bit word")
     ax.set_ylabel("Word index (0–15)")
     fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label="Fisher score")
@@ -502,17 +505,17 @@ def fig_fisher_heatmap(fisher: dict, out: Path) -> None:
     ax.axvline(n_nonzero + 0.5, color="0.55", ls=":", lw=0.9, label=f"score=0 after rank {n_nonzero}")
     ax.set_xlabel("Rank (1 = highest Fisher score)")
     ax.set_ylabel("Fisher score")
-    ax.set_title("(b) Score rank — anchor cutoffs")
+    set_figure_title(ax, "(b)", "(b) Score rank — anchor cutoffs")
     ax.legend(fontsize=7, loc="upper right")
     ax.set_xlim(1, 1024)
 
     masks = [
-        ("(c) Informed mask @ keep=0.5", fisher["mask_05"], "#f28e2b"),
-        ("(d) Informed mask @ keep=0.125", fisher["mask_0125"], "#e15759"),
+        ("(c)", "(c) Informed mask @ keep=0.5", fisher["mask_05"], "#f28e2b"),
+        ("(d)", "(d) Informed mask @ keep=0.125", fisher["mask_0125"], "#e15759"),
     ]
-    for ax, (title, mask, edge) in zip(axes[1], masks):
+    for ax, (panel, title, mask, edge) in zip(axes[1], masks):
         ax.imshow(mask, aspect="auto", cmap="gray_r", vmin=0, vmax=1, interpolation="nearest")
-        ax.set_title(title)
+        set_figure_title(ax, panel, title)
         ax.set_xlabel("Bit in word")
         ax.set_ylabel("Word")
         n_keep = int(mask.sum())
@@ -532,27 +535,28 @@ def fig_fisher_heatmap(fisher: dict, out: Path) -> None:
             spine.set_edgecolor(edge)
             spine.set_linewidth(2)
 
-    fig.suptitle(
-        "Fisher-informed pruning masks — pooled TRAIN (same method as silicon anchors B/C)",
-        fontsize=11,
-        y=1.02,
-    )
-    fig.text(
-        0.5,
-        -0.02,
-        f"{n_nonzero}/1024 bits have Fisher score > 0; "
-        "keep=0.5 mask (c) fills remainder at score=0 by bit index. "
-        "Mask (d) matches silicon anchor C bitstream.",
-        ha="center",
-        fontsize=8,
-        color="0.4",
-    )
+    if not PAPER_MODE:
+        fig.suptitle(
+            "Fisher-informed pruning masks — pooled TRAIN (same method as silicon anchors B/C)",
+            fontsize=11,
+            y=1.02,
+        )
+        fig.text(
+            0.5,
+            -0.02,
+            f"{n_nonzero}/1024 bits have Fisher score > 0; "
+            "keep=0.5 mask (c) fills remainder at score=0 by bit index. "
+            "Mask (d) matches silicon anchor C bitstream.",
+            ha="center",
+            fontsize=8,
+            color="0.4",
+        )
     _save(fig, out, "fisher_heatmap")
 
 
 def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     """Accuracy, latency, and measured energy for PL vs ARM vs MLP."""
-    fig, axes = plt.subplots(1, 3, figsize=(10.5, 4.0))
+    fig, axes = plt.subplots(1, 3, figsize=(3.5, 2.2) if PAPER_MODE else (12.0, 4.5))
     names = [s["name"] for s in systems]
     x = np.arange(len(names))
     colors = [s["color"] for s in systems]
@@ -564,7 +568,7 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     ax.set_xticks(x, names, fontsize=8)
     ax.set_ylabel("Spatial / board accuracy (%)")
     ax.set_ylim(70, 96)
-    ax.set_title("(a) Accuracy")
+    set_figure_title(ax, "(a)", "(a) Accuracy")
     ax.legend(fontsize=7, loc="upper left")
     for bar, v in zip(bars, acc):
         ax.text(bar.get_x() + bar.get_width() / 2, v + 0.4, f"{v:.2f}%", ha="center", fontsize=7)
@@ -578,7 +582,7 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     ax.set_yscale("log")
     ax.set_xticks(xl, lat_names, fontsize=8)
     ax.set_ylabel("Latency (µs/window, log)")
-    ax.set_title("(b) On-board latency")
+    set_figure_title(ax, "(b)", "(b) On-board latency")
     for i, v in enumerate(lat_vals):
         ax.text(i, v * 1.15, f"{v:.0f} µs", ha="center", fontsize=7)
     ax.text(0.98, 0.05, "MLP: not on-board", transform=ax.transAxes, ha="right", fontsize=7, color="0.45")
@@ -593,25 +597,26 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     ax.set_yscale("log")
     ax.set_xticks(xe, en_names, fontsize=8)
     ax.set_ylabel("Total energy (µJ/window, J21 log)")
-    ax.set_title("(c) Measured batch energy")
+    set_figure_title(ax, "(c)", "(c) Measured batch energy")
     for i, v in enumerate(en_vals):
         ax.text(i, v * 1.25, f"{v:.1f}", ha="center", fontsize=7)
     ax.text(0.98, 0.05, "MLP: not measured", transform=ax.transAxes, ha="right", fontsize=7, color="0.45")
 
-    fig.suptitle(
-        "Comparison baselines — P-may2026, 5 subjects (HDC vs MLP deployment class)",
-        fontsize=11,
-        y=1.04,
-    )
-    fig.text(
-        0.5,
-        -0.02,
-        "PL acc: board EMG replay · ARM acc: host libhdc_arm_ref sim · "
-        "PL/ARM latency & energy: measured on ZedBoard (INA219 J21)",
-        ha="center",
-        fontsize=8,
-        color="0.4",
-    )
+    if not PAPER_MODE:
+        fig.suptitle(
+            "Comparison baselines — P-may2026, 5 subjects (HDC vs MLP deployment class)",
+            fontsize=11,
+            y=1.04,
+        )
+        fig.text(
+            0.5,
+            -0.02,
+            "PL acc: board EMG replay · ARM acc: host libhdc_arm_ref sim · "
+            "PL/ARM latency & energy: measured on ZedBoard (INA219 J21)",
+            ha="center",
+            fontsize=8,
+            color="0.4",
+        )
     _save(fig, out, "baselines_bar")
 
 
@@ -634,7 +639,7 @@ def fig_twist1(data: dict, out: Path, name: str = "twist1_informed_vs_random") -
     mean_gap = meta["mean_gap_pp"]
     target = meta.get("target_gap_pp", 5.0)
 
-    fig, ax = plt.subplots(figsize=(7.5, 4.2))
+    fig, ax = plt.subplots(figsize=(3.5, 2.2) if PAPER_MODE else (8.5, 4.8))
     ax.bar(x - w / 2, informed, w, label="Fisher informed", color="#4c78a8")
     ax.bar(x + w / 2, random_m, w, label="Random (mean over seeds)", color="#e15759")
     for i, (inf, rnd) in enumerate(zip(informed, random_m)):
@@ -644,10 +649,13 @@ def fig_twist1(data: dict, out: Path, name: str = "twist1_informed_vs_random") -
     ax.set_xticks(x, subs)
     ax.set_ylabel("Spatial accuracy (%)")
     ax.set_ylim(55, 85)
-    ax.set_title(
-        f"Twist 1 — informed vs random @ keep={meta['keep_ratio']} "
-        f"(D={meta['D']}, CNT_W={meta['cnt_w']})"
-    )
+    if PAPER_MODE:
+        ax.set_title("")
+    else:
+        ax.set_title(
+            f"Twist 1 — informed vs random @ keep={meta['keep_ratio']} "
+            f"(D={meta['D']}, CNT_W={meta['cnt_w']})"
+        )
     ax.legend(loc="lower left", fontsize=8)
     ax.text(
         0.98,
@@ -659,11 +667,12 @@ def fig_twist1(data: dict, out: Path, name: str = "twist1_informed_vs_random") -
         fontsize=8,
         bbox=dict(boxstyle="round", facecolor="white", alpha=0.85),
     )
-    fig.suptitle(
-        "Twist 1 — bit selection matters at iso-density (per-subject Fisher masks)",
-        fontsize=11,
-        y=1.02,
-    )
+    if not PAPER_MODE:
+        fig.suptitle(
+            "Twist 1 — bit selection matters at iso-density (per-subject Fisher masks)",
+            fontsize=11,
+            y=1.02,
+        )
     _save(fig, out, name)
 
 
@@ -693,12 +702,18 @@ def fig_twist2(
     target = meta.get("target_gap_pp", 3.0)
     train_s = ",".join(str(s) for s in result["train_subjects"])
     n = len(subs)
-    fig_w = max(7.5, 0.42 * n + 2.0)
+    if PAPER_MODE:
+        fig_w, fig_h = 3.5, 2.4
+        legend_train = f"Pooled transfer (train S{result['train_subjects'][0]}--{result['train_subjects'][-1]})"
+    else:
+        fig_w = max(8.5, 0.48 * n + 2.5)
+        fig_h = 4.8
+        legend_train = f"Pooled transfer (train S{train_s})"
 
-    fig, ax = plt.subplots(figsize=(fig_w, 4.2))
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
     annotate = len(subs) <= 6
     ax.bar(x - w / 2, local, w, label="Local oracle (own-subject mask)", color=PAPER_COLORS["blue"])
-    ax.bar(x + w / 2, pooled, w, label=f"Pooled transfer (train S{train_s})", color=PAPER_COLORS["green"])
+    ax.bar(x + w / 2, pooled, w, label=legend_train, color=PAPER_COLORS["green"])
     if annotate:
         for i, (loc, pool) in enumerate(zip(local, pooled)):
             ax.text(i - w / 2, loc + 0.3, f"{loc:.1f}", ha="center", va="bottom", fontsize=7)
@@ -706,7 +721,7 @@ def fig_twist2(
             ax.text(i, max(loc, pool) + 2.0, f"Δ{loc - pool:+.1f}", ha="center", fontsize=7, color="0.35")
     ax.set_xticks(x, subs)
     if not annotate:
-        ax.tick_params(axis="x", rotation=45)
+        ax.tick_params(axis="x", rotation=45, labelsize=6 if PAPER_MODE else 9)
         for label in ax.get_xticklabels():
             label.set_ha("right")
     ax.set_ylabel("Spatial accuracy (%)")
@@ -717,11 +732,14 @@ def fig_twist2(
         ax.set_ylim(lo, hi)
     else:
         ax.set_ylim(*ylim)
-    ax.set_title(
-        f"Twist 2 — cross-subject mask @ keep={result['keep_ratio']} "
-        f"(D={result['D']}, CNT_W={result['cnt_w']})"
-    )
-    ax.legend(loc="lower left", fontsize=8)
+    if PAPER_MODE:
+        ax.set_title("")
+    else:
+        ax.set_title(
+            f"Twist 2 — cross-subject mask @ keep={result['keep_ratio']} "
+            f"(D={result['D']}, CNT_W={result['cnt_w']})"
+        )
+    ax.legend(loc="lower left", fontsize=7 if PAPER_MODE else 8)
     verdict = "generalises" if meta.get("generalises") else "per-subject cal."
     ax.text(
         0.98,
@@ -730,28 +748,59 @@ def fig_twist2(
         transform=ax.transAxes,
         ha="right",
         va="top",
-        fontsize=8,
+        fontsize=7 if PAPER_MODE else 8,
         bbox=dict(boxstyle="round", facecolor="white", alpha=0.85),
     )
-    fig.suptitle(
-        "Twist 2 — pooled Fisher mask trained on subject subset, tested on held-out subjects",
-        fontsize=11,
-        y=1.02,
-    )
+    if not PAPER_MODE:
+        fig.suptitle(
+            "Twist 2 — pooled Fisher mask trained on subject subset, tested on held-out subjects",
+            fontsize=11,
+            y=1.02,
+        )
     _save(fig, out, name)
+
+
+PAPER_MODE = False
+
+
+def panel_label(ax, label: str) -> None:
+    """Minimal (a)/(b) tag for LaTeX captions (no duplicate figure title)."""
+    ax.text(
+        0.02,
+        0.98,
+        label,
+        transform=ax.transAxes,
+        fontsize=9,
+        fontweight="bold",
+        va="top",
+        ha="left",
+        bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.9),
+    )
+
+
+def set_figure_title(ax, panel: str | None, full: str) -> None:
+    if PAPER_MODE:
+        ax.set_title("")
+        if panel:
+            panel_label(ax, panel)
+    else:
+        ax.set_title(full)
 
 
 def _save(fig, out: Path, name: str, dpi: int | None = None) -> None:
     if dpi is None:
         dpi = int(plt.rcParams["savefig.dpi"])
-    fig.tight_layout(rect=(0, 0.03, 1, 0.98))
+    if PAPER_MODE:
+        fig.tight_layout(pad=0.25)
+    else:
+        fig.tight_layout(rect=(0, 0.03, 1, 0.98))
     for ext in ("png", "pdf"):
         p = out / f"{name}.{ext}"
         fig.savefig(
             p,
             dpi=dpi,
             bbox_inches="tight",
-            pad_inches=0.03,
+            pad_inches=0.02 if PAPER_MODE else 0.03,
             facecolor="white",
             edgecolor="none",
         )
@@ -763,7 +812,15 @@ def main() -> None:
     ap.add_argument("--out", default="results/figures", help="output dir (rel to repo root)")
     ap.add_argument("--dpi", type=int, default=PAPER_DPI, help="PNG/PDF rasterization DPI")
     ap.add_argument("--show", action="store_true", help="also open interactive windows")
+    ap.add_argument(
+        "--paper",
+        action="store_true",
+        help="compact IEEE single-column export: no suptitles, panel labels only",
+    )
     args = ap.parse_args()
+
+    global PAPER_MODE
+    PAPER_MODE = args.paper
 
     apply_paper_style(dpi=args.dpi)
 
