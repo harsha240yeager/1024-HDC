@@ -444,11 +444,22 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
             256: (0, -12),
             512: (0, 10),
             1024: (-12, -12),
-            2048: (-6, 10),
         }
         for r in ladder:
             d = r["D"]
             over = r["luts"] > DEVICE_LUT_BUDGET
+            if d == 2048:
+                ax.annotate(
+                    "D=2048",
+                    xy=(r["luts"] / 1000, r["acc"]),
+                    xytext=(61.8, 75.8),
+                    fontsize=6,
+                    color="#b2182b",
+                    ha="left",
+                    va="center",
+                    arrowprops=dict(arrowstyle="-", color="#b2182b", lw=0.7, shrinkA=3),
+                )
+                continue
             ax.annotate(
                 f"D={d}",
                 xy=(r["luts"] / 1000, r["acc"]),
@@ -484,18 +495,18 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
 
         ax.axvline(budget_k, color="#b2182b", ls="--", lw=0.9, alpha=0.75, zorder=1)
         ax.text(
-            budget_k + 0.8,
-            79.6,
-            "53k LUT\nbudget",
+            budget_k - 1.0,
+            80.6,
+            "53k LUT budget",
             fontsize=6,
             color="#b2182b",
-            ha="left",
+            ha="right",
             va="top",
         )
 
         ax.set_xlabel("Slice LUTs (k, OOC)")
         ax.set_ylabel("Spatial accuracy (%)")
-        ax.set_xlim(4, 62)
+        ax.set_xlim(4, 63)
         ax.set_ylim(68.5, 81)
         ax.legend(loc="lower right", fontsize=6, frameon=True, framealpha=0.92, edgecolor="0.8")
         ax.tick_params(labelsize=6)
