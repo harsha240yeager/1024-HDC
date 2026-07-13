@@ -135,8 +135,9 @@ def load_subject_data(
     train_frac: float,
     max_train: Optional[int],
     max_test: Optional[int],
+    dataset_path: Path,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    mat = sio.loadmat(str(DATASET))
+    mat = sio.loadmat(str(dataset_path))
     data = mat[f"COMPLETE_{subject}"].astype(np.float64)
     labels = mat[f"LABEL_{subject}"].ravel().astype(np.int64)
     q_all = quantize_envelope(data)
@@ -163,6 +164,7 @@ def run_experiment(
     item_mem_seed: int,
     max_train: Optional[int],
     max_test: Optional[int],
+    dataset_path: Path,
 ) -> dict:
     cfg = hdc_cfg_for_d(D, item_mem_seed)
     mem = ItemMemory(cfg)
@@ -172,7 +174,7 @@ def run_experiment(
     for sid in sorted(set(train_subjects) | set(test_subjects)):
         print(f"\n== encode subject {sid} ==", flush=True)
         train_q, train_labels, test_q, test_labels = load_subject_data(
-            sid, seed, train_frac, max_train, max_test
+            sid, seed, train_frac, max_train, max_test, dataset_path
         )
         print(f"    train={train_q.shape[0]} test={test_q.shape[0]}", flush=True)
         train_hvs = encode_queries(engine, mem, cfg, train_q, cnt_w, f"s{sid}/train")
@@ -320,11 +322,21 @@ def write_readme(path: Path, meta: dict, result: dict) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def resolve_dataset_path(twist_cfg: dict, override: Optional[Path]) -> Path:
+    if override is not None:
+        return override.resolve()
+    rel = twist_cfg.get("dataset_mat")
+    if rel:
+        return (HERE / rel).resolve()
+    return DATASET.resolve()
+
+
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Twist 2 cross-subject mask transfer")
     p.add_argument("--config", type=Path, default=DEFAULT_CFG)
     p.add_argument("--emg-config", type=Path, default=DEFAULT_EMG_CFG)
     p.add_argument("--out-dir", type=Path, default=OUT_DIR)
+    p.add_argument("--dataset", type=Path, default=None, help="Override dataset.mat path")
     p.add_argument("--quick", action="store_true")
     p.add_argument("--keep", type=float, default=None)
     p.add_argument("--max-train-windows", type=int, default=None)
@@ -334,9 +346,14 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    require_dataset()
-
     twist_cfg = load_json(args.config)
+    dataset_path = resolve_dataset_path(twist_cfg, args.dataset)
+    if not dataset_path.is_file():
+        raise FileNotFoundError(
+            f"dataset not found: {dataset_path}\n"
+            "Build 36-subject mat: python3 scripts/build_uci_emg_dataset.py"
+        )
+
     emg_cfg = load_json(args.emg_config)
 
     D = int(twist_cfg["D"])
@@ -366,6 +383,7 @@ def main() -> int:
     print("Twist 2 — cross-subject mask transfer")
     print(f"  train={train_subjects}  test={test_subjects}")
     print(f"  D={D}  CNT_W={cnt_w}  keep={keep_ratio}")
+    print(f"  dataset={dataset_path}")
     print(f"  max_train={max_train or 'all'}  max_test={max_test or 'all'}")
     print("=" * 70)
 
@@ -381,12 +399,14 @@ def main() -> int:
         item_mem_seed,
         max_train,
         max_test,
+        dataset_path,
     )
 
     gap = result["mean_gap_local_minus_pooled_pp"]
     meta = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "engine": twist_cfg.get("engine", "hdc_ref"),
+        "dataset": str(dataset_path),
         "protocol": emg_cfg["protocol"]["id"],
         "target_gap_pp": target_gap,
         "generalises": abs(gap) <= target_gap,

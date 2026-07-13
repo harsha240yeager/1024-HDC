@@ -269,6 +269,26 @@ python3 python_ref/run_twist2_sweep.py
 
 A single shared mask generalises without per-user mask calibration (within P-may2026).
 
+**36-subject UCI (train S1–18 → test S19–36, 2026-07-13):**
+
+```bash
+python3 scripts/build_uci_emg_dataset.py
+python3 python_ref/run_twist2_sweep.py --config python_ref/config/twist2_36_sweep.json --out-dir results/twist2_36
+```
+
+| Condition | Accuracy (S19–36 mean) |
+|-----------|------------------------|
+| Local oracle @ 128 bits | **60.74%** |
+| Pooled transfer | **60.74%** |
+| **Gap** | **0.00 pp** ✅ (≤3 pp) |
+
+Runtime **~16.8 h** (~5.0M encodes). Pruning @ keep=0.125 is lossless on all held-out
+subjects. UCI `dataset_36.mat` uses a separate preprocessing path from the Rahimi 5-subject
+board dataset — absolute accuracy is not directly comparable to the 69% pilot.
+
+Evidence: [`results/twist2_36/`](results/twist2_36/) ·
+figure [`twist2_cross_subject_36.png`](results/figures/twist2_cross_subject_36.png).
+
 ### Deployment baselines
 
 | Path | Accuracy | Latency | Energy |
@@ -311,16 +331,17 @@ Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
 |----------|------------------|
 | Bit-exact verified streaming HDC on Zynq | Matching ~90% on FPGA |
 | Iso-accuracy informed pruning to 87.5% | Pruning reduces measured J21 µJ |
-| Informed ≫ random at 128 bits (+8.6 pp) | 36-subject Twist 2 population study |
-| Cross-subject transfer +0.86 pp (pilot) | Beating 93% MLP |
-| PL ~175× lower energy than ARM SW | PL-only Vcc_int power |
+| Informed ≫ random at 128 bits (+8.6 pp) | Beating 93% MLP |
+| Cross-subject transfer ≤3 pp (pilot + 36 UCI) | PL-only Vcc_int power |
+| PL ~175× lower energy than ARM SW | |
 
 ---
 
 ## Paper figures
 
 ```bash
-python3 python_ref/plot_results.py
+python3 python_ref/plot_results.py              # 300 dpi PNG + vector PDF
+python3 python_ref/plot_results.py --dpi 600    # extra-high rasterization
 ```
 
 | Figure | Content |
@@ -328,7 +349,8 @@ python3 python_ref/plot_results.py
 | [`hookA_pareto_measured.png`](results/figures/hookA_pareto_measured.png) | Main Pareto + measured µJ |
 | [`fisher_heatmap.png`](results/figures/fisher_heatmap.png) | Fisher scores + mask cutoffs |
 | [`twist1_informed_vs_random_keep0125.png`](results/figures/twist1_informed_vs_random_keep0125.png) | Twist 1 headline |
-| [`twist2_cross_subject.png`](results/figures/twist2_cross_subject.png) | Twist 2 transfer |
+| [`twist2_cross_subject.png`](results/figures/twist2_cross_subject.png) | Twist 2 pilot (S1–3 → S4–5) |
+| [`twist2_cross_subject_36.png`](results/figures/twist2_cross_subject_36.png) | Twist 2 @ 36 UCI subjects |
 | [`baselines_bar.png`](results/figures/baselines_bar.png) | PL vs ARM vs MLP |
 
 Index: [`results/figures/README.md`](results/figures/README.md). LaTeX draft: [`paper/main.tex`](paper/main.tex).
@@ -354,6 +376,7 @@ python run_smoke_test.py
 python run_hook_a_sweep.py --quick
 python run_twist1_sweep.py --keep 0.125 --out-dir ../results/twist1_keep0125
 python run_twist2_sweep.py
+python run_twist2_sweep.py --config config/twist2_36_sweep.json --out-dir ../results/twist2_36
 python plot_results.py
 ```
 
@@ -386,7 +409,7 @@ Pi + INA219 are **not required** for analysis or paper writing — only to re-ru
 | `sw/` | Bare-metal + ARM HDC baseline |
 | `python_ref/` | Golden model, Hook A / Twist runners, `plot_results.py` |
 | `board/HDC_DMA/` | Vitis workspace, JTAG, anchor replay |
-| `scripts/` | Golden prep, energy campaign, `patch_emg_anchor.py` |
+| `scripts/` | Golden prep, energy campaign, UCI dataset builder, `patch_emg_anchor.py` |
 | `results/` | All committed measurements and figures |
 | `docs/` | Encoder rationale, research plan, slides |
 | `paper/` | IEEEtran DATE draft skeleton |

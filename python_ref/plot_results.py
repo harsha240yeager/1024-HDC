@@ -15,7 +15,8 @@ Sources:
   results/phase3/anchors/anchor_*/board_emg_replay.txt  on-board accuracy
   results/hook_a/fisher_pooled.npz           pooled Fisher scores + masks (export script)
   results/twist1/twist1_results.json         Twist 1 informed vs random @ keep=0.5
-  results/twist2/twist2_results.json         Twist 2 cross-subject mask transfer
+  results/twist2/twist2_results.json         Twist 2 cross-subject mask transfer (5-subject pilot)
+  results/twist2_36/twist2_results.json    Twist 2 @ 36 UCI subjects (train 1–18 → test 19–36)
 
 Usage (from repo root):
   python3 python_ref/plot_results.py
@@ -38,6 +39,45 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[1]
+
+# Publication defaults (IEEE/DATE two-column friendly).
+PAPER_DPI = 300
+PAPER_COLORS = {
+    "blue": "#2166ac",
+    "green": "#1b7837",
+    "orange": "#d95f02",
+    "red": "#b2182b",
+    "purple": "#7570b3",
+    "gray": "#636363",
+}
+
+
+def apply_paper_style(dpi: int = PAPER_DPI) -> None:
+    """Matplotlib rcParams for print-ready PNG/PDF (editable vector text)."""
+    plt.rcParams.update(
+        {
+            "font.family": "serif",
+            "font.serif": ["Times New Roman", "Nimbus Roman", "DejaVu Serif", "serif"],
+            "font.size": 10,
+            "axes.labelsize": 10,
+            "axes.titlesize": 10,
+            "axes.linewidth": 0.8,
+            "axes.unicode_minus": False,
+            "xtick.labelsize": 9,
+            "ytick.labelsize": 9,
+            "legend.fontsize": 9,
+            "figure.titlesize": 11,
+            "savefig.dpi": dpi,
+            "savefig.bbox": "tight",
+            "savefig.pad_inches": 0.03,
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+            "lines.linewidth": 1.5,
+            "lines.markersize": 5,
+            "grid.alpha": 0.25,
+            "grid.linewidth": 0.5,
+        }
+    )
 
 
 # --------------------------------------------------------------------------- #
@@ -361,7 +401,7 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
         fontsize=7,
         color="#b4413c",
     )
-    ax.set_xlabel("Slice LUTs (thousands) — curve: OOC estimate; ★: placed post-route")
+    ax.set_xlabel("Slice LUTs (thousands) — curve: OOC estimate; *: placed post-route")
     ax.set_ylabel("Spatial / board accuracy (%)")
     ax.set_title("(a) Accuracy vs area — Python OOC sweep + placed silicon")
     ax.legend(loc="lower right", fontsize=7)
@@ -370,7 +410,7 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
         0.02,
         0.02,
         "Blue line: Python spatial mean (OOC LUTs).\n"
-        f"Red ★: board EMG replay @ D=1024 ({DEPLOY_LUTS // 1000}k placed LUTs).",
+        f"Red *: board EMG replay @ D=1024 ({DEPLOY_LUTS // 1000}k placed LUTs).",
         transform=ax.transAxes,
         fontsize=7,
         va="bottom",
@@ -627,14 +667,19 @@ def fig_twist1(data: dict, out: Path, name: str = "twist1_informed_vs_random") -
     _save(fig, out, name)
 
 
-def load_twist2() -> dict | None:
-    path = REPO / "results/twist2/twist2_results.json"
-    if not path.is_file():
+def load_twist2(path: str = "results/twist2/twist2_results.json") -> dict | None:
+    p = REPO / path
+    if not p.is_file():
         return None
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(p.read_text(encoding="utf-8"))
 
 
-def fig_twist2(data: dict, out: Path) -> None:
+def fig_twist2(
+    data: dict,
+    out: Path,
+    name: str = "twist2_cross_subject",
+    ylim: tuple[float, float] | None = None,
+) -> None:
     """Twist 2 — local oracle vs pooled cross-subject mask on held-out subjects."""
     meta = data["meta"]
     result = data["result"]
@@ -647,17 +692,31 @@ def fig_twist2(data: dict, out: Path) -> None:
     mean_gap = result["mean_gap_local_minus_pooled_pp"]
     target = meta.get("target_gap_pp", 3.0)
     train_s = ",".join(str(s) for s in result["train_subjects"])
+    n = len(subs)
+    fig_w = max(7.5, 0.42 * n + 2.0)
 
-    fig, ax = plt.subplots(figsize=(7.5, 4.2))
-    ax.bar(x - w / 2, local, w, label="Local oracle (own-subject mask)", color="#4c78a8")
-    ax.bar(x + w / 2, pooled, w, label=f"Pooled transfer (train S{train_s})", color="#59a14f")
-    for i, (loc, pool) in enumerate(zip(local, pooled)):
-        ax.text(i - w / 2, loc + 0.3, f"{loc:.1f}", ha="center", va="bottom", fontsize=7)
-        ax.text(i + w / 2, pool + 0.3, f"{pool:.1f}", ha="center", va="bottom", fontsize=7)
-        ax.text(i, max(loc, pool) + 2.0, f"Δ{loc - pool:+.1f}", ha="center", fontsize=7, color="0.35")
+    fig, ax = plt.subplots(figsize=(fig_w, 4.2))
+    annotate = len(subs) <= 6
+    ax.bar(x - w / 2, local, w, label="Local oracle (own-subject mask)", color=PAPER_COLORS["blue"])
+    ax.bar(x + w / 2, pooled, w, label=f"Pooled transfer (train S{train_s})", color=PAPER_COLORS["green"])
+    if annotate:
+        for i, (loc, pool) in enumerate(zip(local, pooled)):
+            ax.text(i - w / 2, loc + 0.3, f"{loc:.1f}", ha="center", va="bottom", fontsize=7)
+            ax.text(i + w / 2, pool + 0.3, f"{pool:.1f}", ha="center", va="bottom", fontsize=7)
+            ax.text(i, max(loc, pool) + 2.0, f"Δ{loc - pool:+.1f}", ha="center", fontsize=7, color="0.35")
     ax.set_xticks(x, subs)
+    if not annotate:
+        ax.tick_params(axis="x", rotation=45)
+        for label in ax.get_xticklabels():
+            label.set_ha("right")
     ax.set_ylabel("Spatial accuracy (%)")
-    ax.set_ylim(55, 90)
+    vals = local + pooled
+    if ylim is None:
+        lo = max(0, min(vals) - 5)
+        hi = min(100, max(vals) + 8)
+        ax.set_ylim(lo, hi)
+    else:
+        ax.set_ylim(*ylim)
     ax.set_title(
         f"Twist 2 — cross-subject mask @ keep={result['keep_ratio']} "
         f"(D={result['D']}, CNT_W={result['cnt_w']})"
@@ -679,22 +738,34 @@ def fig_twist2(data: dict, out: Path) -> None:
         fontsize=11,
         y=1.02,
     )
-    _save(fig, out, "twist2_cross_subject")
+    _save(fig, out, name)
 
 
-def _save(fig, out: Path, name: str) -> None:
+def _save(fig, out: Path, name: str, dpi: int | None = None) -> None:
+    if dpi is None:
+        dpi = int(plt.rcParams["savefig.dpi"])
     fig.tight_layout(rect=(0, 0.03, 1, 0.98))
     for ext in ("png", "pdf"):
         p = out / f"{name}.{ext}"
-        fig.savefig(p, dpi=200 if ext == "png" else None, bbox_inches="tight")
-    print(f"  wrote {name}.png / .pdf")
+        fig.savefig(
+            p,
+            dpi=dpi,
+            bbox_inches="tight",
+            pad_inches=0.03,
+            facecolor="white",
+            edgecolor="none",
+        )
+    print(f"  wrote {name}.png / .pdf @ {dpi} dpi")
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", default="results/figures", help="output dir (rel to repo root)")
+    ap.add_argument("--dpi", type=int, default=PAPER_DPI, help="PNG/PDF rasterization DPI")
     ap.add_argument("--show", action="store_true", help="also open interactive windows")
     args = ap.parse_args()
+
+    apply_paper_style(dpi=args.dpi)
 
     if args.show:
         matplotlib.use("TkAgg", force=True)
@@ -731,6 +802,11 @@ def main() -> None:
         fig_twist2(twist2, out)
     else:
         print("  skip twist2_cross_subject (missing results/twist2/twist2_results.json)")
+    twist2_36 = load_twist2("results/twist2_36/twist2_results.json")
+    if twist2_36:
+        fig_twist2(twist2_36, out, name="twist2_cross_subject_36")
+    else:
+        print("  skip twist2_cross_subject_36 (missing results/twist2_36/)")
 
     if args.show:
         plt.show()
