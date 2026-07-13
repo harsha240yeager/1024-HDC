@@ -52,20 +52,22 @@ PAPER_COLORS = {
 }
 
 
-def apply_paper_style(dpi: int = PAPER_DPI) -> None:
+def apply_paper_style(dpi: int = PAPER_DPI, paper: bool = False) -> None:
     """Matplotlib rcParams for print-ready PNG/PDF (editable vector text)."""
+    font_size = 8 if paper else 10
+    tick_size = 7 if paper else 9
     plt.rcParams.update(
         {
             "font.family": "serif",
             "font.serif": ["Times New Roman", "Nimbus Roman", "DejaVu Serif", "serif"],
-            "font.size": 10,
-            "axes.labelsize": 10,
-            "axes.titlesize": 10,
+            "font.size": font_size,
+            "axes.labelsize": font_size,
+            "axes.titlesize": font_size,
             "axes.linewidth": 0.8,
             "axes.unicode_minus": False,
-            "xtick.labelsize": 9,
-            "ytick.labelsize": 9,
-            "legend.fontsize": 9,
+            "xtick.labelsize": tick_size,
+            "ytick.labelsize": tick_size,
+            "legend.fontsize": tick_size,
             "figure.titlesize": 11,
             "savefig.dpi": dpi,
             "savefig.bbox": "tight",
@@ -78,6 +80,68 @@ def apply_paper_style(dpi: int = PAPER_DPI) -> None:
             "grid.linewidth": 0.5,
         }
     )
+
+
+PAPER_MODE = False
+
+
+def _paper_tick_labels(names: list[str]) -> list[str]:
+    short = {
+        "PL DMA\n(batch)": "PL",
+        "ARM HDC\n(PS)": "ARM",
+        "MLP\nint8": "MLP",
+    }
+    return [short.get(n, n.replace("\n", " ")) for n in names]
+
+
+# Native width (in) for IEEE single-column figures; height tuned per layout.
+IEEE_COL_W = 3.5
+
+
+def panel_tag(ax, label: str) -> None:
+    """Single subplot letter tag for LaTeX (caption carries the figure title)."""
+    ax.text(
+        0.03,
+        0.97,
+        label,
+        transform=ax.transAxes,
+        fontsize=8,
+        fontweight="bold",
+        va="top",
+        ha="left",
+        bbox=dict(boxstyle="round,pad=0.12", facecolor="white", edgecolor="none", alpha=0.85),
+    )
+
+
+def set_figure_title(ax, panel: str | None, full: str) -> None:
+    """LaTeX caption carries titles and panel letters; paper mode leaves axes bare."""
+    if PAPER_MODE:
+        ax.set_title("")
+        return
+    ax.set_title(full)
+
+
+def _save(fig, out: Path, name: str, dpi: int | None = None) -> None:
+    if dpi is None:
+        dpi = int(plt.rcParams["savefig.dpi"])
+    if PAPER_MODE:
+        try:
+            fig.tight_layout(pad=0.2, w_pad=0.35, h_pad=0.35)
+        except Exception:
+            pass
+    else:
+        fig.tight_layout(rect=(0, 0.03, 1, 0.98))
+    for ext in ("png", "pdf"):
+        p = out / f"{name}.{ext}"
+        fig.savefig(
+            p,
+            dpi=dpi,
+            bbox_inches="tight",
+            pad_inches=0.02 if PAPER_MODE else 0.03,
+            facecolor="white",
+            edgecolor="none",
+        )
+    print(f"  wrote {name}.png / .pdf @ {dpi} dpi")
 
 
 # --------------------------------------------------------------------------- #
@@ -363,49 +427,82 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
     pl = [p for p in silicon if p["path"] == "PL"]
     arm = next(p for p in silicon if p["path"] == "ARM")
 
-    fig, axes = plt.subplots(1, 2, figsize=(3.5, 2.3) if PAPER_MODE else (12.5, 4.8))
+    if PAPER_MODE:
+        fig, axes = plt.subplots(1, 2, figsize=(IEEE_COL_W, 1.75))
+        fig.subplots_adjust(wspace=0.42)
+    else:
+        fig, axes = plt.subplots(1, 2, figsize=(12.5, 4.8))
 
-    # --- (a) Accuracy vs OOC slice LUTs (D sweep) + deployed D=1024 ---
-    ax = axes[0]
     luts_k = [r["luts"] / 1000 for r in ladder]
     acc_py = [r["acc"] for r in ladder]
-    ax.plot(luts_k, acc_py, "o-", color="#4c78a8", lw=1.6, ms=6, label="Python sweep (CNT_W=6, keep=1.0)")
-    for r in ladder:
-        over = r["luts"] > DEVICE_LUT_BUDGET
-        ax.annotate(
-            f"D={r['D']}",
-            xy=(r["luts"] / 1000, r["acc"]),
-            xytext=(5, -12 if not over else 5),
-            textcoords="offset points",
-            fontsize=7,
-            color="#b4413c" if over else "0.25",
-        )
+    py_label = "Python OOC" if PAPER_MODE else "Python sweep (CNT_W=6, keep=1.0)"
+    ann_fs = 5 if PAPER_MODE else 7
+
+    # --- (a) Accuracy vs OOC slice LUTs ---
+    ax = axes[0]
+    ax.plot(luts_k, acc_py, "o-", color="#4c78a8", lw=1.2, ms=3 if PAPER_MODE else 6, label=py_label)
+    if PAPER_MODE:
+        for r in ladder:
+            if r["D"] in (1024, 2048):
+                ax.annotate(
+                    f"D={r['D']}",
+                    xy=(r["luts"] / 1000, r["acc"]),
+                    xytext=(4, -7 if r["D"] == 1024 else 5),
+                    textcoords="offset points",
+                    fontsize=ann_fs,
+                    color="#b4413c" if r["D"] == 2048 else "0.35",
+                )
+    else:
+        for r in ladder:
+            over = r["luts"] > DEVICE_LUT_BUDGET
+            ax.annotate(
+                f"D={r['D']}",
+                xy=(r["luts"] / 1000, r["acc"]),
+                xytext=(3, -9 if not over else 3),
+                textcoords="offset points",
+                fontsize=ann_fs,
+                color="#b4413c" if over else "0.25",
+            )
     d1024 = next(r for r in ladder if r["D"] == 1024)
+    sil_label = "Silicon" if PAPER_MODE else f"Silicon EMG @ D=1024 ({DEPLOY_LUTS // 1000}k LUT, placed)"
     ax.scatter(
         [DEPLOY_LUTS / 1000],
         [pl[0]["acc"] if pl else d1024["acc"]],
-        s=120,
+        s=55 if PAPER_MODE else 120,
         c="#e15759",
         marker="*",
         zorder=5,
-        label=f"Silicon EMG @ D=1024 ({DEPLOY_LUTS // 1000}k LUT, placed)",
+        label=sil_label,
     )
-    ax.axvline(DEVICE_LUT_BUDGET / 1000, color="#b4413c", ls="--", lw=0.9, alpha=0.7)
-    ax.text(
-        DEVICE_LUT_BUDGET / 1000 - 0.8,
-        60.5,
-        "xc7z020\nLUT budget",
-        rotation=90,
-        va="bottom",
-        ha="right",
-        fontsize=7,
-        color="#b4413c",
-    )
-    ax.set_xlabel("Slice LUTs (thousands) — curve: OOC estimate; *: placed post-route")
-    ax.set_ylabel("Spatial / board accuracy (%)")
+    ax.axvline(DEVICE_LUT_BUDGET / 1000, color="#b4413c", ls="--", lw=0.7, alpha=0.65)
+    if PAPER_MODE:
+        ax.text(
+            DEVICE_LUT_BUDGET / 1000,
+            59.5,
+            "LUT\nbudget",
+            rotation=90,
+            va="bottom",
+            ha="center",
+            fontsize=5,
+            color="#b4413c",
+        )
+    else:
+        ax.text(
+            DEVICE_LUT_BUDGET / 1000 - 0.8,
+            60.5,
+            "xc7z020\nLUT budget",
+            rotation=90,
+            va="bottom",
+            ha="right",
+            fontsize=7,
+            color="#b4413c",
+        )
+    ax.set_xlabel("LUTs (k)" if PAPER_MODE else "Slice LUTs (thousands) — curve: OOC estimate; *: placed post-route")
+    ax.set_ylabel("Accuracy (%)" if PAPER_MODE else "Spatial / board accuracy (%)")
     set_figure_title(ax, "(a)", "(a) Accuracy vs area — Python OOC sweep + placed silicon")
-    ax.legend(loc="lower right", fontsize=7)
-    ax.set_ylim(58, 82)
+    ax.legend(loc="lower right", fontsize=5 if PAPER_MODE else 7, frameon=False)
+    ax.set_ylim(58, 80 if PAPER_MODE else 82)
+    ax.tick_params(labelsize=6 if PAPER_MODE else 9)
     if not PAPER_MODE:
         ax.text(
             0.02,
@@ -418,7 +515,7 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
             color="0.35",
         )
 
-    # --- (b) Measured energy at D=1024 anchors (board accuracy) ---
+    # --- (b) Measured energy at D=1024 anchors ---
     ax = axes[1]
     for p in pl:
         ax.errorbar(
@@ -426,41 +523,58 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
             p["acc"],
             xerr=p["uj_std"],
             fmt="o",
-            ms=8,
-            capsize=3,
+            ms=4 if PAPER_MODE else 8,
+            capsize=1.5 if PAPER_MODE else 3,
             color="#4c78a8",
-            label="PL DMA batch" if p["anchor"] == "A" else None,
+            label="PL DMA batch" if p["anchor"] == "A" and not PAPER_MODE else None,
         )
-        ax.annotate(
-            f"{p['anchor']} (keep={p['keep']})",
-            xy=(p["uj"], p["acc"]),
-            xytext=(8, 6),
-            textcoords="offset points",
-            fontsize=7,
-        )
+        if PAPER_MODE:
+            ax.annotate(
+                p["anchor"],
+                xy=(p["uj"], p["acc"]),
+                xytext=(2, 2),
+                textcoords="offset points",
+                fontsize=5,
+            )
+        else:
+            ax.annotate(
+                f"{p['anchor']} (keep={p['keep']})",
+                xy=(p["uj"], p["acc"]),
+                xytext=(8, 6),
+                textcoords="offset points",
+                fontsize=7,
+            )
     ax.errorbar(
         arm["uj"],
         arm["acc"],
         xerr=arm["uj_std"],
         fmt="s",
-        ms=8,
-        capsize=3,
+        ms=4 if PAPER_MODE else 8,
+        capsize=1.5 if PAPER_MODE else 3,
         color="#e15759",
-        label="ARM PS software",
+        label="ARM" if PAPER_MODE else "ARM PS software",
     )
-    ax.annotate(
-        "ARM (host acc)",
-        xy=(arm["uj"], arm["acc"]),
-        xytext=(8, -10),
-        textcoords="offset points",
-        fontsize=7,
-    )
+    if not PAPER_MODE:
+        ax.annotate(
+            "ARM (host acc)",
+            xy=(arm["uj"], arm["acc"]),
+            xytext=(8, -10),
+            textcoords="offset points",
+            fontsize=7,
+        )
     ax.set_xscale("log")
-    ax.set_xlabel("Measured total energy (µJ/window, J21 batch)")
-    ax.set_ylabel("Board / baseline accuracy (%)")
+    ax.set_xlabel("Energy (µJ/w)" if PAPER_MODE else "Measured total energy (µJ/window, J21 batch)")
+    ax.set_ylabel("Accuracy (%)" if PAPER_MODE else "Board / baseline accuracy (%)")
     set_figure_title(ax, "(b)", "(b) Measured energy — flat PL, ARM ~175× (static-dominated PL)")
-    ax.legend(loc="lower left", fontsize=7)
-    ax.set_ylim(73.8, 74.6)
+    if PAPER_MODE:
+        ax.legend(loc="lower left", fontsize=5, frameon=False, handles=[
+            plt.Line2D([0], [0], marker="o", color="#4c78a8", ls="", ms=4, label="PL"),
+            plt.Line2D([0], [0], marker="s", color="#e15759", ls="", ms=4, label="ARM"),
+        ])
+    else:
+        ax.legend(loc="lower left", fontsize=7)
+    ax.set_ylim(73.85, 74.45 if PAPER_MODE else 74.6)
+    ax.tick_params(labelsize=6 if PAPER_MODE else 9)
     if not PAPER_MODE:
         ax.text(
             0.02,
@@ -486,54 +600,93 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
 def fig_fisher_heatmap(fisher: dict, out: Path) -> None:
     """Pooled Fisher scores + informed keep masks (silicon mask layout 16×64 bits)."""
     scores = fisher["scores_2d"]
-    fig, axes = plt.subplots(2, 2, figsize=(3.5, 3.4) if PAPER_MODE else (11.5, 7.5), gridspec_kw={"height_ratios": [1.2, 1]})
+    rank = np.argsort(-fisher["scores"])
+    ranked = fisher["scores"][rank]
+    n_nonzero = int((fisher["scores"] > 0).sum())
+
+    if PAPER_MODE:
+        fig = plt.figure(figsize=(IEEE_COL_W, 2.15))
+        gs = fig.add_gridspec(2, 2, height_ratios=[1.05, 0.95], hspace=0.55, wspace=0.4)
+        axes = np.array([[fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])],
+                         [fig.add_subplot(gs[1, 0]), fig.add_subplot(gs[1, 1])]])
+        tick_fs = 5
+    else:
+        fig, axes = plt.subplots(2, 2, figsize=(11.5, 7.5), gridspec_kw={"height_ratios": [1.2, 1]})
+        tick_fs = 9
 
     ax = axes[0, 0]
     im = ax.imshow(scores, aspect="auto", cmap="viridis", interpolation="nearest")
     set_figure_title(ax, "(a)", "(a) Pooled Fisher score (TRAIN, 5 subjects)")
-    ax.set_xlabel("Bit index within 64-bit word")
-    ax.set_ylabel("Word index (0–15)")
-    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label="Fisher score")
+    ax.set_xlabel("Bit" if PAPER_MODE else "Bit index within 64-bit word")
+    ax.set_ylabel("Word" if PAPER_MODE else "Word index (0–15)")
+    if PAPER_MODE:
+        ax.set_xticks([0, 32, 63])
+        ax.set_yticks([0, 8, 15])
+        ax.tick_params(labelsize=tick_fs)
+        cbar = fig.colorbar(im, ax=ax, fraction=0.05, pad=0.04)
+        cbar.ax.tick_params(labelsize=5, length=2)
+        cbar.set_label("Score", fontsize=5)
+    else:
+        cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+        cbar.set_label("Fisher score")
 
     ax = axes[0, 1]
-    rank = np.argsort(-fisher["scores"])
-    ranked = fisher["scores"][rank]
-    n_nonzero = int((fisher["scores"] > 0).sum())
-    ax.plot(np.arange(1, 1025), ranked, color="#4c78a8", lw=1.2)
-    ax.axvline(512, color="#f28e2b", ls="--", lw=1, label="keep=0.5 (512 bits)")
-    ax.axvline(128, color="#e15759", ls="--", lw=1, label="keep=0.125 (128 bits)")
-    ax.axvline(n_nonzero + 0.5, color="0.55", ls=":", lw=0.9, label=f"score=0 after rank {n_nonzero}")
-    ax.set_xlabel("Rank (1 = highest Fisher score)")
-    ax.set_ylabel("Fisher score")
+    ax.plot(np.arange(1, 1025), ranked, color="#4c78a8", lw=1.0 if PAPER_MODE else 1.2)
+    ax.axvline(512, color="#f28e2b", ls="--", lw=0.9)
+    ax.axvline(128, color="#e15759", ls="--", lw=0.9)
+    if not PAPER_MODE:
+        ax.axvline(n_nonzero + 0.5, color="0.55", ls=":", lw=0.9, label=f"score=0 after rank {n_nonzero}")
+        ax.legend(fontsize=7, loc="upper right")
+    elif PAPER_MODE:
+        ax.text(135, ranked[127] * 0.92, "0.125", fontsize=5, color="#e15759", ha="left")
+        ax.text(520, ranked[511] * 0.92, "0.5", fontsize=5, color="#f28e2b", ha="left")
+    ax.set_xlabel("Rank" if PAPER_MODE else "Rank (1 = highest Fisher score)")
+    ax.set_ylabel("Score" if PAPER_MODE else "Fisher score")
     set_figure_title(ax, "(b)", "(b) Score rank — anchor cutoffs")
-    ax.legend(fontsize=7, loc="upper right")
     ax.set_xlim(1, 1024)
+    if PAPER_MODE:
+        ax.tick_params(labelsize=tick_fs)
 
     masks = [
-        ("(c)", "(c) Informed mask @ keep=0.5", fisher["mask_05"], "#f28e2b"),
-        ("(d)", "(d) Informed mask @ keep=0.125", fisher["mask_0125"], "#e15759"),
+        ("(c)", "(c) Informed mask @ keep=0.5", fisher["mask_05"], "#f28e2b", "B"),
+        ("(d)", "(d) Informed mask @ keep=0.125", fisher["mask_0125"], "#e15759", "C"),
     ]
-    for ax, (panel, title, mask, edge) in zip(axes[1], masks):
+    for ax, (panel, title, mask, edge, anchor) in zip(axes[1], masks):
         ax.imshow(mask, aspect="auto", cmap="gray_r", vmin=0, vmax=1, interpolation="nearest")
         set_figure_title(ax, panel, title)
-        ax.set_xlabel("Bit in word")
+        ax.set_xlabel("Bit" if PAPER_MODE else "Bit in word")
         ax.set_ylabel("Word")
-        n_keep = int(mask.sum())
-        tie_note = ""
-        if n_keep == 512:
-            tie_note = f"\n{512 - n_nonzero} zero-score bits by index order"
-        ax.text(
-            0.02,
-            0.98,
-            f"keep {n_keep}/1024 ({100.0 * n_keep / 1024:.1f}%){tie_note}",
-            transform=ax.transAxes,
-            va="top",
-            fontsize=8,
-            bbox=dict(boxstyle="round", facecolor="white", alpha=0.8),
-        )
-        for spine in ax.spines.values():
-            spine.set_edgecolor(edge)
-            spine.set_linewidth(2)
+        if PAPER_MODE:
+            ax.set_xticks([])
+            ax.set_yticks([0, 15])
+            ax.tick_params(labelsize=tick_fs)
+            ax.text(
+                0.03,
+                0.97,
+                f"Anchor {anchor}",
+                transform=ax.transAxes,
+                fontsize=5,
+                va="top",
+                ha="left",
+                color="0.35",
+            )
+        else:
+            n_keep = int(mask.sum())
+            tie_note = ""
+            if n_keep == 512:
+                tie_note = f"\n{512 - n_nonzero} zero-score bits by index order"
+            ax.text(
+                0.02,
+                0.98,
+                f"keep {n_keep}/1024 ({100.0 * n_keep / 1024:.1f}%){tie_note}",
+                transform=ax.transAxes,
+                va="top",
+                fontsize=8,
+                bbox=dict(boxstyle="round", facecolor="white", alpha=0.8),
+            )
+            for spine in ax.spines.values():
+                spine.set_edgecolor(edge)
+                spine.set_linewidth(2)
 
     if not PAPER_MODE:
         fig.suptitle(
@@ -556,51 +709,103 @@ def fig_fisher_heatmap(fisher: dict, out: Path) -> None:
 
 def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     """Accuracy, latency, and measured energy for PL vs ARM vs MLP."""
-    fig, axes = plt.subplots(1, 3, figsize=(3.5, 2.2) if PAPER_MODE else (12.0, 4.5))
     names = [s["name"] for s in systems]
-    x = np.arange(len(names))
+    tick = _paper_tick_labels(names) if PAPER_MODE else names
     colors = [s["color"] for s in systems]
+    fs = 5 if PAPER_MODE else 7
 
+    if PAPER_MODE:
+        fig, axes = plt.subplots(1, 3, figsize=(IEEE_COL_W, 1.55))
+        fig.subplots_adjust(wspace=0.62)
+    else:
+        fig, axes = plt.subplots(1, 3, figsize=(12.0, 4.5))
+
+    # (a) Accuracy — all three systems
     ax = axes[0]
+    x = np.arange(len(names))
     acc = [s["acc"] for s in systems]
-    bars = ax.bar(x, acc, color=colors, width=0.55, edgecolor="0.2", linewidth=0.6)
-    ax.axhline(74.15, color="0.5", ls=":", lw=0.9, label="Hook A Python ref (74.15%)")
-    ax.set_xticks(x, names, fontsize=8)
-    ax.set_ylabel("Spatial / board accuracy (%)")
-    ax.set_ylim(70, 96)
+    bars = ax.bar(x, acc, color=colors, width=0.58, edgecolor="0.2", linewidth=0.5)
+    if PAPER_MODE:
+        ax.axhline(74.15, color="0.65", ls=":", lw=0.7, zorder=0)
+    else:
+        ax.axhline(74.15, color="0.5", ls=":", lw=0.9, label="Hook A Python ref (74.15%)")
+    ax.set_xticks(x, tick, fontsize=fs)
+    ax.set_ylabel("Acc. (%)" if PAPER_MODE else "Spatial / board accuracy (%)")
+    ax.set_ylim(70, 98 if PAPER_MODE else 96)
     set_figure_title(ax, "(a)", "(a) Accuracy")
-    ax.legend(fontsize=7, loc="upper left")
+    if not PAPER_MODE:
+        ax.legend(fontsize=fs, loc="upper left")
     for bar, v in zip(bars, acc):
-        ax.text(bar.get_x() + bar.get_width() / 2, v + 0.4, f"{v:.2f}%", ha="center", fontsize=7)
+        if PAPER_MODE and v < 80:
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                v - 2.5,
+                f"{v:.1f}",
+                ha="center",
+                va="top",
+                fontsize=fs,
+                color="white",
+                fontweight="bold",
+            )
+        else:
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                v + 0.6,
+                f"{v:.1f}",
+                ha="center",
+                fontsize=fs,
+            )
+    if PAPER_MODE:
+        ax.tick_params(axis="y", labelsize=fs)
 
+    # (b) Latency — PL and ARM only
     ax = axes[1]
     lat_names = [s["name"] for s in systems if s["lat_us"] is not None]
+    lat_tick = _paper_tick_labels(lat_names) if PAPER_MODE else lat_names
     lat_vals = [s["lat_us"] for s in systems if s["lat_us"] is not None]
     lat_colors = [s["color"] for s in systems if s["lat_us"] is not None]
     xl = np.arange(len(lat_names))
-    ax.bar(xl, lat_vals, color=lat_colors, width=0.5, edgecolor="0.2", linewidth=0.6)
+    ax.bar(xl, lat_vals, color=lat_colors, width=0.52, edgecolor="0.2", linewidth=0.5)
     ax.set_yscale("log")
-    ax.set_xticks(xl, lat_names, fontsize=8)
-    ax.set_ylabel("Latency (µs/window, log)")
+    ax.set_xticks(xl, lat_tick, fontsize=fs)
+    ax.set_ylabel("µs (log)" if PAPER_MODE else "Latency (µs/window, log)")
     set_figure_title(ax, "(b)", "(b) On-board latency")
     for i, v in enumerate(lat_vals):
-        ax.text(i, v * 1.15, f"{v:.0f} µs", ha="center", fontsize=7)
-    ax.text(0.98, 0.05, "MLP: not on-board", transform=ax.transAxes, ha="right", fontsize=7, color="0.45")
+        ax.text(i, v * 1.15, f"{v:.0f}", ha="center", fontsize=fs)
+    if not PAPER_MODE:
+        ax.text(0.98, 0.05, "MLP: not on-board", transform=ax.transAxes, ha="right", fontsize=7, color="0.45")
+    if PAPER_MODE:
+        ax.tick_params(axis="y", labelsize=fs)
 
+    # (c) Energy — PL and ARM only
     ax = axes[2]
     en_names = [s["name"] for s in systems if s["uj"] is not None]
+    en_tick = _paper_tick_labels(en_names) if PAPER_MODE else en_names
     en_vals = [s["uj"] for s in systems if s["uj"] is not None]
     en_std = [s["uj_std"] for s in systems if s["uj"] is not None]
     en_colors = [s["color"] for s in systems if s["uj"] is not None]
     xe = np.arange(len(en_names))
-    ax.bar(xe, en_vals, yerr=en_std, capsize=4, color=en_colors, width=0.5, edgecolor="0.2", linewidth=0.6)
+    ax.bar(
+        xe,
+        en_vals,
+        yerr=en_std,
+        capsize=1.5 if PAPER_MODE else 4,
+        color=en_colors,
+        width=0.52,
+        edgecolor="0.2",
+        linewidth=0.5,
+        error_kw={"elinewidth": 0.7 if PAPER_MODE else 1.0},
+    )
     ax.set_yscale("log")
-    ax.set_xticks(xe, en_names, fontsize=8)
-    ax.set_ylabel("Total energy (µJ/window, J21 log)")
+    ax.set_xticks(xe, en_tick, fontsize=fs)
+    ax.set_ylabel("µJ (log)" if PAPER_MODE else "Total energy (µJ/window, J21 log)")
     set_figure_title(ax, "(c)", "(c) Measured batch energy")
     for i, v in enumerate(en_vals):
-        ax.text(i, v * 1.25, f"{v:.1f}", ha="center", fontsize=7)
-    ax.text(0.98, 0.05, "MLP: not measured", transform=ax.transAxes, ha="right", fontsize=7, color="0.45")
+        ax.text(i, v * 1.22, f"{v:.0f}", ha="center", fontsize=fs)
+    if not PAPER_MODE:
+        ax.text(0.98, 0.05, "MLP: not measured", transform=ax.transAxes, ha="right", fontsize=7, color="0.45")
+    if PAPER_MODE:
+        ax.tick_params(axis="y", labelsize=fs)
 
     if not PAPER_MODE:
         fig.suptitle(
@@ -703,7 +908,7 @@ def fig_twist2(
     train_s = ",".join(str(s) for s in result["train_subjects"])
     n = len(subs)
     if PAPER_MODE:
-        fig_w, fig_h = 3.5, 2.4
+        fig_w, fig_h = IEEE_COL_W, 2.1
         legend_train = f"Pooled transfer (train S{result['train_subjects'][0]}--{result['train_subjects'][-1]})"
     else:
         fig_w = max(8.5, 0.48 * n + 2.5)
@@ -760,53 +965,6 @@ def fig_twist2(
     _save(fig, out, name)
 
 
-PAPER_MODE = False
-
-
-def panel_label(ax, label: str) -> None:
-    """Minimal (a)/(b) tag for LaTeX captions (no duplicate figure title)."""
-    ax.text(
-        0.02,
-        0.98,
-        label,
-        transform=ax.transAxes,
-        fontsize=9,
-        fontweight="bold",
-        va="top",
-        ha="left",
-        bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.9),
-    )
-
-
-def set_figure_title(ax, panel: str | None, full: str) -> None:
-    if PAPER_MODE:
-        ax.set_title("")
-        if panel:
-            panel_label(ax, panel)
-    else:
-        ax.set_title(full)
-
-
-def _save(fig, out: Path, name: str, dpi: int | None = None) -> None:
-    if dpi is None:
-        dpi = int(plt.rcParams["savefig.dpi"])
-    if PAPER_MODE:
-        fig.tight_layout(pad=0.25)
-    else:
-        fig.tight_layout(rect=(0, 0.03, 1, 0.98))
-    for ext in ("png", "pdf"):
-        p = out / f"{name}.{ext}"
-        fig.savefig(
-            p,
-            dpi=dpi,
-            bbox_inches="tight",
-            pad_inches=0.02 if PAPER_MODE else 0.03,
-            facecolor="white",
-            edgecolor="none",
-        )
-    print(f"  wrote {name}.png / .pdf @ {dpi} dpi")
-
-
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", default="results/figures", help="output dir (rel to repo root)")
@@ -822,7 +980,7 @@ def main() -> None:
     global PAPER_MODE
     PAPER_MODE = args.paper
 
-    apply_paper_style(dpi=args.dpi)
+    apply_paper_style(dpi=args.dpi, paper=args.paper)
 
     if args.show:
         matplotlib.use("TkAgg", force=True)
