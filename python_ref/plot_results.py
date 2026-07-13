@@ -432,43 +432,74 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
     d1024 = next(r for r in ladder if r["D"] == 1024)
 
     if PAPER_MODE:
-        fig, ax = plt.subplots(figsize=(IEEE_COL_W, 1.65))
-        ax.plot(luts_k, acc_py, "o-", color="#4c78a8", lw=1.2, ms=3, label="Python OOC")
+        sil_acc = pl[0]["acc"] if pl else d1024["acc"]
+        sil_luts_k = DEPLOY_LUTS / 1000
+        budget_k = DEVICE_LUT_BUDGET / 1000
+
+        fig, ax = plt.subplots(figsize=(IEEE_COL_W, 2.15))
+        ax.plot(luts_k, acc_py, "o-", color="#4c78a8", lw=1.4, ms=4, label="Python OOC", zorder=2)
+
+        # Per-point D labels with fixed offsets to avoid overlap.
+        d_offsets = {
+            256: (0, -12),
+            512: (0, 10),
+            1024: (-12, -12),
+            2048: (-6, 10),
+        }
         for r in ladder:
-            if r["D"] in (1024, 2048):
-                ax.annotate(
-                    f"D={r['D']}",
-                    xy=(r["luts"] / 1000, r["acc"]),
-                    xytext=(4, -7 if r["D"] == 1024 else 5),
-                    textcoords="offset points",
-                    fontsize=5,
-                    color="#b4413c" if r["D"] == 2048 else "0.35",
-                )
+            d = r["D"]
+            over = r["luts"] > DEVICE_LUT_BUDGET
+            ax.annotate(
+                f"D={d}",
+                xy=(r["luts"] / 1000, r["acc"]),
+                xytext=d_offsets.get(d, (4, 4)),
+                textcoords="offset points",
+                fontsize=6,
+                color="#b2182b" if over else "0.30",
+                ha="center",
+                va="center",
+            )
+
         ax.scatter(
-            [DEPLOY_LUTS / 1000],
-            [pl[0]["acc"] if pl else d1024["acc"]],
-            s=55,
+            [sil_luts_k],
+            [sil_acc],
+            s=90,
             c="#e15759",
             marker="*",
+            edgecolors="0.2",
+            linewidths=0.4,
             zorder=5,
-            label="Silicon",
+            label="Silicon (placed)",
         )
-        ax.axvline(DEVICE_LUT_BUDGET / 1000, color="#b4413c", ls="--", lw=0.7, alpha=0.65)
-        ax.text(
-            DEVICE_LUT_BUDGET / 1000,
-            59.5,
-            "LUT\nbudget",
-            rotation=90,
-            va="bottom",
+        ax.annotate(
+            f"Silicon\n{sil_luts_k:.0f}k LUT",
+            xy=(sil_luts_k, sil_acc),
+            xytext=(46, 78.8),
+            fontsize=6,
+            color="#b2182b",
             ha="center",
-            fontsize=5,
-            color="#b4413c",
+            va="center",
+            arrowprops=dict(arrowstyle="-|>", color="#b2182b", lw=0.9, shrinkA=4, shrinkB=3),
         )
-        ax.set_xlabel("LUTs (k)")
-        ax.set_ylabel("Accuracy (%)")
-        ax.legend(loc="lower right", fontsize=5, frameon=False)
-        ax.set_ylim(58, 80)
+
+        ax.axvline(budget_k, color="#b2182b", ls="--", lw=0.9, alpha=0.75, zorder=1)
+        ax.text(
+            budget_k + 0.8,
+            79.6,
+            "53k LUT\nbudget",
+            fontsize=6,
+            color="#b2182b",
+            ha="left",
+            va="top",
+        )
+
+        ax.set_xlabel("Slice LUTs (k, OOC)")
+        ax.set_ylabel("Spatial accuracy (%)")
+        ax.set_xlim(4, 62)
+        ax.set_ylim(68.5, 81)
+        ax.legend(loc="lower right", fontsize=6, frameon=True, framealpha=0.92, edgecolor="0.8")
         ax.tick_params(labelsize=6)
+        ax.grid(True, axis="y", alpha=0.2, linewidth=0.5)
         _save(fig, out, "hookA_pareto_measured")
         return
 
