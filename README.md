@@ -50,7 +50,7 @@ positions* should survive pruning?
 | # | Contribution | Main result |
 |---|--------------|-------------|
 | 1 | **Hook A** — Pareto over \(D\), bundle precision, Fisher keep | Informed prune to **87.5%** is **iso-accuracy** on silicon; PL **~175×** lower energy than ARM |
-| 2 | **Twist 1** — bit *position* vs bit *count* | At **128 bits**, informed beats random by **+8.63 pp** |
+| 2 | **Twist 1** — bit *position* vs bit *count* | Python **+8.63 pp**; **silicon +10.91 pp** @ 128 bits |
 | 3 | **Twist 2** — shared mask across subjects | Pooled mask loses only **+0.86 pp** vs local oracle |
 
 **Important:** The deployment encoder achieves **~74%** spatial accuracy. Literature-class
@@ -70,7 +70,8 @@ paper, not an accuracy SOTA claim.
 | ARM HDC latency | **819 µs**/window | [`arm_hdc_board_timing.txt`](results/baselines/arm_hdc_board_timing.txt) |
 | PL energy (anchor A) | **11.98 ± 0.07 µJ**/w | [`energy_summary.txt`](results/phase3/energy_summary.txt) |
 | ARM energy | **2088 ± 6 µJ**/w | same |
-| Twist 1 @ keep=0.125 | **+8.63 pp** (informed − random) | [`twist1_keep0125/`](results/twist1_keep0125/) |
+| Twist 1 @ keep=0.125 | **+8.63 pp** (informed − random, Python) | [`twist1_keep0125/`](results/twist1_keep0125/) |
+| Twist 1 @ keep=0.125 (silicon) | **+10.91 pp** (74.32% vs 63.41% board) | [`twist1_silicon/`](results/phase3/twist1_silicon/) |
 | Twist 2 transfer | **+0.86 pp** (local − pooled) | [`twist2/`](results/twist2/) |
 | PL resources | 35.2k LUT, **0 DSP**, **0 BRAM** | Post-route Phase 3 |
 
@@ -87,7 +88,7 @@ paper, not an accuracy SOTA claim.
 | Hook A Python sweep (320 rows) | ✅ |
 | INA219 energy A/B/C + ARM | ✅ |
 | Silicon anchor replays A/B/C | ✅ |
-| Twist 1 + Twist 2 (full runs) | ✅ |
+| Twist 1 + Twist 2 (Python + silicon Twist 1) | ✅ |
 | Paper figures | ✅ [`results/figures/`](results/figures/) |
 | DATE manuscript | ⏳ [`paper/`](paper/) (local / Overleaf) |
 
@@ -253,6 +254,20 @@ python3 python_ref/run_twist1_sweep.py --keep 0.125 --out-dir results/twist1_kee
 At aggressive compression, **which bits** you keep matters: informed preserves accuracy;
 random collapses. Headline figure: [`twist1_informed_vs_random_keep0125.png`](results/figures/twist1_informed_vs_random_keep0125.png).
 
+**Silicon (ZedBoard, pooled mask @ keep=0.125, 658k windows, 2026-07-13):**
+
+```bash
+bash board/HDC_DMA/run_twist1_board.sh --random-seeds 0
+```
+
+| Condition | Board accuracy |
+|-----------|----------------|
+| Fisher informed (anchor C) | **74.32%** |
+| Random iso-density (seed 0) | **63.41%** |
+| **Gap** | **+10.91 pp** ✅ (PASS, Δ0.00% vs export ref) |
+
+Evidence: [`results/phase3/twist1_silicon/`](results/phase3/twist1_silicon/).
+
 ### Twist 2 — cross-subject mask transfer
 
 Mask from S1–3 TRAIN (106,379 windows) → test S4–5 with **own prototypes**.
@@ -331,7 +346,7 @@ Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
 |----------|------------------|
 | Bit-exact verified streaming HDC on Zynq | Matching ~90% on FPGA |
 | Iso-accuracy informed pruning to 87.5% | Pruning reduces measured J21 µJ |
-| Informed ≫ random at 128 bits (+8.6 pp) | Beating 93% MLP |
+| Informed ≫ random at 128 bits (Python + silicon) | Beating 93% MLP |
 | Cross-subject transfer ≤3 pp (pilot + 36 UCI) | PL-only Vcc_int power |
 | PL ~175× lower energy than ARM SW | |
 
@@ -388,6 +403,7 @@ cd board/HDC_DMA && bash build_sw.sh
 bash run_phase3_bench.sh
 bash run_phase3_emg.sh
 bash run_anchor_replay.sh ALL
+bash run_twist1_board.sh --random-seeds 0
 ```
 
 ### Energy (optional re-measure; results already committed)
@@ -424,7 +440,7 @@ HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harness
 |-----------|--------|
 | RTL + Phases 1–3 + EMG | ✅ |
 | Hook A + energy + anchors | ✅ |
-| Twist 1 + Twist 2 + figures | ✅ |
+| Twist 1 + Twist 2 + figures (incl. silicon Twist 1) | ✅ |
 | DATE draft | ⏳ Sep 2026 |
 
 ---

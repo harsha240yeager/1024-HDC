@@ -31,7 +31,7 @@ anchor_keep() {
 run_one_anchor() {
   local id="$1"
   local keep
-  local out_dir="$REPO/results/phase3/anchors/anchor_${id}"
+  local out_dir="${HDC_EMG_RESULTS_DIR:-$REPO/results/phase3/anchors/anchor_${id}}"
   local log_dir="${HDC_LOG_DIR:-/tmp/hdc_anchor_${id}}"
 
   keep="$(anchor_keep "$id")" || {
@@ -80,6 +80,7 @@ run_one_anchor() {
 
   echo "Running board EMG replay ..."
   export HDC_EMG_RESULTS="$out_dir/board_emg_replay.txt"
+  export HDC_EMG_RESULTS_DIR="$out_dir"
   export HDC_LOG_DIR="$log_dir"
   bash "$ROOT/run_phase3_emg.sh" | tee "$log_dir/run_anchor_${id}.log"
 

@@ -1,0 +1,132 @@
+=== Twist 1 silicon @ keep=0.125 (anchor C) ===
+--- Informed: reuse anchor C board result ---
+Copied /home/bsp-lab/1024-HDC/results/phase3/anchors/anchor_C/board_emg_replay.txt -> /home/bsp-lab/1024-HDC/results/phase3/twist1_silicon/informed_anchor_C/
+EMG replay: N=658004 correct=489063 accuracy=74.32%
+Export ref: 74.32%
+Windows replayed: 658004 correct=489063 accuracy=74.32%
+
+--- Random seed=0: patch + board replay ---
+  random_seed=0  keep_ratio=0.125  n_keep=128/1024
+Recomputing export ref accuracy over 658004 windows ...
+    accuracy pass: 50000/658004 (541s)
+    accuracy pass: 100000/658004 (1077s)
+    accuracy pass: 150000/658004 (1614s)
+    accuracy pass: 200000/658004 (2126s)
+    accuracy pass: 250000/658004 (2635s)
+    accuracy pass: 300000/658004 (3145s)
+    accuracy pass: 350000/658004 (3655s)
+    accuracy pass: 400000/658004 (4165s)
+    accuracy pass: 450000/658004 (4675s)
+    accuracy pass: 500000/658004 (5186s)
+    accuracy pass: 550000/658004 (5695s)
+    accuracy pass: 600000/658004 (6205s)
+    accuracy pass: 650000/658004 (6715s)
+Export ref accuracy: 63.41% (x1000=63414)
+Patched /home/bsp-lab/1024-HDC/sw/golden_vectors.h
+Patched /home/bsp-lab/1024-HDC/sw/emg_board_vectors.h
+Patched /home/bsp-lab/1024-HDC/sw/emg_board_vectors.h.full
+Done anchor=C keep=0.125 mode=random mask_density=0.1250 export_ref=63.41%
+=== Anchor C: keep_ratio=0.125 ===
+Skipping mask patch for anchor C (HDC_ANCHOR_SKIP_PATCH=1)
+Rebuilding Final_HDC_dma_emg.elf ...
+   text	   data	    bss	    dec	    hex	filename
+  48821	   1472	  61008	 111301	  1b2c5	/home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_emg.elf
+Running board EMG replay ...
+=== HDC Phase 3 EMG replay (hdc_emg_board_test.c) ===
+=== Waiting for Digilent USB cable ===
+Digilent cable detected on /dev/ttyUSB0
+=== Program + poll Phase 3 EMG replay ===
+Programming HDC_DMA EMG replay with:
+  bitstream: /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wrapper.bit
+  app:       /home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_emg.elf
+=== JTAG targets ===
+  1
+  APU
+  2
+  ARM
+  Cortex-A9
+  MPCore
+  #0
+  (Running)
+  3
+  ARM
+  Cortex-A9
+  MPCore
+  #1
+  (Running)
+  4
+  xc7z020
+
+=== PS7 init before PL (releases PL from reset) ===
+  pre-PL PS7 attempt 1...
+Pre-PL PS7 init OK
+
+=== Programming PL bitstream ===
+  PL attempt 1
+    fpga failed: ftdi_transfer_data_done failed: all fine
+  PL attempt 2
+    fpga failed: could not find configuration request.
+  PL attempt 3
+PL programmed successfully via xsdb
+
+=== PS7 init after PL ===
+  post-PL PS7 attempt 1...
+PS7 initialized
+FSBL loaded
+HDC_app loaded
+Loading emg_board_vectors.bin to DDR 0x02000000 (chunk 65536B) ...
+  1.0 / 11.3 MiB
+  chunk @ 0x021F0000 attempt 1/20: Memory write error at 0x21F4000. Cannot flush JTAG server queue. ftdi_write_data_submit failed: usb bulk read failed
+  2.0 / 11.3 MiB
+  chunk @ 0x02220000 attempt 1/20: Memory write error at 0x222B000. Cannot flush JTAG server queue. ftdi_transfer_data_done failed: usb bulk read failed
+  chunk @ 0x022F0000 attempt 1/20: Memory write error at 0x22F4400. Cannot flush JTAG server queue. ftdi_transfer_data_done failed: usb bulk read failed
+  3.0 / 11.3 MiB
+  4.0 / 11.3 MiB
+  chunk @ 0x024C0000 attempt 1/20: Memory write error at 0x24C6DE8. Cannot flush JTAG server queue. ftdi_read_data failed: usb bulk read failed
+  5.0 / 11.3 MiB
+  chunk @ 0x02550000 attempt 1/20: Memory write error at 0x25559E8. Cannot flush JTAG server queue. ftdi_transfer_data_done failed: usb bulk read failed
+  chunk @ 0x025C0000 attempt 1/20: Memory write error at 0x25CA9E8. Cannot flush JTAG server queue. ftdi_write_data_submit failed: all fine
+  6.0 / 11.3 MiB
+  7.0 / 11.3 MiB
+  8.0 / 11.3 MiB
+  9.0 / 11.3 MiB
+  10.0 / 11.3 MiB
+  chunk @ 0x02A70000 attempt 1/20: Memory write error at 0x2A75C00. Cannot flush JTAG server queue. ftdi_transfer_data_done failed: usb bulk read failed
+  11.0 / 11.3 MiB
+Vectors bin loaded (11844072 bytes)
+Programming and run complete
+CPU running EMG replay — polling @ 0x00100300 (max 7200s)...
+==================================================
+HDC Phase 3 EMG replay (sw/hdc_emg_board_test.c)
+DDR readback @ 0x00100300
+==================================================
+EMG replay: N=658004 correct=417266 accuracy=63.41%
+Export ref: 63.41%
+Board vs export: delta=0.00%  PASS (0.5% tol)
+errors=240738
+==================================================
+Results saved: /home/bsp-lab/1024-HDC/results/phase3/anchors/anchor_C/board_emg_replay.txt
+EMG replay: N=658004 correct=417266 accuracy=63.41%
+Export ref: 63.41%
+Board vs export: delta=0.00%  PASS (0.5% tol)
+Export ref: 63.41%
+Board vs export: delta=0.00%  PASS (0.5% tol)
+SUCCESS: Phase 3 EMG replay complete (board within 0.5% of export ref).
+Anchor C complete -> /home/bsp-lab/1024-HDC/results/phase3/anchors/anchor_C/board_emg_replay.txt
+EMG replay: N=658004 correct=417266 accuracy=63.41%
+Export ref: 63.41%
+Board vs export: delta=0.00%  PASS (0.5% tol)
+Export ref: 63.41%
+Board vs export: delta=0.00%  PASS (0.5% tol)
+Status: PASS
+grep: /home/bsp-lab/1024-HDC/results/phase3/twist1_silicon/random_seed_0/board_emg_replay.txt: No such file or directory
+Traceback (most recent call last):
+  File "<stdin>", line 22, in <module>
+  File "<stdin>", line 8, in parse_acc
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/bsp-lab/1024-HDC/results/phase3/twist1_silicon/random_seed_0/board_emg_replay.txt'

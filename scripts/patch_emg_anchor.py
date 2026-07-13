@@ -19,6 +19,7 @@ Usage:
   python3 scripts/patch_emg_anchor.py --anchor B
   python3 scripts/patch_emg_anchor.py --keep-ratio 0.5 --anchor B
   python3 scripts/patch_emg_anchor.py --anchor C --max-windows 5000   # dev sample
+  python3 scripts/patch_emg_anchor.py --keep-ratio 0.125 --mask-mode random --random-seed 0 --label twist1_random_s0
 """
 
 from __future__ import annotations
@@ -144,6 +145,35 @@ def build_pooled_fisher_mask(
     return mask.astype(np.uint8)
 
 
+def build_random_mask(cfg: HDCConfig, keep_ratio: float, random_seed: int) -> np.ndarray:
+    rng = np.random.default_rng(random_seed)
+    mask = mask_from_scores(
+        np.zeros(cfg.D, dtype=np.float64),
+        keep_ratio,
+        rng=rng,
+        informed=False,
+    )
+    print(
+        f"  random_seed={random_seed}  keep_ratio={keep_ratio}  "
+        f"n_keep={int(mask.sum())}/{cfg.D}"
+    )
+    return mask.astype(np.uint8)
+
+
+def build_mask(
+    subjects: Sequence[int],
+    cfg: HDCConfig,
+    seed: int,
+    train_frac: float,
+    keep_ratio: float,
+    mask_mode: str,
+    random_seed: int,
+) -> np.ndarray:
+    if mask_mode == "random":
+        return build_random_mask(cfg, keep_ratio, random_seed)
+    return build_pooled_fisher_mask(subjects, cfg, seed, train_frac, keep_ratio)
+
+
 def recompute_accuracy_with_mask(
     cfg: HDCConfig,
     protos_all: np.ndarray,
@@ -192,14 +222,17 @@ def recompute_accuracy_with_mask(
     return (total_correct / total_valid) if total_valid else 0.0
 
 
-def patch_header_comment(text: str, anchor: str, keep_ratio: float) -> str:
+def patch_header_comment(text: str, anchor: str, keep_ratio: float, label: str | None = None) -> str:
+    tag = f"anchor={anchor}  keep_ratio={keep_ratio}"
+    if label:
+        tag += f"  label={label}"
     lines = []
     for line in text.splitlines():
         if line.strip() == " */" and "anchor=" not in text:
-            lines.append(f" * anchor={anchor}  keep_ratio={keep_ratio}")
+            lines.append(f" * {tag}")
         lines.append(line)
     out = "\n".join(lines)
-    out = re.sub(r" \* anchor=[^\n]+", f" * anchor={anchor}  keep_ratio={keep_ratio}", out)
+    out = re.sub(r" \* anchor=[^\n]+", f" * {tag}", out)
     return out
 
 
@@ -207,6 +240,24 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Patch EMG board vectors for Hook A anchor")
     ap.add_argument("--anchor", choices=sorted(ANCHOR_KEEP), help="Hook A anchor id (A/B/C)")
     ap.add_argument("--keep-ratio", type=float, default=None, help="override keep ratio")
+    ap.add_argument(
+        "--mask-mode",
+        choices=("informed", "random"),
+        default="informed",
+        help="Twist 1: Fisher-informed (default) or random iso-density mask",
+    )
+    ap.add_argument(
+        "--random-seed",
+        type=int,
+        default=0,
+        help="RNG seed when --mask-mode random (Twist 1)",
+    )
+    ap.add_argument(
+        "--label",
+        type=str,
+        default=None,
+        help="optional tag for header comment (e.g. twist1_random_s0)",
+    )
     ap.add_argument("--header", type=Path, default=DEFAULT_HDR)
     ap.add_argument("--slim-header", type=Path, default=DEFAULT_SLIM)
     ap.add_argument("--bin", type=Path, default=REPO / "sw" / "emg_board_vectors.bin")
@@ -278,7 +329,15 @@ def main() -> int:
         header_for_protos = args.header if args.header.is_file() else args.slim_header
         protos_all = load_protos_from_header(header_for_protos, cfg, len(subjects))
 
-    mask = build_pooled_fisher_mask(subjects, cfg, seed, train_frac, keep_ratio)
+    mask = build_mask(
+        subjects,
+        cfg,
+        seed,
+        train_frac,
+        keep_ratio,
+        args.mask_mode,
+        args.random_seed,
+    )
     emg_mask_block = fmt_mask64("emg_mask64", mask, cfg)
     golden_mask_block = fmt_mask64("golden_mask64", mask, cfg).replace(
         "EMG_WORDS64", "GOLDEN_WORDS64"
@@ -311,12 +370,12 @@ def main() -> int:
             if not args.skip_accuracy:
                 text = update_ref_accuracy(text, acc_x1000)
                 text = update_comment_accuracy(text, acc * 100)
-            text = patch_header_comment(text, str(args.anchor), keep_ratio)
+            text = patch_header_comment(text, str(args.anchor), keep_ratio, args.label)
             path.write_text(text, encoding="utf-8")
             print(f"Patched {path}")
 
     print(
-        f"Done anchor={args.anchor} keep={keep_ratio} "
+        f"Done anchor={args.anchor} keep={keep_ratio} mode={args.mask_mode} "
         f"mask_density={mask.mean():.4f} export_ref={acc * 100:.2f}%"
     )
     return 0
