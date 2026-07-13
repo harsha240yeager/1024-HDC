@@ -18,6 +18,9 @@ Sources:
   results/twist2/twist2_results.json         Twist 2 cross-subject mask transfer (5-subject pilot)
   results/twist2_36/twist2_results.json    Twist 2 @ 36 UCI subjects (train 1–18 → test 19–36)
 
+Paper-mode outputs include hookA_pareto_measured (accuracy vs area) and
+hookA_anchor_energy (measured J21 energy at silicon anchors A/B/C vs ARM).
+
 Usage (from repo root):
   python3 python_ref/plot_results.py
   python3 python_ref/plot_results.py --show        # also open windows
@@ -633,6 +636,129 @@ def fig_hook_a_pareto_measured(rows: list[dict], silicon: list[dict], out: Path)
     _save(fig, out, "hookA_pareto_measured")
 
 
+def fig_hook_a_anchor_energy(silicon: list[dict], out: Path) -> None:
+    """Measured J21 batch energy at D=1024 silicon anchors A/B/C vs ARM baseline."""
+    pl = sorted([p for p in silicon if p["path"] == "PL"], key=lambda p: -p["keep"])
+    arm = next(p for p in silicon if p["path"] == "ARM")
+    pl_mean = float(np.mean([p["uj"] for p in pl]))
+    ratio = arm["uj"] / pl_mean
+
+    prune_pct = {1.0: "0%", 0.5: "50%", 0.125: "87.5%"}
+    pl_labels = [f"{p['anchor']}\n({prune_pct[p['keep']]} prune)" for p in pl]
+    pl_vals = [p["uj"] for p in pl]
+    pl_std = [p["uj_std"] for p in pl]
+    pl_colors = ["#4c78a8", "#6baed6", "#9ecae1"]
+
+    if PAPER_MODE:
+        fig, axes = plt.subplots(
+            1,
+            2,
+            figsize=(IEEE_COL_W, 2.05),
+            gridspec_kw={"width_ratios": [1.55, 1.0], "wspace": 0.38},
+        )
+        fs = 6
+        bar_kw = dict(width=0.58, edgecolor="0.25", linewidth=0.45, capsize=2.5, ecolor="0.35")
+
+        # --- Left: PL anchor zoom (linear) — flat energy visible with error bars ---
+        ax = axes[0]
+        x = np.arange(len(pl))
+        ax.bar(x, pl_vals, yerr=pl_std, color=pl_colors, **bar_kw)
+        ax.set_xticks(x, pl_labels, fontsize=fs)
+        ax.set_ylabel("Total energy (µJ/window)")
+        ax.set_ylim(11.45, 12.25)
+        ax.yaxis.set_major_locator(plt.MultipleLocator(0.2))
+        ax.grid(True, axis="y", alpha=0.25, linewidth=0.5)
+        ax.tick_params(labelsize=fs)
+        for i, (v, s) in enumerate(zip(pl_vals, pl_std)):
+            ax.text(
+                i,
+                v + s + 0.03,
+                f"{v:.2f}±{s:.2f}",
+                ha="center",
+                va="bottom",
+                fontsize=5.5,
+            )
+        ax.text(
+            0.5,
+            0.04,
+            "PL DMA batch (n=3 INA219 @ J21)",
+            transform=ax.transAxes,
+            ha="center",
+            va="bottom",
+            fontsize=5.5,
+            color="0.40",
+        )
+
+        # --- Right: PL mean vs ARM (log) — deployment-scale separation ---
+        ax = axes[1]
+        cmp_labels = ["PL mean\n(A/B/C)", "ARM\n(PS)"]
+        cmp_vals = [pl_mean, arm["uj"]]
+        cmp_std = [float(np.mean(pl_std)), arm["uj_std"]]
+        cmp_colors = ["#4c78a8", "#e15759"]
+        x2 = np.arange(2)
+        ax.bar(x2, cmp_vals, yerr=cmp_std, color=cmp_colors, **bar_kw)
+        ax.set_yscale("log")
+        ax.set_xticks(x2, cmp_labels, fontsize=fs)
+        ax.set_ylabel("Total energy (µJ/window, log)")
+        ax.set_ylim(8, 4000)
+        ax.grid(True, axis="y", alpha=0.25, linewidth=0.5)
+        ax.tick_params(labelsize=fs)
+        for i, (v, s) in enumerate(zip(cmp_vals, cmp_std)):
+            ax.text(
+                i,
+                v * (1.12 if i == 0 else 1.08),
+                f"{v:.1f}±{s:.1f}",
+                ha="center",
+                va="bottom",
+                fontsize=5.5,
+            )
+        ax.annotate(
+            f"~{ratio:.0f}×",
+            xy=(0.5, np.sqrt(pl_mean * arm["uj"])),
+            xytext=(0.5, pl_mean * 6),
+            fontsize=6,
+            ha="center",
+            color="#b2182b",
+            arrowprops=dict(arrowstyle="<->", color="#b2182b", lw=0.8),
+        )
+        _save(fig, out, "hookA_anchor_energy")
+        return
+
+    # Full repo figure (non-paper): log-scale all anchors + inset zoom.
+    fig, ax = plt.subplots(figsize=(7.5, 4.2))
+    all_pts = pl + [arm]
+    labels = pl_labels + ["ARM\n(PS software)"]
+    vals = [p["uj"] for p in all_pts]
+    stds = [p["uj_std"] for p in all_pts]
+    colors = pl_colors + ["#e15759"]
+    x = np.arange(len(all_pts))
+    ax.bar(x, vals, yerr=stds, color=colors, width=0.62, capsize=4, edgecolor="0.2")
+    ax.set_yscale("log")
+    ax.set_xticks(x, labels)
+    ax.set_ylabel("Measured total energy (µJ/window, J21 batch)")
+    ax.set_title("Hook A — measured energy at D=1024 silicon anchors")
+    for i, (v, s) in enumerate(zip(vals, stds)):
+        ax.text(i, v * 1.08, f"{v:.2f}±{s:.2f}", ha="center", fontsize=8)
+    axins = ax.inset_axes([0.06, 0.52, 0.38, 0.42])
+    axins.bar(np.arange(3), pl_vals, yerr=pl_std, color=pl_colors, width=0.55, capsize=2)
+    axins.set_xticks(np.arange(3), ["A", "B", "C"])
+    axins.set_ylim(11.45, 12.25)
+    axins.set_ylabel("µJ/w", fontsize=7)
+    axins.tick_params(labelsize=7)
+    axins.set_title("PL zoom", fontsize=8)
+    ax.text(
+        0.02,
+        0.02,
+        "PL A/B/C: board EMG replay, Fisher keep 1.0 / 0.5 / 0.125.\n"
+        "Total J21 energy ≈ static × batch slot; dynamic term < 0.5 µJ/w.",
+        transform=ax.transAxes,
+        fontsize=7,
+        va="bottom",
+        color="0.35",
+    )
+    _save(fig, out, "hookA_anchor_energy")
+
+
 def fig_fisher_heatmap(fisher: dict, out: Path) -> None:
     """Pooled Fisher scores + informed keep masks (silicon mask layout 16×64 bits)."""
     scores = fisher["scores_2d"]
@@ -1032,6 +1158,7 @@ def main() -> None:
     fig_hook_a_pareto(hook, out)
     fig_hook_a_pruning(hook, out)
     fig_hook_a_pareto_measured(hook, load_measured_silicon(), out)
+    fig_hook_a_anchor_energy(load_measured_silicon(), out)
     fig_fisher_heatmap(load_fisher_pooled(), out)
     fig_baselines_bar(load_baseline_systems(), out)
     twist1 = load_twist1()
