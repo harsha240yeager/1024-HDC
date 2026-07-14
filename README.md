@@ -72,7 +72,8 @@ paper, not an accuracy SOTA claim.
 | ARM energy | **2088 ± 6 µJ**/w | same |
 | Twist 1 @ keep=0.125 | **+8.63 pp** (informed − random, Python) | [`twist1_keep0125/`](results/twist1_keep0125/) |
 | Twist 1 @ keep=0.125 (silicon) | **+10.91 pp** (74.32% vs 63.41% board) | [`twist1_silicon/`](results/phase3/twist1_silicon/) |
-| Twist 2 transfer | **+0.86 pp** (local − pooled) | [`twist2/`](results/twist2/) |
+| Twist 2 transfer (5-subject pilot) | **+0.86 pp** (local − pooled) | [`twist2/`](results/twist2/) |
+| Twist 2 @ 36 UCI (keep=0.125 / 0.5) | **0.00 pp** gap (lossless pruning) | [`twist2_36/`](results/twist2_36/) · [`twist2_36_keep05/`](results/twist2_36_keep05/) |
 | PL resources | 35.2k LUT, **0 DSP**, **0 BRAM** | Post-route Phase 3 |
 
 ---
@@ -304,6 +305,45 @@ board dataset — absolute accuracy is not directly comparable to the 69% pilot.
 Evidence: [`results/twist2_36/`](results/twist2_36/) ·
 figure [`twist2_cross_subject_36.png`](results/figures/twist2_cross_subject_36.png).
 
+**36-subject UCI @ keep=0.5 (anchor B, train S1–18 → test S19–36, 2026-07-14):**
+
+```bash
+python3 python_ref/run_twist2_sweep.py --config python_ref/config/twist2_36_keep05_sweep.json --out-dir results/twist2_36_keep05
+```
+
+| Condition | Accuracy (S19–36 mean) |
+|-----------|------------------------|
+| Local oracle @ 512 bits | **60.74%** |
+| Pooled transfer | **60.74%** |
+| **Gap** | **0.00 pp** ✅ (≤3 pp) |
+
+Runtime **~16.9 h**. Same headline as keep=0.125: pruning is **lossless** on every held-out
+subject at both densities.
+
+Evidence: [`results/twist2_36_keep05/`](results/twist2_36_keep05/).
+
+#### Why is the 36-subject gap exactly 0.00 pp?
+
+The run is **not** copying one mask into both columns. For each held-out subject the script
+builds a **separate local Fisher mask** from that subject's TRAIN windows and compares it to
+the **pooled mask** from S1–18 TRAIN (512,487 windows). Prototypes are always per-subject.
+
+| Observation | Meaning |
+|-------------|---------|
+| `local == unpruned` on all 18 test subjects | Per-subject Fisher pruning is **lossless** @ keep=0.125 and 0.5 |
+| `pooled == unpruned` on all 18 test subjects | Pooled cross-subject mask is also **lossless** here |
+| ⇒ `local == pooled` | Same accuracy because both masks preserve every TEST decision |
+| 5-subject pilot had **+0.86 pp** | When pooled pruning *does* drop bits that matter, the gap is non-zero |
+
+Fast mask audit (masks differ in bit pattern even when accuracy ties):
+
+```bash
+python3 scripts/twist2_mask_audit_fast.py
+```
+
+Example (S19 @ keep=0.5): **masks not identical**, Jaccard overlap **0.70**, yet 0.00 pp on
+subsampled windows — see [`mask_audit_fast.json`](results/twist2_36_keep05/mask_audit_fast.json).
+
 ### Deployment baselines
 
 | Path | Accuracy | Latency | Energy |
@@ -347,7 +387,7 @@ Do **not** use legacy full-log integration (~2240 µJ/w) — wrong ~190×.
 | Bit-exact verified streaming HDC on Zynq | Matching ~90% on FPGA |
 | Iso-accuracy informed pruning to 87.5% | Pruning reduces measured J21 µJ |
 | Informed ≫ random at 128 bits (Python + silicon) | Beating 93% MLP |
-| Cross-subject transfer ≤3 pp (pilot + 36 UCI) | PL-only Vcc_int power |
+| Cross-subject transfer ≤3 pp (pilot + 36 UCI @ keep=0.125 & 0.5) | PL-only Vcc_int power |
 | PL ~175× lower energy than ARM SW | |
 
 ---
@@ -392,6 +432,8 @@ python run_hook_a_sweep.py --quick
 python run_twist1_sweep.py --keep 0.125 --out-dir ../results/twist1_keep0125
 python run_twist2_sweep.py
 python run_twist2_sweep.py --config config/twist2_36_sweep.json --out-dir ../results/twist2_36
+python run_twist2_sweep.py --config config/twist2_36_keep05_sweep.json --out-dir ../results/twist2_36_keep05
+python3 ../scripts/twist2_mask_audit_fast.py
 python plot_results.py
 ```
 
