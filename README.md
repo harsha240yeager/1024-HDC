@@ -478,12 +478,30 @@ HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harness
 
 ## Roadmap
 
+**DATE major revision (post weak-reject review):** see [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md) and [GitHub Issues #1–#11](https://github.com/harsha240yeager/1024-HDC/issues).
+
+| Phase | Focus | Issue | Status |
+|-------|--------|-------|--------|
+| **1** | Protocol HDC-2 disjoint split + full rerun | [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) | ⏳ **START HERE** |
+| **2** | Cross-subject transfer (keep 32–256 bits) | [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) | ⏳ blocked |
+| **3** | Random masks + subject-level stats | [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) | ⏳ blocked |
+| **4** | Item-memory seed sensitivity | [#4](https://github.com/harsha240yeager/1024-HDC/issues/4) | ⏳ blocked |
+| **5** | Active-bit (257) ablation | [#5](https://github.com/harsha240yeager/1024-HDC/issues/5) | ⏳ blocked |
+| **6** | Encoder gap 74% vs 90% | [#6](https://github.com/harsha240yeager/1024-HDC/issues/6) | ⏳ |
+| **7** | Claim alignment (Path A/B) | [#7](https://github.com/harsha240yeager/1024-HDC/issues/7) | ⏳ |
+| **8** | Energy methodology | [#8](https://github.com/harsha240yeager/1024-HDC/issues/8) | ⏳ |
+| **9** | Ranking baselines (variance, MI, …) | [#9](https://github.com/harsha240yeager/1024-HDC/issues/9) | ⏳ blocked |
+| **10** | Fix inconsistencies | [#10](https://github.com/harsha240yeager/1024-HDC/issues/10) | ⏳ |
+| **11** | Reproducibility artifact | [#11](https://github.com/harsha240yeager/1024-HDC/issues/11) | ⏳ |
+
+**Paper:** [Research-paper issues #1–#4](https://github.com/harsha240yeager/Research-paper/issues) · [`outline.md`](https://github.com/harsha240yeager/Research-paper/blob/main/outline.md)
+
 | Milestone | Status |
 |-----------|--------|
-| RTL + Phases 1–3 + EMG | ✅ |
-| Hook A + energy + anchors | ✅ |
-| Twist 1 + Twist 2 + figures (incl. silicon Twist 1) | ✅ |
-| DATE draft | ⏳ Sep 2026 |
+| RTL + Phases 1–3 + EMG (Protocol HDC-1) | ✅ superseded by HDC-2 rerun |
+| Hook A + energy + anchors (HDC-1 numbers) | ✅ pending HDC-2 rerun |
+| Twist 1 + Twist 2 (HDC-1) | ✅ pending HDC-2 + new cross-subject design |
+| DATE submission | ⏳ Sep 2026 |
 
 ---
 
