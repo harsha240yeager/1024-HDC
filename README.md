@@ -1,20 +1,28 @@
 # 1024-HDC — Streaming Hyperdimensional Computing on Zynq
 
 Bit-exact **1024-bit Hyperdimensional Computing (HDC)** in SystemVerilog on Xilinx
-Zynq-7020 (ZedBoard), validated with EMG hand-gesture recognition under frozen protocol
-**P-may2026**. The accelerator uses **AXI4-Lite** for configuration and **AXI4-Stream +
-DMA** for streaming inference.
+Zynq-7020 (ZedBoard), validated with EMG hand-gesture recognition.
 
 **Paper target:** DATE 2027 (~Sep 2026).  
 **Repo:** [harsha240yeager/1024-HDC](https://github.com/harsha240yeager/1024-HDC)  
+**Manuscript:** [Research-paper](https://github.com/harsha240yeager/Research-paper)  
 **Platform:** ZedBoard `xc7z020clg484-1` @ 100 MHz PL · Vivado 2024.2
+
+> **⚠ Protocol revision in progress (HDC-2).** Headline accuracy numbers below were
+> computed under **Protocol HDC-1** (`P-may2026`), which evaluates test on the **full
+> recording** while training uses the first 25% of each class — train windows overlap
+> test. We are fixing this to a **strictly disjoint** split before DATE resubmission.
+> See [Protocol HDC-2](#protocol-hdc-2-fix--rerun-plan) and
+> [GitHub issue #1](https://github.com/harsha240yeager/1024-HDC/issues/1).
+> **Do not cite HDC-1 accuracy as generalization results until reruns complete.**
 
 ---
 
 ## Contents
 
 - [Research overview](#research-overview)
-- [Headline results](#headline-results)
+- [Protocol HDC-2 fix & rerun plan](#protocol-hdc-2-fix--rerun-plan)
+- [Headline results](#headline-results-hdc-1--pending-hdc-2-rerun)
 - [Project status](#project-status)
 - [System architecture](#system-architecture)
 - [Methodology](#methodology)
@@ -60,7 +68,119 @@ paper, not an accuracy SOTA claim.
 
 ---
 
-## Headline results
+## Protocol HDC-2 fix & rerun plan
+
+DATE review identified a **train/test leakage** issue in Protocol HDC-1. This section
+documents the problem, the fix, and every experiment that must rerun.
+
+**Tracking:** [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md) ·
+[GitHub issues #1–#11](https://github.com/harsha240yeager/1024-HDC/issues)
+
+### What is wrong (HDC-1)
+
+| Step | HDC-1 behavior | Problem |
+|------|----------------|---------|
+| Train | First 25% of each class → build **prototypes** + **Fisher mask** | OK |
+| Test | **Full** per-subject recording (100% of windows) | Train windows are scored again as “test” |
+| Stride-1 | Adjacent windows highly correlated | Inflates apparent test accuracy |
+
+Implementation (`scripts/export_emg_board_vectors.py`):
+
+```python
+# HDC-1 — test must NOT stay as q_all after fix
+return train_q, train_labels, q_all, labels
+```
+
+### What HDC-2 requires
+
+| Rule | Specification |
+|------|----------------|
+| Train | First 25% of each class per subject (same selection rule) |
+| Test | **Remaining 75%** — indices disjoint from train |
+| Boundary | Optional ±1 window gap at partition edges |
+| Prototypes / Fisher | TRAIN windows only |
+| Audit | `train_idx ∩ test_idx = ∅` for every subject |
+| Reporting | Per-subject `n_train`, `n_test`, overlap count |
+
+Config (planned): `python_ref/config/emg_baseline_v2.json` · protocol id **`HDC-2`**.
+
+### Code changes (issue #1)
+
+- [ ] Rewrite `split_train_test()` — test = complement of train indices
+- [ ] Add `scripts/audit_split_leakage.py`
+- [ ] Point sweep configs at `emg_baseline_v2.json`
+
+Fixing `split_train_test()` automatically updates all importers:
+`baseline_common.py`, `run_twist1_sweep.py`, `run_twist2_sweep.py`, `run_hook_a_sweep.py`,
+`patch_emg_anchor.py`, `regenerate_emg_protos.py`, `export_fisher_pooled.py`.
+
+### Rerun checklist
+
+**Gate:** `python scripts/audit_split_leakage.py` reports overlap **0** before trusting new numbers.
+
+#### Tier 0 — Verify split (~5 min)
+
+```bash
+python scripts/audit_split_leakage.py --config python_ref/config/emg_baseline_v2.json
+python scripts/export_emg_board_vectors.py --config python_ref/config/emg_baseline_v2.json --max-windows 2000 --summary-only
+```
+
+#### Tier 1 — Python + exports (must rerun)
+
+```bash
+python python_ref/run_emg_baseline.py --config python_ref/config/emg_baseline_v2.json
+python scripts/export_emg_board_vectors.py --config python_ref/config/emg_baseline_v2.json
+python scripts/regenerate_emg_protos.py          # pass v2 config when wired
+python scripts/export_fisher_pooled.py
+python python_ref/run_arm_hdc_baseline.py --emg-config python_ref/config/emg_baseline_v2.json
+```
+
+#### Tier 2 — Board / silicon (must rerun; needs ZedBoard)
+
+```bash
+bash board/HDC_DMA/build_sw.sh
+bash board/HDC_DMA/run_phase3_emg.sh              # main silicon accuracy
+python scripts/patch_emg_anchor.py --anchor A && bash board/HDC_DMA/run_anchor_replay.sh A
+python scripts/patch_emg_anchor.py --anchor B && bash board/HDC_DMA/run_anchor_replay.sh B
+python scripts/patch_emg_anchor.py --anchor C && bash board/HDC_DMA/run_anchor_replay.sh C
+```
+
+Bit-exact PASS is vs the **new** HDC-2 export reference (not the old 74.24% golden).
+
+#### Tier 3 — Pruning sweeps (must rerun)
+
+```bash
+python python_ref/run_twist1_sweep.py             # + v2 config
+bash board/HDC_DMA/run_twist1_board.sh --random-seeds 0,1,2,3,4,5,6,7,8,9
+python python_ref/run_hook_a_sweep.py
+python python_ref/run_twist2_sweep.py
+python python_ref/run_twist2_sweep.py --config python_ref/config/twist2_36_sweep.json --out-dir results/twist2_36
+python python_ref/plot_results.py --paper
+```
+
+#### Does not need rerun
+
+RTL co-simulation (synthetic vectors), OOC D-sweep synthesis, Vivado bitstream — hardware
+unchanged. **Hook A / Twist / board accuracy rows do need rerun** (split-dependent).
+
+Energy measurements (PL vs ARM) may stay valid for platform comparison; document
+methodology separately ([#8](https://github.com/harsha240yeager/1024-HDC/issues/8)).
+
+### Expected changes after HDC-2
+
+| Quantity | HDC-1 (committed) | HDC-2 (after rerun) |
+|----------|-------------------|---------------------|
+| Test windows | 658,004 (100% of recording) | ~75% of recording (~490k–500k) |
+| Full-width accuracy | 74.24% silicon | **TBD** (often lower — valid generalization) |
+| Fisher vs random gap | +8.63 / +10.91 pp | **TBD** |
+| Overlap train∩test | >0 | **0** |
+
+---
+
+## Headline results (HDC-1 — pending HDC-2 rerun)
+
+> **Status:** Numbers in this table are from Protocol **HDC-1**. They remain useful for
+> RTL verification (bit-exact replay) but **must be rerun under HDC-2** before paper claims.
 
 | Metric | Value | Evidence |
 |--------|-------|----------|
@@ -80,18 +200,19 @@ paper, not an accuracy SOTA claim.
 
 ## Project status
 
-*July 2026 — experimental work complete; DATE draft in progress.*
+*July 2026 — hardware verification complete; **Protocol HDC-2 revision** in progress for DATE.*
 
 | Component | Status |
 |-----------|--------|
-| RTL + 9 co-sim harnesses | ✅ Bit-exact |
-| Phases 1–3 board bring-up | ✅ Golden + EMG PASS |
-| Hook A Python sweep (320 rows) | ✅ |
-| INA219 energy A/B/C + ARM | ✅ |
-| Silicon anchor replays A/B/C | ✅ |
-| Twist 1 + Twist 2 (Python + silicon Twist 1) | ✅ |
-| Paper figures | ✅ [`results/figures/`](results/figures/) |
-| DATE manuscript | ⏳ [`paper/`](paper/) (local / Overleaf) |
+| RTL + 9 co-sim harnesses | ✅ Bit-exact (unchanged by split fix) |
+| Phases 1–3 board bring-up | ✅ Golden + EMG PASS under HDC-1 |
+| Hook A / Twist 1 / Twist 2 / anchors | ✅ HDC-1 numbers — **⏳ rerun under HDC-2** |
+| INA219 energy A/B/C + ARM | ✅ (platform comparison; see issue #8) |
+| Protocol HDC-2 disjoint split | ⏳ [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
+| Cross-subject stress test (keep 32–256) | ⏳ [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
+| Random baselines + subject-level stats | ⏳ [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) |
+| Paper figures | ✅ HDC-1 — refresh after rerun |
+| DATE manuscript | ⏳ [Research-paper](https://github.com/harsha240yeager/Research-paper) |
 
 ---
 
@@ -123,20 +244,26 @@ returns classifications. Throughput **~216k windows/s** (WNS +0.111 ns @ 100 MHz
 
 ## Methodology
 
-### Protocol P-may2026
+### Evaluation protocols
+
+| Protocol | Train | Test | Status |
+|----------|-------|------|--------|
+| **HDC-1** (`P-may2026`) | First 25% of each class | **Full recording** | ⚠ Leakage — superseded |
+| **HDC-2** (planned) | First 25% of each class | **Remaining 75%**, disjoint | ⏳ Issue [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
 
 - **Dataset:** UCI EMG hand gestures (Rahimi et al.; fetch `HDC-EMG` separately, GPLv3).
-- **Subjects:** 5 configuration subjects (full train/test splits).
-- **Split:** 25% stratified train, full-sequence test, seed 1.
-- **Metric:** spatial mean accuracy over subjects.
+- **Subjects:** S1–S5 (silicon); S1–S36 (Python cross-subject).
+- **Metric:** spatial mean accuracy over subjects; board replay uses pooled window accuracy.
+- **Config (HDC-1):** [`python_ref/config/emg_baseline.json`](python_ref/config/emg_baseline.json)
+- **Config (HDC-2):** `python_ref/config/emg_baseline_v2.json` (when added)
 
 ### Verification pipeline
 
-1. **Python golden** (`hdc_ref`) generates expected vectors.
-2. **Co-simulation** — nine harnesses, bit-for-bit RTL check (1k–500 cases each).
+1. **Python golden** (`hdc_ref`) generates expected vectors under the active protocol.
+2. **Co-simulation** — nine harnesses, bit-for-bit RTL check (synthetic; not split-dependent).
 3. **Board golden** — 200 fixed cases over JTAG.
-4. **Full EMG replay** — 658,004 test windows; PASS if
-   `|acc_board − acc_ref| ≤ 0.5%`.
+4. **Full EMG replay** — all TEST windows under active protocol; PASS if
+   `|acc_board − acc_ref| ≤ 0.5%` and every label matches the frozen export reference.
 
 ### Fisher pruning mask
 
@@ -414,7 +541,29 @@ Index: [`results/figures/README.md`](results/figures/README.md). LaTeX draft: [`
 
 ## Reproduce
 
-### Co-simulation
+### Protocol HDC-2 (after issue #1 lands)
+
+```bash
+# 0. Audit disjoint split
+python scripts/audit_split_leakage.py --config python_ref/config/emg_baseline_v2.json
+
+# 1. Python baselines + export
+python python_ref/run_emg_baseline.py --config python_ref/config/emg_baseline_v2.json
+python scripts/export_emg_board_vectors.py --config python_ref/config/emg_baseline_v2.json
+
+# 2. Board replay
+bash board/HDC_DMA/build_sw.sh && bash board/HDC_DMA/run_phase3_emg.sh
+
+# 3. Pruning sweeps
+python python_ref/run_twist1_sweep.py
+bash board/HDC_DMA/run_twist1_board.sh --random-seeds 0,1,2,3,4
+python python_ref/run_hook_a_sweep.py
+python python_ref/plot_results.py --paper
+```
+
+Full checklist: [Protocol HDC-2 fix & rerun plan](#protocol-hdc-2-fix--rerun-plan).
+
+### Co-simulation (no rerun needed for split fix)
 
 ```bash
 vsim -c -do sim/run_core_cosim.do
@@ -422,7 +571,9 @@ vsim -c -do sim/run_stream_cosim.do
 vsim -c -do sim/run_dsweep_cosim.do
 ```
 
-### Python (Hook A, twists, figures)
+### Python (Hook A, twists, figures) — HDC-1 commands
+
+> Use `--config python_ref/config/emg_baseline_v2.json` once HDC-2 is implemented.
 
 ```bash
 cd python_ref && pip install -r requirements.txt
@@ -469,7 +620,7 @@ Pi + INA219 are **not required** for analysis or paper writing — only to re-ru
 | `board/HDC_DMA/` | Vitis workspace, JTAG, anchor replay |
 | `scripts/` | Golden prep, energy campaign, UCI dataset builder, `patch_emg_anchor.py` |
 | `results/` | All committed measurements and figures |
-| `docs/` | Encoder rationale, research plan, slides |
+| `docs/` | Encoder rationale, **[DATE_REVISION_PLAN.md](docs/DATE_REVISION_PLAN.md)**, slides |
 | `paper/` | IEEEtran DATE draft skeleton |
 
 HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harnesses to regenerate.
