@@ -57,6 +57,7 @@ from export_emg_board_vectors import (  # noqa: E402
     level21_to_grid,
     quantize_envelope,
     require_dataset,
+    split_kwargs_from_config,
     split_train_test,
 )
 
@@ -136,13 +137,14 @@ def load_subject_data(
     max_train: Optional[int],
     max_test: Optional[int],
     dataset_path: Path,
+    split_kw: dict,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     mat = sio.loadmat(str(dataset_path))
     data = mat[f"COMPLETE_{subject}"].astype(np.float64)
     labels = mat[f"LABEL_{subject}"].ravel().astype(np.int64)
     q_all = quantize_envelope(data)
     train_q, train_labels, test_q, test_labels = split_train_test(
-        q_all, labels, train_frac, seed
+        q_all, labels, train_frac, seed, **split_kw
     )
     if max_train is not None and train_q.shape[0] > max_train:
         train_q = train_q[:max_train]
@@ -165,6 +167,7 @@ def run_experiment(
     max_train: Optional[int],
     max_test: Optional[int],
     dataset_path: Path,
+    split_kw: dict,
 ) -> dict:
     cfg = hdc_cfg_for_d(D, item_mem_seed)
     mem = ItemMemory(cfg)
@@ -174,7 +177,7 @@ def run_experiment(
     for sid in sorted(set(train_subjects) | set(test_subjects)):
         print(f"\n== encode subject {sid} ==", flush=True)
         train_q, train_labels, test_q, test_labels = load_subject_data(
-            sid, seed, train_frac, max_train, max_test, dataset_path
+            sid, seed, train_frac, max_train, max_test, dataset_path, split_kw
         )
         print(f"    train={train_q.shape[0]} test={test_q.shape[0]}", flush=True)
         train_hvs = encode_queries(engine, mem, cfg, train_q, cnt_w, f"s{sid}/train")
@@ -376,6 +379,7 @@ def main() -> int:
 
     seed = int(emg_cfg["seed"])
     train_frac = float(emg_cfg["protocol"]["train_fraction"])
+    split_kw = split_kwargs_from_config(emg_cfg)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -400,6 +404,7 @@ def main() -> int:
         max_train,
         max_test,
         dataset_path,
+        split_kw,
     )
 
     gap = result["mean_gap_local_minus_pooled_pp"]

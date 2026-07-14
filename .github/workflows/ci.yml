@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  split-unit:
+    name: HDC-2 split unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy
+      - run: python python_ref/tests/test_split_hdc2.py
+      - run: python scripts/audit_split_leakage.py --synthetic-only
+
+  hdc-ref-smoke:
+    name: hdc_ref smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy
+      - run: cd python_ref && python run_smoke_test.py
+
+  hdc2-gate:
+    name: HDC-2 split audit (dataset)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy
+      - name: Clone HDC-EMG dataset (private fork may be required)
+        run: |
+          if [ ! -f python_ref/HDC-EMG/dataset.mat ]; then
+            git clone --depth 1 https://github.com/abbas-rahimi/HDC-EMG python_ref/HDC-EMG || true
+          fi
+      - name: Run HDC-2 gate if dataset present
+        run: |
+          if [ -f python_ref/HDC-EMG/dataset.mat ]; then
+            python scripts/audit_split_leakage.py \
+              --config python_ref/config/emg_baseline_v2.json
+          else
+            echo "dataset.mat not available — skipping HDC-2 gate (run locally)"
+          fi

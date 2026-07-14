@@ -22,6 +22,7 @@ from export_emg_board_vectors import (  # noqa: E402
     N_CLASS,
     quantize_envelope,
     require_dataset,
+    split_kwargs_from_config,
     split_train_test,
 )
 
@@ -43,13 +44,15 @@ def load_subject_split(
     seed: int,
     train_frac: float,
     max_test_windows: Optional[int] = None,
+    emg_cfg: Optional[dict] = None,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     mat = sio.loadmat(str(DATASET))
     data = mat[f"COMPLETE_{subject}"].astype(np.float64)
     labels = mat[f"LABEL_{subject}"].ravel().astype(np.int64)
     q_all = quantize_envelope(data)
+    split_kw = split_kwargs_from_config(emg_cfg) if emg_cfg else {}
     train_q, train_labels, test_q, test_labels = split_train_test(
-        q_all, labels, train_frac, seed
+        q_all, labels, train_frac, seed, **split_kw
     )
     if max_test_windows is not None and test_q.shape[0] > max_test_windows:
         test_q = test_q[:max_test_windows]

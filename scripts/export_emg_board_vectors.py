@@ -9,9 +9,9 @@ Engines:
   hdc_ref     — RTL-matched encoder + Hamming AM (item mem seed 42, default for board)
   stage_b_bsc — Stage B BSC spatial model (frozen ~90.30% baseline @ D=1024)
 
-Train/test split: frozen protocol P-may2026 (emg_baseline.json):
+Train/test split: protocol from --config (emg_baseline.json = HDC-1, emg_baseline_v2.json = HDC-2):
   train: first 25% of each class, shuffled (rng = seed + 100)
-  test:  full per-subject sequence (spatial, stride 1)
+  test:  full recording (HDC-1) OR remaining 75% disjoint (HDC-2)
 
 Usage (from repo root):
   python3 scripts/export_emg_board_vectors.py
@@ -113,15 +113,93 @@ def pack_levels_u32(grid: np.ndarray, cfg: HDCConfig) -> Tuple[int, int, int]:
     )
 
 
+def protocol_test_set(emg_cfg: dict) -> str:
+    """Return ``full_recording`` (HDC-1) or ``disjoint`` (HDC-2)."""
+    proto = emg_cfg.get("protocol", {})
+    ts = str(proto.get("test_set", "")).lower()
+    if ts in ("disjoint", "remaining 75% disjoint", "remaining 75%"):
+        return "disjoint"
+    if ts in ("full per-subject sequence", "full_recording", "full"):
+        return "full_recording"
+    pid = str(proto.get("id", "")).upper()
+    if pid == "HDC-2":
+        return "disjoint"
+    return "full_recording"
+
+
+def protocol_boundary_gap(emg_cfg: dict) -> int:
+    return int(emg_cfg.get("protocol", {}).get("boundary_gap", 0))
+
+
+def split_kwargs_from_config(emg_cfg: dict) -> dict:
+    return {
+        "test_set": protocol_test_set(emg_cfg),
+        "boundary_gap": protocol_boundary_gap(emg_cfg),
+    }
+
+
+def compute_train_indices(
+    labels: np.ndarray,
+    train_frac: float,
+    seed: int,
+    n_class: int = N_CLASS,
+) -> np.ndarray:
+    rng_train = np.random.default_rng(seed + 100)
+    parts: List[np.ndarray] = []
+    for cls in range(1, n_class + 1):
+        idx = np.where(labels == cls)[0]
+        if idx.size == 0:
+            continue
+        n_train = int(np.floor(idx.size * train_frac))
+        cls_idx = idx[:n_train]
+        cls_idx = cls_idx[rng_train.permutation(cls_idx.size)]
+        parts.append(cls_idx)
+    if not parts:
+        return np.array([], dtype=np.int64)
+    return np.concatenate(parts)
+
+
+def compute_test_indices(
+    labels: np.ndarray,
+    train_indices: np.ndarray,
+    boundary_gap: int = 0,
+) -> np.ndarray:
+    n = labels.shape[0]
+    train_set = set(int(i) for i in train_indices.tolist())
+    test_idx = np.array([i for i in range(n) if i not in train_set], dtype=np.int64)
+    if boundary_gap <= 0 or test_idx.size == 0:
+        return test_idx
+    drop: set[int] = set()
+    for i in test_idx:
+        for d in range(-boundary_gap, boundary_gap + 1):
+            if d != 0 and (int(i) + d) in train_set:
+                drop.add(int(i))
+                break
+    if not drop:
+        return test_idx
+    return np.array([i for i in test_idx if int(i) not in drop], dtype=np.int64)
+
+
 def split_train_test(
     q_all: np.ndarray,
     labels: np.ndarray,
     train_frac: float,
     seed: int,
+    *,
+    test_set: str = "full_recording",
+    boundary_gap: int = 0,
+    n_class: int = N_CLASS,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    rng_train = np.random.default_rng(seed + 100)
-    train_q, train_labels = stage_b_gen_train_data(q_all, labels, train_frac, rng_train)
-    return train_q, train_labels, q_all, labels
+    train_idx = compute_train_indices(labels, train_frac, seed, n_class=n_class)
+    train_q = q_all[train_idx]
+    train_labels = labels[train_idx]
+
+    if test_set == "full_recording":
+        return train_q, train_labels, q_all, labels
+    if test_set == "disjoint":
+        test_idx = compute_test_indices(labels, train_idx, boundary_gap=boundary_gap)
+        return train_q, train_labels, q_all[test_idx], labels[test_idx]
+    raise ValueError(f"unknown test_set={test_set!r}; use full_recording or disjoint")
 
 
 def train_prototypes_hdc_ref(
@@ -151,6 +229,9 @@ def evaluate_subject_hdc_ref(
     train_frac: float,
     item_mem_seed: int,
     max_test_windows: int | None = None,
+    *,
+    test_set: str = "full_recording",
+    boundary_gap: int = 0,
 ) -> dict:
     mat = sio.loadmat(str(DATASET))
     data = mat[f"COMPLETE_{subject}"].astype(np.float64)
@@ -158,7 +239,7 @@ def evaluate_subject_hdc_ref(
     q_all = quantize_envelope(data)
 
     train_q, train_labels, test_q, test_labels = split_train_test(
-        q_all, labels, train_frac, seed
+        q_all, labels, train_frac, seed, test_set=test_set, boundary_gap=boundary_gap
     )
 
     if max_test_windows is not None and test_q.shape[0] > max_test_windows:
@@ -221,6 +302,9 @@ def evaluate_subject_stage_b(
     train_frac: float,
     cfg: HDCConfig,
     max_test_windows: int | None = None,
+    *,
+    test_set: str = "full_recording",
+    boundary_gap: int = 0,
 ) -> dict:
     mat = sio.loadmat(str(DATASET))
     data = mat[f"COMPLETE_{subject}"].astype(np.float64)
@@ -232,7 +316,7 @@ def evaluate_subject_stage_b(
 
     q_all = stage_b_quantize(data)
     train_q, train_labels, test_q, test_labels = split_train_test(
-        q_all, labels, train_frac, seed
+        q_all, labels, train_frac, seed, test_set=test_set, boundary_gap=boundary_gap
     )
 
     if max_test_windows is not None and test_q.shape[0] > max_test_windows:
@@ -455,6 +539,7 @@ def run_summary(
 ) -> None:
     seed = int(cfg_json["seed"])
     train_frac = float(cfg_json["protocol"]["train_fraction"])
+    split_kw = split_kwargs_from_config(cfg_json)
     D = int(cfg_json["project_baseline_model"]["D"])
 
     print(f"{'subj':>4}  {'windows':>8}  {'train':>8}  {'accuracy':>10}")
@@ -468,9 +553,13 @@ def run_summary(
                 break
             cap = remaining
         if engine == "stage_b_bsc":
-            r = evaluate_subject_stage_b(s, D, seed, train_frac, cfg, cap)
+            r = evaluate_subject_stage_b(
+                s, D, seed, train_frac, cfg, cap, **split_kw
+            )
         else:
-            r = evaluate_subject_hdc_ref(s, cfg, seed, train_frac, item_mem_seed, cap)
+            r = evaluate_subject_hdc_ref(
+                s, cfg, seed, train_frac, item_mem_seed, cap, **split_kw
+            )
         results.append(r)
         if remaining is not None:
             remaining -= r["n_windows"]
@@ -532,6 +621,7 @@ def main() -> int:
     subjects = args.subjects if args.subjects else cfg_json["dataset"]["subjects"]
     seed = int(cfg_json["seed"])
     train_frac = float(cfg_json["protocol"]["train_fraction"])
+    split_kw = split_kwargs_from_config(cfg_json)
     D = int(cfg_json["project_baseline_model"]["D"])
     cfg = HDCConfig(D=D, seed=args.item_mem_seed)
 
@@ -551,12 +641,12 @@ def main() -> int:
         print(f"  subject {s}...", flush=True)
         if args.engine == "stage_b_bsc":
             subject_results.append(
-                evaluate_subject_stage_b(s, D, seed, train_frac, cfg, cap)
+                evaluate_subject_stage_b(s, D, seed, train_frac, cfg, cap, **split_kw)
             )
         else:
             subject_results.append(
                 evaluate_subject_hdc_ref(
-                    s, cfg, seed, train_frac, args.item_mem_seed, cap
+                    s, cfg, seed, train_frac, args.item_mem_seed, cap, **split_kw
                 )
             )
         if remaining is not None:

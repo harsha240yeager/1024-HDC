@@ -1,0 +1,71 @@
+{
+  "name": "Protocol HDC-2 EMG baseline (DATE major revision)",
+  "description": "Strictly disjoint train/test split for DATE resubmission. Train: first 25% of each class; test: remaining 75% only. See docs/DATE_REVISION_PLAN.md Phase 1.",
+  "dataset": {
+    "source": "abbas-rahimi/HDC-EMG (dataset.mat, GPLv3)",
+    "path": "HDC-EMG/dataset.mat",
+    "subjects": [1, 2, 3, 4, 5],
+    "channels": 4,
+    "classes": 5,
+    "feature": "enveloped EMG amplitude (NOT Hudgins features)",
+    "levels": 21,
+    "percision": 1,
+    "quantize": "int(value * percision), clipped to [0, 21]"
+  },
+  "project_baseline_model": {
+    "name": "BSC binary spatial reference (Stage B)",
+    "description": "4-channel spatial records via stage_b_bsc.py. Python reference for comparison to Rahimi ~90%. NOT the PL encoder.",
+    "script": "python_ref/repro/stage_b_bsc.py",
+    "D": 1024,
+    "hypervector": "binary {0,1}, D/2 ones",
+    "bind": "XOR",
+    "permute": "cyclic shift (n-gram spatial uses roll)",
+    "bundle": "thresholded majority, tie -> 0",
+    "similarity": "Hamming distance / popcount (argmin)",
+    "frozen_spatial_mean": null,
+    "frozen_spatial_std": null
+  },
+  "rtl_encoder_baseline": {
+    "name": "RTL encoder (Eq. 3.1, hdc_ref)",
+    "description": "20-pair encoder matching encoder_top.sv; item mem seed 42; board EMG replay under HDC-2 (pending rerun).",
+    "script": "python_ref/hdc_ref.py + scripts/export_emg_board_vectors.py",
+    "rtl_modules": ["encoder_top.sv", "xor_permute_top.sv", "permute_stage.sv", "bundle_unit.sv", "popcount_am.sv"],
+    "D": 1024,
+    "item_mem_seed": 42,
+    "spatial_mean": null,
+    "spatial_mean_x1000": null,
+    "n_test_windows": null,
+    "n_correct": null,
+    "measured": "pending HDC-2 rerun",
+    "board_pass_criterion": "|board_acc - export_ref| <= 0.5%",
+    "board_pass": false,
+    "evidence": "results/protocol_v2/board_emg_replay.txt"
+  },
+  "parity_anchor_model": {
+    "name": "MAP bipolar (paper)",
+    "D": 10000,
+    "hypervector": "bipolar {-1,+1}, D/2 each",
+    "bind": "element-wise multiply",
+    "permute": "cyclic shift by 1",
+    "bundle": "integer addition",
+    "similarity": "cosine (argmax)",
+    "training": "conditional add (cos < cutting_angle)"
+  },
+  "protocol": {
+    "id": "HDC-2",
+    "train_fraction": 0.25,
+    "train_selection": "first 25% of each class in order, then shuffled within class (rng = seed + 100)",
+    "test_set": "remaining 75% disjoint",
+    "boundary_gap": 0,
+    "cutting_angle": 0.9,
+    "best_n_per_subject": {"1": 4, "2": 4, "3": 3, "4": 5, "5": 4},
+    "downsample_spatial": 1,
+    "downsample_spatiotemporal": {"1": 250, "2": 250, "3": 250, "4": 250, "5": 50},
+    "evaluation": "per-subject accuracy, mean over subjects; test windows strictly disjoint from train",
+    "spatial_predict": "stride-1 sample classification (hdcpredict)",
+    "spatiotemporal_predict": "gesture-window slicing, max-similarity n-gram (test_slicing)"
+  },
+  "seed": 1,
+  "seeds_for_std": [1, 2, 3, 4, 5],
+  "run_parity_anchor": true
+}

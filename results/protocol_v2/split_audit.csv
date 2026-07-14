@@ -1,0 +1,6 @@
+subject,n_total,n_train,n_test,overlap_count,test_set_mode,pass
+1,148831,37206,111625,0,disjoint,True
+2,139135,34782,104353,0,disjoint,True
+3,137573,34391,103182,0,disjoint,True
+4,134335,33582,100753,0,disjoint,True
+5,98130,24531,73599,0,disjoint,True

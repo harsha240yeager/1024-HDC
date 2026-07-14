@@ -1,0 +1,59 @@
+{
+  "config": "python_ref/config/emg_baseline_v2.json",
+  "protocol_id": "HDC-2",
+  "test_set_mode": "disjoint",
+  "subjects": [
+    {
+      "n_total": 148831,
+      "n_train": 37206,
+      "n_test": 111625,
+      "overlap_count": 0,
+      "overlap_indices_sample": [],
+      "test_set_mode": "disjoint",
+      "pass": true,
+      "subject": 1
+    },
+    {
+      "n_total": 139135,
+      "n_train": 34782,
+      "n_test": 104353,
+      "overlap_count": 0,
+      "overlap_indices_sample": [],
+      "test_set_mode": "disjoint",
+      "pass": true,
+      "subject": 2
+    },
+    {
+      "n_total": 137573,
+      "n_train": 34391,
+      "n_test": 103182,
+      "overlap_count": 0,
+      "overlap_indices_sample": [],
+      "test_set_mode": "disjoint",
+      "pass": true,
+      "subject": 3
+    },
+    {
+      "n_total": 134335,
+      "n_train": 33582,
+      "n_test": 100753,
+      "overlap_count": 0,
+      "overlap_indices_sample": [],
+      "test_set_mode": "disjoint",
+      "pass": true,
+      "subject": 4
+    },
+    {
+      "n_total": 98130,
+      "n_train": 24531,
+      "n_test": 73599,
+      "overlap_count": 0,
+      "overlap_indices_sample": [],
+      "test_set_mode": "disjoint",
+      "pass": true,
+      "subject": 5
+    }
+  ],
+  "total_overlap": 0,
+  "hdc2_gate_pass": true
+}

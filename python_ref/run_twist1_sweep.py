@@ -51,6 +51,7 @@ from export_emg_board_vectors import (  # noqa: E402
     level21_to_grid,
     quantize_envelope,
     require_dataset,
+    split_kwargs_from_config,
     split_train_test,
 )
 
@@ -135,6 +136,7 @@ def eval_subject(
     item_mem_seed: int,
     max_test_windows: Optional[int],
     max_train_windows: Optional[int],
+    split_kw: dict,
 ) -> dict:
     mat = sio.loadmat(str(DATASET))
     data = mat[f"COMPLETE_{subject}"].astype(np.float64)
@@ -142,7 +144,7 @@ def eval_subject(
     q_all = quantize_envelope(data)
 
     train_q, train_labels, test_q, test_labels = split_train_test(
-        q_all, labels, train_frac, seed
+        q_all, labels, train_frac, seed, **split_kw
     )
     if max_train_windows is not None and train_q.shape[0] > max_train_windows:
         train_q = train_q[:max_train_windows]
@@ -326,6 +328,7 @@ def main() -> int:
 
     seed = int(emg_cfg["seed"])
     train_frac = float(emg_cfg["protocol"]["train_fraction"])
+    split_kw = split_kwargs_from_config(emg_cfg)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -352,6 +355,7 @@ def main() -> int:
             item_mem_seed,
             max_windows,
             max_train_windows,
+            split_kw,
         )
         per_subject.append(row)
         print(

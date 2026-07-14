@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: DATE Major Revision Plan
+    url: https://github.com/harsha240yeager/1024-HDC/blob/main/docs/DATE_REVISION_PLAN.md
+    about: Full phase checklist for post-review reruns (Phases 1–12)
+  - name: Execution Plan (week-by-week)
+    url: https://github.com/harsha240yeager/1024-HDC/blob/main/docs/DATE_EXECUTION_PLAN.md
+    about: Ordered workflow with gates and deliverables
+  - name: Research-paper repo
+    url: https://github.com/harsha240yeager/Research-paper
+    about: IEEEtran DATE manuscript (Overleaf sync)
+
+issue_templates:
+  - name: DATE revision phase
+    description: Track one phase of the DATE major revision (link to issue #1–#11)
+    labels: ["date-revision"]
+    template: date-revision-phase.yml

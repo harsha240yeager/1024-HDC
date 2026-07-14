@@ -629,7 +629,9 @@ HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harness
 
 ## Roadmap
 
-**DATE major revision (post weak-reject review):** see [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md) and [GitHub Issues #1–#11](https://github.com/harsha240yeager/1024-HDC/issues).
+**DATE major revision (post weak-reject review):** see [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md) · [`docs/DATE_EXECUTION_PLAN.md`](docs/DATE_EXECUTION_PLAN.md) · [GitHub Issues #1–#11](https://github.com/harsha240yeager/1024-HDC/issues)
+
+**Local gate:** `bash scripts/run_hdc2_gate.sh` · **CI:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 
 | Phase | Focus | Issue | Status |
 |-------|--------|-------|--------|

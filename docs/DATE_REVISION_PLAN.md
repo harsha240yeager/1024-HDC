@@ -383,7 +383,7 @@ Cut or demote: old Twist 2 zero-gap story, MLP figure, excessive encoder/dataset
 
 | Phase | Status | Blocker |
 |-------|--------|---------|
-| 1 Protocol HDC-2 | ⏳ Not started | — |
+| 1 Protocol HDC-2 | ⏳ In progress — split fix + CI gate | — |
 | 2 Cross-subject stress | ⏳ Blocked | Phase 1 |
 | 3 Random + stats | ⏳ Blocked | Phase 1 |
 | 4 Seed sensitivity | ⏳ Blocked | Phase 1 |

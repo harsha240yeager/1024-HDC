@@ -1,0 +1,53 @@
+name: DATE revision phase
+description: Track experiment or paper work for DATE major revision
+title: "[DATE] "
+labels: ["date-revision"]
+body:
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Phase
+      description: See docs/DATE_REVISION_PLAN.md
+      options:
+        - "1 — Protocol HDC-2 split + rerun (BLOCKER)"
+        - "2 — Cross-subject stress (keep 32–256 bits)"
+        - "3 — Random masks + subject-level stats"
+        - "4 — Item-memory seed sensitivity"
+        - "5 — Active-bit ablation + ranking baselines"
+        - "6 — Encoder gap 74% vs 90%"
+        - "7 — Claim alignment (Path A/B)"
+        - "8 — Energy methodology"
+        - "9 — Ranking baselines"
+        - "10 — Fix inconsistencies"
+        - "11 — Reproducibility artifact"
+        - "Paper — title/abstract/reorg (Research-paper repo)"
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: One sentence — what does done look like?
+    validations:
+      required: true
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Checklist
+      description: Copy tasks from DATE_REVISION_PLAN.md or issue body in docs/.issue_bodies/
+      value: |
+        - [ ] Implementation
+        - [ ] Local verification
+        - [ ] Results committed under results/protocol_v2/
+        - [ ] README / paper numbers updated
+    validations:
+      required: true
+  - type: input
+    id: blocker
+    attributes:
+      label: Blocked by (issue #)
+      placeholder: e.g. #1
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / commands run
