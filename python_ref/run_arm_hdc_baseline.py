@@ -222,9 +222,10 @@ def evaluate_subject(
     train_frac: float,
     max_train: int | None,
     max_test: int | None,
+    emg_cfg: dict,
 ) -> dict:
     train_q, train_labels, test_q, test_labels = load_subject_split(
-        subject, seed, train_frac, max_test
+        subject, seed, train_frac, max_test, emg_cfg=emg_cfg
     )
     train_q, train_labels = cap_train_windows(train_q, train_labels, max_train)
     print(f"    subject {subject}: train={train_q.shape[0]} test={test_q.shape[0]}", flush=True)
@@ -306,7 +307,7 @@ def main() -> int:
     engine = HDCEngine(cfg)
 
     # verification on subject 1 train samples
-    train_q, _, _, _ = load_subject_split(1, seed, train_frac, 100)
+    train_q, _, _, _ = load_subject_split(1, seed, train_frac, 100, emg_cfg=ecfg)
     mism = verify_encode(arm, engine, mem, cfg, train_q, cnt_bits, 32)
     print(f"Encode verify: {32 - mism}/32 match Python hdc_ref")
     if mism > 0:
@@ -324,7 +325,7 @@ def main() -> int:
     for subject in subjects:
         rows.append(
             evaluate_subject(
-                subject, arm, seed, train_frac, max_train, max_test,
+                subject, arm, seed, train_frac, max_train, max_test, ecfg,
             )
         )
 

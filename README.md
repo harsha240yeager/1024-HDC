@@ -8,13 +8,10 @@ Zynq-7020 (ZedBoard), validated with EMG hand-gesture recognition.
 **Manuscript:** [Research-paper](https://github.com/harsha240yeager/Research-paper)  
 **Platform:** ZedBoard `xc7z020clg484-1` @ 100 MHz PL · Vivado 2024.2
 
-> **⚠ Protocol revision in progress (HDC-2).** Headline accuracy numbers below were
-> computed under **Protocol HDC-1** (`P-may2026`), which evaluates test on the **full
-> recording** while training uses the first 25% of each class — train windows overlap
-> test. We are fixing this to a **strictly disjoint** split before DATE resubmission.
-> See [Protocol HDC-2](#protocol-hdc-2-fix--rerun-plan) and
-> [GitHub issue #1](https://github.com/harsha240yeager/1024-HDC/issues/1).
-> **Do not cite HDC-1 accuracy as generalization results until reruns complete.**
+> **Protocol HDC-2 Tier 1 complete (2026-07-15).** Disjoint train/test split validated;
+> silicon EMG replay **72.78%** on **493,512** windows (Δ0.00% vs export ref).
+> HDC-1 numbers below (74.24%) are **legacy** — do not cite for generalization.
+> See [Protocol HDC-2](#protocol-hdc-2-fix--rerun-plan) · Tier 2+ reruns pending.
 
 ---
 
@@ -106,9 +103,10 @@ Config (planned): `python_ref/config/emg_baseline_v2.json` · protocol id **`HDC
 
 ### Code changes (issue #1)
 
-- [ ] Rewrite `split_train_test()` — test = complement of train indices
-- [ ] Add `scripts/audit_split_leakage.py`
-- [ ] Point sweep configs at `emg_baseline_v2.json`
+- [x] Rewrite `split_train_test()` — test = complement of train indices
+- [x] Add `scripts/audit_split_leakage.py`
+- [x] Point sweep configs at `emg_baseline_v2.json`
+- [x] Tier 1 rerun + board replay PASS (72.78% silicon)
 
 Fixing `split_train_test()` automatically updates all importers:
 `baseline_common.py`, `run_twist1_sweep.py`, `run_twist2_sweep.py`, `run_hook_a_sweep.py`,
@@ -168,11 +166,12 @@ methodology separately ([#8](https://github.com/harsha240yeager/1024-HDC/issues/
 
 ### Expected changes after HDC-2
 
-| Quantity | HDC-1 (committed) | HDC-2 (after rerun) |
-|----------|-------------------|---------------------|
-| Test windows | 658,004 (100% of recording) | ~75% of recording (~490k–500k) |
-| Full-width accuracy | 74.24% silicon | **TBD** (often lower — valid generalization) |
-| Fisher vs random gap | +8.63 / +10.91 pp | **TBD** |
+| Quantity | HDC-1 (committed) | HDC-2 (Tier 1 complete) |
+|----------|-------------------|-------------------------|
+| Test windows | 658,004 (100% of recording) | **493,512** (disjoint 75%) |
+| Full-width accuracy | 74.24% silicon | **72.78%** silicon (Δ0.00% vs export) |
+| ARM C baseline | 74.15% | **72.65%** |
+| Fisher vs random gap | +8.63 / +10.91 pp | **TBD** (Tier 2+) |
 | Overlap train∩test | >0 | **0** |
 
 ---
@@ -200,15 +199,15 @@ methodology separately ([#8](https://github.com/harsha240yeager/1024-HDC/issues/
 
 ## Project status
 
-*July 2026 — hardware verification complete; **Protocol HDC-2 revision** in progress for DATE.*
+*July 2026 — **HDC-2 Tier 1 complete** (72.78% silicon); Tier 2+ reruns for DATE.*
 
 | Component | Status |
 |-----------|--------|
 | RTL + 9 co-sim harnesses | ✅ Bit-exact (unchanged by split fix) |
-| Phases 1–3 board bring-up | ✅ Golden + EMG PASS under HDC-1 |
+| Phases 1–3 board bring-up | ✅ EMG PASS under **HDC-2** (72.78%, 493k windows) |
 | Hook A / Twist 1 / Twist 2 / anchors | ✅ HDC-1 numbers — **⏳ rerun under HDC-2** |
 | INA219 energy A/B/C + ARM | ✅ (platform comparison; see issue #8) |
-| Protocol HDC-2 disjoint split | ⏳ [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
+| Protocol HDC-2 disjoint split | ✅ Tier 1 — [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
 | Cross-subject stress test (keep 32–256) | ⏳ [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
 | Random baselines + subject-level stats | ⏳ [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) |
 | Paper figures | ✅ HDC-1 — refresh after rerun |

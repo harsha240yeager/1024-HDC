@@ -47,6 +47,7 @@ from scripts.export_emg_board_vectors import (  # noqa: E402
     DATASET,
     N_CLASS,
     fmt_u64_array,
+    split_kwargs_from_config,
     split_train_test,
     train_prototypes_hdc_ref,
     quantize_envelope,
@@ -79,12 +80,15 @@ def train_subject_protos(
     cfg: HDCConfig,
     seed: int,
     train_frac: float,
+    split_kw: dict,
 ) -> np.ndarray:
     mat = sio.loadmat(str(DATASET))
     data = mat[f"COMPLETE_{subject}"].astype(np.float64)
     labels = mat[f"LABEL_{subject}"].ravel().astype(np.int64)
     q_all = quantize_envelope(data)
-    train_q, train_labels, _, _ = split_train_test(q_all, labels, train_frac, seed)
+    train_q, train_labels, _, _ = split_train_test(
+        q_all, labels, train_frac, seed, **split_kw
+    )
 
     mem = ItemMemory(cfg)
     engine = HDCEngine(cfg)
@@ -211,6 +215,7 @@ def main() -> int:
     )
     seed = int(cfg_json["seed"])
     train_frac = float(cfg_json["protocol"]["train_fraction"])
+    split_kw = split_kwargs_from_config(cfg_json)
     subjects = parse_subjects(defs, args.header)
     subj_windows = None
     m = re.search(
@@ -241,7 +246,9 @@ def main() -> int:
     else:
         protos_stack = []
         for subject in subjects:
-            protos_stack.append(train_subject_protos(subject, cfg, seed, train_frac))
+            protos_stack.append(
+                train_subject_protos(subject, cfg, seed, train_frac, split_kw)
+            )
         protos_all = np.stack(protos_stack, axis=0)
 
         nz = int(np.count_nonzero(protos_all))

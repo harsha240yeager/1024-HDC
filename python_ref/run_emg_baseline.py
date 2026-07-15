@@ -48,11 +48,15 @@ def measure_rtl_encoder_spatial(
 ) -> dict:
     """Recompute hdc_ref spatial mean (slow on full TEST split)."""
     from hdc_ref import HDCConfig  # noqa: E402
-    from scripts.export_emg_board_vectors import evaluate_subject_hdc_ref  # noqa: E402
+    from scripts.export_emg_board_vectors import (  # noqa: E402
+        evaluate_subject_hdc_ref,
+        split_kwargs_from_config,
+    )
 
     subjects = cfg["dataset"]["subjects"]
     seed = int(cfg["seed"])
     train_frac = float(cfg["protocol"]["train_fraction"])
+    split_kw = split_kwargs_from_config(cfg)
     D = int(cfg["rtl_encoder_baseline"]["D"])
     hdc_cfg = HDCConfig(D=D, seed=item_mem_seed)
 
@@ -60,7 +64,7 @@ def measure_rtl_encoder_spatial(
     per_subject = {}
     for s in subjects:
         r = evaluate_subject_hdc_ref(
-            s, hdc_cfg, seed, train_frac, item_mem_seed, max_windows
+            s, hdc_cfg, seed, train_frac, item_mem_seed, max_windows, **split_kw
         )
         accs.append(r["accuracy"])
         per_subject[str(s)] = float(r["accuracy"])
@@ -106,14 +110,18 @@ def run(
     st_m, st_s = mean_std(st_means)
 
     rtl_cfg = cfg.get("rtl_encoder_baseline", {})
-    rtl_cached = float(rtl_cfg.get("spatial_mean", 0.0))
+    rtl_cached_raw = rtl_cfg.get("spatial_mean")
+    rtl_cached = None if rtl_cached_raw is None else float(rtl_cached_raw)
     rtl_seed = int(rtl_cfg.get("item_mem_seed", 42))
 
     print(f"\n== (2) RTL encoder baseline (hdc_ref / encoder_top.sv, seed={rtl_seed}) ==")
-    print(
-        f"  Cached (board PASS): {rtl_cached * 100:.2f}%  "
-        f"({rtl_cfg.get('n_correct', '?')}/{rtl_cfg.get('n_test_windows', '?')} windows)"
-    )
+    if rtl_cached is not None:
+        print(
+            f"  Cached (board PASS): {rtl_cached * 100:.2f}%  "
+            f"({rtl_cfg.get('n_correct', '?')}/{rtl_cfg.get('n_test_windows', '?')} windows)"
+        )
+    else:
+        print("  Cached: (none — pending HDC-2 measurement)")
     print(f"  Evidence: {rtl_cfg.get('evidence', 'results/phase3/board_emg_replay.txt')}")
     print("  Board PASS: |board_acc - export_ref| <= 0.5%  (NOT vs Stage B 90%)")
 
@@ -175,7 +183,10 @@ def run(
     print("SUMMARY")
     print("=" * 70)
     print(f"  Stage B reference (Python)     spatial = {sp_m * 100:5.2f}% +/- {sp_s * 100:.2f}")
-    print(f"  RTL encoder (board / export)   spatial = {rtl_cached * 100:5.2f}%  (cached)")
+    if rtl_cached is not None:
+        print(f"  RTL encoder (board / export)   spatial = {rtl_cached * 100:5.2f}%  (cached)")
+    else:
+        print("  RTL encoder (board / export)   spatial = (pending HDC-2 board replay)")
     if rtl_measured:
         print(
             f"  RTL encoder (recomputed)       spatial = "
@@ -186,7 +197,13 @@ def run(
         pa = snapshot["parity_anchor"]
         print(f"  MAP anchor spatial             = {pa['spatial']['mean'] * 100:5.2f}%  (paper 90.8%)")
     print(f"\n  >>> Reference baseline  = {sp_m * 100:.2f}% +/- {sp_s * 100:.2f} (Stage B, protocol {pid})")
-    print(f"  >>> RTL encoder baseline = {rtl_cached * 100:.2f}% (board verified, same protocol)")
+    if rtl_measured:
+        print(
+            f"  >>> RTL encoder baseline = {rtl_measured['spatial_mean'] * 100:.2f}% "
+            f"(HDC-2 Python recompute)"
+        )
+    elif rtl_cached is not None:
+        print(f"  >>> RTL encoder baseline = {rtl_cached * 100:.2f}% (board verified, same protocol)")
     print(f"  snapshot -> {out}")
     return snapshot
 

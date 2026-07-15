@@ -28,6 +28,8 @@ sw/arm_bench_data.h
 # Generated EMG board replay header (regenerate: scripts/prep_emg_board_test.sh)
 sw/emg_board_vectors.h
 sw/emg_board_vectors.bin
+sw/emg_board_vectors_hdc2.h
+sw/emg_board_vectors.h.full
 
 # Simulation waveforms (large; regenerate locally)
 sim/waves/*.vcd

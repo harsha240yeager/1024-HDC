@@ -1,33 +1,26 @@
 Phase 3 — EMG full-dataset replay (ZedBoard)
 ============================================
-Date:       2026-06-23T10:48:12+05:30
+Date:       2026-07-15T11:34:38+05:30
 App:        sw/hdc_emg_board_test.c
 Method:     JTAG readback @ 0x00100300
 Run script: bash board/HDC_DMA/run_phase3_emg.sh
-Bitstream:  design_1_wrapper.bit (Phase 3 SG DMA, physopt)
-
-Dual baseline context: docs/Baseline_vs_RTL_Encoder.md
-  Stage B reference (Python): 90.30% spatial — NOT the board pass gate
-  RTL encoder (this run):     74.24% — board PASS vs export ref only
+Bitstream:  /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wrapper.bit
 
 ==================================================
 HDC Phase 3 EMG replay (sw/hdc_emg_board_test.c)
 DDR readback @ 0x00100300
 ==================================================
-EMG replay: N=658004 correct=488550 accuracy=74.24%
-Export ref: 74.24%
+EMG replay: N=493512 correct=359202 accuracy=72.78%
+Export ref: 72.78%
 Board vs export: delta=0.00%  PASS (0.5% tol)
-errors=169454
+errors=134310
 ==================================================
 
 Record
 ------
-Windows replayed: 658004 correct=488550 accuracy=74.24%
-Export ref: 74.24%
+Windows replayed: 493512 correct=359202 accuracy=72.78%
+Export ref: 72.78%
 Board vs export: delta=0.00%  PASS (0.5% tol)
 PASS (board vs export, 0.5%): yes
 
 Status: PASS
-
-Historical note: early runs with broken prototype training/loading showed ~59%
-(board == export ref but bogus protos). Fixed June 2026 — see results/phase3/README.md.

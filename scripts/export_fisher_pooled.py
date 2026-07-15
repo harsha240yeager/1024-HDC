@@ -29,6 +29,7 @@ from scripts.export_emg_board_vectors import (  # noqa: E402
     DATASET,
     level21_to_grid,
     quantize_envelope,
+    split_kwargs_from_config,
     split_train_test,
 )
 
@@ -50,6 +51,7 @@ def main() -> int:
     cfg = HDCConfig(D=1024, seed=int(cfg_json.get("item_mem_seed", 42)))
     seed = int(cfg_json["seed"])
     train_frac = float(cfg_json["protocol"]["train_fraction"])
+    split_kw = split_kwargs_from_config(cfg_json)
     subjects = cfg_json["dataset"]["subjects"]
 
     mem = ItemMemory(cfg)
@@ -63,7 +65,9 @@ def main() -> int:
         data = mat[f"COMPLETE_{subject}"].astype(np.float64)
         labels = mat[f"LABEL_{subject}"].ravel().astype(np.int64)
         q_all = quantize_envelope(data)
-        train_q, train_y, _, _ = split_train_test(q_all, labels, train_frac, seed)
+        train_q, train_y, _, _ = split_train_test(
+            q_all, labels, train_frac, seed, **split_kw
+        )
         n = train_q.shape[0]
         if args.max_train_windows is not None:
             n = min(n, args.max_train_windows)
