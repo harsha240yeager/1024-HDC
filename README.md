@@ -205,7 +205,8 @@ methodology separately ([#8](https://github.com/harsha240yeager/1024-HDC/issues/
 |-----------|--------|
 | RTL + 9 co-sim harnesses | ✅ Bit-exact (unchanged by split fix) |
 | Phases 1–3 board bring-up | ✅ EMG PASS under **HDC-2** (72.78%, 493k windows) |
-| Hook A / Twist 1 / Twist 2 / anchors | ✅ HDC-1 numbers — **⏳ rerun under HDC-2** |
+| Hook A / Twist 1 / Twist 2 | ✅ HDC-1 numbers — **⏳ rerun under HDC-2** |
+| Silicon anchors A/B/C | ✅ **HDC-2 PASS** (72.78% / 72.78% / 72.85%) | [`protocol_v2/anchors/`](results/protocol_v2/anchors/) |
 | INA219 energy A/B/C + ARM | ✅ (platform comparison; see issue #8) |
 | Protocol HDC-2 disjoint split | ✅ Tier 1 — [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
 | Cross-subject stress test (keep 32–256) | ⏳ [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
@@ -335,19 +336,21 @@ Data: [`hook_a/sweep_summary.csv`](results/hook_a/sweep_summary.csv).
 
 ### Silicon anchors A/B/C
 
-Same bitstream; only the **global mask** changes. Pooled Fisher · 658k windows each.
+Same bitstream; only the **global mask** changes. Pooled Fisher · **493,512** HDC-2 test windows each.
 
-| Anchor | keep | Prune | Board | Ref | Energy (µJ/w) | PASS |
-|--------|------|-------|-------|-----|---------------|------|
-| A | 1.0 | 0% | 74.24% | 74.24% | 11.98 ± 0.07 | ✅ |
-| B | 0.5 | 50% | 74.24% | 74.24% | 11.90 ± 0.04 | ✅ |
-| C | 0.125 | 87.5% | 74.32% | 74.32% | 11.81 ± 0.12 | ✅ |
+| Anchor | keep | Prune | Board | Ref | Δ | PASS |
+|--------|------|-------|-------|-----|---|------|
+| A | 1.0 | 0% | 72.78% | 72.78% | 0.00% | ✅ |
+| B | 0.5 | 50% | 72.78% | 72.78% | 0.00% | ✅ |
+| C | 0.125 | 87.5% | 72.84% | 72.85% | 0.00% | ✅ |
+
+**Finding (HDC-2):** A/B flat at 72.78%; C shows a small lift to **72.85%** export ref (128/1024 Fisher bits).
 
 ```bash
 bash board/HDC_DMA/run_anchor_replay.sh ALL
 ```
 
-Logs: [`results/phase3/anchors/`](results/phase3/anchors/).
+Results: [`results/protocol_v2/anchors/`](results/protocol_v2/anchors/) · HDC-1 logs: [`results/phase3/anchors/`](results/phase3/anchors/).
 
 ### Measured energy
 

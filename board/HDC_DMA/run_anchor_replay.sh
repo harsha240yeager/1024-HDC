@@ -31,8 +31,10 @@ anchor_keep() {
 run_one_anchor() {
   local id="$1"
   local keep
-  local out_dir="${HDC_EMG_RESULTS_DIR:-$REPO/results/phase3/anchors/anchor_${id}}"
+  local out_dir="${HDC_EMG_RESULTS_DIR:-$REPO/results/protocol_v2/anchors/anchor_${id}}"
   local log_dir="${HDC_LOG_DIR:-/tmp/hdc_anchor_${id}}"
+  local v2_cfg="$REPO/python_ref/config/emg_baseline_v2.json"
+  local hdc2_hdr="$REPO/sw/emg_board_vectors_hdc2.h"
 
   keep="$(anchor_keep "$id")" || {
     echo "Unknown anchor: $id" >&2
@@ -47,7 +49,12 @@ run_one_anchor() {
     echo "Skipping mask patch for anchor ${id} (HDC_ANCHOR_SKIP_PATCH=1)"
   else
     echo "Patching mask + export ref ..."
-    python3 "$REPO/scripts/patch_emg_anchor.py" --anchor "$id" --keep-ratio "$keep"
+    python3 "$REPO/scripts/patch_emg_anchor.py" \
+      --anchor "$id" \
+      --keep-ratio "$keep" \
+      --config "$v2_cfg" \
+      --slim-header "$REPO/sw/emg_board_vectors.h" \
+      --header "$hdc2_hdr"
   fi
 
   echo "Rebuilding Final_HDC_dma_emg.elf ..."
@@ -92,7 +99,7 @@ if [[ "$ANCHOR" == "ALL" ]]; then
   for id in A B C; do
     run_one_anchor "$id"
   done
-  echo "All anchors A/B/C complete under results/phase3/anchors/"
+  echo "All anchors A/B/C complete under results/protocol_v2/anchors/"
 else
   run_one_anchor "$ANCHOR"
 fi

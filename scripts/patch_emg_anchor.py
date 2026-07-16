@@ -50,18 +50,16 @@ from hdc_ref import (  # noqa: E402
     per_bit_fisher_scores,
 )
 from scripts.export_emg_board_vectors import (  # noqa: E402
-    DEFAULT_CONFIG,
     DATASET,
     N_CLASS,
     fmt_mask64,
     level21_to_grid,
     quantize_envelope,
+    split_kwargs_from_config,
     split_train_test,
 )
 from scripts.regenerate_emg_protos import (  # noqa: E402
-    DEFAULT_HDR,
     DEFAULT_SLIM,
-    DEFINE_RE,
     load_levels_labels_bin,
     parse_defines,
     parse_subjects,
@@ -69,6 +67,9 @@ from scripts.regenerate_emg_protos import (  # noqa: E402
     update_comment_accuracy,
     update_ref_accuracy,
 )
+
+DEFAULT_HDR = REPO / "sw" / "emg_board_vectors_hdc2.h"
+DEFAULT_V2_CFG = PYREF / "config" / "emg_baseline_v2.json"
 
 ANCHOR_KEEP = {"A": 1.0, "B": 0.5, "C": 0.125}
 
@@ -111,6 +112,7 @@ def build_pooled_fisher_mask(
     seed: int,
     train_frac: float,
     keep_ratio: float,
+    split_kw: dict,
 ) -> np.ndarray:
     if keep_ratio >= 1.0 - 1e-9:
         # Degenerate Fisher case: 100% keep == all-ones (same as mask_from_scores(..., 1.0)).
@@ -127,7 +129,9 @@ def build_pooled_fisher_mask(
         data = mat[f"COMPLETE_{subject}"].astype(np.float64)
         labels = mat[f"LABEL_{subject}"].ravel().astype(np.int64)
         q_all = quantize_envelope(data)
-        train_q, train_y, _, _ = split_train_test(q_all, labels, train_frac, seed)
+        train_q, train_y, _, _ = split_train_test(
+            q_all, labels, train_frac, seed, **split_kw
+        )
         print(f"  subject {subject}: encoding {train_q.shape[0]} train windows", flush=True)
         for i in range(train_q.shape[0]):
             if i > 0 and i % 5000 == 0:
@@ -168,10 +172,13 @@ def build_mask(
     keep_ratio: float,
     mask_mode: str,
     random_seed: int,
+    split_kw: dict,
 ) -> np.ndarray:
     if mask_mode == "random":
         return build_random_mask(cfg, keep_ratio, random_seed)
-    return build_pooled_fisher_mask(subjects, cfg, seed, train_frac, keep_ratio)
+    return build_pooled_fisher_mask(
+        subjects, cfg, seed, train_frac, keep_ratio, split_kw
+    )
 
 
 def recompute_accuracy_with_mask(
@@ -261,7 +268,7 @@ def main() -> int:
     ap.add_argument("--header", type=Path, default=DEFAULT_HDR)
     ap.add_argument("--slim-header", type=Path, default=DEFAULT_SLIM)
     ap.add_argument("--bin", type=Path, default=REPO / "sw" / "emg_board_vectors.bin")
-    ap.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    ap.add_argument("--config", type=Path, default=DEFAULT_V2_CFG)
     ap.add_argument(
         "--max-windows",
         type=int,
@@ -311,6 +318,7 @@ def main() -> int:
     cfg = HDCConfig(D=1024, seed=item_mem_seed)
     seed = int(cfg_json["seed"])
     train_frac = float(cfg_json["protocol"]["train_fraction"])
+    split_kw = split_kwargs_from_config(cfg_json)
     if args.golden_only:
         subjects = cfg_json["dataset"]["subjects"]
     else:
@@ -337,6 +345,7 @@ def main() -> int:
         keep_ratio,
         args.mask_mode,
         args.random_seed,
+        split_kw,
     )
     emg_mask_block = fmt_mask64("emg_mask64", mask, cfg)
     golden_mask_block = fmt_mask64("golden_mask64", mask, cfg).replace(
