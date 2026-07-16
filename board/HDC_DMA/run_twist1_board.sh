@@ -64,7 +64,7 @@ if [[ "$RERUN_INFORMED" -eq 1 ]]; then
   bash "$ROOT/run_anchor_replay.sh" "$ANCHOR_ID"
 else
   echo "--- Informed: reuse anchor ${ANCHOR_ID} board result ---"
-  SRC="$REPO/results/phase3/anchors/anchor_${ANCHOR_ID}/board_emg_replay.txt"
+  SRC="$REPO/results/protocol_v2/anchors/anchor_${ANCHOR_ID}/board_emg_replay.txt"
   if [[ ! -f "$SRC" ]]; then
     echo "Missing $SRC — run: bash board/HDC_DMA/run_anchor_replay.sh ${ANCHOR_ID}" >&2
     exit 1

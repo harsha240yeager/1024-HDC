@@ -184,7 +184,7 @@ methodology separately ([#8](https://github.com/harsha240yeager/1024-HDC/issues/
 | Metric | Value | Evidence |
 |--------|-------|----------|
 | Silicon EMG replay | **74.24%**, 658k windows, **Δ0.00%** vs golden | [`board_emg_replay.txt`](results/phase3/board_emg_replay.txt) |
-| Anchor B / C (pruned) | **74.24%** / **74.32%** (flat vs A) | [`anchors/`](results/phase3/anchors/) |
+| Anchor B / C (pruned) | **72.78%** / **72.85%** (HDC-2) | [`protocol_v2/anchors/`](results/protocol_v2/anchors/) |
 | PL batch latency | **~4 µs**/window | Phase 3 SG DMA |
 | ARM HDC latency | **819 µs**/window | [`arm_hdc_board_timing.txt`](results/baselines/arm_hdc_board_timing.txt) |
 | PL energy (anchor A) | **11.98 ± 0.07 µJ**/w | [`energy_summary.txt`](results/phase3/energy_summary.txt) |
@@ -350,7 +350,7 @@ Same bitstream; only the **global mask** changes. Pooled Fisher · **493,512** H
 bash board/HDC_DMA/run_anchor_replay.sh ALL
 ```
 
-Results: [`results/protocol_v2/anchors/`](results/protocol_v2/anchors/) · HDC-1 logs: [`results/phase3/anchors/`](results/phase3/anchors/).
+Results: [`results/protocol_v2/anchors/`](results/protocol_v2/anchors/).
 
 ### Measured energy
 

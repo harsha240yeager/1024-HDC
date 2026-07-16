@@ -40,9 +40,10 @@ else
 fi
 
 echo "== Overnight EMG anchor replays (A/B/C) =="
+mkdir -p "$ROOT/results/protocol_v2/anchors"
 nohup bash "$ROOT/board/HDC_DMA/run_anchor_replay.sh" ALL \
-  >> "$ROOT/results/phase3/anchors/overnight.log" 2>&1 &
-echo "Anchors PID=$! log=results/phase3/anchors/overnight.log"
+  >> "$ROOT/results/protocol_v2/anchors/overnight.log" 2>&1 &
+echo "Anchors PID=$! log=results/protocol_v2/anchors/overnight.log"
 
 rm -f "$ROOT/results/phase3/energy_runs/PAUSE_FOR_REVIEW"
 echo "=== Post-energy workflow launched $(date -Iseconds) ==="

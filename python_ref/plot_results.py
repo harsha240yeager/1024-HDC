@@ -12,7 +12,7 @@ Sources:
   results/baselines/mlp_results.json       per-subject spatial accuracy (MLP)
   results/hook_a/sweep_summary.csv         D x CNT_W x keep grid
   results/phase3/energy_summary.txt        measured INA219 anchors A/B/C/ARM
-  results/phase3/anchors/anchor_*/board_emg_replay.txt  on-board accuracy
+  results/protocol_v2/anchors/anchor_*/board_emg_replay.txt  on-board accuracy
   results/hook_a/fisher_pooled.npz           pooled Fisher scores + masks (export script)
   results/twist1/twist1_results.json         Twist 1 informed vs random @ keep=0.5
   results/twist2/twist2_results.json         Twist 2 cross-subject mask transfer (5-subject pilot)
@@ -211,7 +211,7 @@ def load_measured_silicon() -> list[dict]:
             uj = float(mean_s.strip())
             uj_std = float(std_s.strip())
             acc = None
-            replay = REPO / f"results/phase3/anchors/anchor_{block}/board_emg_replay.txt"
+            replay = REPO / f"results/protocol_v2/anchors/anchor_{block}/board_emg_replay.txt"
             if replay.is_file():
                 rm = re.search(r"accuracy=(\d+\.\d+)%", replay.read_text(encoding="utf-8"))
                 if rm:
