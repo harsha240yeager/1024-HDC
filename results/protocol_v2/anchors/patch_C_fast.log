@@ -1,0 +1,40 @@
+Building pooled Fisher mask from TRAIN windows ...
+  subject 1: encoding 37206 train windows
+    subject 1: 5000/37206
+    subject 1: 10000/37206
+    subject 1: 15000/37206
+    subject 1: 20000/37206
+    subject 1: 25000/37206
+    subject 1: 30000/37206
+    subject 1: 35000/37206
+  subject 2: encoding 34782 train windows
+    subject 2: 5000/34782
+    subject 2: 10000/34782
+    subject 2: 15000/34782
+    subject 2: 20000/34782
+    subject 2: 25000/34782
+    subject 2: 30000/34782
+  subject 3: encoding 34391 train windows
+    subject 3: 5000/34391
+    subject 3: 10000/34391
+    subject 3: 15000/34391
+    subject 3: 20000/34391
+    subject 3: 25000/34391
+    subject 3: 30000/34391
+  subject 4: encoding 33582 train windows
+    subject 4: 5000/33582
+    subject 4: 10000/33582
+    subject 4: 15000/33582
+    subject 4: 20000/33582
+    subject 4: 25000/33582
+    subject 4: 30000/33582
+  subject 5: encoding 24531 train windows
+    subject 5: 5000/24531
+    subject 5: 10000/24531
+    subject 5: 15000/24531
+    subject 5: 20000/24531
+  keep_ratio=0.125  density=0.1250  n_keep=128/1024
+Patched /home/bsp-lab/1024-HDC/sw/golden_vectors.h
+Patched sw/emg_board_vectors.h
+Patched sw/emg_board_vectors_hdc2.h
+Done anchor=C keep=0.125 mode=informed mask_density=0.1250 export_ref=72.78%

@@ -1,0 +1,460 @@
+=== HDC-2 Python rerun 2026-07-14T18:39:38+05:30 ===
+=== HDC-2 Python rerun 2026-07-14T18:39:38+05:30 ===
+Config: /home/bsp-lab/1024-HDC/python_ref/config/emg_baseline_v2.json
+Config: /home/bsp-lab/1024-HDC/python_ref/config/emg_baseline_v2.json
+Log:    /home/bsp-lab/1024-HDC/results/protocol_v2/rerun.log
+Log:    /home/bsp-lab/1024-HDC/results/protocol_v2/rerun.log
+== Gate ==
+== Gate ==
+== HDC-2 split unit tests ==
+== HDC-2 split unit tests ==
+  OK  test_disjoint_no_overlap
+  OK  test_hdc1_full_recording_has_overlap
+  OK  test_protocol_test_set_from_config
+All split tests passed.
+  OK  test_disjoint_no_overlap
+  OK  test_hdc1_full_recording_has_overlap
+  OK  test_protocol_test_set_from_config
+All split tests passed.
+== Synthetic audit ==
+== Synthetic audit ==
+== split audit: synthetic self-test ==
+  OK  synthetic HDC-2 disjoint split
+== split audit: synthetic self-test ==
+  OK  synthetic HDC-2 disjoint split
+== hdc_ref smoke ==
+== hdc_ref smoke ==
+[1/6] permute vs tb_xor_permute golden
+[2/6] bundle threshold matches RTL (n_accum >> 1)
+  OK  threshold 10 -> 1
+  OK  threshold 9 -> 0
+[3/6] bind + permute pipeline
+  OK  output shape
+[4/6] EMG record encoding + classify
+  OK  class id in range
+[5/6] Twist 1 informed vs random masks
+  OK  same density
+  OK  masks differ
+[6/6] Twist 2 cross-subject experiment (synthetic subjects)
+  OK  pooled accuracy is float
+
+All smoke tests passed.
+[1/6] permute vs tb_xor_permute golden
+[2/6] bundle threshold matches RTL (n_accum >> 1)
+  OK  threshold 10 -> 1
+  OK  threshold 9 -> 0
+[3/6] bind + permute pipeline
+  OK  output shape
+[4/6] EMG record encoding + classify
+  OK  class id in range
+[5/6] Twist 1 informed vs random masks
+  OK  same density
+  OK  masks differ
+[6/6] Twist 2 cross-subject experiment (synthetic subjects)
+  OK  pooled accuracy is float
+
+All smoke tests passed.
+== HDC-2 dataset gate ==
+== HDC-2 dataset gate ==
+== split audit: synthetic self-test ==
+  OK  synthetic HDC-2 disjoint split
+
+== split audit: emg_baseline_v2.json ==
+  S1: train=37206 test=111625 overlap=0 mode=disjoint
+  S2: train=34782 test=104353 overlap=0 mode=disjoint
+  S3: train=34391 test=103182 overlap=0 mode=disjoint
+  S4: train=33582 test=100753 overlap=0 mode=disjoint
+  S5: train=24531 test=73599 overlap=0 mode=disjoint
+
+Wrote /home/bsp-lab/1024-HDC/results/protocol_v2/split_audit.json
+Wrote /home/bsp-lab/1024-HDC/results/protocol_v2/split_audit.csv
+  protocol=HDC-2  total_overlap=0
+  HDC-2 GATE: PASS (overlap=0)
+== split audit: synthetic self-test ==
+  OK  synthetic HDC-2 disjoint split
+
+== split audit: emg_baseline_v2.json ==
+  S1: train=37206 test=111625 overlap=0 mode=disjoint
+  S2: train=34782 test=104353 overlap=0 mode=disjoint
+  S3: train=34391 test=103182 overlap=0 mode=disjoint
+  S4: train=33582 test=100753 overlap=0 mode=disjoint
+  S5: train=24531 test=73599 overlap=0 mode=disjoint
+
+Wrote /home/bsp-lab/1024-HDC/results/protocol_v2/split_audit.json
+Wrote /home/bsp-lab/1024-HDC/results/protocol_v2/split_audit.csv
+  protocol=HDC-2  total_overlap=0
+  HDC-2 GATE: PASS (overlap=0)
+== HDC-2 gate script OK ==
+== HDC-2 gate script OK ==
+== 1/5 run_emg_baseline.py ==
+== 1/5 run_emg_baseline.py ==
+======================================================================
+EMG BASELINES (dual-track — see docs/Baseline_vs_RTL_Encoder.md)
+======================================================================
+
+== (1) Stage B spatial reference: BSC D=1024, subjects=[1, 2, 3, 4, 5] ==
+D= 1024  spatial mean= 90.12%  S1= 93.7 S2= 89.5 S3= 90.1 S4= 88.6 S5= 88.6   |  st mean= 89.77%
+D= 1024  spatial mean= 90.24%  S1= 94.5 S2= 90.1 S3= 90.5 S4= 87.4 S5= 88.7   |  st mean= 89.79%
+D= 1024  spatial mean= 90.29%  S1= 95.0 S2= 89.7 S3= 90.5 S4= 87.2 S5= 89.1   |  st mean= 90.16%
+D= 1024  spatial mean= 90.51%  S1= 94.3 S2= 90.8 S3= 91.1 S4= 87.7 S5= 88.6   |  st mean= 87.72%
+D= 1024  spatial mean= 90.35%  S1= 92.4 S2= 92.1 S3= 92.1 S4= 87.6 S5= 87.4   |  st mean= 88.81%
+======================================================================
+EMG BASELINES (dual-track — see docs/Baseline_vs_RTL_Encoder.md)
+======================================================================
+
+== (1) Stage B spatial reference: BSC D=1024, subjects=[1, 2, 3, 4, 5] ==
+D= 1024  spatial mean= 90.12%  S1= 93.7 S2= 89.5 S3= 90.1 S4= 88.6 S5= 88.6   |  st mean= 89.77%
+D= 1024  spatial mean= 90.24%  S1= 94.5 S2= 90.1 S3= 90.5 S4= 87.4 S5= 88.7   |  st mean= 89.79%
+D= 1024  spatial mean= 90.29%  S1= 95.0 S2= 89.7 S3= 90.5 S4= 87.2 S5= 89.1   |  st mean= 90.16%
+D= 1024  spatial mean= 90.51%  S1= 94.3 S2= 90.8 S3= 91.1 S4= 87.7 S5= 88.6   |  st mean= 87.72%
+D= 1024  spatial mean= 90.35%  S1= 92.4 S2= 92.1 S3= 92.1 S4= 87.6 S5= 87.4   |  st mean= 88.81%
+Traceback (most recent call last):
+  File "/home/bsp-lab/1024-HDC/python_ref/run_emg_baseline.py", line 228, in <module>
+Traceback (most recent call last):
+  File "/home/bsp-lab/1024-HDC/python_ref/run_emg_baseline.py", line 228, in <module>
+    main()
+    main()
+  File "/home/bsp-lab/1024-HDC/python_ref/run_emg_baseline.py", line 217, in main
+  File "/home/bsp-lab/1024-HDC/python_ref/run_emg_baseline.py", line 217, in main
+    run(
+  File "/home/bsp-lab/1024-HDC/python_ref/run_emg_baseline.py", line 113, in run
+    run(
+  File "/home/bsp-lab/1024-HDC/python_ref/run_emg_baseline.py", line 113, in run
+    rtl_cached = float(rtl_cfg.get("spatial_mean", 0.0))
+    rtl_cached = float(rtl_cfg.get("spatial_mean", 0.0))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'NoneType'
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'NoneType'
+
+=== RESUME after spatial_mean null fix 2026-07-14T18:42:51+05:30 ===
+=== HDC-2 Python rerun 2026-07-14T18:42:51+05:30 ===
+Config: /home/bsp-lab/1024-HDC/python_ref/config/emg_baseline_v2.json
+Log:    /home/bsp-lab/1024-HDC/results/protocol_v2/rerun.log
+== Gate ==
+== HDC-2 split unit tests ==
+  OK  test_disjoint_no_overlap
+  OK  test_hdc1_full_recording_has_overlap
+  OK  test_protocol_test_set_from_config
+All split tests passed.
+== Synthetic audit ==
+== split audit: synthetic self-test ==
+  OK  synthetic HDC-2 disjoint split
+== hdc_ref smoke ==
+[1/6] permute vs tb_xor_permute golden
+[2/6] bundle threshold matches RTL (n_accum >> 1)
+  OK  threshold 10 -> 1
+  OK  threshold 9 -> 0
+[3/6] bind + permute pipeline
+  OK  output shape
+[4/6] EMG record encoding + classify
+  OK  class id in range
+[5/6] Twist 1 informed vs random masks
+  OK  same density
+  OK  masks differ
+[6/6] Twist 2 cross-subject experiment (synthetic subjects)
+  OK  pooled accuracy is float
+
+All smoke tests passed.
+== HDC-2 dataset gate ==
+== split audit: synthetic self-test ==
+  OK  synthetic HDC-2 disjoint split
+
+== split audit: emg_baseline_v2.json ==
+  S1: train=37206 test=111625 overlap=0 mode=disjoint
+  S2: train=34782 test=104353 overlap=0 mode=disjoint
+  S3: train=34391 test=103182 overlap=0 mode=disjoint
+  S4: train=33582 test=100753 overlap=0 mode=disjoint
+  S5: train=24531 test=73599 overlap=0 mode=disjoint
+
+Wrote /home/bsp-lab/1024-HDC/results/protocol_v2/split_audit.json
+Wrote /home/bsp-lab/1024-HDC/results/protocol_v2/split_audit.csv
+  protocol=HDC-2  total_overlap=0
+  HDC-2 GATE: PASS (overlap=0)
+== HDC-2 gate script OK ==
+== 1/5 run_emg_baseline.py ==
+======================================================================
+EMG BASELINES (dual-track — see docs/Baseline_vs_RTL_Encoder.md)
+======================================================================
+
+== (1) Stage B spatial reference: BSC D=1024, subjects=[1, 2, 3, 4, 5] ==
+D= 1024  spatial mean= 90.12%  S1= 93.7 S2= 89.5 S3= 90.1 S4= 88.6 S5= 88.6   |  st mean= 89.77%
+D= 1024  spatial mean= 90.24%  S1= 94.5 S2= 90.1 S3= 90.5 S4= 87.4 S5= 88.7   |  st mean= 89.79%
+D= 1024  spatial mean= 90.29%  S1= 95.0 S2= 89.7 S3= 90.5 S4= 87.2 S5= 89.1   |  st mean= 90.16%
+D= 1024  spatial mean= 90.51%  S1= 94.3 S2= 90.8 S3= 91.1 S4= 87.7 S5= 88.6   |  st mean= 87.72%
+D= 1024  spatial mean= 90.35%  S1= 92.4 S2= 92.1 S3= 92.1 S4= 87.6 S5= 87.4   |  st mean= 88.81%
+
+== (2) RTL encoder baseline (hdc_ref / encoder_top.sv, seed=42) ==
+  Cached: (none — pending HDC-2 measurement)
+  Evidence: results/protocol_v2/board_emg_replay.txt
+  Board PASS: |board_acc - export_ref| <= 0.5%  (NOT vs Stage B 90%)
+
+  Re-measuring hdc_ref spatial (max_windows/subject=None) ...
+    subject 1: 10000/111625 test windows
+    subject 1: 20000/111625 test windows
+    subject 1: 30000/111625 test windows
+    subject 1: 40000/111625 test windows
+    subject 1: 50000/111625 test windows
+    subject 1: 60000/111625 test windows
+    subject 1: 70000/111625 test windows
+    subject 1: 80000/111625 test windows
+    subject 1: 90000/111625 test windows
+    subject 1: 100000/111625 test windows
+    subject 1: 110000/111625 test windows
+    subject 2: 10000/104353 test windows
+    subject 2: 20000/104353 test windows
+    subject 2: 30000/104353 test windows
+    subject 2: 40000/104353 test windows
+    subject 2: 50000/104353 test windows
+    subject 2: 60000/104353 test windows
+    subject 2: 70000/104353 test windows
+    subject 2: 80000/104353 test windows
+    subject 2: 90000/104353 test windows
+    subject 2: 100000/104353 test windows
+    subject 3: 10000/103182 test windows
+    subject 3: 20000/103182 test windows
+    subject 3: 30000/103182 test windows
+    subject 3: 40000/103182 test windows
+    subject 3: 50000/103182 test windows
+    subject 3: 60000/103182 test windows
+    subject 3: 70000/103182 test windows
+    subject 3: 80000/103182 test windows
+    subject 3: 90000/103182 test windows
+    subject 3: 100000/103182 test windows
+    subject 4: 10000/100753 test windows
+    subject 4: 20000/100753 test windows
+    subject 4: 30000/100753 test windows
+    subject 4: 40000/100753 test windows
+    subject 4: 50000/100753 test windows
+    subject 4: 60000/100753 test windows
+    subject 4: 70000/100753 test windows
+    subject 4: 80000/100753 test windows
+    subject 4: 90000/100753 test windows
+    subject 4: 100000/100753 test windows
+    subject 5: 10000/73599 test windows
+    subject 5: 20000/73599 test windows
+    subject 5: 30000/73599 test windows
+    subject 5: 40000/73599 test windows
+    subject 5: 50000/73599 test windows
+    subject 5: 60000/73599 test windows
+    subject 5: 70000/73599 test windows
+  Recomputed mean: 72.65%  (6730s)
+
+======================================================================
+SUMMARY
+======================================================================
+  Stage B reference (Python)     spatial = 90.30% +/- 0.13
+Traceback (most recent call last):
+  File "/home/bsp-lab/1024-HDC/python_ref/run_emg_baseline.py", line 232, in <module>
+    main()
+  File "/home/bsp-lab/1024-HDC/python_ref/run_emg_baseline.py", line 221, in main
+    run(
+  File "/home/bsp-lab/1024-HDC/python_ref/run_emg_baseline.py", line 186, in run
+    print(f"  RTL encoder (board / export)   spatial = {rtl_cached * 100:5.2f}%  (cached)")
+                                                        ~~~~~~~~~~~^~~~~
+TypeError: unsupported operand type(s) for *: 'NoneType' and 'int'
+=== RESUME steps 2-5 2026-07-14T23:07:21+05:30 ===
+=== HDC-2 resume steps 2–5 2026-07-14T23:07:21+05:30 ===
+== 2/5 export_emg_board_vectors.py ==
+Exporting TEST split, subjects=[1, 2, 3, 4, 5], engine=hdc_ref ...
+  subject 1...
+    subject 1: 10000/111625 test windows
+    subject 1: 20000/111625 test windows
+    subject 1: 30000/111625 test windows
+    subject 1: 40000/111625 test windows
+    subject 1: 50000/111625 test windows
+    subject 1: 60000/111625 test windows
+    subject 1: 70000/111625 test windows
+    subject 1: 80000/111625 test windows
+    subject 1: 90000/111625 test windows
+    subject 1: 100000/111625 test windows
+    subject 1: 110000/111625 test windows
+  subject 2...
+    subject 2: 10000/104353 test windows
+    subject 2: 20000/104353 test windows
+    subject 2: 30000/104353 test windows
+    subject 2: 40000/104353 test windows
+    subject 2: 50000/104353 test windows
+    subject 2: 60000/104353 test windows
+    subject 2: 70000/104353 test windows
+    subject 2: 80000/104353 test windows
+    subject 2: 90000/104353 test windows
+    subject 2: 100000/104353 test windows
+  subject 3...
+    subject 3: 10000/103182 test windows
+    subject 3: 20000/103182 test windows
+    subject 3: 30000/103182 test windows
+    subject 3: 40000/103182 test windows
+    subject 3: 50000/103182 test windows
+    subject 3: 60000/103182 test windows
+    subject 3: 70000/103182 test windows
+    subject 3: 80000/103182 test windows
+    subject 3: 90000/103182 test windows
+    subject 3: 100000/103182 test windows
+  subject 4...
+    subject 4: 10000/100753 test windows
+    subject 4: 20000/100753 test windows
+    subject 4: 30000/100753 test windows
+    subject 4: 40000/100753 test windows
+    subject 4: 50000/100753 test windows
+    subject 4: 60000/100753 test windows
+    subject 4: 70000/100753 test windows
+    subject 4: 80000/100753 test windows
+    subject 4: 90000/100753 test windows
+    subject 4: 100000/100753 test windows
+  subject 5...
+    subject 5: 10000/73599 test windows
+    subject 5: 20000/73599 test windows
+    subject 5: 30000/73599 test windows
+    subject 5: 40000/73599 test windows
+    subject 5: 50000/73599 test windows
+    subject 5: 60000/73599 test windows
+    subject 5: 70000/73599 test windows
+Wrote /home/bsp-lab/1024-HDC/sw/emg_board_vectors_hdc2.h
+  version:     v2
+  engine:      hdc_ref
+  subjects:    [1, 2, 3, 4, 5]
+  windows:     493512 total
+  per-subject: [111625, 104353, 103182, 100753, 73599]
+  export ref:  72.78%
+  protocol:    HDC-2
+== 3/5 regenerate_emg_protos.py ==
+Training prototypes for subjects [1, 2, 3, 4, 5] ...
+  subject 1: train=37206 proto bit-sums=[701, 698, 700, 697, 698]
+  subject 2: train=34782 proto bit-sums=[701, 701, 706, 701, 700]
+  subject 3: train=34391 proto bit-sums=[701, 700, 705, 701, 703]
+  subject 4: train=33582 proto bit-sums=[701, 701, 701, 701, 700]
+  subject 5: train=24531 proto bit-sums=[701, 706, 701, 703, 703]
+Protos stacked shape (5, 8, 1024), nonzero bits=17531
+Patched protos in /home/bsp-lab/1024-HDC/sw/emg_board_vectors_hdc2.h
+Patched protos in /home/bsp-lab/1024-HDC/sw/emg_board_vectors_hdc2.h
+Skipping accuracy recompute (pass --recompute-accuracy to update ref)
+== 4/5 export_fisher_pooled.py ==
+Encoding pooled TRAIN windows for Fisher scores ...
+  subject 1: 37206 train windows
+    5000/37206
+    10000/37206
+    15000/37206
+    20000/37206
+    25000/37206
+    30000/37206
+    35000/37206
+  subject 2: 34782 train windows
+    5000/34782
+    10000/34782
+    15000/34782
+    20000/34782
+    25000/34782
+    30000/34782
+  subject 3: 34391 train windows
+    5000/34391
+    10000/34391
+    15000/34391
+    20000/34391
+    25000/34391
+    30000/34391
+  subject 4: 33582 train windows
+    5000/33582
+    10000/33582
+    15000/33582
+    20000/33582
+    25000/33582
+    30000/33582
+  subject 5: 24531 train windows
+    5000/24531
+    10000/24531
+    15000/24531
+    20000/24531
+Wrote /home/bsp-lab/1024-HDC/results/protocol_v2/fisher_pooled.npz  scores [0, 1.44]  keep@0.5=512  keep@0.125=128
+== 5/5 run_arm_hdc_baseline.py ==
+== hdc_arm_ref host build (shared) ==
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c: In function ‘permute’:
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c:91:33: warning: left shift count >= width of type [-Wshift-count-overflow]
+   91 |                          ((1ULL << HDC_ARM_BPW) - 1ULL);
+      |                                 ^~
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c: In function ‘hdc_arm_train_proto’:
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c:312:9: warning: unused variable ‘words’ [-Wunused-variable]
+  312 |     int words = mem->words;
+      |         ^~~~~
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c: At top level:
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c:97:13: warning: ‘bind_permute_bits’ defined but not used [-Wunused-function]
+   97 | static void bind_permute_bits(const uint64_t in_vec[], const uint64_t bind_vec[],
+      |             ^~~~~~~~~~~~~~~~~
+/home/bsp-lab/1024-HDC/sw/hdc_arm_ref.c:38:13: warning: ‘bits_copy’ defined but not used [-Wunused-function]
+   38 | static void bits_copy(uint64_t *dst, const uint64_t *src, int words_n) {
+      |             ^~~~~~~~~
+  -> /home/bsp-lab/1024-HDC/build/host/libhdc_arm_ref.so
+Encode verify: 32/32 match Python hdc_ref
+======================================================================
+ARM HDC baseline (C)  D=1024 CNT_W=6  subjects=[1, 2, 3, 4, 5]
+  max_train=all  max_test=all
+======================================================================
+    subject 1: train=37206 test=148831
+      train protos 4.0s
+      classify 14883/148831
+      classify 29766/148831
+      classify 44649/148831
+      classify 59532/148831
+      classify 74415/148831
+      classify 89298/148831
+      classify 104181/148831
+      classify 119064/148831
+      classify 133947/148831
+      classify 148830/148831
+      test 148831 windows 20.7s
+    subject 2: train=34782 test=139135
+      train protos 3.9s
+      classify 13913/139135
+      classify 27826/139135
+      classify 41739/139135
+      classify 55652/139135
+      classify 69565/139135
+      classify 83478/139135
+      classify 97391/139135
+      classify 111304/139135
+      classify 125217/139135
+      classify 139130/139135
+      test 139135 windows 19.4s
+    subject 3: train=34391 test=137573
+      train protos 3.7s
+      classify 13757/137573
+      classify 27514/137573
+      classify 41271/137573
+      classify 55028/137573
+      classify 68785/137573
+      classify 82542/137573
+      classify 96299/137573
+      classify 110056/137573
+      classify 123813/137573
+      classify 137570/137573
+      test 137573 windows 19.2s
+    subject 4: train=33582 test=134335
+      train protos 3.6s
+      classify 13433/134335
+      classify 26866/134335
+      classify 40299/134335
+      classify 53732/134335
+      classify 67165/134335
+      classify 80598/134335
+      classify 94031/134335
+      classify 107464/134335
+      classify 120897/134335
+      classify 134330/134335
+      test 134335 windows 19.0s
+    subject 5: train=24531 test=98130
+      train protos 2.7s
+      classify 9813/98130
+      classify 19626/98130
+      classify 29439/98130
+      classify 39252/98130
+      classify 49065/98130
+      classify 58878/98130
+      classify 68691/98130
+      classify 78504/98130
+      classify 88317/98130
+      test 98130 windows 13.9s
+
+Spatial mean accuracy: 74.15%
+Wrote /home/bsp-lab/1024-HDC/results/protocol_v2/arm_baseline/arm_hdc_results.json
+======================================================================
+=== HDC-2 steps 2–5 COMPLETE 2026-07-15T01:58:26+05:30 ===

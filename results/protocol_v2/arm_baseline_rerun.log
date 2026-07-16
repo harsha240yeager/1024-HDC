@@ -1,0 +1,74 @@
+Encode verify: 32/32 match Python hdc_ref
+======================================================================
+ARM HDC baseline (C)  D=1024 CNT_W=6  subjects=[1, 2, 3, 4, 5]
+  max_train=all  max_test=all
+======================================================================
+    subject 1: train=37206 test=111625
+      train protos 4.2s
+      classify 11162/111625
+      classify 22324/111625
+      classify 33486/111625
+      classify 44648/111625
+      classify 55810/111625
+      classify 66972/111625
+      classify 78134/111625
+      classify 89296/111625
+      classify 100458/111625
+      classify 111620/111625
+      test 111625 windows 16.3s
+    subject 2: train=34782 test=104353
+      train protos 4.0s
+      classify 10435/104353
+      classify 20870/104353
+      classify 31305/104353
+      classify 41740/104353
+      classify 52175/104353
+      classify 62610/104353
+      classify 73045/104353
+      classify 83480/104353
+      classify 93915/104353
+      classify 104350/104353
+      test 104353 windows 15.2s
+    subject 3: train=34391 test=103182
+      train protos 3.9s
+      classify 10318/103182
+      classify 20636/103182
+      classify 30954/103182
+      classify 41272/103182
+      classify 51590/103182
+      classify 61908/103182
+      classify 72226/103182
+      classify 82544/103182
+      classify 92862/103182
+      classify 103180/103182
+      test 103182 windows 14.9s
+    subject 4: train=33582 test=100753
+      train protos 3.9s
+      classify 10075/100753
+      classify 20150/100753
+      classify 30225/100753
+      classify 40300/100753
+      classify 50375/100753
+      classify 60450/100753
+      classify 70525/100753
+      classify 80600/100753
+      classify 90675/100753
+      classify 100750/100753
+      test 100753 windows 14.6s
+    subject 5: train=24531 test=73599
+      train protos 2.8s
+      classify 7359/73599
+      classify 14718/73599
+      classify 22077/73599
+      classify 29436/73599
+      classify 36795/73599
+      classify 44154/73599
+      classify 51513/73599
+      classify 58872/73599
+      classify 66231/73599
+      classify 73590/73599
+      test 73599 windows 10.5s
+
+Spatial mean accuracy: 72.65%
+Wrote /home/bsp-lab/1024-HDC/results/protocol_v2/arm_baseline/arm_hdc_results.json
+======================================================================

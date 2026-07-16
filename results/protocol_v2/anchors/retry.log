@@ -1,0 +1,441 @@
+=== Anchor retry 2026-07-15T13:41:31+05:30 ===
+== A (skip patch, board only) ==
+=== Anchor A: keep_ratio=1.0 ===
+Skipping mask patch for anchor A (HDC_ANCHOR_SKIP_PATCH=1)
+Rebuilding Final_HDC_dma_emg.elf ...
+   text	   data	    bss	    dec	    hex	filename
+  48821	   1472	  61008	 111301	  1b2c5	/home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_emg.elf
+Running board EMG replay ...
+=== HDC Phase 3 EMG replay (hdc_emg_board_test.c) ===
+=== Waiting for Digilent USB cable ===
+Digilent cable detected on /dev/ttyUSB0
+=== Program + poll Phase 3 EMG replay ===
+Programming HDC_DMA EMG replay with:
+  bitstream: /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wrapper.bit
+  app:       /home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_emg.elf
+=== JTAG targets ===
+  1
+  DAP
+  (APB
+  AP
+  transaction
+  error,
+  DAP
+  status
+  0x30000021)
+  2
+  xc7z020
+
+=== PS7 init before PL (releases PL from reset) ===
+  pre-PL PS7 attempt 1...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+  pre-PL PS7 attempt 2...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+  pre-PL PS7 attempt 3...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+WARNING: Pre-PL PS7 init failed; continuing with PL programming anyway.
+
+=== Programming PL bitstream ===
+  PL attempt 1
+    fpga failed: could not find configuration request.
+  PL attempt 2
+    fpga failed: could not find configuration request.
+  PL attempt 3
+    fpga failed: JTAG node is not accessible
+  PL attempt 4
+    fpga failed: JTAG node is not accessible
+  PL attempt 5
+    fpga failed: could not find configuration request.
+  PL attempt 6
+-code 1 -level 0 -errorstack {INNER {returnImm {Code 1 Time 1784103264180 Format {ftdi_write_data_submit failed: usb bulk read failed}} {}} CALL {get_action_reply ::tcfclient#0::arg * {
+		if { [lindex $data 0] != "" } {
+		    error [lindex $data 0]
+		}
+		if { [llength $data] != 4 } {
+		    error [list "unexpected config status reply:" $data]
+		}
+		set status [lindex $data 2]
+		set names [split [lindex $data 3] ,]
+		set index [lsearch -exact $names {END OF STARTUP (EOS) STATUS}]
+		if { $index >= 0 } {
+		    if { [expr $status & (1 << $index)] == 0 } {
+			dict set arg err "fpga configuration failed. DONE PIN is not HIGH"
+		    }
+		} elseif { [dict get $arg init_status] != 1 } {
+		    dict set arg err "fpga configuration failed. INIT PIN is not HIGH"
+		}
+	    } {}} CALL {get_action_reply ::tcfclient#0::arg * {
+		if { [lindex $data 0] != "" } {
+		    error [lindex $data 0]
+		}
+		if { [llength $data] != 4 } {
+		    error [list "unexpected config status reply:" $data]
+		}
+		set status [lindex $data 2]
+		set names [split [lindex $data 3] ,]
+		set index [lsearch -exact $names {END OF STARTUP (EOS) STATUS}]
+		if { $index >= 0 } {
+		    if { [expr $status & (1 << $index)] == 0 } {
+			dict set arg err "fpga configuration failed. DONE PIN is not HIGH"
+		    }
+		} elseif { [dict get $arg init_status] != 1 } {
+		    dict set arg err "fpga configuration failed. INIT PIN is not HIGH"
+		}
+	    } {}}} -errorcode NONE -errorinfo {Code 1 Time 1784103264180 Format {ftdi_write_data_submit failed: usb bulk read failed}
+    while executing
+"error [lindex $data 0]"
+    ("eval" body line 3)
+    invoked from within
+"eval $script"} -errorline 12
+PL programmed successfully via xsdb
+
+=== PS7 init after PL ===
+  post-PL PS7 attempt 1...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2* xc7z020
+  post-PL PS7 attempt 2...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+  post-PL PS7 attempt 3...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+  post-PL PS7 attempt 4...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2* xc7z020
+  post-PL PS7 attempt 5...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+PS7 initialization failed after PL programming
+    while executing
+"error "PS7 initialization failed after PL programming""
+    (procedure "program_zed_board" line 20)
+    invoked from within
+"program_zed_board $BITFILE $PS7_INIT $FSBL_ELF $EMG_ELF $VIVADO_PL 1 $EMG_BIN $EMG_DDR_BASE"
+    invoked from within
+"if {[file exists $EMG_BIN]} {
+    program_zed_board $BITFILE $PS7_INIT $FSBL_ELF $EMG_ELF $VIVADO_PL 1 $EMG_BIN $EMG_DDR_BASE
+} else {
+    program_zed..."
+    (file "/home/bsp-lab/1024-HDC/board/HDC_DMA/_ide/run_emg_all.tcl" line 64)
+ERROR: EMG replay output missing expected summary line
+== B ==
+=== Anchor B: keep_ratio=0.5 ===
+Patching mask + export ref ...
+Building pooled Fisher mask from TRAIN windows ...
+  subject 1: encoding 37206 train windows
+    subject 1: 5000/37206
+    subject 1: 10000/37206
+    subject 1: 15000/37206
+    subject 1: 20000/37206
+    subject 1: 25000/37206
+    subject 1: 30000/37206
+    subject 1: 35000/37206
+  subject 2: encoding 34782 train windows
+    subject 2: 5000/34782
+    subject 2: 10000/34782
+    subject 2: 15000/34782
+    subject 2: 20000/34782
+    subject 2: 25000/34782
+    subject 2: 30000/34782
+  subject 3: encoding 34391 train windows
+    subject 3: 5000/34391
+    subject 3: 10000/34391
+    subject 3: 15000/34391
+    subject 3: 20000/34391
+    subject 3: 25000/34391
+    subject 3: 30000/34391
+  subject 4: encoding 33582 train windows
+    subject 4: 5000/33582
+    subject 4: 10000/33582
+    subject 4: 15000/33582
+    subject 4: 20000/33582
+    subject 4: 25000/33582
+    subject 4: 30000/33582
+  subject 5: encoding 24531 train windows
+    subject 5: 5000/24531
+    subject 5: 10000/24531
+    subject 5: 15000/24531
+    subject 5: 20000/24531
+  keep_ratio=0.5  density=0.5000  n_keep=512/1024
+Recomputing export ref accuracy over 493512 windows ...
+    accuracy pass: 50000/493512 (511s)
+    accuracy pass: 100000/493512 (1022s)
+    accuracy pass: 150000/493512 (1533s)
+    accuracy pass: 200000/493512 (2042s)
+    accuracy pass: 250000/493512 (2553s)
+    accuracy pass: 300000/493512 (3062s)
+    accuracy pass: 350000/493512 (3572s)
+    accuracy pass: 400000/493512 (4083s)
+    accuracy pass: 450000/493512 (4595s)
+Export ref accuracy: 72.78% (x1000=72785)
+Patched /home/bsp-lab/1024-HDC/sw/golden_vectors.h
+Patched /home/bsp-lab/1024-HDC/sw/emg_board_vectors.h
+Patched /home/bsp-lab/1024-HDC/sw/emg_board_vectors_hdc2.h
+Done anchor=B keep=0.5 mode=informed mask_density=0.5000 export_ref=72.78%
+Rebuilding Final_HDC_dma_emg.elf ...
+   text	   data	    bss	    dec	    hex	filename
+  48821	   1472	  61008	 111301	  1b2c5	/home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_emg.elf
+Running board EMG replay ...
+=== HDC Phase 3 EMG replay (hdc_emg_board_test.c) ===
+=== Waiting for Digilent USB cable ===
+Digilent cable detected on /dev/ttyUSB0
+=== Program + poll Phase 3 EMG replay ===
+Programming HDC_DMA EMG replay with:
+  bitstream: /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wrapper.bit
+  app:       /home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_emg.elf
+=== JTAG targets ===
+  1
+  DAP
+  (APB
+  AP
+  transaction
+  error,
+  DAP
+  status
+  0x30000021)
+  2
+  xc7z020
+
+=== PS7 init before PL (releases PL from reset) ===
+  pre-PL PS7 attempt 1...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+  pre-PL PS7 attempt 2...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2  xc7z020
+  pre-PL PS7 attempt 3...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+WARNING: Pre-PL PS7 init failed; continuing with PL programming anyway.
+
+=== Programming PL bitstream ===
+  PL attempt 1
+-code 1 -level 0 -errorstack {INNER {returnImm {Code 1 Time 1784110147027 Format {JTAG node is not accessible}} {}} CALL {get_action_reply ::tcfclient#0::arg * {
+		if { [lindex $data 0] != "" } {
+		    error [lindex $data 0]
+		}
+		if { [llength $data] != 4 } {
+		    error [list "unexpected config status reply:" $data]
+		}
+		set status [lindex $data 2]
+		set names [split [lindex $data 3] ,]
+		set index [lsearch -exact $names {END OF STARTUP (EOS) STATUS}]
+		if { $index >= 0 } {
+		    if { [expr $status & (1 << $index)] == 0 } {
+			dict set arg err "fpga configuration failed. DONE PIN is not HIGH"
+		    }
+		} elseif { [dict get $arg init_status] != 1 } {
+		    dict set arg err "fpga configuration failed. INIT PIN is not HIGH"
+		}
+	    } {}} CALL {get_action_reply ::tcfclient#0::arg * {
+		if { [lindex $data 0] != "" } {
+		    error [lindex $data 0]
+		}
+		if { [llength $data] != 4 } {
+		    error [list "unexpected config status reply:" $data]
+		}
+		set status [lindex $data 2]
+		set names [split [lindex $data 3] ,]
+		set index [lsearch -exact $names {END OF STARTUP (EOS) STATUS}]
+		if { $index >= 0 } {
+		    if { [expr $status & (1 << $index)] == 0 } {
+			dict set arg err "fpga configuration failed. DONE PIN is not HIGH"
+		    }
+		} elseif { [dict get $arg init_status] != 1 } {
+		    dict set arg err "fpga configuration failed. INIT PIN is not HIGH"
+		}
+	    } {}}} -errorcode NONE -errorinfo {Code 1 Time 1784110147027 Format {JTAG node is not accessible}
+    while executing
+"error [lindex $data 0]"
+    ("eval" body line 3)
+    invoked from within
+"eval $script"} -errorline 12
+    fpga failed: could not find configuration request.
+  PL attempt 2
+PL programmed successfully via xsdb
+
+=== PS7 init after PL ===
+  post-PL PS7 attempt 1...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2* xc7z020
+  post-PL PS7 attempt 2...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2* xc7z020
+  post-PL PS7 attempt 3...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2* xc7z020
+  post-PL PS7 attempt 4...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2* xc7z020
+  post-PL PS7 attempt 5...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2* xc7z020
+  3  whole scan chain (ftdi_write_data_submit failed: all fine)
+PS7 initialization failed after PL programming
+    while executing
+"error "PS7 initialization failed after PL programming""
+    (procedure "program_zed_board" line 20)
+    invoked from within
+"program_zed_board $BITFILE $PS7_INIT $FSBL_ELF $EMG_ELF $VIVADO_PL 1 $EMG_BIN $EMG_DDR_BASE"
+    invoked from within
+"if {[file exists $EMG_BIN]} {
+    program_zed_board $BITFILE $PS7_INIT $FSBL_ELF $EMG_ELF $VIVADO_PL 1 $EMG_BIN $EMG_DDR_BASE
+} else {
+    program_zed..."
+    (file "/home/bsp-lab/1024-HDC/board/HDC_DMA/_ide/run_emg_all.tcl" line 64)
+ERROR: EMG replay output missing expected summary line
+== C ==
+=== Anchor C: keep_ratio=0.125 ===
+Patching mask + export ref ...
+Building pooled Fisher mask from TRAIN windows ...
+  subject 1: encoding 37206 train windows
+    subject 1: 5000/37206
+    subject 1: 10000/37206
+    subject 1: 15000/37206
+    subject 1: 20000/37206
+    subject 1: 25000/37206
+    subject 1: 30000/37206
+    subject 1: 35000/37206
+  subject 2: encoding 34782 train windows
+    subject 2: 5000/34782
+    subject 2: 10000/34782
+    subject 2: 15000/34782
+    subject 2: 20000/34782
+    subject 2: 25000/34782
+    subject 2: 30000/34782
+  subject 3: encoding 34391 train windows
+    subject 3: 5000/34391
+    subject 3: 10000/34391
+    subject 3: 15000/34391
+    subject 3: 20000/34391
+    subject 3: 25000/34391
+    subject 3: 30000/34391
+  subject 4: encoding 33582 train windows
+    subject 4: 5000/33582
+    subject 4: 10000/33582
+    subject 4: 15000/33582
+    subject 4: 20000/33582
+    subject 4: 25000/33582
+    subject 4: 30000/33582
+  subject 5: encoding 24531 train windows
+    subject 5: 5000/24531
+    subject 5: 10000/24531
+    subject 5: 15000/24531
+    subject 5: 20000/24531
+  keep_ratio=0.125  density=0.1250  n_keep=128/1024
+Recomputing export ref accuracy over 493512 windows ...
+    accuracy pass: 50000/493512 (512s)
+    accuracy pass: 100000/493512 (1022s)
+    accuracy pass: 150000/493512 (1533s)
+    accuracy pass: 200000/493512 (2045s)
+    accuracy pass: 250000/493512 (2555s)
+    accuracy pass: 300000/493512 (3065s)
+    accuracy pass: 350000/493512 (3576s)
+    accuracy pass: 400000/493512 (4085s)
+    accuracy pass: 450000/493512 (4597s)
+Export ref accuracy: 72.85% (x1000=72850)
+Patched /home/bsp-lab/1024-HDC/sw/golden_vectors.h
+Patched /home/bsp-lab/1024-HDC/sw/emg_board_vectors.h
+Patched /home/bsp-lab/1024-HDC/sw/emg_board_vectors_hdc2.h
+Done anchor=C keep=0.125 mode=informed mask_density=0.1250 export_ref=72.85%
+Rebuilding Final_HDC_dma_emg.elf ...
+   text	   data	    bss	    dec	    hex	filename
+  48821	   1472	  61008	 111301	  1b2c5	/home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_emg.elf
+Running board EMG replay ...
+=== HDC Phase 3 EMG replay (hdc_emg_board_test.c) ===
+=== Waiting for Digilent USB cable ===
+Digilent cable detected on /dev/ttyUSB0
+=== Program + poll Phase 3 EMG replay ===
+Programming HDC_DMA EMG replay with:
+  bitstream: /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wrapper.bit
+  app:       /home/bsp-lab/1024-HDC/board/HDC_DMA/app/build/Final_HDC_dma_emg.elf
+=== JTAG targets ===
+  1
+  DAP
+  (APB
+  AP
+  transaction
+  error,
+  DAP
+  status
+  0x30000021)
+  2
+  xc7z020
+
+=== PS7 init before PL (releases PL from reset) ===
+  pre-PL PS7 attempt 1...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+  pre-PL PS7 attempt 2...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+  pre-PL PS7 attempt 3...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2  xc7z020
+WARNING: Pre-PL PS7 init failed; continuing with PL programming anyway.
+
+=== Programming PL bitstream ===
+  PL attempt 1
+    fpga failed: could not find configuration request.
+  PL attempt 2
+    fpga failed: could not find configuration request.
+  PL attempt 3
+    fpga failed: could not find configuration request.
+  PL attempt 4
+    fpga failed: could not find configuration request.
+  PL attempt 5
+    target select failed: Could not find xc7z020 FPGA target
+  PL attempt 6
+    fpga failed: could not find configuration request.
+  PL attempt 7
+    fpga failed: JTAG node is not accessible
+  PL attempt 8
+    fpga failed: JTAG node is not accessible
+  PL attempt 9
+    fpga failed: JTAG node is not accessible
+  PL attempt 10
+PL programmed successfully via xsdb
+
+=== PS7 init after PL ===
+  post-PL PS7 attempt 1...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2* xc7z020
+  post-PL PS7 attempt 2...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2* xc7z020
+  post-PL PS7 attempt 3...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  3  whole scan chain (ftdi_write_data_submit failed: usb bulk read failed)
+  post-PL PS7 attempt 4...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets: none
+  post-PL PS7 attempt 5...
+    failed: Could not select APU target for PS7 init: no targets found with "name =~ "APU*"". available targets:
+  1  DAP (APB AP transaction error, DAP status 0x30000021)
+  2* xc7z020
+Timed out waiting for JTAG targets
+    while executing
+"error "Timed out waiting for JTAG targets""
+    (procedure "wait_targets" line 7)
+    invoked from within
+"wait_targets 20"
+    (procedure "reconnect" line 5)
+    invoked from within
+"reconnect"
+    (procedure "run_ps7_after_pl" line 13)
+    invoked from within
+"run_ps7_after_pl $ps7_init"
+    (procedure "program_zed_board" line 19)
+    invoked from within
+"program_zed_board $BITFILE $PS7_INIT $FSBL_ELF $EMG_ELF $VIVADO_PL 1 $EMG_BIN $EMG_DDR_BASE"
+    invoked from within
+"if {[file exists $EMG_BIN]} {
+    program_zed_board $BITFILE $PS7_INIT $FSBL_ELF $EMG_ELF $VIVADO_PL 1 $EMG_BIN $EMG_DDR_BASE
+} else {
+    program_zed..."
+    (file "/home/bsp-lab/1024-HDC/board/HDC_DMA/_ide/run_emg_all.tcl" line 64)
+ERROR: EMG replay output missing expected summary line
+=== All anchors done 2026-07-15T17:38:21+05:30 ===

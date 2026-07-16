@@ -1,0 +1,4 @@
+Patched /home/bsp-lab/1024-HDC/sw/golden_vectors.h
+Patched sw/emg_board_vectors.h
+Patched sw/emg_board_vectors_hdc2.h
+Done anchor=A keep=1.0 mode=informed mask_density=1.0000 export_ref=72.85%
