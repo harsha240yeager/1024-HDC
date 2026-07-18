@@ -205,7 +205,8 @@ methodology separately ([#8](https://github.com/harsha240yeager/1024-HDC/issues/
 |-----------|--------|
 | RTL + 9 co-sim harnesses | ✅ Bit-exact (unchanged by split fix) |
 | Phases 1–3 board bring-up | ✅ EMG PASS under **HDC-2** (72.78%, 493k windows) |
-| Hook A / Twist 1 / Twist 2 | ✅ HDC-1 numbers — **⏳ rerun under HDC-2** |
+| Hook A | ✅ **HDC-2 complete** (72.65% ref, flat prune to 87.5%) | [`protocol_v2/hook_a/`](results/protocol_v2/hook_a/) |
+| Twist 1 / Twist 2 | ✅ HDC-1 numbers — **⏳ rerun under HDC-2** |
 | Silicon anchors A/B/C | ✅ **HDC-2 PASS** (72.78% / 72.78% / 72.85%) | [`protocol_v2/anchors/`](results/protocol_v2/anchors/) |
 | INA219 energy A/B/C + ARM | ✅ (platform comparison; see issue #8) |
 | Protocol HDC-2 disjoint split | ✅ Tier 1 — [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
@@ -315,24 +316,28 @@ LUT scales ~linearly with \(D\). D=2048 exceeds xc7z020 — Pareto boundary. Rep
 
 ### Hook A — accuracy × area × energy
 
-**Grid:** D × CNT_W × keep_ratio → **64 configs × 5 subjects = 320 rows** (~44 h).
+**Grid:** D × CNT_W × keep_ratio → **64 configs × 5 subjects = 320 rows** (~35 h under HDC-2).
 
 ```bash
-python3 python_ref/run_hook_a_sweep.py --quick
-python3 python_ref/run_hook_a_sweep.py
+python3 python_ref/run_hook_a_sweep.py --quick \
+  --emg-config python_ref/config/emg_baseline_v2.json \
+  --out-dir results/protocol_v2/hook_a
+python3 python_ref/run_hook_a_sweep.py \
+  --emg-config python_ref/config/emg_baseline_v2.json \
+  --out-dir results/protocol_v2/hook_a
 ```
 
-| Reference | Spatial mean |
-|-----------|--------------|
-| D=1024, CNT_W=6, keep=1.0 (Python) | **74.15%** |
-| Board @ keep=1.0 | **74.24%** |
-| Best (D=2048, CNT_W≥4) | **77.62%** (OOC only, > device) |
+| Reference | Spatial mean (HDC-2) |
+|-----------|----------------------|
+| D=1024, CNT_W=6, keep=1.0 (Python) | **72.65%** |
+| Board @ keep=1.0 | **72.78%** |
+| Best (D=2048, CNT_W≥4) | **76.12%** (OOC only, > device) |
 | CNT_W=3 (all D) | **59.48%** (bundle floor) |
 
-**Finding:** at D=1024, CNT_W≥4, informed Fisher pruning is **flat at 74.15%** from 0% to
-**87.5%** prune — accuracy-neutral compression in Python, confirmed on silicon.
+**Finding (HDC-2):** at D=1024, CNT_W≥4, informed Fisher pruning is **flat at 72.65%** from 0% to
+**87.5%** prune — same iso-accuracy compression pattern as HDC-1, at lower absolute accuracy.
 
-Data: [`hook_a/sweep_summary.csv`](results/hook_a/sweep_summary.csv).
+Data: [`protocol_v2/hook_a/sweep_summary.csv`](results/protocol_v2/hook_a/sweep_summary.csv) · HDC-1: [`hook_a/`](results/hook_a/).
 
 ### Silicon anchors A/B/C
 
@@ -654,7 +659,7 @@ HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harness
 | Milestone | Status |
 |-----------|--------|
 | RTL + Phases 1–3 + EMG (Protocol HDC-1) | ✅ superseded by HDC-2 rerun |
-| Hook A + energy + anchors (HDC-1 numbers) | ✅ pending HDC-2 rerun |
+| Hook A (HDC-2 Python Pareto) | ✅ 72.65% ref, flat prune | [`protocol_v2/hook_a/`](results/protocol_v2/hook_a/) |
 | Twist 1 + Twist 2 (HDC-1) | ✅ pending HDC-2 + new cross-subject design |
 | DATE submission | ⏳ Sep 2026 |
 
