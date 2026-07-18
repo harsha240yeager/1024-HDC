@@ -69,6 +69,26 @@ def hdc_cfg_for_d(D: int, item_mem_seed: int) -> HDCConfig:
     return HDCConfig(D=D, words=D // bits_per_word, bits_per_word=bits_per_word, seed=item_mem_seed)
 
 
+def cap_windows_stratified(
+    q: np.ndarray,
+    labels: np.ndarray,
+    n_max: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Cap windows with per-class slices (HDC-2 test is class-ordered; head-only caps break accuracy)."""
+    if q.shape[0] <= n_max:
+        return q, labels
+    per_class = max(1, n_max // N_CLASS)
+    picks: List[int] = []
+    for k in range(1, N_CLASS + 1):
+        cls_idx = np.where(labels == k)[0]
+        if cls_idx.size == 0:
+            continue
+        picks.extend(cls_idx[: min(per_class, cls_idx.size)].tolist())
+    picks = picks[:n_max]
+    idx = np.array(picks, dtype=np.int64)
+    return q[idx], labels[idx]
+
+
 def train_prototypes(
     engine: HDCEngine,
     mem: ItemMemory,
@@ -147,11 +167,9 @@ def eval_subject(
         q_all, labels, train_frac, seed, **split_kw
     )
     if max_train_windows is not None and train_q.shape[0] > max_train_windows:
-        train_q = train_q[:max_train_windows]
-        train_labels = train_labels[:max_train_windows]
+        train_q, train_labels = cap_windows_stratified(train_q, train_labels, max_train_windows)
     if max_test_windows is not None and test_q.shape[0] > max_test_windows:
-        test_q = test_q[:max_test_windows]
-        test_labels = test_labels[:max_test_windows]
+        test_q, test_labels = cap_windows_stratified(test_q, test_labels, max_test_windows)
 
     cfg = hdc_cfg_for_d(D, item_mem_seed)
     mem = ItemMemory(cfg)
