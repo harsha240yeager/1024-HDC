@@ -212,6 +212,7 @@ full plan: [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md)
 | **§IV Protocol** | Replace HDC-1 with **Protocol HDC-2**: first 25% train / remaining 75% test, overlap = 0, **493,512** test windows |
 | **Abstract / intro numbers** | **74.24% → 72.78%** silicon; **658k → 493k** windows; **74.15% → 72.65%** Python/ARM ref |
 | **Hook A / Pareto table** | **74.15% → 72.65%** reference; flat pruning 0–87.5% at D=1024; best OOC **76.12%** @ D=2048 |
+| **Twist 1 table** | **+7.94 pp** Python @ 128 bits (72.65% vs 64.71%); cite `protocol_v2/twist1_keep0125/` |
 | **Anchor table** | A/B **72.78%**; C **72.85%** (128/1024 Fisher bits); cite `protocol_v2/anchors/` |
 | **Bit-exact claim** | Every label matched export ref over **493,512** windows (not 658,004) |
 | **Contributions §I** | Hook A iso-accuracy + Twist 1 **+7.94 pp** Python under HDC-2 |
