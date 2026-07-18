@@ -99,15 +99,16 @@ Copy to issue #1 or project board; update as phases complete.
 
 | Phase | Status |
 |-------|--------|
-| 1 HDC-2 split | ⏳ in progress (code + CI) |
-| 2 Cross-subject | ⏳ blocked |
-| 3 Random + stats | ⏳ blocked |
-| 4 Seeds | ⏳ blocked |
-| 5 Active bits | ⏳ blocked |
-| 6 Encoder | ⏳ |
-| 7 Claims | ⏳ |
-| 8 Energy doc | ⏳ |
-| 9 Baselines | ⏳ blocked |
-| 10 Inconsistencies | ⏳ |
-| 11 Repro artifact | ⏳ |
-| Paper rewrite | ⏳ blocked on Phases 1–5 |
+| 1 HDC-2 split + Tier 1 | ✅ complete — issue #1 closed |
+| 1b Hook A + anchors | ✅ complete — `protocol_v2/hook_a/`, `protocol_v2/anchors/` |
+| 2 Cross-subject | ⏳ next — issue #2 |
+| 3 Random + stats | ⏳ issue #3 |
+| 4 Seeds | ⏳ issue #4 |
+| 5 Active bits | ⏳ issue #5 |
+| 6 Encoder | ⏳ issue #6 |
+| 7 Claims | ⏳ issue #7 (Path B) |
+| 8 Energy doc | ⏳ issue #8 |
+| 9 Baselines | ⏳ issue #9 |
+| 10 Inconsistencies | ⏳ issue #10 |
+| 11 Repro artifact | ⏳ issue #11 |
+| Paper rewrite | ⏳ partial — see README [Paper rewrite checklist](../README.md#paper-rewrite-checklist-research-paper) |
