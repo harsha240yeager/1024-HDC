@@ -1,6 +1,6 @@
 Phase 3 — EMG full-dataset replay (ZedBoard)
 ============================================
-Date:       2026-07-13T17:56:49+05:30
+Date:       2026-07-20T11:07:00+05:30
 App:        sw/hdc_emg_board_test.c
 Method:     JTAG readback @ 0x00100300
 Run script: bash board/HDC_DMA/run_phase3_emg.sh
@@ -10,16 +10,16 @@ Bitstream:  /home/bsp-lab/1024-HDC/board/HDC_DMA/app/_ide/bitstream/design_1_wra
 HDC Phase 3 EMG replay (sw/hdc_emg_board_test.c)
 DDR readback @ 0x00100300
 ==================================================
-EMG replay: N=658004 correct=417266 accuracy=63.41%
-Export ref: 63.41%
+EMG replay: N=493512 correct=308517 accuracy=62.51%
+Export ref: 62.51%
 Board vs export: delta=0.00%  PASS (0.5% tol)
-errors=240738
+errors=184995
 ==================================================
 
 Record
 ------
-Windows replayed: 658004 correct=417266 accuracy=63.41%
-Export ref: 63.41%
+Windows replayed: 493512 correct=308517 accuracy=62.51%
+Export ref: 62.51%
 Board vs export: delta=0.00%  PASS (0.5% tol)
 PASS (board vs export, 0.5%): yes
 

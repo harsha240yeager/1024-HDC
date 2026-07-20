@@ -1,0 +1,24 @@
+Twist 1 random seed 0 — HDC-2 patch complete, board replay pending
+Date: 2026-07-18
+
+Export ref (493512 windows): 62.51%
+Expected gap vs informed (72.85%): +10.34 pp (if board matches export)
+
+Board replay failed: DAP 0x30000021, no APU after PL program.
+Mask already patched in sw/golden_vectors.h and sw/emg_board_vectors*.h
+
+Retry after full power-cycle:
+  bash board/HDC_DMA/run_twist1_board.sh --random-seeds 0 --skip-patch
+
+2026-07-20 replay attempt: FAILED (same JTAG)
+  DAP 0x30000021, no APU — PL programmed but PS7 init failed
+  Log: results/phase3/twist1_silicon/hdc2_seed0_replay.log
+  Fix: full board power off 10s, unplug USB 5s, replug, then sanity:
+    bash board/HDC_DMA/run_anchor_replay.sh C
+  Then: bash board/HDC_DMA/run_twist1_board.sh --random-seeds 0 --skip-patch
+
+2026-07-20 replay v2: PASS (root cause = stale hw_server + missing rst -system, not power)
+  Fix applied: board/HDC_DMA/_ide/program_board_helpers.tcl (recover_apu_chain)
+  Board: 493512 windows, 62.51% accuracy, export ref 62.51%, delta 0.00% PASS
+  Gap vs informed (72.84%): +10.33 pp
+  Log: results/phase3/twist1_silicon/hdc2_seed0_replay_v2.log

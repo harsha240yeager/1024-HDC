@@ -16,6 +16,32 @@ proc reconnect {{url tcp:127.0.0.1:3121}} {
     wait_targets 20
 }
 
+proc apu_available {} {
+    return [expr {![catch { targets -set -nocase -filter {name =~ "APU*"} }]}]
+}
+
+# ZedBoard often enumerates DAP (0x30000021) + xc7z020 without APU until system reset.
+proc recover_apu_chain {{attempts 5} {label "recover"}} {
+    for {set attempt 1} {$attempt <= $attempts} {incr attempt} {
+        puts "  $label attempt $attempt/$attempts ..."
+        reconnect
+        if {[apu_available]} {
+            puts "  APU target available"
+            return 1
+        }
+        puts "  no APU — issuing rst -system"
+        catch { rst -system }
+        after 5000
+        reconnect
+        if {[apu_available]} {
+            puts "  APU target available after system reset"
+            return 1
+        }
+        after 3000
+    }
+    return 0
+}
+
 proc select_fpga_target {} {
     if {![catch {targets -set -nocase -filter {name =~ "*xc7z020*"}}]} { return }
     if {![catch {targets -set -filter {jtag_device_name =~ "*xc7z020*"}}]} { return }
@@ -36,10 +62,13 @@ proc halt_apu {} {
 
 proc run_ps7_before_pl {ps7_init_script {attempts 3}} {
     puts "\n=== PS7 init before PL (releases PL from reset) ==="
+    if {![recover_apu_chain 3 "pre-PL APU"]} {
+        puts "WARNING: APU not available before PL; continuing anyway."
+    }
     for {set attempt 1} {$attempt <= $attempts} {incr attempt} {
         puts "  pre-PL PS7 attempt $attempt..."
-        if {[catch {targets -set -nocase -filter {name =~ "APU*"}}]} {
-            reconnect
+        if {![apu_available]} {
+            recover_apu_chain 2 "pre-PL APU"
         }
         if {![catch {hdc_run_ps7_init $ps7_init_script} err]} {
             puts "Pre-PL PS7 init OK"
@@ -47,7 +76,7 @@ proc run_ps7_before_pl {ps7_init_script {attempts 3}} {
             return 1
         }
         puts "    failed: $err"
-        reconnect
+        recover_apu_chain 2 "pre-PL APU"
         after 3000
     }
     puts "WARNING: Pre-PL PS7 init failed; continuing with PL programming anyway."
@@ -114,17 +143,20 @@ proc program_pl_vivado {vivado_script} {
 
 proc run_ps7_after_pl {ps7_init_script {attempts 5}} {
     puts "\n=== PS7 init after PL ==="
+    if {![recover_apu_chain 5 "post-PL APU"]} {
+        return 0
+    }
     for {set attempt 1} {$attempt <= $attempts} {incr attempt} {
         puts "  post-PL PS7 attempt $attempt..."
-        if {[catch {targets -set -nocase -filter {name =~ "APU*"}}]} {
-            reconnect
+        if {![apu_available]} {
+            recover_apu_chain 3 "post-PL APU"
         }
         if {![catch {hdc_run_ps7_init $ps7_init_script} err]} {
             puts "PS7 initialized"
             return 1
         }
         puts "    failed: $err"
-        reconnect
+        recover_apu_chain 3 "post-PL APU"
         after 4000
     }
     return 0
@@ -236,7 +268,10 @@ proc load_bin_to_ddr {bin addr {chunk_bytes 65536} {max_attempts 20}} {
 }
 
 proc program_zed_board {bitfile ps7_init fsbl_elf app_elf {vivado_pl_script ""} {use_fsbl 1} {vectors_bin ""} {vectors_addr 0x02000000}} {
-    set tlist [wait_targets 20]
+    if {![recover_apu_chain 5 "initial APU"]} {
+        puts "WARNING: proceeding without APU at chain start"
+    }
+    set tlist [targets]
     puts "=== JTAG targets ==="
     foreach t $tlist { puts "  $t" }
 
