@@ -502,6 +502,8 @@ python3 python_ref/run_twist2_sweep.py \
 
 Evidence: [`protocol_v2/twist2_keep0125/`](results/protocol_v2/twist2_keep0125/)
 
+**36-subject UCI under HDC-2:** see [`docs/TWIST2_36_REPRO.md`](docs/TWIST2_36_REPRO.md) — configs `twist2_36_v2_sweep.json`, keep grid script, dataset build steps.
+
 <details>
 <summary>HDC-1 legacy pilot (+0.86 pp)</summary>
 > Cut zero-gap / +0.86 pp claims from paper until new cohort results exist.
