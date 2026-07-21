@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "generated_at": "2026-07-20T16:05:08Z",
+    "engine": "hdc_ref",
+    "dataset": "/home/bsp-lab/1024-HDC/python_ref/HDC-EMG/dataset.mat",
+    "protocol": "HDC-2",
+    "target_gap_pp": 3.0,
+    "generalises": true,
+    "elapsed_s": 8464.1,
+    "max_train_windows_per_subject": null,
+    "max_test_windows_per_subject": null
+  },
+  "result": {
+    "train_subjects": [
+      1,
+      2,
+      3
+    ],
+    "test_subjects": [
+      4,
+      5
+    ],
+    "D": 1024,
+    "cnt_w": 6,
+    "keep_ratio": 0.125,
+    "n_keep": 128,
+    "pooled_train_windows": 106379,
+    "per_test_subject": [
+      {
+        "subject": 4,
+        "n_test": 100753,
+        "unpruned_accuracy": 0.6304824670233145,
+        "local_oracle_accuracy": 0.6304824670233145,
+        "pooled_transfer_accuracy": 0.6234752315067541,
+        "gap_local_minus_pooled_pp": 0.7007235516560351
+      },
+      {
+        "subject": 5,
+        "n_test": 73599,
+        "unpruned_accuracy": 0.7228087338143181,
+        "local_oracle_accuracy": 0.7228087338143181,
+        "pooled_transfer_accuracy": 0.7093302898137203,
+        "gap_local_minus_pooled_pp": 1.3478444000597833
+      }
+    ],
+    "mean_unpruned_accuracy": 0.6766456004188163,
+    "mean_local_oracle_accuracy": 0.6766456004188163,
+    "mean_pooled_transfer_accuracy": 0.6664027606602372,
+    "mean_gap_local_minus_pooled_pp": 1.0242839758579092
+  }
+}

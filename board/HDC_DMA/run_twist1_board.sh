@@ -48,6 +48,13 @@ ANCHOR_ID="$(anchor_id_for_keep "$KEEP")"
 INFORMED_DIR="$OUT_BASE/informed_anchor_${ANCHOR_ID}"
 mkdir -p "$OUT_BASE"
 
+# Fresh hw_server avoids stale JTAG (DAP 0x30000021 / missing APU).
+# shellcheck source=/dev/null
+source "$ROOT/_ide/common.sh"
+hdc_stop_conflicting_sessions || true
+hdc_stop_hw_server || true
+sleep 2
+
 echo "=== Twist 1 silicon @ keep=${KEEP} (anchor ${ANCHOR_ID}) ==="
 
 # --- Informed (anchor C @ 0.125) ---

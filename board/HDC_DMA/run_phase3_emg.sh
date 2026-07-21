@@ -57,7 +57,7 @@ hdc_wait_for_digilent_usb || exit 1
 
 echo "=== Program + poll Phase 3 EMG replay ==="
 set +e
-hdc_xsdb "$ROOT/_ide/run_emg_all.tcl" | tee "$LOG_DIR/run_phase3_emg.log"
+hdc_xsdb "$ROOT/_ide/run_emg_all.tcl" 2>&1 | stdbuf -oL -eL tee "$LOG_DIR/run_phase3_emg.log"
 XSDB_RC=${PIPESTATUS[0]}
 set -e
 

@@ -57,7 +57,7 @@ positions* should survive pruning?
 |---|--------------|-------------------------------------|
 | 1 | **Hook A** — Pareto over \(D\), bundle precision, Fisher keep | **72.65%** flat from 0% to **87.5%** prune (Python); silicon anchors confirm iso-accuracy |
 | 2 | **Twist 1** — bit *position* vs bit *count* | HDC-2 Python **+6.90 pp** (30 seeds); silicon seed 0 **+10.33 pp** ⏳ seeds 1–9 |
-| 3 | **Twist 2** — shared mask across subjects | HDC-1 pilot **+0.86 pp** — **⏳ redesign under [#2](https://github.com/harsha240yeager/1024-HDC/issues/2)** |
+| 3 | **Twist 2** — shared mask across subjects | HDC-2 pilot **+1.02 pp** local−pooled, **generalises** (|gap| ≤ 3 pp) |
 
 **Important:** The deployment encoder achieves **~73%** spatial accuracy under HDC-2 (**72.78%**
 silicon). Literature-class **~90%** is reproduced in Python with a *different* encoding — see
@@ -137,7 +137,7 @@ python scripts/export_emg_board_vectors.py --config python_ref/config/emg_baseli
 | Hook A | ✅ [`protocol_v2/hook_a/`](results/protocol_v2/hook_a/) |
 | Twist 1 Python @ keep=0.125 | ✅ **+6.90 pp** (30 seeds) [`twist1_keep0125_30seed/`](results/protocol_v2/twist1_keep0125_30seed/) · 5-seed [`twist1_keep0125/`](results/protocol_v2/twist1_keep0125/) |
 | Twist 1 silicon seed 0 | ✅ **+10.33 pp** (62.51% vs 72.84%) | [`phase3/twist1_silicon/`](results/phase3/twist1_silicon/) · seeds 1–9 ⏳ |
-| Twist 2 | ⏳ pending HDC-2 rerun + cross-subject redesign ([#2](https://github.com/harsha240yeager/1024-HDC/issues/2)) |
+| Twist 2 @ keep=0.125 (S1–3 → S4–5) | ✅ **+1.02 pp**, generalises | [`protocol_v2/twist2_keep0125/`](results/protocol_v2/twist2_keep0125/) · 36-subj grid ⏳ [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
 
 ```bash
 python python_ref/run_twist1_sweep.py \
@@ -188,7 +188,7 @@ methodology separately ([#8](https://github.com/harsha240yeager/1024-HDC/issues/
 | ARM energy | **2088 ± 6 µJ**/w | same |
 | Twist 1 @ keep=0.125 (Python, 30 seeds) | **+6.90 pp** (72.65% vs 65.75%) | [`protocol_v2/twist1_keep0125_30seed/`](results/protocol_v2/twist1_keep0125_30seed/) |
 | Twist 1 @ keep=0.125 (silicon, seed 0) | **+10.33 pp** (72.84% vs 62.51%) | [`phase3/twist1_silicon/`](results/phase3/twist1_silicon/) · seeds 1–9 ⏳ |
-| Twist 2 cross-subject | **TBD** | ⏳ redesign [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
+| Twist 2 cross-subject (S1–3 → S4–5) | **+1.02 pp** (67.66% vs 66.64%), generalises | [`protocol_v2/twist2_keep0125/`](results/protocol_v2/twist2_keep0125/) |
 | PL resources | 35.2k LUT, **0 DSP**, **0 BRAM** | Post-route Phase 3 |
 
 ### Legacy (HDC-1 — do not cite)
@@ -215,7 +215,7 @@ full plan: [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md)
 | **Twist 1 table** | **+6.90 pp** Python (30 seeds); **+10.33 pp** silicon seed 0 — cite `protocol_v2/twist1_keep0125_30seed/` + `phase3/twist1_silicon/` |
 | **Anchor table** | A/B **72.78%**; C **72.85%** (128/1024 Fisher bits); cite `protocol_v2/anchors/` |
 | **Bit-exact claim** | Every label matched export ref over **493,512** windows (not 658,004) |
-| **Contributions §I** | Hook A iso-accuracy + Twist 1 **+7.94 pp** Python under HDC-2 |
+| **Contributions §I** | Hook A iso-accuracy + Twist 1 **+6.90 pp** Python + Twist 2 **generalises (+1.02 pp)** under HDC-2 |
 | **Abstract sentence 3** | Fisher beats random by **+7.94 pp** (Python); add silicon gap when board rerun done |
 
 ### Blocked on experiments (do not invent numbers)
@@ -223,7 +223,7 @@ full plan: [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md)
 | Item | Depends on | Paper impact |
 |------|------------|--------------|
 | **Twist 1** informed − random gap | Silicon seeds 1–9 under v2 | Full silicon mean over 10 seeds |
-| **Twist 2 / cross-subject** | Issue [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) stress grid | Contribution #3; cut old 0.00 pp / +0.86 pp HDC-1 story |
+| **Twist 2 / cross-subject** | 36-subject keep grid under [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) | Extended stress beyond 5-subject pilot |
 | **Random seeds + stats** | Issue [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) | Subject-level CIs, significance tests |
 | **Seed sensitivity** | Issue [#4](https://github.com/harsha240yeager/1024-HDC/issues/4) | Robustness paragraph |
 | **Ranking baselines** | Issue [#9](https://github.com/harsha240yeager/1024-HDC/issues/9) | Method × accuracy table |
@@ -270,7 +270,7 @@ python python_ref/plot_results.py --paper   # after Twist 1/2 HDC-2 sweeps compl
 
 ## Project status
 
-*July 2026 — **HDC-2 Tier 1 + Hook A + anchors + Twist 1 Python complete**; Twist 1 silicon + Twist 2 pending.*
+*July 2026 — **HDC-2 Tier 1 + Hook A + anchors + Twist 1/2 Python complete**; Twist 1 silicon seeds 1–9 pending.*
 
 | Component | Status |
 |-----------|--------|
@@ -278,7 +278,8 @@ python python_ref/plot_results.py --paper   # after Twist 1/2 HDC-2 sweeps compl
 | Phases 1–3 board bring-up | ✅ EMG PASS under **HDC-2** (72.78%, 493k windows) |
 | Hook A | ✅ **HDC-2 complete** (72.65% ref, flat prune to 87.5%) | [`protocol_v2/hook_a/`](results/protocol_v2/hook_a/) |
 | Twist 1 Python @ keep=0.125 | ✅ **+7.94 pp** | [`protocol_v2/twist1_keep0125/`](results/protocol_v2/twist1_keep0125/) |
-| Twist 1 silicon + Twist 2 | ⏳ pending HDC-2 |
+| Twist 1 silicon seeds 1–9 | ⏳ pending |
+| Twist 2 Python @ keep=0.125 | ✅ **+1.02 pp**, generalises | [`protocol_v2/twist2_keep0125/`](results/protocol_v2/twist2_keep0125/) |
 | Silicon anchors A/B/C | ✅ **HDC-2 PASS** (72.78% / 72.78% / 72.85%) | [`protocol_v2/anchors/`](results/protocol_v2/anchors/) |
 | INA219 energy A/B/C + ARM | ✅ (platform comparison; see issue #8) |
 | Protocol HDC-2 disjoint split | ✅ Tier 1 — [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
@@ -481,9 +482,28 @@ Silicon (658k windows): informed **74.32%** vs random **63.41%** → **+10.91 pp
 
 </details>
 
-### Twist 2 — cross-subject mask transfer
+### Twist 2 — cross-subject mask transfer (HDC-2)
 
-> **HDC-1 numbers below** — pending redesigned experiment ([#2](https://github.com/harsha240yeager/1024-HDC/issues/2)).
+**5-subject pilot** (train S1–3 → test S4–5, keep=0.125 / 128 bits):
+
+| Condition | Mean accuracy |
+|-----------|---------------|
+| Local oracle | **67.66%** |
+| Pooled transfer | **66.64%** |
+| Gap (local − pooled) | **+1.02 pp** |
+
+Target |gap| ≤ 3 pp: **GENERALISES** ✅
+
+```bash
+python3 python_ref/run_twist2_sweep.py \
+  --emg-config python_ref/config/emg_baseline_v2.json \
+  --out-dir results/protocol_v2/twist2_keep0125
+```
+
+Evidence: [`protocol_v2/twist2_keep0125/`](results/protocol_v2/twist2_keep0125/)
+
+<details>
+<summary>HDC-1 legacy pilot (+0.86 pp)</summary>
 > Cut zero-gap / +0.86 pp claims from paper until new cohort results exist.
 
 Mask from S1–3 TRAIN (106,379 windows) → test S4–5 with **own prototypes**.
@@ -558,6 +578,8 @@ python3 scripts/twist2_mask_audit_fast.py
 
 Example (S19 @ keep=0.5): **masks not identical**, Jaccard overlap **0.70**, yet 0.00 pp on
 subsampled windows — see [`mask_audit_fast.json`](results/twist2_36_keep05/mask_audit_fast.json).
+
+</details>
 
 ### Deployment baselines
 
@@ -744,7 +766,7 @@ HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harness
 | Hook A (HDC-2 Python Pareto) | ✅ 72.65% ref, flat prune | [`protocol_v2/hook_a/`](results/protocol_v2/hook_a/) |
 | Silicon anchors A/B/C | ✅ 72.78% / 72.78% / 72.85% | [`protocol_v2/anchors/`](results/protocol_v2/anchors/) |
 | Twist 1 Python @ keep=0.125 | ✅ +7.94 pp | [`protocol_v2/twist1_keep0125/`](results/protocol_v2/twist1_keep0125/) |
-| Twist 1 silicon + Twist 2 | ⏳ pending |
+| Twist 1 silicon + Twist 2 | Twist 2 ✅ · silicon seeds 1–9 ⏳ |
 | Paper rewrite ([Research-paper](https://github.com/harsha240yeager/Research-paper)) | ⏳ partial — see [checklist](#paper-rewrite-checklist-research-paper) |
 | DATE submission | ⏳ Sep 2026 |
 

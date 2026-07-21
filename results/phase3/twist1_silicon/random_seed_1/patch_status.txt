@@ -1,0 +1,18 @@
+Twist 1 random seed 1 — HDC-2 patch complete, board replay pending
+Date: 2026-07-20
+
+Export ref (493512 windows): 64.58%
+Expected gap vs informed (72.85%): +8.27 pp (if board matches export)
+
+2026-07-20 18:57 user replay: program OK, vectors loaded, polling hung
+  Log: hdc2_seed1_replay_hung.log — stopped at "CPU running EMG replay" with no result
+  Cause: xsdb poll loop crashed on first JTAG read error (fixed in run_emg_all.tcl)
+
+2026-07-20 19:06 retry: JTAG libusb failure (DAP 0x30000021)
+  Log: hdc2_seed1_replay_v2.log
+
+Retry after USB replug + kill hw_server:
+  pkill -f 'hw_server.*3121'; sleep 3
+  bash board/HDC_DMA/run_twist1_board.sh --random-seeds 1 --skip-patch
+
+Fixes applied: poll error recovery, flush stdout, fresh hw_server, libusb-safe reconnect

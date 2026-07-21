@@ -12,7 +12,9 @@ proc wait_targets {max} {
 proc reconnect {{url tcp:127.0.0.1:3121}} {
     catch { disconnect }
     after 2000
-    connect -url $url
+    if {[catch { connect -url $url } err]} {
+        error "connect failed: $err"
+    }
     wait_targets 20
 }
 
@@ -24,7 +26,11 @@ proc apu_available {} {
 proc recover_apu_chain {{attempts 5} {label "recover"}} {
     for {set attempt 1} {$attempt <= $attempts} {incr attempt} {
         puts "  $label attempt $attempt/$attempts ..."
-        reconnect
+        if {[catch { reconnect } err]} {
+            puts "    reconnect failed: $err"
+            after 5000
+            continue
+        }
         if {[apu_available]} {
             puts "  APU target available"
             return 1
@@ -32,7 +38,11 @@ proc recover_apu_chain {{attempts 5} {label "recover"}} {
         puts "  no APU — issuing rst -system"
         catch { rst -system }
         after 5000
-        reconnect
+        if {[catch { reconnect } err]} {
+            puts "    reconnect after rst failed: $err"
+            after 3000
+            continue
+        }
         if {[apu_available]} {
             puts "  APU target available after system reset"
             return 1

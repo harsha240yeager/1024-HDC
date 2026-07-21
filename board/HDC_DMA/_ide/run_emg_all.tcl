@@ -20,6 +20,8 @@ proc jtag_error_recoverable {err} {
         || [string match -nocase *Cannot\ flush\ JTAG* $err]
         || [string match -nocase *ftdi_* $err]
         || [string match -nocase *no\ targets* $err]
+        || [string match -nocase *Failed\ to\ read* $err]
+        || [string match -nocase *libusb* $err]
     }]
 }
 
@@ -27,19 +29,21 @@ proc select_apu_no_halt {} {
     catch { targets -set -nocase -filter {name =~ "APU*"} }
 }
 
-proc read_u32_running {addr {attempts 10}} {
+proc read_u32_running {addr {attempts 12}} {
     set line ""
     for {set i 1} {$i <= $attempts} {incr i} {
+        if {![apu_available]} {
+            recover_apu_chain 3 "poll APU"
+        }
         if {[catch {
             select_apu_no_halt
             set raw [mrd -force $addr 1]
             set line [lindex [split $raw "\n"] 0]
         } err]} {
             if {[jtag_error_recoverable $err]} {
-                reconnect $::HW_URL
-                select_apu_no_halt
+                recover_apu_chain 2 "poll read"
             }
-            after 300
+            after 500
             continue
         }
         if {[regexp {:[ \t]*([0-9a-fA-F]+)} $line -> hex]} {
@@ -68,25 +72,37 @@ if {[file exists $EMG_BIN]} {
 }
 
 puts "CPU running EMG replay — polling @ [format 0x%08X $EMG_BASE] (max ${MAX_WAIT_SEC}s)..."
+flush stdout
 
 set deadline [clock add [clock seconds] $MAX_WAIT_SEC seconds]
 set next_progress [clock add [clock seconds] $PROGRESS_SEC seconds]
 set done 0
+set poll_errors 0
 
 while {[clock seconds] < $deadline} {
-    set magic [read_u32_running $EMG_BASE]
-    set status [read_u32_running [expr {$EMG_BASE + 0x04}]]
+    if {[catch {
+        set magic [read_u32_running $EMG_BASE]
+        set status [read_u32_running [expr {$EMG_BASE + 0x04}]]
 
-    if {$magic == $EMG_MAGIC && $status == 1} {
-        set done 1
-        break
-    }
+        if {$magic == $EMG_MAGIC && $status == 1} {
+            set done 1
+            break
+        }
 
-    if {[clock seconds] >= $next_progress} {
-        set n [read_u32_running [expr {$EMG_BASE + 0x08}]]
-        set correct [read_u32_running [expr {$EMG_BASE + 0x0C}]]
-        puts "[clock format [clock seconds] -format {%H:%M:%S}] magic=[format 0x%08X $magic] status=$status n=$n correct=$correct"
-        set next_progress [clock add [clock seconds] $PROGRESS_SEC seconds]
+        if {[clock seconds] >= $next_progress} {
+            set n [read_u32_running [expr {$EMG_BASE + 0x08}]]
+            set correct [read_u32_running [expr {$EMG_BASE + 0x0C}]]
+            puts "[clock format [clock seconds] -format {%H:%M:%S}] magic=[format 0x%08X $magic] status=$status n=$n correct=$correct"
+            flush stdout
+            set next_progress [clock add [clock seconds] $PROGRESS_SEC seconds]
+        }
+        set poll_errors 0
+    } poll_err]} {
+        incr poll_errors
+        puts "[clock format [clock seconds] -format {%H:%M:%S}] poll error ($poll_errors): $poll_err"
+        flush stdout
+        recover_apu_chain 3 "poll loop"
+        after 2000
     }
 
     after 1000

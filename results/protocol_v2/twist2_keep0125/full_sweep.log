@@ -1,0 +1,233 @@
+======================================================================
+Twist 2 — cross-subject mask transfer
+  train=[1, 2, 3]  test=[4, 5]
+  D=1024  CNT_W=6  keep=0.125
+  dataset=/home/bsp-lab/1024-HDC/python_ref/HDC-EMG/dataset.mat
+  max_train=all  max_test=all
+======================================================================
+
+== encode subject 1 ==
+    train=37206 test=111625
+      encode s1/train: 1860/37206
+      encode s1/train: 3720/37206
+      encode s1/train: 5580/37206
+      encode s1/train: 7440/37206
+      encode s1/train: 9300/37206
+      encode s1/train: 11160/37206
+      encode s1/train: 13020/37206
+      encode s1/train: 14880/37206
+      encode s1/train: 16740/37206
+      encode s1/train: 18600/37206
+      encode s1/train: 20460/37206
+      encode s1/train: 22320/37206
+      encode s1/train: 24180/37206
+      encode s1/train: 26040/37206
+      encode s1/train: 27900/37206
+      encode s1/train: 29760/37206
+      encode s1/train: 31620/37206
+      encode s1/train: 33480/37206
+      encode s1/train: 35340/37206
+      encode s1/train: 37200/37206
+      encode s1/test: 5581/111625
+      encode s1/test: 11162/111625
+      encode s1/test: 16743/111625
+      encode s1/test: 22324/111625
+      encode s1/test: 27905/111625
+      encode s1/test: 33486/111625
+      encode s1/test: 39067/111625
+      encode s1/test: 44648/111625
+      encode s1/test: 50229/111625
+      encode s1/test: 55810/111625
+      encode s1/test: 61391/111625
+      encode s1/test: 66972/111625
+      encode s1/test: 72553/111625
+      encode s1/test: 78134/111625
+      encode s1/test: 83715/111625
+      encode s1/test: 89296/111625
+      encode s1/test: 94877/111625
+      encode s1/test: 100458/111625
+      encode s1/test: 106039/111625
+      encode s1/test: 111620/111625
+
+== encode subject 2 ==
+    train=34782 test=104353
+      encode s2/train: 1739/34782
+      encode s2/train: 3478/34782
+      encode s2/train: 5217/34782
+      encode s2/train: 6956/34782
+      encode s2/train: 8695/34782
+      encode s2/train: 10434/34782
+      encode s2/train: 12173/34782
+      encode s2/train: 13912/34782
+      encode s2/train: 15651/34782
+      encode s2/train: 17390/34782
+      encode s2/train: 19129/34782
+      encode s2/train: 20868/34782
+      encode s2/train: 22607/34782
+      encode s2/train: 24346/34782
+      encode s2/train: 26085/34782
+      encode s2/train: 27824/34782
+      encode s2/train: 29563/34782
+      encode s2/train: 31302/34782
+      encode s2/train: 33041/34782
+      encode s2/train: 34780/34782
+      encode s2/test: 5217/104353
+      encode s2/test: 10434/104353
+      encode s2/test: 15651/104353
+      encode s2/test: 20868/104353
+      encode s2/test: 26085/104353
+      encode s2/test: 31302/104353
+      encode s2/test: 36519/104353
+      encode s2/test: 41736/104353
+      encode s2/test: 46953/104353
+      encode s2/test: 52170/104353
+      encode s2/test: 57387/104353
+      encode s2/test: 62604/104353
+      encode s2/test: 67821/104353
+      encode s2/test: 73038/104353
+      encode s2/test: 78255/104353
+      encode s2/test: 83472/104353
+      encode s2/test: 88689/104353
+      encode s2/test: 93906/104353
+      encode s2/test: 99123/104353
+      encode s2/test: 104340/104353
+
+== encode subject 3 ==
+    train=34391 test=103182
+      encode s3/train: 1719/34391
+      encode s3/train: 3438/34391
+      encode s3/train: 5157/34391
+      encode s3/train: 6876/34391
+      encode s3/train: 8595/34391
+      encode s3/train: 10314/34391
+      encode s3/train: 12033/34391
+      encode s3/train: 13752/34391
+      encode s3/train: 15471/34391
+      encode s3/train: 17190/34391
+      encode s3/train: 18909/34391
+      encode s3/train: 20628/34391
+      encode s3/train: 22347/34391
+      encode s3/train: 24066/34391
+      encode s3/train: 25785/34391
+      encode s3/train: 27504/34391
+      encode s3/train: 29223/34391
+      encode s3/train: 30942/34391
+      encode s3/train: 32661/34391
+      encode s3/train: 34380/34391
+      encode s3/test: 5159/103182
+      encode s3/test: 10318/103182
+      encode s3/test: 15477/103182
+      encode s3/test: 20636/103182
+      encode s3/test: 25795/103182
+      encode s3/test: 30954/103182
+      encode s3/test: 36113/103182
+      encode s3/test: 41272/103182
+      encode s3/test: 46431/103182
+      encode s3/test: 51590/103182
+      encode s3/test: 56749/103182
+      encode s3/test: 61908/103182
+      encode s3/test: 67067/103182
+      encode s3/test: 72226/103182
+      encode s3/test: 77385/103182
+      encode s3/test: 82544/103182
+      encode s3/test: 87703/103182
+      encode s3/test: 92862/103182
+      encode s3/test: 98021/103182
+      encode s3/test: 103180/103182
+
+== encode subject 4 ==
+    train=33582 test=100753
+      encode s4/train: 1679/33582
+      encode s4/train: 3358/33582
+      encode s4/train: 5037/33582
+      encode s4/train: 6716/33582
+      encode s4/train: 8395/33582
+      encode s4/train: 10074/33582
+      encode s4/train: 11753/33582
+      encode s4/train: 13432/33582
+      encode s4/train: 15111/33582
+      encode s4/train: 16790/33582
+      encode s4/train: 18469/33582
+      encode s4/train: 20148/33582
+      encode s4/train: 21827/33582
+      encode s4/train: 23506/33582
+      encode s4/train: 25185/33582
+      encode s4/train: 26864/33582
+      encode s4/train: 28543/33582
+      encode s4/train: 30222/33582
+      encode s4/train: 31901/33582
+      encode s4/train: 33580/33582
+      encode s4/test: 5037/100753
+      encode s4/test: 10074/100753
+      encode s4/test: 15111/100753
+      encode s4/test: 20148/100753
+      encode s4/test: 25185/100753
+      encode s4/test: 30222/100753
+      encode s4/test: 35259/100753
+      encode s4/test: 40296/100753
+      encode s4/test: 45333/100753
+      encode s4/test: 50370/100753
+      encode s4/test: 55407/100753
+      encode s4/test: 60444/100753
+      encode s4/test: 65481/100753
+      encode s4/test: 70518/100753
+      encode s4/test: 75555/100753
+      encode s4/test: 80592/100753
+      encode s4/test: 85629/100753
+      encode s4/test: 90666/100753
+      encode s4/test: 95703/100753
+      encode s4/test: 100740/100753
+
+== encode subject 5 ==
+    train=24531 test=73599
+      encode s5/train: 1226/24531
+      encode s5/train: 2452/24531
+      encode s5/train: 3678/24531
+      encode s5/train: 4904/24531
+      encode s5/train: 6130/24531
+      encode s5/train: 7356/24531
+      encode s5/train: 8582/24531
+      encode s5/train: 9808/24531
+      encode s5/train: 11034/24531
+      encode s5/train: 12260/24531
+      encode s5/train: 13486/24531
+      encode s5/train: 14712/24531
+      encode s5/train: 15938/24531
+      encode s5/train: 17164/24531
+      encode s5/train: 18390/24531
+      encode s5/train: 19616/24531
+      encode s5/train: 20842/24531
+      encode s5/train: 22068/24531
+      encode s5/train: 23294/24531
+      encode s5/train: 24520/24531
+      encode s5/test: 3679/73599
+      encode s5/test: 7358/73599
+      encode s5/test: 11037/73599
+      encode s5/test: 14716/73599
+      encode s5/test: 18395/73599
+      encode s5/test: 22074/73599
+      encode s5/test: 25753/73599
+      encode s5/test: 29432/73599
+      encode s5/test: 33111/73599
+      encode s5/test: 36790/73599
+      encode s5/test: 40469/73599
+      encode s5/test: 44148/73599
+      encode s5/test: 47827/73599
+      encode s5/test: 51506/73599
+      encode s5/test: 55185/73599
+      encode s5/test: 58864/73599
+      encode s5/test: 62543/73599
+      encode s5/test: 66222/73599
+      encode s5/test: 69901/73599
+      encode s5/test: 73580/73599
+    test S4: local=63.05%  pooled=62.35%  Δ=+0.70 pp
+    test S5: local=72.28%  pooled=70.93%  Δ=+1.35 pp
+
+======================================================================
+Done in 8464.1s
+  Local oracle (test mean):  67.66%
+  Pooled transfer:         66.64%
+  Gap (local − pooled):    +1.02 pp  (target |gap| ≤ 3 pp)
+  Generalises:             YES
+  results/protocol_v2/twist2_keep0125/twist2_results.json
+======================================================================
