@@ -155,7 +155,11 @@ def _load_json(rel: str) -> dict:
 
 
 def load_per_subject() -> dict:
-    hdc = _load_json("results/baselines/arm_hdc_results.json")
+    arm_path = _first_existing(
+        "results/protocol_v2/arm_baseline/arm_hdc_results.json",
+        "results/baselines/arm_hdc_results.json",
+    )
+    hdc = json.loads(arm_path.read_text(encoding="utf-8"))
     mlp = _load_json("results/baselines/mlp_results.json")
     subs = [f"S{r['subject']}" for r in hdc["per_subject"]]
     return {
@@ -167,8 +171,14 @@ def load_per_subject() -> dict:
     }
 
 
-def load_spatial_temporal() -> dict:
-    b = _load_json("python_ref/results/emg_baseline.json")
+def load_spatial_temporal() -> dict | None:
+    """Optional MAP vs BSC figure; skip if legacy keys are absent."""
+    path = REPO / "python_ref/results/emg_baseline.json"
+    if not path.is_file():
+        return None
+    b = json.loads(path.read_text(encoding="utf-8"))
+    if "project_baseline" not in b or "parity_anchor" not in b:
+        return None
     pb, pa = b["project_baseline"], b["parity_anchor"]
     return {
         "map": [100.0 * pa["spatial"]["mean"], 100.0 * pa["spatiotemporal"]["mean"]],
@@ -177,9 +187,21 @@ def load_spatial_temporal() -> dict:
     }
 
 
+def _first_existing(*rels: str) -> Path:
+    for rel in rels:
+        p = REPO / rel
+        if p.is_file():
+            return p
+    raise FileNotFoundError("Missing any of: " + ", ".join(rels))
+
+
 def load_hook_a() -> list[dict]:
+    path = _first_existing(
+        "results/protocol_v2/hook_a/sweep_summary.csv",
+        "results/hook_a/sweep_summary.csv",
+    )
     rows = []
-    with (REPO / "results/hook_a/sweep_summary.csv").open() as f:
+    with path.open() as f:
         for r in csv.DictReader(f):
             rows.append(
                 {
@@ -217,7 +239,7 @@ def load_measured_silicon() -> list[dict]:
                 if rm:
                     acc = float(rm.group(1))
             if block == "ARM" and acc is None:
-                acc = 74.15
+                acc = 72.65
             pts.append(
                 {
                     "anchor": block,
@@ -234,11 +256,10 @@ def load_measured_silicon() -> list[dict]:
 
 def load_fisher_pooled() -> dict:
     """Pooled Fisher scores + informed masks (16×64 bit layout)."""
-    path = REPO / "results/hook_a/fisher_pooled.npz"
-    if not path.is_file():
-        raise FileNotFoundError(
-            f"Missing {path} — run: python3 scripts/export_fisher_pooled.py"
-        )
+    path = _first_existing(
+        "results/protocol_v2/fisher_pooled.npz",
+        "results/hook_a/fisher_pooled.npz",
+    )
     data = np.load(path)
     scores = data["scores"]
     return {
@@ -252,7 +273,11 @@ def load_fisher_pooled() -> dict:
 
 def load_baseline_systems() -> list[dict]:
     """Deployment-class baselines with accuracy, latency, energy where measured."""
-    arm = _load_json("results/baselines/arm_hdc_results.json")
+    arm_path = _first_existing(
+        "results/protocol_v2/arm_baseline/arm_hdc_results.json",
+        "results/baselines/arm_hdc_results.json",
+    )
+    arm = json.loads(arm_path.read_text(encoding="utf-8"))
     mlp = _load_json("results/baselines/mlp_results.json")
     silicon = load_measured_silicon()
     pl = next(p for p in silicon if p["anchor"] == "A")
@@ -1152,7 +1177,11 @@ def main() -> None:
     print(f"Writing figures to {out}")
 
     fig_per_subject(load_per_subject(), out)
-    fig_spatial_temporal(load_spatial_temporal(), out)
+    spatial = load_spatial_temporal()
+    if spatial:
+        fig_spatial_temporal(spatial, out)
+    else:
+        print("  skip spatial_vs_spatiotemporal (legacy emg_baseline keys missing)")
     hook = load_hook_a()
     fig_hook_a_acc_vs_d(hook, out)
     fig_hook_a_pareto(hook, out)
@@ -1161,12 +1190,22 @@ def main() -> None:
     fig_hook_a_anchor_energy(load_measured_silicon(), out)
     fig_fisher_heatmap(load_fisher_pooled(), out)
     fig_baselines_bar(load_baseline_systems(), out)
-    twist1 = load_twist1()
+    twist1 = load_twist1("results/protocol_v2/twist1_keep0125_30seed/twist1_results.json")
+    if twist1 is None:
+        twist1 = load_twist1("results/twist1/twist1_results.json")
     if twist1:
         fig_twist1(twist1, out)
     else:
-        print("  skip twist1_informed_vs_random (missing results/twist1/twist1_results.json)")
-    twist1_aggressive = load_twist1("results/twist1_keep0125/twist1_results.json")
+        print("  skip twist1_informed_vs_random (missing twist1 results)")
+    twist1_aggressive = load_twist1(
+        "results/protocol_v2/twist1_keep0125_30seed/twist1_results.json"
+    )
+    if twist1_aggressive is None:
+        twist1_aggressive = load_twist1(
+            "results/protocol_v2/twist1_keep0125/twist1_results.json"
+        )
+    if twist1_aggressive is None:
+        twist1_aggressive = load_twist1("results/twist1_keep0125/twist1_results.json")
     if twist1_aggressive:
         fig_twist1(
             twist1_aggressive,
@@ -1174,17 +1213,24 @@ def main() -> None:
             name="twist1_informed_vs_random_keep0125",
         )
     else:
-        print("  skip twist1 keep=0.125 figure (missing results/twist1_keep0125/)")
-    twist2 = load_twist2()
+        print("  skip twist1 keep=0.125 figure (missing protocol_v2/twist1_*)")
+    twist2 = load_twist2("results/protocol_v2/twist2_keep0125/twist2_results.json")
+    if twist2 is None:
+        twist2 = load_twist2()
     if twist2:
         fig_twist2(twist2, out)
     else:
-        print("  skip twist2_cross_subject (missing results/twist2/twist2_results.json)")
-    twist2_36 = load_twist2("results/twist2_36/twist2_results.json")
+        print("  skip twist2_cross_subject (missing twist2 results)")
+    # Prefer HDC-2 36-subj keep=128 when present; else legacy HDC-1 36-subj.
+    twist2_36 = load_twist2(
+        "results/protocol_v2/twist2_36_v2/keep_128/twist2_results.json"
+    )
+    if twist2_36 is None:
+        twist2_36 = load_twist2("results/twist2_36/twist2_results.json")
     if twist2_36:
         fig_twist2(twist2_36, out, name="twist2_cross_subject_36")
     else:
-        print("  skip twist2_cross_subject_36 (missing results/twist2_36/)")
+        print("  skip twist2_cross_subject_36 (missing 36-subj results)")
 
     if args.show:
         plt.show()
