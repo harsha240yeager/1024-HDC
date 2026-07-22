@@ -208,7 +208,8 @@ Raw CSVs live under `results/phase3/energy_runs/anchor_*/run*/`.
 
 ---
 
-## 8. Paper text (drop-in appendix)
+## 8. Paper text
 
-See Research-paper `conference_101719.tex` section **Appendix: Energy measurement**.
-Keep the Methods §Energy Measurement paragraph short and point here for full detail.
+Methods §Energy Measurement in Research-paper `conference_101719.tex` carries the
+formulas, 174×/205× footnotes, and claim boundary.
+This file is the full artifact write-up (wiring, scripts, raw CSVs).
