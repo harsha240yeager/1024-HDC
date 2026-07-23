@@ -103,7 +103,7 @@ Copy to issue #1 or project board; update as phases complete.
 | 1b Hook A + anchors | ✅ complete — `protocol_v2/hook_a/`, `protocol_v2/anchors/` |
 | 2 Cross-subject | ✅ 5-subj pilot (+1.02 pp) · ⏳ 36-subj keep grid running — `protocol_v2/twist2_36_v2/` [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
 | 3 Random + stats | ✅ 30-seed Twist 1 Python — `protocol_v2/twist1_keep0125_30seed/` · issue #3 partial |
-| 4 Seeds | ⏳ issue #4 |
+| 4 Seeds | ✅ `results/seed_sensitivity/` — issue #4 |
 | 5 Active bits | ⏳ issue #5 |
 | 6 Encoder | ⏳ issue #6 |
 | 7 Claims | ⏳ issue #7 (Path B) |
