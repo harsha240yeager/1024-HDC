@@ -1,0 +1,20 @@
+{
+  "name": "Issue 4 — item-memory seed sensitivity",
+  "description": "RTL-matched hdc_ref on HDC-2 EMG split. Vary item_mem_seed; report full-width accuracy, active bit support, Fisher vs random @ 128 bits, and keep-ratio curve.",
+  "engine": "hdc_ref",
+  "protocol_config": "emg_baseline_v2.json",
+  "item_mem_seeds": [1, 7, 21, 42],
+  "subjects": [1, 2, 3, 4, 5],
+  "D": 1024,
+  "cnt_w": 6,
+  "keep_ratios": [1.0, 0.5, 0.25, 0.125],
+  "gap_keep_ratio": 0.125,
+  "random_seeds": [0, 1, 2, 3, 4],
+  "quick": {
+    "item_mem_seeds": [1, 42],
+    "subjects": [1, 2],
+    "max_train_windows_per_subject": 3000,
+    "max_test_windows_per_subject": 3000,
+    "random_seeds": [0, 1]
+  }
+}

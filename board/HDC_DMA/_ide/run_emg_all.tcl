@@ -29,11 +29,30 @@ proc select_apu_no_halt {} {
     catch { targets -set -nocase -filter {name =~ "APU*"} }
 }
 
-proc read_u32_running {addr {attempts 12}} {
+proc reconnect_apu_only {{attempts 3} {label "reconnect"}} {
+    for {set attempt 1} {$attempt <= $attempts} {incr attempt} {
+        if {[catch { reconnect } err]} {
+            puts "    $label attempt $attempt/$attempts failed: $err"
+            after 3000
+            continue
+        }
+        if {[apu_available]} {
+            return 1
+        }
+        after 2000
+    }
+    return 0
+}
+
+proc read_u32_running {addr {attempts 12} {allow_system_reset 0}} {
     set line ""
     for {set i 1} {$i <= $attempts} {incr i} {
         if {![apu_available]} {
-            recover_apu_chain 3 "poll APU"
+            if {$allow_system_reset} {
+                recover_apu_chain 3 "poll APU"
+            } else {
+                reconnect_apu_only 3 "poll APU"
+            }
         }
         if {[catch {
             select_apu_no_halt
@@ -41,7 +60,11 @@ proc read_u32_running {addr {attempts 12}} {
             set line [lindex [split $raw "\n"] 0]
         } err]} {
             if {[jtag_error_recoverable $err]} {
-                recover_apu_chain 2 "poll read"
+                if {$allow_system_reset} {
+                    recover_apu_chain 2 "poll read"
+                } else {
+                    reconnect_apu_only 2 "poll read"
+                }
             }
             after 500
             continue
@@ -101,7 +124,7 @@ while {[clock seconds] < $deadline} {
         incr poll_errors
         puts "[clock format [clock seconds] -format {%H:%M:%S}] poll error ($poll_errors): $poll_err"
         flush stdout
-        recover_apu_chain 3 "poll loop"
+        reconnect_apu_only 3 "poll loop"
         after 2000
     }
 

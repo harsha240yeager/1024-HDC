@@ -16,3 +16,10 @@ Retry after USB replug + kill hw_server:
   bash board/HDC_DMA/run_twist1_board.sh --random-seeds 1 --skip-patch
 
 Fixes applied: poll error recovery, flush stdout, fresh hw_server, libusb-safe reconnect
+
+2026-07-21 v3: program OK, poll loop stuck — root cause: rst -system during inference reset CPU (fixed in run_emg_all.tcl)
+2026-07-21 v4: PS7 init failed after prior run — JTAG degraded; USB now disconnected
+
+Retry after USB replug:
+  pkill -f 'hw_server.*3121'; sleep 3
+  bash board/HDC_DMA/run_twist1_board.sh --random-seeds 1 --skip-patch
