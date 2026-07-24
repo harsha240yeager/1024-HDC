@@ -41,6 +41,7 @@ from hdc_ref import (  # noqa: E402
     HDCConfig,
     HDCEngine,
     ItemMemory,
+    active_bit_support,
     bundle_majority_unlimited,
     mask_from_scores,
     per_bit_fisher_scores,
@@ -86,15 +87,6 @@ def cap_windows_stratified(
     picks = picks[:n_max]
     idx = np.array(picks, dtype=np.int64)
     return q[idx], labels[idx]
-
-
-def active_bit_support(hvs: np.ndarray) -> int:
-    """Count bit positions that are not constant across hypervectors."""
-    if hvs.size == 0:
-        return 0
-    col_min = np.min(hvs, axis=0)
-    col_max = np.max(hvs, axis=0)
-    return int(np.sum(col_min != col_max))
 
 
 def train_prototypes(

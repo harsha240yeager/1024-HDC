@@ -198,13 +198,13 @@ Per seed report:
 
 **Depends on:** Phase 1
 
-### 5a — Why only ~257 bits vary?
+### 5a — Why only ~203–210 bits vary? (HDC-2; legacy note said ~257)
 
-- [ ] Add `active_bit_support()` in `hdc_ref.py`
-- [ ] Report active count across: subjects, item-memory seeds, D sweep, encoder variants
-- [ ] Diagnose: item-memory sparsity, bundle count (20 binds), majority collapse, ROM structure
-- [ ] Explain why keep=512 is lossless (512 > active support)
-- [ ] **Fair random baseline:** sample only from active support, not all 1024 bits
+- [x] Add `active_bit_support()` / `active_bit_mask()` / `mask_random_from_support()` in `hdc_ref.py`
+- [x] Report active count across: subjects, item-memory seeds, D sweep (`python_ref/run_active_bit_ablation.py` → `results/protocol_v2/active_bits/`)
+- [x] Diagnose: continuous value flip budget (`D/n_levels`), 20-bind bundling, majority collapse vs single-record support
+- [x] Explain why keep=512 is lossless (512 > active support)
+- [x] **Fair random baseline:** sample only from active support, not all 1024 bits
 
 ### 5b — Ranking baselines (128-bit accuracy)
 

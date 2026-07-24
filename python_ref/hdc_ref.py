@@ -413,6 +413,50 @@ def train_class_hypervectors(
 
 
 # ---------------------------------------------------------------------------
+# Active-bit support (Issue #5)
+# ---------------------------------------------------------------------------
+
+def active_bit_mask(hvs: np.ndarray) -> np.ndarray:
+    """Boolean mask of bit positions that are not constant across hypervectors."""
+    x = np.asarray(hvs)
+    if x.ndim != 2 or x.shape[0] == 0:
+        return np.zeros(0, dtype=np.uint8)
+    col_min = np.min(x, axis=0)
+    col_max = np.max(x, axis=0)
+    return (col_min != col_max).astype(np.uint8)
+
+
+def active_bit_support(hvs: np.ndarray) -> int:
+    """Count bit positions that vary across the given hypervectors."""
+    return int(np.sum(active_bit_mask(hvs)))
+
+
+def mask_random_from_support(
+    support_mask: np.ndarray,
+    n_keep: int,
+    rng: Optional[np.random.Generator] = None,
+) -> np.ndarray:
+    """
+    Fair random pruning: sample ``n_keep`` bits from active support only.
+
+    If ``n_keep`` exceeds the support size, keep the entire support (constant
+    bits outside the support cannot change Hamming distances).
+    """
+    support = np.asarray(support_mask, dtype=np.uint8).ravel()
+    active = np.flatnonzero(support)
+    if active.size == 0:
+        raise ValueError("active support is empty")
+    if rng is None:
+        rng = np.random.default_rng(0)
+    n_keep = max(1, int(n_keep))
+    n_pick = min(n_keep, int(active.size))
+    mask = zeros(int(support.shape[0]))
+    pick = rng.choice(active, size=n_pick, replace=False)
+    mask[pick] = 1
+    return mask
+
+
+# ---------------------------------------------------------------------------
 # Hook A / Twist 1 / Twist 2 — pruning masks
 # ---------------------------------------------------------------------------
 

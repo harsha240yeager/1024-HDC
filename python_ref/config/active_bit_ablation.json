@@ -1,0 +1,27 @@
+{
+  "name": "Issue 5 — active-bit ablation",
+  "description": "Diagnose sparse active bit support under HDC-2 spatial encoding; compare Fisher vs uniform-random vs fair-random-from-active-support.",
+  "engine": "hdc_ref",
+  "protocol_config": "emg_baseline_v2.json",
+  "item_mem_seeds": [1, 7, 21, 42],
+  "subjects": [1, 2, 3, 4, 5],
+  "D_list": [1024],
+  "D_sweep_extra": {
+    "item_mem_seeds": [42],
+    "D_list": [512, 2048],
+    "subjects": [1, 2, 3, 4, 5]
+  },
+  "cnt_w": 6,
+  "gap_keep_ratio": 0.125,
+  "random_seeds": [0, 1, 2, 3, 4],
+  "max_train_windows_per_subject": null,
+  "max_test_windows_per_subject": 15000,
+  "quick": {
+    "item_mem_seeds": [42],
+    "subjects": [1, 2],
+    "D_list": [1024],
+    "max_train_windows_per_subject": 3000,
+    "max_test_windows_per_subject": 3000,
+    "random_seeds": [0, 1]
+  }
+}

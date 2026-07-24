@@ -1,0 +1,3573 @@
+{
+  "meta": {
+    "generated_at": "2026-07-23T13:45:09Z",
+    "issue": 5,
+    "engine": "hdc_ref",
+    "protocol": "HDC-2",
+    "emg_config": "python_ref\\config\\emg_baseline_v2.json",
+    "subjects": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "D_list": [
+      512,
+      1024,
+      2048
+    ],
+    "cnt_w": 6,
+    "item_mem_seeds": [
+      1,
+      7,
+      21,
+      42
+    ],
+    "gap_keep_ratio": 0.125,
+    "n_keep_at_gap_D1024": 128,
+    "random_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "max_train_windows_per_subject": null,
+    "max_test_windows_per_subject": 15000,
+    "n_jobs": 30,
+    "elapsed_s": 15483.6,
+    "summary": [
+      {
+        "item_mem_seed": 1,
+        "D": 1024,
+        "n_subjects": 5,
+        "spatial_mean_active_pooled": 202.2,
+        "spatial_mean_active_train": 183.4,
+        "spatial_mean_single_record_support": 1019.0,
+        "spatial_mean_value_flip_budget": 64.0,
+        "spatial_mean_value_table_active": 316.0,
+        "spatial_mean_full_width_accuracy": 0.7328666666666667,
+        "spatial_mean_fisher_at_gap": 0.7328666666666667,
+        "spatial_mean_uniform_random_at_gap": 0.6562666666666666,
+        "spatial_mean_fair_random_at_gap": 0.718888,
+        "spatial_mean_gap_pp_vs_uniform": 7.660000000000002,
+        "spatial_mean_gap_pp_vs_fair": 1.397866666666665,
+        "all_subjects_keep_half_lossless": true,
+        "all_subjects_active_lt_keep_half": true
+      },
+      {
+        "item_mem_seed": 7,
+        "D": 1024,
+        "n_subjects": 5,
+        "spatial_mean_active_pooled": 208.2,
+        "spatial_mean_active_train": 186.4,
+        "spatial_mean_single_record_support": 1022.0,
+        "spatial_mean_value_flip_budget": 64.0,
+        "spatial_mean_value_table_active": 339.0,
+        "spatial_mean_full_width_accuracy": 0.7243066666666665,
+        "spatial_mean_fisher_at_gap": 0.7242533333333332,
+        "spatial_mean_uniform_random_at_gap": 0.63508,
+        "spatial_mean_fair_random_at_gap": 0.710536,
+        "spatial_mean_gap_pp_vs_uniform": 8.917333333333332,
+        "spatial_mean_gap_pp_vs_fair": 1.3717333333333361,
+        "all_subjects_keep_half_lossless": true,
+        "all_subjects_active_lt_keep_half": true
+      },
+      {
+        "item_mem_seed": 21,
+        "D": 1024,
+        "n_subjects": 5,
+        "spatial_mean_active_pooled": 208.6,
+        "spatial_mean_active_train": 182.6,
+        "spatial_mean_single_record_support": 1019.0,
+        "spatial_mean_value_flip_budget": 64.0,
+        "spatial_mean_value_table_active": 330.0,
+        "spatial_mean_full_width_accuracy": 0.7207466666666666,
+        "spatial_mean_fisher_at_gap": 0.7207466666666666,
+        "spatial_mean_uniform_random_at_gap": 0.665408,
+        "spatial_mean_fair_random_at_gap": 0.717776,
+        "spatial_mean_gap_pp_vs_uniform": 5.533866666666659,
+        "spatial_mean_gap_pp_vs_fair": 0.29706666666666326,
+        "all_subjects_keep_half_lossless": true,
+        "all_subjects_active_lt_keep_half": true
+      },
+      {
+        "item_mem_seed": 42,
+        "D": 512,
+        "n_subjects": 5,
+        "spatial_mean_active_pooled": 96.2,
+        "spatial_mean_active_train": 85.6,
+        "spatial_mean_single_record_support": 508.0,
+        "spatial_mean_value_flip_budget": 32.0,
+        "spatial_mean_value_table_active": 156.0,
+        "spatial_mean_full_width_accuracy": 0.7238399999999999,
+        "spatial_mean_fisher_at_gap": 0.7238399999999999,
+        "spatial_mean_uniform_random_at_gap": 0.6434773333333333,
+        "spatial_mean_fair_random_at_gap": 0.7126293333333333,
+        "spatial_mean_gap_pp_vs_uniform": 8.036266666666666,
+        "spatial_mean_gap_pp_vs_fair": 1.121066666666668,
+        "all_subjects_keep_half_lossless": true,
+        "all_subjects_active_lt_keep_half": true
+      },
+      {
+        "item_mem_seed": 42,
+        "D": 1024,
+        "n_subjects": 5,
+        "spatial_mean_active_pooled": 208.8,
+        "spatial_mean_active_train": 185.4,
+        "spatial_mean_single_record_support": 1019.0,
+        "spatial_mean_value_flip_budget": 64.0,
+        "spatial_mean_value_table_active": 327.0,
+        "spatial_mean_full_width_accuracy": 0.72584,
+        "spatial_mean_fisher_at_gap": 0.72584,
+        "spatial_mean_uniform_random_at_gap": 0.6454826666666666,
+        "spatial_mean_fair_random_at_gap": 0.7133200000000001,
+        "spatial_mean_gap_pp_vs_uniform": 8.035733333333337,
+        "spatial_mean_gap_pp_vs_fair": 1.2520000000000042,
+        "all_subjects_keep_half_lossless": true,
+        "all_subjects_active_lt_keep_half": true
+      },
+      {
+        "item_mem_seed": 42,
+        "D": 2048,
+        "n_subjects": 5,
+        "spatial_mean_active_pooled": 417.0,
+        "spatial_mean_active_train": 370.2,
+        "spatial_mean_single_record_support": 2042.0,
+        "spatial_mean_value_flip_budget": 128.0,
+        "spatial_mean_value_table_active": 652.0,
+        "spatial_mean_full_width_accuracy": 0.76112,
+        "spatial_mean_fisher_at_gap": 0.76112,
+        "spatial_mean_uniform_random_at_gap": 0.6990586666666667,
+        "spatial_mean_fair_random_at_gap": 0.7504293333333333,
+        "spatial_mean_gap_pp_vs_uniform": 6.206133333333334,
+        "spatial_mean_gap_pp_vs_fair": 1.0690666666666693,
+        "all_subjects_keep_half_lossless": true,
+        "all_subjects_active_lt_keep_half": true
+      }
+    ]
+  },
+  "per_cell": [
+    {
+      "subject": 1,
+      "item_mem_seed": 1,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 37206,
+      "n_test": 15000,
+      "active_bit_support_train": 182,
+      "active_bit_support_test": 201,
+      "active_bit_support_pooled": 203,
+      "active_fraction_pooled": 0.1982421875,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.19921491658488713,
+      "diagnosis": {
+        "channel_table_active_bits": 887,
+        "feature_table_active_bits": 978,
+        "value_table_active_bits": 316,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 316.0,
+        "per_slot_value_path_active_max": 316,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7590666666666667,
+      "full_width_correct": 11386,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.7590666666666667,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.7590666666666667,
+      "fisher_correct_at_gap": 11386,
+      "uniform_random_accuracy_mean_at_gap": 0.69224,
+      "fair_random_accuracy_mean_at_gap": 0.7498933333333333,
+      "gap_pp_fisher_minus_uniform": 6.68266666666667,
+      "gap_pp_fisher_minus_fair": 0.9173333333333367,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6736666666666666,
+          "correct": 10105,
+          "gap_pp_vs_fisher": 8.540000000000003
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6968,
+          "correct": 10452,
+          "gap_pp_vs_fisher": 6.226666666666669
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6767333333333333,
+          "correct": 10151,
+          "gap_pp_vs_fisher": 8.233333333333338
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7306,
+          "correct": 10959,
+          "gap_pp_vs_fisher": 2.846666666666664
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6834,
+          "correct": 10251,
+          "gap_pp_vs_fisher": 7.566666666666666
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7102,
+          "correct": 10653,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 4.886666666666661
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7598,
+          "correct": 11397,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.07333333333333636
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7724666666666666,
+          "correct": 11587,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -1.3399999999999967
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7464666666666666,
+          "correct": 11197,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.2600000000000056
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7605333333333333,
+          "correct": 11408,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.14666666666666162
+        }
+      ]
+    },
+    {
+      "subject": 2,
+      "item_mem_seed": 1,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 34782,
+      "n_test": 15000,
+      "active_bit_support_train": 191,
+      "active_bit_support_test": 199,
+      "active_bit_support_pooled": 207,
+      "active_fraction_pooled": 0.2021484375,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.20314033366045142,
+      "diagnosis": {
+        "channel_table_active_bits": 887,
+        "feature_table_active_bits": 978,
+        "value_table_active_bits": 316,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 316.0,
+        "per_slot_value_path_active_max": 316,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7388,
+      "full_width_correct": 11082,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.7388,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.7388,
+      "fisher_correct_at_gap": 11082,
+      "uniform_random_accuracy_mean_at_gap": 0.6177066666666666,
+      "fair_random_accuracy_mean_at_gap": 0.7125866666666667,
+      "gap_pp_fisher_minus_uniform": 12.109333333333339,
+      "gap_pp_fisher_minus_fair": 2.621333333333331,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6000666666666666,
+          "correct": 9001,
+          "gap_pp_vs_fisher": 13.873333333333338
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6148666666666667,
+          "correct": 9223,
+          "gap_pp_vs_fisher": 12.393333333333334
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.5222666666666667,
+          "correct": 7834,
+          "gap_pp_vs_fisher": 21.653333333333336
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6399333333333334,
+          "correct": 9599,
+          "gap_pp_vs_fisher": 9.886666666666667
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7114,
+          "correct": 10671,
+          "gap_pp_vs_fisher": 2.739999999999998
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7226666666666667,
+          "correct": 10840,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.6133333333333333
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7138,
+          "correct": 10707,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.500000000000002
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6884,
+          "correct": 10326,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 5.04
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7136666666666667,
+          "correct": 10705,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.513333333333334
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7244,
+          "correct": 10866,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.4399999999999968
+        }
+      ]
+    },
+    {
+      "subject": 3,
+      "item_mem_seed": 1,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 34391,
+      "n_test": 15000,
+      "active_bit_support_train": 192,
+      "active_bit_support_test": 166,
+      "active_bit_support_pooled": 207,
+      "active_fraction_pooled": 0.2021484375,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.20314033366045142,
+      "diagnosis": {
+        "channel_table_active_bits": 887,
+        "feature_table_active_bits": 978,
+        "value_table_active_bits": 316,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 316.0,
+        "per_slot_value_path_active_max": 316,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.8005333333333333,
+      "full_width_correct": 12008,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.8005333333333333,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.8005333333333333,
+      "fisher_correct_at_gap": 12008,
+      "uniform_random_accuracy_mean_at_gap": 0.7003999999999999,
+      "fair_random_accuracy_mean_at_gap": 0.7701733333333334,
+      "gap_pp_fisher_minus_uniform": 10.01333333333334,
+      "gap_pp_fisher_minus_fair": 3.0359999999999943,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6695333333333333,
+          "correct": 10043,
+          "gap_pp_vs_fisher": 13.100000000000001
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6769333333333334,
+          "correct": 10154,
+          "gap_pp_vs_fisher": 12.359999999999992
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7398666666666667,
+          "correct": 11098,
+          "gap_pp_vs_fisher": 6.066666666666665
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7088,
+          "correct": 10632,
+          "gap_pp_vs_fisher": 9.173333333333334
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7068666666666666,
+          "correct": 10603,
+          "gap_pp_vs_fisher": 9.366666666666667
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7921333333333334,
+          "correct": 11882,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.8399999999999963
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7962666666666667,
+          "correct": 11944,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.4266666666666641
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7841333333333333,
+          "correct": 11762,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.639999999999997
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.8026666666666666,
+          "correct": 12040,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.21333333333333204
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6756666666666666,
+          "correct": 10135,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 12.486666666666668
+        }
+      ]
+    },
+    {
+      "subject": 4,
+      "item_mem_seed": 1,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 33582,
+      "n_test": 15000,
+      "active_bit_support_train": 145,
+      "active_bit_support_test": 168,
+      "active_bit_support_pooled": 168,
+      "active_fraction_pooled": 0.1640625,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.1648675171736997,
+      "diagnosis": {
+        "channel_table_active_bits": 887,
+        "feature_table_active_bits": 978,
+        "value_table_active_bits": 316,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 316.0,
+        "per_slot_value_path_active_max": 316,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6683333333333333,
+      "full_width_correct": 10025,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.6683333333333333,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.6683333333333333,
+      "fisher_correct_at_gap": 10025,
+      "uniform_random_accuracy_mean_at_gap": 0.6125066666666666,
+      "fair_random_accuracy_mean_at_gap": 0.6657866666666667,
+      "gap_pp_fisher_minus_uniform": 5.582666666666669,
+      "gap_pp_fisher_minus_fair": 0.2546666666666586,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.5963333333333334,
+          "correct": 8945,
+          "gap_pp_vs_fisher": 7.199999999999996
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6456666666666667,
+          "correct": 9685,
+          "gap_pp_vs_fisher": 2.2666666666666613
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.5945333333333334,
+          "correct": 8918,
+          "gap_pp_vs_fisher": 7.379999999999997
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6212666666666666,
+          "correct": 9319,
+          "gap_pp_vs_fisher": 4.7066666666666706
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6047333333333333,
+          "correct": 9071,
+          "gap_pp_vs_fisher": 6.359999999999999
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6450666666666667,
+          "correct": 9676,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.3266666666666658
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6663333333333333,
+          "correct": 9995,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.20000000000000018
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6718666666666666,
+          "correct": 10078,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.3533333333333277
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6826666666666666,
+          "correct": 10240,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -1.433333333333331
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.663,
+          "correct": 9945,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.5333333333333301
+        }
+      ]
+    },
+    {
+      "subject": 5,
+      "item_mem_seed": 1,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 24531,
+      "n_test": 15000,
+      "active_bit_support_train": 207,
+      "active_bit_support_test": 209,
+      "active_bit_support_pooled": 226,
+      "active_fraction_pooled": 0.220703125,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.22178606476938176,
+      "diagnosis": {
+        "channel_table_active_bits": 887,
+        "feature_table_active_bits": 978,
+        "value_table_active_bits": 316,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 316.0,
+        "per_slot_value_path_active_max": 316,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6976,
+      "full_width_correct": 10464,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.6976,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.6976,
+      "fisher_correct_at_gap": 10464,
+      "uniform_random_accuracy_mean_at_gap": 0.6584800000000001,
+      "fair_random_accuracy_mean_at_gap": 0.696,
+      "gap_pp_fisher_minus_uniform": 3.9119999999999933,
+      "gap_pp_fisher_minus_fair": 0.16000000000000458,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6688666666666667,
+          "correct": 10033,
+          "gap_pp_vs_fisher": 2.8733333333333277
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6611333333333334,
+          "correct": 9917,
+          "gap_pp_vs_fisher": 3.6466666666666647
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6499333333333334,
+          "correct": 9749,
+          "gap_pp_vs_fisher": 4.766666666666664
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6467333333333334,
+          "correct": 9701,
+          "gap_pp_vs_fisher": 5.086666666666662
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6657333333333333,
+          "correct": 9986,
+          "gap_pp_vs_fisher": 3.186666666666671
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6866666666666666,
+          "correct": 10300,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.093333333333335
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6773333333333333,
+          "correct": 10160,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.0266666666666655
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.686,
+          "correct": 10290,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.1599999999999944
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7282666666666666,
+          "correct": 10924,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -3.066666666666662
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7017333333333333,
+          "correct": 10526,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.4133333333333322
+        }
+      ]
+    },
+    {
+      "subject": 1,
+      "item_mem_seed": 7,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 37206,
+      "n_test": 15000,
+      "active_bit_support_train": 193,
+      "active_bit_support_test": 208,
+      "active_bit_support_pooled": 212,
+      "active_fraction_pooled": 0.20703125,
+      "single_record_active_support": 1022,
+      "majority_collapse_ratio_bundled_over_record": 0.20743639921722112,
+      "diagnosis": {
+        "channel_table_active_bits": 894,
+        "feature_table_active_bits": 934,
+        "value_table_active_bits": 339,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1022,
+        "per_slot_value_path_active_mean": 339.0,
+        "per_slot_value_path_active_max": 339,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7878,
+      "full_width_correct": 11817,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.7878,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.7875333333333333,
+      "fisher_correct_at_gap": 11813,
+      "uniform_random_accuracy_mean_at_gap": 0.6702933333333332,
+      "fair_random_accuracy_mean_at_gap": 0.77176,
+      "gap_pp_fisher_minus_uniform": 11.724000000000013,
+      "gap_pp_fisher_minus_fair": 1.5773333333333306,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6942666666666667,
+          "correct": 10414,
+          "gap_pp_vs_fisher": 9.32666666666666
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6855333333333333,
+          "correct": 10283,
+          "gap_pp_vs_fisher": 10.199999999999998
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7342666666666666,
+          "correct": 11014,
+          "gap_pp_vs_fisher": 5.326666666666668
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6146,
+          "correct": 9219,
+          "gap_pp_vs_fisher": 17.293333333333326
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6228,
+          "correct": 9342,
+          "gap_pp_vs_fisher": 16.47333333333333
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7968666666666666,
+          "correct": 11953,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.9333333333333305
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7563333333333333,
+          "correct": 11345,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 3.1200000000000006
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7781333333333333,
+          "correct": 11672,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.9399999999999964
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7778666666666667,
+          "correct": 11668,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.9666666666666601
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7496,
+          "correct": 11244,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 3.7933333333333263
+        }
+      ]
+    },
+    {
+      "subject": 2,
+      "item_mem_seed": 7,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 34782,
+      "n_test": 15000,
+      "active_bit_support_train": 184,
+      "active_bit_support_test": 196,
+      "active_bit_support_pooled": 205,
+      "active_fraction_pooled": 0.2001953125,
+      "single_record_active_support": 1022,
+      "majority_collapse_ratio_bundled_over_record": 0.20058708414872797,
+      "diagnosis": {
+        "channel_table_active_bits": 894,
+        "feature_table_active_bits": 934,
+        "value_table_active_bits": 339,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1022,
+        "per_slot_value_path_active_mean": 339.0,
+        "per_slot_value_path_active_max": 339,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7237333333333333,
+      "full_width_correct": 10856,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.7237333333333333,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.7237333333333333,
+      "fisher_correct_at_gap": 10856,
+      "uniform_random_accuracy_mean_at_gap": 0.5823733333333334,
+      "fair_random_accuracy_mean_at_gap": 0.7045733333333333,
+      "gap_pp_fisher_minus_uniform": 14.135999999999992,
+      "gap_pp_fisher_minus_fair": 1.9160000000000066,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.5193333333333333,
+          "correct": 7790,
+          "gap_pp_vs_fisher": 20.44
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.5935333333333334,
+          "correct": 8903,
+          "gap_pp_vs_fisher": 13.019999999999998
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6329333333333333,
+          "correct": 9494,
+          "gap_pp_vs_fisher": 9.079999999999998
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.5506,
+          "correct": 8259,
+          "gap_pp_vs_fisher": 17.313333333333336
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6154666666666667,
+          "correct": 9232,
+          "gap_pp_vs_fisher": 10.826666666666663
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7105333333333334,
+          "correct": 10658,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.319999999999999
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6938,
+          "correct": 10407,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.9933333333333367
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.705,
+          "correct": 10575,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.873333333333338
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7031333333333334,
+          "correct": 10547,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.059999999999995
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7104,
+          "correct": 10656,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.3333333333333308
+        }
+      ]
+    },
+    {
+      "subject": 3,
+      "item_mem_seed": 7,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 34391,
+      "n_test": 15000,
+      "active_bit_support_train": 194,
+      "active_bit_support_test": 173,
+      "active_bit_support_pooled": 218,
+      "active_fraction_pooled": 0.212890625,
+      "single_record_active_support": 1022,
+      "majority_collapse_ratio_bundled_over_record": 0.21330724070450097,
+      "diagnosis": {
+        "channel_table_active_bits": 894,
+        "feature_table_active_bits": 934,
+        "value_table_active_bits": 339,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1022,
+        "per_slot_value_path_active_mean": 339.0,
+        "per_slot_value_path_active_max": 339,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.784,
+      "full_width_correct": 11760,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.784,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.784,
+      "fisher_correct_at_gap": 11760,
+      "uniform_random_accuracy_mean_at_gap": 0.6696266666666666,
+      "fair_random_accuracy_mean_at_gap": 0.7562266666666666,
+      "gap_pp_fisher_minus_uniform": 11.437333333333344,
+      "gap_pp_fisher_minus_fair": 2.7773333333333428,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6762666666666667,
+          "correct": 10144,
+          "gap_pp_vs_fisher": 10.773333333333335
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6486,
+          "correct": 9729,
+          "gap_pp_vs_fisher": 13.540000000000008
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7117333333333333,
+          "correct": 10676,
+          "gap_pp_vs_fisher": 7.22666666666667
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6428666666666667,
+          "correct": 9643,
+          "gap_pp_vs_fisher": 14.113333333333333
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6686666666666666,
+          "correct": 10030,
+          "gap_pp_vs_fisher": 11.53333333333334
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7535333333333334,
+          "correct": 11303,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 3.046666666666664
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7742,
+          "correct": 11613,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.9800000000000031
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7817333333333333,
+          "correct": 11726,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.226666666666675
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7156,
+          "correct": 10734,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 6.840000000000002
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7560666666666667,
+          "correct": 11341,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.7933333333333366
+        }
+      ]
+    },
+    {
+      "subject": 4,
+      "item_mem_seed": 7,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 33582,
+      "n_test": 15000,
+      "active_bit_support_train": 143,
+      "active_bit_support_test": 169,
+      "active_bit_support_pooled": 170,
+      "active_fraction_pooled": 0.166015625,
+      "single_record_active_support": 1022,
+      "majority_collapse_ratio_bundled_over_record": 0.16634050880626222,
+      "diagnosis": {
+        "channel_table_active_bits": 894,
+        "feature_table_active_bits": 934,
+        "value_table_active_bits": 339,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1022,
+        "per_slot_value_path_active_mean": 339.0,
+        "per_slot_value_path_active_max": 339,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6431333333333333,
+      "full_width_correct": 9647,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.6431333333333333,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.6431333333333333,
+      "fisher_correct_at_gap": 9647,
+      "uniform_random_accuracy_mean_at_gap": 0.5852133333333334,
+      "fair_random_accuracy_mean_at_gap": 0.6166,
+      "gap_pp_fisher_minus_uniform": 5.791999999999997,
+      "gap_pp_fisher_minus_fair": 2.6533333333333298,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.5876,
+          "correct": 8814,
+          "gap_pp_vs_fisher": 5.553333333333333
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.5406666666666666,
+          "correct": 8110,
+          "gap_pp_vs_fisher": 10.24666666666667
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6226,
+          "correct": 9339,
+          "gap_pp_vs_fisher": 2.0533333333333292
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.5876,
+          "correct": 8814,
+          "gap_pp_vs_fisher": 5.553333333333333
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.5876,
+          "correct": 8814,
+          "gap_pp_vs_fisher": 5.553333333333333
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6176666666666667,
+          "correct": 9265,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.5466666666666637
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6714,
+          "correct": 10071,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -2.826666666666666
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6416,
+          "correct": 9624,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.15333333333333865
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.5822,
+          "correct": 8733,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 6.093333333333328
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.5701333333333334,
+          "correct": 8552,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 7.299999999999995
+        }
+      ]
+    },
+    {
+      "subject": 5,
+      "item_mem_seed": 7,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 24531,
+      "n_test": 15000,
+      "active_bit_support_train": 218,
+      "active_bit_support_test": 220,
+      "active_bit_support_pooled": 236,
+      "active_fraction_pooled": 0.23046875,
+      "single_record_active_support": 1022,
+      "majority_collapse_ratio_bundled_over_record": 0.2309197651663405,
+      "diagnosis": {
+        "channel_table_active_bits": 894,
+        "feature_table_active_bits": 934,
+        "value_table_active_bits": 339,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1022,
+        "per_slot_value_path_active_mean": 339.0,
+        "per_slot_value_path_active_max": 339,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6828666666666666,
+      "full_width_correct": 10243,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.6828666666666666,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.6828666666666666,
+      "fisher_correct_at_gap": 10243,
+      "uniform_random_accuracy_mean_at_gap": 0.6678933333333334,
+      "fair_random_accuracy_mean_at_gap": 0.7035199999999999,
+      "gap_pp_fisher_minus_uniform": 1.4973333333333172,
+      "gap_pp_fisher_minus_fair": -2.06533333333333,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7103333333333334,
+          "correct": 10655,
+          "gap_pp_vs_fisher": -2.746666666666675
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6473333333333333,
+          "correct": 9710,
+          "gap_pp_vs_fisher": 3.5533333333333306
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6724666666666667,
+          "correct": 10087,
+          "gap_pp_vs_fisher": 1.0399999999999965
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6728666666666666,
+          "correct": 10093,
+          "gap_pp_vs_fisher": 1.0000000000000009
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6364666666666666,
+          "correct": 9547,
+          "gap_pp_vs_fisher": 4.64
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6794,
+          "correct": 10191,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.3466666666666618
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.69,
+          "correct": 10350,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.7133333333333325
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7157333333333333,
+          "correct": 10736,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -3.286666666666671
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7138666666666666,
+          "correct": 10708,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -3.1000000000000028
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7186,
+          "correct": 10779,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -3.5733333333333395
+        }
+      ]
+    },
+    {
+      "subject": 1,
+      "item_mem_seed": 21,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 37206,
+      "n_test": 15000,
+      "active_bit_support_train": 191,
+      "active_bit_support_test": 209,
+      "active_bit_support_pooled": 211,
+      "active_fraction_pooled": 0.2060546875,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.2070657507360157,
+      "diagnosis": {
+        "channel_table_active_bits": 909,
+        "feature_table_active_bits": 963,
+        "value_table_active_bits": 330,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 330.0,
+        "per_slot_value_path_active_max": 330,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.8008666666666666,
+      "full_width_correct": 12013,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.8008666666666666,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.8008666666666666,
+      "fisher_correct_at_gap": 12013,
+      "uniform_random_accuracy_mean_at_gap": 0.7242133333333334,
+      "fair_random_accuracy_mean_at_gap": 0.7810666666666666,
+      "gap_pp_fisher_minus_uniform": 7.665333333333324,
+      "gap_pp_fisher_minus_fair": 1.980000000000004,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7349333333333333,
+          "correct": 11024,
+          "gap_pp_vs_fisher": 6.593333333333328
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6624,
+          "correct": 9936,
+          "gap_pp_vs_fisher": 13.846666666666662
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.8151333333333334,
+          "correct": 12227,
+          "gap_pp_vs_fisher": -1.426666666666676
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7245333333333334,
+          "correct": 10868,
+          "gap_pp_vs_fisher": 7.633333333333326
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6840666666666667,
+          "correct": 10261,
+          "gap_pp_vs_fisher": 11.67999999999999
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7944,
+          "correct": 11916,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.6466666666666621
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.8110666666666667,
+          "correct": 12166,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -1.0200000000000098
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7832666666666667,
+          "correct": 11749,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.759999999999995
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7966,
+          "correct": 11949,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.4266666666666641
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.72,
+          "correct": 10800,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 8.086666666666664
+        }
+      ]
+    },
+    {
+      "subject": 2,
+      "item_mem_seed": 21,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 34782,
+      "n_test": 15000,
+      "active_bit_support_train": 182,
+      "active_bit_support_test": 206,
+      "active_bit_support_pooled": 212,
+      "active_fraction_pooled": 0.20703125,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.20804710500490678,
+      "diagnosis": {
+        "channel_table_active_bits": 909,
+        "feature_table_active_bits": 963,
+        "value_table_active_bits": 330,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 330.0,
+        "per_slot_value_path_active_max": 330,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6313333333333333,
+      "full_width_correct": 9470,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.6313333333333333,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.6313333333333333,
+      "fisher_correct_at_gap": 9470,
+      "uniform_random_accuracy_mean_at_gap": 0.5936133333333333,
+      "fair_random_accuracy_mean_at_gap": 0.64928,
+      "gap_pp_fisher_minus_uniform": 3.7719999999999976,
+      "gap_pp_fisher_minus_fair": -1.7946666666666666,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.5990666666666666,
+          "correct": 8986,
+          "gap_pp_vs_fisher": 3.2266666666666666
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.5459333333333334,
+          "correct": 8189,
+          "gap_pp_vs_fisher": 8.539999999999992
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6072666666666666,
+          "correct": 9109,
+          "gap_pp_vs_fisher": 2.406666666666668
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.5894,
+          "correct": 8841,
+          "gap_pp_vs_fisher": 4.193333333333326
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6264,
+          "correct": 9396,
+          "gap_pp_vs_fisher": 0.4933333333333345
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6287333333333334,
+          "correct": 9431,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.25999999999999357
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6707333333333333,
+          "correct": 10061,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -3.939999999999999
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6332666666666666,
+          "correct": 9499,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.19333333333333425
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6432,
+          "correct": 9648,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -1.1866666666666692
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6704666666666667,
+          "correct": 10057,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -3.9133333333333353
+        }
+      ]
+    },
+    {
+      "subject": 3,
+      "item_mem_seed": 21,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 34391,
+      "n_test": 15000,
+      "active_bit_support_train": 185,
+      "active_bit_support_test": 172,
+      "active_bit_support_pooled": 205,
+      "active_fraction_pooled": 0.2001953125,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.2011776251226693,
+      "diagnosis": {
+        "channel_table_active_bits": 909,
+        "feature_table_active_bits": 963,
+        "value_table_active_bits": 330,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 330.0,
+        "per_slot_value_path_active_max": 330,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7794666666666666,
+      "full_width_correct": 11692,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.7794666666666666,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.7794666666666666,
+      "fisher_correct_at_gap": 11692,
+      "uniform_random_accuracy_mean_at_gap": 0.7121066666666667,
+      "fair_random_accuracy_mean_at_gap": 0.7808533333333333,
+      "gap_pp_fisher_minus_uniform": 6.735999999999997,
+      "gap_pp_fisher_minus_fair": -0.13866666666666472,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7151333333333333,
+          "correct": 10727,
+          "gap_pp_vs_fisher": 6.433333333333335
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.5980666666666666,
+          "correct": 8971,
+          "gap_pp_vs_fisher": 18.14
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7262666666666666,
+          "correct": 10894,
+          "gap_pp_vs_fisher": 5.320000000000002
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7748666666666667,
+          "correct": 11623,
+          "gap_pp_vs_fisher": 0.45999999999999375
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7462,
+          "correct": 11193,
+          "gap_pp_vs_fisher": 3.3266666666666667
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7940666666666667,
+          "correct": 11911,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -1.4600000000000057
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7904666666666667,
+          "correct": 11857,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -1.100000000000001
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7836666666666666,
+          "correct": 11755,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.41999999999999815
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7457333333333334,
+          "correct": 11186,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 3.373333333333328
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7903333333333333,
+          "correct": 11855,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -1.0866666666666691
+        }
+      ]
+    },
+    {
+      "subject": 4,
+      "item_mem_seed": 21,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 33582,
+      "n_test": 15000,
+      "active_bit_support_train": 143,
+      "active_bit_support_test": 179,
+      "active_bit_support_pooled": 180,
+      "active_fraction_pooled": 0.17578125,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.17664376840039253,
+      "diagnosis": {
+        "channel_table_active_bits": 909,
+        "feature_table_active_bits": 963,
+        "value_table_active_bits": 330,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 330.0,
+        "per_slot_value_path_active_max": 330,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6472,
+      "full_width_correct": 9708,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.6472,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.6472,
+      "fisher_correct_at_gap": 9708,
+      "uniform_random_accuracy_mean_at_gap": 0.6179600000000001,
+      "fair_random_accuracy_mean_at_gap": 0.6366400000000001,
+      "gap_pp_fisher_minus_uniform": 2.9239999999999933,
+      "gap_pp_fisher_minus_fair": 1.0559999999999903,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6088666666666667,
+          "correct": 9133,
+          "gap_pp_vs_fisher": 3.833333333333333
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6018,
+          "correct": 9027,
+          "gap_pp_vs_fisher": 4.539999999999999
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6040666666666666,
+          "correct": 9061,
+          "gap_pp_vs_fisher": 4.313333333333336
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6186,
+          "correct": 9279,
+          "gap_pp_vs_fisher": 2.859999999999996
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6564666666666666,
+          "correct": 9847,
+          "gap_pp_vs_fisher": -0.9266666666666645
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6314666666666666,
+          "correct": 9472,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.5733333333333377
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6376666666666667,
+          "correct": 9565,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.9533333333333283
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6364,
+          "correct": 9546,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.0800000000000032
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6375333333333333,
+          "correct": 9563,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.9666666666666712
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6401333333333333,
+          "correct": 9602,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.7066666666666666
+        }
+      ]
+    },
+    {
+      "subject": 5,
+      "item_mem_seed": 21,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 24531,
+      "n_test": 15000,
+      "active_bit_support_train": 212,
+      "active_bit_support_test": 221,
+      "active_bit_support_pooled": 235,
+      "active_fraction_pooled": 0.2294921875,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.23061825318940138,
+      "diagnosis": {
+        "channel_table_active_bits": 909,
+        "feature_table_active_bits": 963,
+        "value_table_active_bits": 330,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 330.0,
+        "per_slot_value_path_active_max": 330,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7448666666666667,
+      "full_width_correct": 11173,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.7448666666666667,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.7448666666666667,
+      "fisher_correct_at_gap": 11173,
+      "uniform_random_accuracy_mean_at_gap": 0.6791466666666668,
+      "fair_random_accuracy_mean_at_gap": 0.7410400000000001,
+      "gap_pp_fisher_minus_uniform": 6.5719999999999885,
+      "gap_pp_fisher_minus_fair": 0.3826666666666534,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6829333333333333,
+          "correct": 10244,
+          "gap_pp_vs_fisher": 6.19333333333334
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6591333333333333,
+          "correct": 9887,
+          "gap_pp_vs_fisher": 8.573333333333332
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6598,
+          "correct": 9897,
+          "gap_pp_vs_fisher": 8.506666666666662
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6805333333333333,
+          "correct": 10208,
+          "gap_pp_vs_fisher": 6.433333333333335
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7133333333333334,
+          "correct": 10700,
+          "gap_pp_vs_fisher": 3.15333333333333
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7407333333333334,
+          "correct": 11111,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.4133333333333322
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7586666666666667,
+          "correct": 11380,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -1.3800000000000034
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7208666666666667,
+          "correct": 10813,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.400000000000002
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7236666666666667,
+          "correct": 10855,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.1199999999999997
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7612666666666666,
+          "correct": 11419,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -1.639999999999997
+        }
+      ]
+    },
+    {
+      "subject": 1,
+      "item_mem_seed": 42,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 37206,
+      "n_test": 15000,
+      "active_bit_support_train": 188,
+      "active_bit_support_test": 204,
+      "active_bit_support_pooled": 204,
+      "active_fraction_pooled": 0.19921875,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.20019627085377822,
+      "diagnosis": {
+        "channel_table_active_bits": 890,
+        "feature_table_active_bits": 964,
+        "value_table_active_bits": 327,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 327.0,
+        "per_slot_value_path_active_max": 327,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7714666666666666,
+      "full_width_correct": 11572,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.7714666666666666,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.7714666666666666,
+      "fisher_correct_at_gap": 11572,
+      "uniform_random_accuracy_mean_at_gap": 0.6966933333333333,
+      "fair_random_accuracy_mean_at_gap": 0.7509066666666666,
+      "gap_pp_fisher_minus_uniform": 7.477333333333336,
+      "gap_pp_fisher_minus_fair": 2.0560000000000023,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6545333333333333,
+          "correct": 9818,
+          "gap_pp_vs_fisher": 11.693333333333333
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6974666666666667,
+          "correct": 10462,
+          "gap_pp_vs_fisher": 7.399999999999995
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7268666666666667,
+          "correct": 10903,
+          "gap_pp_vs_fisher": 4.459999999999997
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6915333333333333,
+          "correct": 10373,
+          "gap_pp_vs_fisher": 7.9933333333333305
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7130666666666666,
+          "correct": 10696,
+          "gap_pp_vs_fisher": 5.840000000000001
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7691333333333333,
+          "correct": 11537,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.23333333333332984
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7402,
+          "correct": 11103,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 3.1266666666666665
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.751,
+          "correct": 11265,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.0466666666666633
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7486,
+          "correct": 11229,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.286666666666659
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7456,
+          "correct": 11184,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.5866666666666593
+        }
+      ]
+    },
+    {
+      "subject": 2,
+      "item_mem_seed": 42,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 34782,
+      "n_test": 15000,
+      "active_bit_support_train": 176,
+      "active_bit_support_test": 207,
+      "active_bit_support_pooled": 214,
+      "active_fraction_pooled": 0.208984375,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.2100098135426889,
+      "diagnosis": {
+        "channel_table_active_bits": 890,
+        "feature_table_active_bits": 964,
+        "value_table_active_bits": 327,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 327.0,
+        "per_slot_value_path_active_max": 327,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6952666666666667,
+      "full_width_correct": 10429,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.6952666666666667,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.6952666666666667,
+      "fisher_correct_at_gap": 10429,
+      "uniform_random_accuracy_mean_at_gap": 0.5695333333333333,
+      "fair_random_accuracy_mean_at_gap": 0.6894266666666666,
+      "gap_pp_fisher_minus_uniform": 12.573333333333336,
+      "gap_pp_fisher_minus_fair": 0.5840000000000067,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.5716,
+          "correct": 8574,
+          "gap_pp_vs_fisher": 12.36666666666667
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6053333333333333,
+          "correct": 9080,
+          "gap_pp_vs_fisher": 8.993333333333343
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.5768,
+          "correct": 8652,
+          "gap_pp_vs_fisher": 11.846666666666671
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.5099333333333333,
+          "correct": 7649,
+          "gap_pp_vs_fisher": 18.533333333333335
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.584,
+          "correct": 8760,
+          "gap_pp_vs_fisher": 11.126666666666674
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7133333333333334,
+          "correct": 10700,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -1.8066666666666675
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.682,
+          "correct": 10230,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.3266666666666649
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6978,
+          "correct": 10467,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.25333333333332764
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7006,
+          "correct": 10509,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.5333333333333301
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6534,
+          "correct": 9801,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 4.186666666666672
+        }
+      ]
+    },
+    {
+      "subject": 3,
+      "item_mem_seed": 42,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 34391,
+      "n_test": 15000,
+      "active_bit_support_train": 203,
+      "active_bit_support_test": 173,
+      "active_bit_support_pooled": 215,
+      "active_fraction_pooled": 0.2099609375,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.21099116781157998,
+      "diagnosis": {
+        "channel_table_active_bits": 890,
+        "feature_table_active_bits": 964,
+        "value_table_active_bits": 327,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 327.0,
+        "per_slot_value_path_active_max": 327,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.8124,
+      "full_width_correct": 12186,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.8124,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.8124,
+      "fisher_correct_at_gap": 12186,
+      "uniform_random_accuracy_mean_at_gap": 0.6987466666666666,
+      "fair_random_accuracy_mean_at_gap": 0.7965066666666667,
+      "gap_pp_fisher_minus_uniform": 11.36533333333334,
+      "gap_pp_fisher_minus_fair": 1.5893333333333315,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6749333333333334,
+          "correct": 10124,
+          "gap_pp_vs_fisher": 13.746666666666663
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6693333333333333,
+          "correct": 10040,
+          "gap_pp_vs_fisher": 14.306666666666668
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7301333333333333,
+          "correct": 10952,
+          "gap_pp_vs_fisher": 8.22666666666667
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6900666666666667,
+          "correct": 10351,
+          "gap_pp_vs_fisher": 12.233333333333329
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7292666666666666,
+          "correct": 10939,
+          "gap_pp_vs_fisher": 8.31333333333334
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.8084666666666667,
+          "correct": 12127,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.3933333333333344
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7941333333333334,
+          "correct": 11912,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.8266666666666653
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7755333333333333,
+          "correct": 11633,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 3.6866666666666714
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.8164,
+          "correct": 12246,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.40000000000000036
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.788,
+          "correct": 11820,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.4399999999999977
+        }
+      ]
+    },
+    {
+      "subject": 4,
+      "item_mem_seed": 42,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 33582,
+      "n_test": 15000,
+      "active_bit_support_train": 143,
+      "active_bit_support_test": 175,
+      "active_bit_support_pooled": 175,
+      "active_fraction_pooled": 0.1708984375,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.1717369970559372,
+      "diagnosis": {
+        "channel_table_active_bits": 890,
+        "feature_table_active_bits": 964,
+        "value_table_active_bits": 327,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 327.0,
+        "per_slot_value_path_active_max": 327,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6286,
+      "full_width_correct": 9429,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.6286,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.6286,
+      "fisher_correct_at_gap": 9429,
+      "uniform_random_accuracy_mean_at_gap": 0.6014933333333333,
+      "fair_random_accuracy_mean_at_gap": 0.63336,
+      "gap_pp_fisher_minus_uniform": 2.7106666666666723,
+      "gap_pp_fisher_minus_fair": -0.47599999999999865,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.5870666666666666,
+          "correct": 8806,
+          "gap_pp_vs_fisher": 4.153333333333342
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.5870666666666666,
+          "correct": 8806,
+          "gap_pp_vs_fisher": 4.153333333333342
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6426666666666667,
+          "correct": 9640,
+          "gap_pp_vs_fisher": -1.4066666666666672
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.5870666666666666,
+          "correct": 8806,
+          "gap_pp_vs_fisher": 4.153333333333342
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6036,
+          "correct": 9054,
+          "gap_pp_vs_fisher": 2.500000000000002
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6316666666666667,
+          "correct": 9475,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -0.3066666666666662
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6538,
+          "correct": 9807,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -2.52
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6085333333333334,
+          "correct": 9128,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.0066666666666677
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6498,
+          "correct": 9747,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": -2.1199999999999997
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.623,
+          "correct": 9345,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.5600000000000049
+        }
+      ]
+    },
+    {
+      "subject": 5,
+      "item_mem_seed": 42,
+      "D": 1024,
+      "cnt_w": 6,
+      "n_train": 24531,
+      "n_test": 15000,
+      "active_bit_support_train": 217,
+      "active_bit_support_test": 223,
+      "active_bit_support_pooled": 236,
+      "active_fraction_pooled": 0.23046875,
+      "single_record_active_support": 1019,
+      "majority_collapse_ratio_bundled_over_record": 0.23159960745829244,
+      "diagnosis": {
+        "channel_table_active_bits": 890,
+        "feature_table_active_bits": 964,
+        "value_table_active_bits": 327,
+        "value_minmax_hamming": 64,
+        "value_flip_budget_D_over_levels": 64,
+        "n_record_binds": 320,
+        "single_record_active_support": 1019,
+        "per_slot_value_path_active_mean": 327.0,
+        "per_slot_value_path_active_max": 327,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7214666666666667,
+      "full_width_correct": 10822,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 512,
+        "fisher_accuracy": 0.7214666666666667,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 128,
+      "fisher_accuracy_at_gap": 0.7214666666666667,
+      "fisher_correct_at_gap": 10822,
+      "uniform_random_accuracy_mean_at_gap": 0.6609466666666667,
+      "fair_random_accuracy_mean_at_gap": 0.6963999999999999,
+      "gap_pp_fisher_minus_uniform": 6.052000000000001,
+      "gap_pp_fisher_minus_fair": 2.5066666666666793,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.622,
+          "correct": 9330,
+          "gap_pp_vs_fisher": 9.94666666666667
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6637333333333333,
+          "correct": 9956,
+          "gap_pp_vs_fisher": 5.773333333333341
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7124,
+          "correct": 10686,
+          "gap_pp_vs_fisher": 0.9066666666666667
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.649,
+          "correct": 9735,
+          "gap_pp_vs_fisher": 7.246666666666668
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6576,
+          "correct": 9864,
+          "gap_pp_vs_fisher": 6.386666666666674
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7016,
+          "correct": 10524,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 1.98666666666667
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7014666666666667,
+          "correct": 10522,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.0000000000000018
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.715,
+          "correct": 10725,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 0.6466666666666732
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.667,
+          "correct": 10005,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 5.446666666666666
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6969333333333333,
+          "correct": 10454,
+          "n_keep_actual": 128,
+          "gap_pp_vs_fisher": 2.4533333333333407
+        }
+      ]
+    },
+    {
+      "subject": 1,
+      "item_mem_seed": 42,
+      "D": 512,
+      "cnt_w": 6,
+      "n_train": 37206,
+      "n_test": 15000,
+      "active_bit_support_train": 92,
+      "active_bit_support_test": 100,
+      "active_bit_support_pooled": 100,
+      "active_fraction_pooled": 0.1953125,
+      "single_record_active_support": 508,
+      "majority_collapse_ratio_bundled_over_record": 0.1968503937007874,
+      "diagnosis": {
+        "channel_table_active_bits": 445,
+        "feature_table_active_bits": 482,
+        "value_table_active_bits": 156,
+        "value_minmax_hamming": 32,
+        "value_flip_budget_D_over_levels": 32,
+        "n_record_binds": 320,
+        "single_record_active_support": 508,
+        "per_slot_value_path_active_mean": 156.0,
+        "per_slot_value_path_active_max": 156,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7977333333333333,
+      "full_width_correct": 11966,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 256,
+        "fisher_accuracy": 0.7977333333333333,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 64,
+      "fisher_accuracy_at_gap": 0.7977333333333333,
+      "fisher_correct_at_gap": 11966,
+      "uniform_random_accuracy_mean_at_gap": 0.66972,
+      "fair_random_accuracy_mean_at_gap": 0.7682,
+      "gap_pp_fisher_minus_uniform": 12.801333333333332,
+      "gap_pp_fisher_minus_fair": 2.95333333333333,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6190666666666667,
+          "correct": 9286,
+          "gap_pp_vs_fisher": 17.866666666666664
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6719333333333334,
+          "correct": 10079,
+          "gap_pp_vs_fisher": 12.579999999999991
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6428666666666667,
+          "correct": 9643,
+          "gap_pp_vs_fisher": 15.48666666666666
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7099333333333333,
+          "correct": 10649,
+          "gap_pp_vs_fisher": 8.78
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7048,
+          "correct": 10572,
+          "gap_pp_vs_fisher": 9.293333333333331
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7263333333333334,
+          "correct": 10895,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 7.139999999999991
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7789333333333334,
+          "correct": 11684,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 1.8799999999999928
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7722,
+          "correct": 11583,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 2.5533333333333297
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7952,
+          "correct": 11928,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 0.25333333333332764
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7683333333333333,
+          "correct": 11525,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 2.939999999999998
+        }
+      ]
+    },
+    {
+      "subject": 2,
+      "item_mem_seed": 42,
+      "D": 512,
+      "cnt_w": 6,
+      "n_train": 34782,
+      "n_test": 15000,
+      "active_bit_support_train": 83,
+      "active_bit_support_test": 94,
+      "active_bit_support_pooled": 100,
+      "active_fraction_pooled": 0.1953125,
+      "single_record_active_support": 508,
+      "majority_collapse_ratio_bundled_over_record": 0.1968503937007874,
+      "diagnosis": {
+        "channel_table_active_bits": 445,
+        "feature_table_active_bits": 482,
+        "value_table_active_bits": 156,
+        "value_minmax_hamming": 32,
+        "value_flip_budget_D_over_levels": 32,
+        "n_record_binds": 320,
+        "single_record_active_support": 508,
+        "per_slot_value_path_active_mean": 156.0,
+        "per_slot_value_path_active_max": 156,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6907333333333333,
+      "full_width_correct": 10361,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 256,
+        "fisher_accuracy": 0.6907333333333333,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 64,
+      "fisher_accuracy_at_gap": 0.6907333333333333,
+      "fisher_correct_at_gap": 10361,
+      "uniform_random_accuracy_mean_at_gap": 0.5651466666666666,
+      "fair_random_accuracy_mean_at_gap": 0.66308,
+      "gap_pp_fisher_minus_uniform": 12.558666666666674,
+      "gap_pp_fisher_minus_fair": 2.7653333333333308,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.584,
+          "correct": 8760,
+          "gap_pp_vs_fisher": 10.673333333333336
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6142,
+          "correct": 9213,
+          "gap_pp_vs_fisher": 7.653333333333334
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.5099333333333333,
+          "correct": 7649,
+          "gap_pp_vs_fisher": 18.079999999999995
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6076666666666667,
+          "correct": 9115,
+          "gap_pp_vs_fisher": 8.306666666666661
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.5099333333333333,
+          "correct": 7649,
+          "gap_pp_vs_fisher": 18.079999999999995
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6448666666666667,
+          "correct": 9673,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 4.586666666666661
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6451333333333333,
+          "correct": 9677,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 4.559999999999997
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6451333333333333,
+          "correct": 9677,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 4.559999999999997
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6901333333333334,
+          "correct": 10352,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 0.05999999999999339
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6901333333333334,
+          "correct": 10352,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 0.05999999999999339
+        }
+      ]
+    },
+    {
+      "subject": 3,
+      "item_mem_seed": 42,
+      "D": 512,
+      "cnt_w": 6,
+      "n_train": 34391,
+      "n_test": 15000,
+      "active_bit_support_train": 86,
+      "active_bit_support_test": 84,
+      "active_bit_support_pooled": 96,
+      "active_fraction_pooled": 0.1875,
+      "single_record_active_support": 508,
+      "majority_collapse_ratio_bundled_over_record": 0.1889763779527559,
+      "diagnosis": {
+        "channel_table_active_bits": 445,
+        "feature_table_active_bits": 482,
+        "value_table_active_bits": 156,
+        "value_minmax_hamming": 32,
+        "value_flip_budget_D_over_levels": 32,
+        "n_record_binds": 320,
+        "single_record_active_support": 508,
+        "per_slot_value_path_active_mean": 156.0,
+        "per_slot_value_path_active_max": 156,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7906,
+      "full_width_correct": 11859,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 256,
+        "fisher_accuracy": 0.7906,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 64,
+      "fisher_accuracy_at_gap": 0.7906,
+      "fisher_correct_at_gap": 11859,
+      "uniform_random_accuracy_mean_at_gap": 0.6930933333333333,
+      "fair_random_accuracy_mean_at_gap": 0.7947866666666666,
+      "gap_pp_fisher_minus_uniform": 9.750666666666664,
+      "gap_pp_fisher_minus_fair": -0.4186666666666672,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7323333333333333,
+          "correct": 10985,
+          "gap_pp_vs_fisher": 5.826666666666669
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6997333333333333,
+          "correct": 10496,
+          "gap_pp_vs_fisher": 9.086666666666666
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6705333333333333,
+          "correct": 10058,
+          "gap_pp_vs_fisher": 12.006666666666666
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6923333333333334,
+          "correct": 10385,
+          "gap_pp_vs_fisher": 9.82666666666666
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6705333333333333,
+          "correct": 10058,
+          "gap_pp_vs_fisher": 12.006666666666666
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7906,
+          "correct": 11859,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 0.0
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7951333333333334,
+          "correct": 11927,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": -0.4533333333333389
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7798666666666667,
+          "correct": 11698,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 1.0733333333333261
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7894,
+          "correct": 11841,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 0.11999999999999789
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.8189333333333333,
+          "correct": 12284,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": -2.833333333333332
+        }
+      ]
+    },
+    {
+      "subject": 4,
+      "item_mem_seed": 42,
+      "D": 512,
+      "cnt_w": 6,
+      "n_train": 33582,
+      "n_test": 15000,
+      "active_bit_support_train": 70,
+      "active_bit_support_test": 82,
+      "active_bit_support_pooled": 82,
+      "active_fraction_pooled": 0.16015625,
+      "single_record_active_support": 508,
+      "majority_collapse_ratio_bundled_over_record": 0.16141732283464566,
+      "diagnosis": {
+        "channel_table_active_bits": 445,
+        "feature_table_active_bits": 482,
+        "value_table_active_bits": 156,
+        "value_minmax_hamming": 32,
+        "value_flip_budget_D_over_levels": 32,
+        "n_record_binds": 320,
+        "single_record_active_support": 508,
+        "per_slot_value_path_active_mean": 156.0,
+        "per_slot_value_path_active_max": 156,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6504,
+      "full_width_correct": 9756,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 256,
+        "fisher_accuracy": 0.6504,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 64,
+      "fisher_accuracy_at_gap": 0.6504,
+      "fisher_correct_at_gap": 9756,
+      "uniform_random_accuracy_mean_at_gap": 0.6198266666666667,
+      "fair_random_accuracy_mean_at_gap": 0.6386399999999999,
+      "gap_pp_fisher_minus_uniform": 3.057333333333323,
+      "gap_pp_fisher_minus_fair": 1.1760000000000104,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6418,
+          "correct": 9627,
+          "gap_pp_vs_fisher": 0.8599999999999941
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6418,
+          "correct": 9627,
+          "gap_pp_vs_fisher": 0.8599999999999941
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.5870666666666666,
+          "correct": 8806,
+          "gap_pp_vs_fisher": 6.333333333333336
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6414,
+          "correct": 9621,
+          "gap_pp_vs_fisher": 0.9000000000000008
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.5870666666666666,
+          "correct": 8806,
+          "gap_pp_vs_fisher": 6.333333333333336
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6462,
+          "correct": 9693,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 0.41999999999999815
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6002666666666666,
+          "correct": 9004,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 5.013333333333336
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.602,
+          "correct": 9030,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 4.84
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6702666666666667,
+          "correct": 10054,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": -1.98666666666667
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6744666666666667,
+          "correct": 10117,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": -2.406666666666668
+        }
+      ]
+    },
+    {
+      "subject": 5,
+      "item_mem_seed": 42,
+      "D": 512,
+      "cnt_w": 6,
+      "n_train": 24531,
+      "n_test": 15000,
+      "active_bit_support_train": 97,
+      "active_bit_support_test": 96,
+      "active_bit_support_pooled": 103,
+      "active_fraction_pooled": 0.201171875,
+      "single_record_active_support": 508,
+      "majority_collapse_ratio_bundled_over_record": 0.20275590551181102,
+      "diagnosis": {
+        "channel_table_active_bits": 445,
+        "feature_table_active_bits": 482,
+        "value_table_active_bits": 156,
+        "value_minmax_hamming": 32,
+        "value_flip_budget_D_over_levels": 32,
+        "n_record_binds": 320,
+        "single_record_active_support": 508,
+        "per_slot_value_path_active_mean": 156.0,
+        "per_slot_value_path_active_max": 156,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.6897333333333333,
+      "full_width_correct": 10346,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 256,
+        "fisher_accuracy": 0.6897333333333333,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 64,
+      "fisher_accuracy_at_gap": 0.6897333333333333,
+      "fisher_correct_at_gap": 10346,
+      "uniform_random_accuracy_mean_at_gap": 0.6696,
+      "fair_random_accuracy_mean_at_gap": 0.69844,
+      "gap_pp_fisher_minus_uniform": 2.0133333333333336,
+      "gap_pp_fisher_minus_fair": -0.870666666666664,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6826666666666666,
+          "correct": 10240,
+          "gap_pp_vs_fisher": 0.7066666666666666
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6713333333333333,
+          "correct": 10070,
+          "gap_pp_vs_fisher": 1.8399999999999972
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6549333333333334,
+          "correct": 9824,
+          "gap_pp_vs_fisher": 3.479999999999994
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6577333333333333,
+          "correct": 9866,
+          "gap_pp_vs_fisher": 3.200000000000003
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6813333333333333,
+          "correct": 10220,
+          "gap_pp_vs_fisher": 0.8399999999999963
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7116,
+          "correct": 10674,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": -2.18666666666667
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7136,
+          "correct": 10704,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": -2.3866666666666703
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6968666666666666,
+          "correct": 10453,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": -0.7133333333333325
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6842,
+          "correct": 10263,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 0.5533333333333279
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6859333333333333,
+          "correct": 10289,
+          "n_keep_actual": 64,
+          "gap_pp_vs_fisher": 0.38000000000000256
+        }
+      ]
+    },
+    {
+      "subject": 1,
+      "item_mem_seed": 42,
+      "D": 2048,
+      "cnt_w": 6,
+      "n_train": 37206,
+      "n_test": 15000,
+      "active_bit_support_train": 363,
+      "active_bit_support_test": 407,
+      "active_bit_support_pooled": 408,
+      "active_fraction_pooled": 0.19921875,
+      "single_record_active_support": 2042,
+      "majority_collapse_ratio_bundled_over_record": 0.19980411361410383,
+      "diagnosis": {
+        "channel_table_active_bits": 1790,
+        "feature_table_active_bits": 1929,
+        "value_table_active_bits": 652,
+        "value_minmax_hamming": 128,
+        "value_flip_budget_D_over_levels": 128,
+        "n_record_binds": 320,
+        "single_record_active_support": 2042,
+        "per_slot_value_path_active_mean": 652.0,
+        "per_slot_value_path_active_max": 652,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.8048,
+      "full_width_correct": 12072,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 1024,
+        "fisher_accuracy": 0.8048,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 256,
+      "fisher_accuracy_at_gap": 0.8048,
+      "fisher_correct_at_gap": 12072,
+      "uniform_random_accuracy_mean_at_gap": 0.7323733333333333,
+      "fair_random_accuracy_mean_at_gap": 0.7982666666666666,
+      "gap_pp_fisher_minus_uniform": 7.242666666666664,
+      "gap_pp_fisher_minus_fair": 0.6533333333333391,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7148666666666667,
+          "correct": 10723,
+          "gap_pp_vs_fisher": 8.99333333333333
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7182666666666667,
+          "correct": 10774,
+          "gap_pp_vs_fisher": 8.653333333333324
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7460666666666667,
+          "correct": 11191,
+          "gap_pp_vs_fisher": 5.87333333333333
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7109333333333333,
+          "correct": 10664,
+          "gap_pp_vs_fisher": 9.386666666666665
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7717333333333334,
+          "correct": 11576,
+          "gap_pp_vs_fisher": 3.3066666666666578
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.8220666666666666,
+          "correct": 12331,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": -1.7266666666666652
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7912,
+          "correct": 11868,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 1.3599999999999945
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7948,
+          "correct": 11922,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 1.0000000000000009
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7877333333333333,
+          "correct": 11816,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 1.7066666666666674
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7955333333333333,
+          "correct": 11933,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 0.9266666666666645
+        }
+      ]
+    },
+    {
+      "subject": 2,
+      "item_mem_seed": 42,
+      "D": 2048,
+      "cnt_w": 6,
+      "n_train": 34782,
+      "n_test": 15000,
+      "active_bit_support_train": 379,
+      "active_bit_support_test": 415,
+      "active_bit_support_pooled": 429,
+      "active_fraction_pooled": 0.20947265625,
+      "single_record_active_support": 2042,
+      "majority_collapse_ratio_bundled_over_record": 0.2100881488736533,
+      "diagnosis": {
+        "channel_table_active_bits": 1790,
+        "feature_table_active_bits": 1929,
+        "value_table_active_bits": 652,
+        "value_minmax_hamming": 128,
+        "value_flip_budget_D_over_levels": 128,
+        "n_record_binds": 320,
+        "single_record_active_support": 2042,
+        "per_slot_value_path_active_mean": 652.0,
+        "per_slot_value_path_active_max": 652,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7616,
+      "full_width_correct": 11424,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 1024,
+        "fisher_accuracy": 0.7616,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 256,
+      "fisher_accuracy_at_gap": 0.7616,
+      "fisher_correct_at_gap": 11424,
+      "uniform_random_accuracy_mean_at_gap": 0.6556533333333333,
+      "fair_random_accuracy_mean_at_gap": 0.74024,
+      "gap_pp_fisher_minus_uniform": 10.594666666666674,
+      "gap_pp_fisher_minus_fair": 2.1360000000000046,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.5488,
+          "correct": 8232,
+          "gap_pp_vs_fisher": 21.28000000000001
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6265333333333334,
+          "correct": 9398,
+          "gap_pp_vs_fisher": 13.506666666666668
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7537333333333334,
+          "correct": 11306,
+          "gap_pp_vs_fisher": 0.7866666666666688
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6470666666666667,
+          "correct": 9706,
+          "gap_pp_vs_fisher": 11.453333333333337
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7021333333333334,
+          "correct": 10532,
+          "gap_pp_vs_fisher": 5.946666666666667
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7214,
+          "correct": 10821,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 4.020000000000001
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7545333333333333,
+          "correct": 11318,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 0.7066666666666777
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7035333333333333,
+          "correct": 10553,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 5.806666666666671
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7435333333333334,
+          "correct": 11153,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 1.8066666666666675
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7782,
+          "correct": 11673,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": -1.6599999999999948
+        }
+      ]
+    },
+    {
+      "subject": 3,
+      "item_mem_seed": 42,
+      "D": 2048,
+      "cnt_w": 6,
+      "n_train": 34391,
+      "n_test": 15000,
+      "active_bit_support_train": 387,
+      "active_bit_support_test": 348,
+      "active_bit_support_pooled": 423,
+      "active_fraction_pooled": 0.20654296875,
+      "single_record_active_support": 2042,
+      "majority_collapse_ratio_bundled_over_record": 0.20714985308521058,
+      "diagnosis": {
+        "channel_table_active_bits": 1790,
+        "feature_table_active_bits": 1929,
+        "value_table_active_bits": 652,
+        "value_minmax_hamming": 128,
+        "value_flip_budget_D_over_levels": 128,
+        "n_record_binds": 320,
+        "single_record_active_support": 2042,
+        "per_slot_value_path_active_mean": 652.0,
+        "per_slot_value_path_active_max": 652,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.8098,
+      "full_width_correct": 12147,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 1024,
+        "fisher_accuracy": 0.8098,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 256,
+      "fisher_accuracy_at_gap": 0.8098,
+      "fisher_correct_at_gap": 12147,
+      "uniform_random_accuracy_mean_at_gap": 0.77552,
+      "fair_random_accuracy_mean_at_gap": 0.8007866666666666,
+      "gap_pp_fisher_minus_uniform": 3.4279999999999977,
+      "gap_pp_fisher_minus_fair": 0.9013333333333318,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7764666666666666,
+          "correct": 11647,
+          "gap_pp_vs_fisher": 3.3333333333333326
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7788,
+          "correct": 11682,
+          "gap_pp_vs_fisher": 3.0999999999999917
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.7608666666666667,
+          "correct": 11413,
+          "gap_pp_vs_fisher": 4.893333333333327
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7408,
+          "correct": 11112,
+          "gap_pp_vs_fisher": 6.899999999999995
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.8206666666666667,
+          "correct": 12310,
+          "gap_pp_vs_fisher": -1.0866666666666691
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7997333333333333,
+          "correct": 11996,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 1.0066666666666668
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7971333333333334,
+          "correct": 11957,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 1.2666666666666604
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.8042666666666667,
+          "correct": 12064,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 0.5533333333333279
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.8098666666666666,
+          "correct": 12148,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": -0.0066666666666659324
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7929333333333334,
+          "correct": 11894,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 1.6866666666666585
+        }
+      ]
+    },
+    {
+      "subject": 4,
+      "item_mem_seed": 42,
+      "D": 2048,
+      "cnt_w": 6,
+      "n_train": 33582,
+      "n_test": 15000,
+      "active_bit_support_train": 295,
+      "active_bit_support_test": 360,
+      "active_bit_support_pooled": 361,
+      "active_fraction_pooled": 0.17626953125,
+      "single_record_active_support": 2042,
+      "majority_collapse_ratio_bundled_over_record": 0.17678746327130265,
+      "diagnosis": {
+        "channel_table_active_bits": 1790,
+        "feature_table_active_bits": 1929,
+        "value_table_active_bits": 652,
+        "value_minmax_hamming": 128,
+        "value_flip_budget_D_over_levels": 128,
+        "n_record_binds": 320,
+        "single_record_active_support": 2042,
+        "per_slot_value_path_active_mean": 652.0,
+        "per_slot_value_path_active_max": 652,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.708,
+      "full_width_correct": 10620,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 1024,
+        "fisher_accuracy": 0.708,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 256,
+      "fisher_accuracy_at_gap": 0.708,
+      "fisher_correct_at_gap": 10620,
+      "uniform_random_accuracy_mean_at_gap": 0.6488,
+      "fair_random_accuracy_mean_at_gap": 0.7009866666666666,
+      "gap_pp_fisher_minus_uniform": 5.919999999999992,
+      "gap_pp_fisher_minus_fair": 0.7013333333333316,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6702,
+          "correct": 10053,
+          "gap_pp_vs_fisher": 3.7799999999999945
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6422666666666667,
+          "correct": 9634,
+          "gap_pp_vs_fisher": 6.573333333333331
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6446666666666667,
+          "correct": 9670,
+          "gap_pp_vs_fisher": 6.333333333333324
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6212666666666666,
+          "correct": 9319,
+          "gap_pp_vs_fisher": 8.673333333333332
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6656,
+          "correct": 9984,
+          "gap_pp_vs_fisher": 4.239999999999999
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.6994666666666667,
+          "correct": 10492,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 0.8533333333333282
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.7023333333333334,
+          "correct": 10535,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 0.5666666666666598
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6986,
+          "correct": 10479,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 0.9399999999999964
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.6993333333333334,
+          "correct": 10490,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 0.86666666666666
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7052,
+          "correct": 10578,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 0.27999999999999137
+        }
+      ]
+    },
+    {
+      "subject": 5,
+      "item_mem_seed": 42,
+      "D": 2048,
+      "cnt_w": 6,
+      "n_train": 24531,
+      "n_test": 15000,
+      "active_bit_support_train": 427,
+      "active_bit_support_test": 437,
+      "active_bit_support_pooled": 464,
+      "active_fraction_pooled": 0.2265625,
+      "single_record_active_support": 2042,
+      "majority_collapse_ratio_bundled_over_record": 0.22722820763956905,
+      "diagnosis": {
+        "channel_table_active_bits": 1790,
+        "feature_table_active_bits": 1929,
+        "value_table_active_bits": 652,
+        "value_minmax_hamming": 128,
+        "value_flip_budget_D_over_levels": 128,
+        "n_record_binds": 320,
+        "single_record_active_support": 2042,
+        "per_slot_value_path_active_mean": 652.0,
+        "per_slot_value_path_active_max": 652,
+        "n_slots": 20,
+        "note": "Continuous value item memory only walks a Hamming path of length ~D/n_levels between v_min and v_max; each (c,f) slot therefore can flip at most that many output bits when the level changes. Twenty-slot majority bundling further collapses weakly contested bits."
+      },
+      "full_width_accuracy": 0.7214,
+      "full_width_correct": 10821,
+      "keep_half": {
+        "keep_ratio": 0.5,
+        "n_keep": 1024,
+        "fisher_accuracy": 0.7214,
+        "fisher_covers_all_active": false,
+        "lossless_vs_full_width": true,
+        "active_lt_n_keep": true
+      },
+      "gap_keep_ratio": 0.125,
+      "n_keep_at_gap": 256,
+      "fisher_accuracy_at_gap": 0.7214,
+      "fisher_correct_at_gap": 10821,
+      "uniform_random_accuracy_mean_at_gap": 0.6829466666666666,
+      "fair_random_accuracy_mean_at_gap": 0.7118666666666666,
+      "gap_pp_fisher_minus_uniform": 3.845333333333345,
+      "gap_pp_fisher_minus_fair": 0.9533333333333394,
+      "uniform_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.688,
+          "correct": 10320,
+          "gap_pp_vs_fisher": 3.3400000000000096
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6820666666666667,
+          "correct": 10231,
+          "gap_pp_vs_fisher": 3.933333333333333
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6668,
+          "correct": 10002,
+          "gap_pp_vs_fisher": 5.46000000000001
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7076666666666667,
+          "correct": 10615,
+          "gap_pp_vs_fisher": 1.3733333333333375
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.6702,
+          "correct": 10053,
+          "gap_pp_vs_fisher": 5.120000000000003
+        }
+      ],
+      "fair_by_seed": [
+        {
+          "seed": 0,
+          "accuracy": 0.7197333333333333,
+          "correct": 10796,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 0.16666666666667052
+        },
+        {
+          "seed": 1,
+          "accuracy": 0.6984,
+          "correct": 10476,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 2.300000000000002
+        },
+        {
+          "seed": 2,
+          "accuracy": 0.6942,
+          "correct": 10413,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 2.72
+        },
+        {
+          "seed": 3,
+          "accuracy": 0.7365333333333334,
+          "correct": 11048,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": -1.5133333333333332
+        },
+        {
+          "seed": 4,
+          "accuracy": 0.7104666666666667,
+          "correct": 10657,
+          "n_keep_actual": 256,
+          "gap_pp_vs_fisher": 1.093333333333335
+        }
+      ]
+    }
+  ]
+}
