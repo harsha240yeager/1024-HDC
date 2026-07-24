@@ -486,6 +486,120 @@ def per_bit_fisher_scores(query_hvs: np.ndarray, labels: np.ndarray) -> np.ndarr
     return scores
 
 
+def per_bit_variance_scores(query_hvs: np.ndarray, labels: Optional[np.ndarray] = None) -> np.ndarray:
+    """Per-bit variance across windows (labels unused; kept for uniform API)."""
+    del labels
+    x = np.asarray(query_hvs, dtype=np.float64)
+    return x.var(axis=0)
+
+
+def per_bit_entropy_scores(query_hvs: np.ndarray, labels: Optional[np.ndarray] = None) -> np.ndarray:
+    """Binary entropy of the bit marginal P(bit=1). Higher = more balanced flips."""
+    del labels
+    x = np.asarray(query_hvs, dtype=np.float64)
+    p = np.clip(x.mean(axis=0), 1e-12, 1.0 - 1e-12)
+    return -(p * np.log2(p) + (1.0 - p) * np.log2(1.0 - p))
+
+
+def per_bit_class_mean_separation_scores(
+    query_hvs: np.ndarray, labels: np.ndarray
+) -> np.ndarray:
+    """
+    Variance of per-class bit means (between-class signal).
+
+    For binary bits this is proportional to how much class means spread at
+    that position.
+    """
+    x = np.asarray(query_hvs, dtype=np.float64)
+    y = np.asarray(labels, dtype=np.int32)
+    classes = np.unique(y)
+    if classes.size < 2:
+        return np.zeros(x.shape[1], dtype=np.float64)
+    means = np.stack([x[y == c].mean(axis=0) for c in classes], axis=0)
+    return means.var(axis=0)
+
+
+def per_bit_mutual_information_scores(
+    query_hvs: np.ndarray, labels: np.ndarray
+) -> np.ndarray:
+    """
+    Discrete mutual information I(bit; class) for each bit (nats → bits via log2).
+
+    Uses contingency tables over {0,1} × class labels.
+    """
+    x = (np.asarray(query_hvs) & 1).astype(np.int32)
+    y = np.asarray(labels, dtype=np.int32)
+    n = x.shape[0]
+    D = x.shape[1]
+    classes = np.unique(y)
+    n_cls = int(classes.size)
+    # Map labels to 0..C-1
+    remap = {int(c): i for i, c in enumerate(classes)}
+    y_idx = np.array([remap[int(v)] for v in y], dtype=np.int32)
+
+    # class priors
+    class_counts = np.bincount(y_idx, minlength=n_cls).astype(np.float64)
+    p_y = class_counts / max(1, n)
+
+    scores = np.zeros(D, dtype=np.float64)
+    for b in range(D):
+        col = x[:, b]
+        # joint: 2 x C
+        joint = np.zeros((2, n_cls), dtype=np.float64)
+        for c in range(n_cls):
+            mask_c = y_idx == c
+            if not np.any(mask_c):
+                continue
+            ones = float(col[mask_c].sum())
+            zeros = float(mask_c.sum()) - ones
+            joint[1, c] = ones
+            joint[0, c] = zeros
+        joint /= max(1, n)
+        p_x = joint.sum(axis=1)
+        mi = 0.0
+        for xi in (0, 1):
+            for c in range(n_cls):
+                p_xy = joint[xi, c]
+                if p_xy <= 0.0:
+                    continue
+                denom = p_x[xi] * p_y[c]
+                if denom <= 0.0:
+                    continue
+                mi += p_xy * np.log2(p_xy / denom)
+        scores[b] = mi
+    return scores
+
+
+def per_bit_prototype_disagreement_scores(prototypes: np.ndarray) -> np.ndarray:
+    """
+    Fraction of class-prototype pairs that disagree at each bit.
+
+    Higher = bit participates in more pairwise prototype separations.
+    """
+    p = (np.asarray(prototypes) & 1).astype(np.uint8)
+    n_cls = p.shape[0]
+    if n_cls < 2:
+        return np.zeros(p.shape[1], dtype=np.float64)
+    disagree = np.zeros(p.shape[1], dtype=np.float64)
+    n_pairs = 0
+    for i in range(n_cls):
+        for j in range(i + 1, n_cls):
+            disagree += (p[i] ^ p[j]).astype(np.float64)
+            n_pairs += 1
+    return disagree / max(1, n_pairs)
+
+
+def mask_topk_from_scores(scores: np.ndarray, n_keep: int) -> np.ndarray:
+    """Keep the top-``n_keep`` positions by score (ties broken by ascending index)."""
+    D = int(np.asarray(scores).shape[0])
+    n_keep = max(1, min(int(n_keep), D))
+    mask = zeros(D)
+    # lexsort: primary -score, secondary +index for stable ascending-index ties
+    order = np.lexsort((np.arange(D), -np.asarray(scores, dtype=np.float64)))
+    mask[order[:n_keep]] = 1
+    return mask
+
+
 def mask_from_scores(
     scores: np.ndarray,
     keep_ratio: float,
@@ -495,15 +609,13 @@ def mask_from_scores(
 ) -> np.ndarray:
     D = scores.shape[0]
     n_keep = max(1, int(round(D * keep_ratio)))
-    mask = zeros(D)
     if informed:
-        top = np.argsort(-scores)[:n_keep]
-        mask[top] = 1
-    else:
-        if rng is None:
-            rng = np.random.default_rng(0)
-        pick = rng.choice(D, size=n_keep, replace=False)
-        mask[pick] = 1
+        return mask_topk_from_scores(scores, n_keep)
+    mask = zeros(D)
+    if rng is None:
+        rng = np.random.default_rng(0)
+    pick = rng.choice(D, size=n_keep, replace=False)
+    mask[pick] = 1
     return mask
 
 

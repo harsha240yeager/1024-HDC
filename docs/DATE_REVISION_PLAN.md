@@ -220,8 +220,8 @@ Per seed report:
 | Fisher (current) | low | no |
 | Learned mask (optional) | high | yes |
 
-- [ ] Implement top 5 baselines in `hdc_ref.py` + `run_ranking_baselines.py`
-- [ ] Table: Method × 128-bit accuracy × ranking cost
+- [x] Implement baselines in `hdc_ref.py` + `run_ranking_baselines.py`
+- [x] Table: Method × 128-bit accuracy × ranking cost → `results/protocol_v2/ranking_baselines/`
 
 ---
 
