@@ -115,6 +115,24 @@ def single_window_latency_us() -> float:
     return float(m.group(1))
 
 
+def sustained_stream_latency_us() -> float:
+    """Per-window cost of the Phase 2 sequential path (10k sustained run).
+
+    The firmware prints an integer-truncated mean (7 us); recompute from the
+    total so the paper can quote 7.5 rather than 7.
+    """
+    text = read_text("results/phase3/board_batch_bench.txt")
+    m = re.search(
+        r"Sustained batch \((\d+) windows.*?total\s*=\s*(\d+)\s*us",
+        text,
+        re.DOTALL,
+    )
+    if not m:
+        raise ValueError("no sustained batch line in board_batch_bench.txt")
+    n_windows, total_us = int(m.group(1)), float(m.group(2))
+    return total_us / n_windows
+
+
 def synth_slack(metric: str) -> float:
     """Worst setup/hold slack (ns) from the D=1024 OOC synthesis timing summary."""
     label = {"setup": "Setup", "hold": "Hold"}[metric]
@@ -459,12 +477,22 @@ CLAIMS: list[dict] = [
     dict(
         id="pl_single_window",
         paper="Sec. III",
-        claim="Single-window DMA latency 58 us (descriptor setup dominates)",
+        claim="Lone window on the SG path costs 58 us (per-call BD ring setup)",
         expected=58.0,
         tol=0.5,
         unit="us/w",
         evidence="results/phase3/board_bench.txt",
         fn=single_window_latency_us,
+    ),
+    dict(
+        id="pl_sustained_stream",
+        paper="Table (tab:phases), Sec. III",
+        claim="Phase 2 one-xfer-per-window streaming sustains 7.5 us/window",
+        expected=7.5,
+        tol=0.1,
+        unit="us/w",
+        evidence="results/phase3/board_batch_bench.txt",
+        fn=sustained_stream_latency_us,
     ),
     dict(
         id="pl_throughput",

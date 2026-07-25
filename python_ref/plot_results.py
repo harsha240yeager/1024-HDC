@@ -286,7 +286,8 @@ def load_baseline_systems() -> list[dict]:
         {
             "name": "PL DMA\n(batch)",
             "acc": pl["acc"],
-            "lat_us": 4.0,
+            # 926 us / 200 windows; the bench's "~4 us" line is integer-truncated
+            "lat_us": 4.63,
             "uj": pl["uj"],
             "uj_std": pl["uj_std"],
             "train": "none",
@@ -295,7 +296,7 @@ def load_baseline_systems() -> list[dict]:
         {
             "name": "ARM HDC\n(PS)",
             "acc": 100.0 * arm["meta"]["spatial_mean_accuracy"],
-            "lat_us": 819.0,
+            "lat_us": 818.0,
             "uj": arm_e["uj"],
             "uj_std": arm_e["uj_std"],
             "train": "none",
@@ -924,12 +925,13 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
         ax.legend(fontsize=fs, loc="upper left")
     for bar, v in zip(bars, acc):
         if PAPER_MODE and v < 80:
+            # anchor to the axis floor so the label stays inside the bar
             ax.text(
                 bar.get_x() + bar.get_width() / 2,
-                v - 2.5,
+                ax.get_ylim()[0] + 0.4,
                 f"{v:.1f}",
                 ha="center",
-                va="top",
+                va="bottom",
                 fontsize=fs,
                 color="white",
                 fontweight="bold",
@@ -958,7 +960,8 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     ax.set_ylabel("µs (log)" if PAPER_MODE else "Latency (µs/window, log)")
     set_figure_title(ax, "(b)", "(b) On-board latency")
     for i, v in enumerate(lat_vals):
-        ax.text(i, v * 1.15, f"{v:.0f}", ha="center", fontsize=fs)
+        ax.text(i, v * 1.15, f"{v:.1f}" if v < 10 else f"{v:.0f}",
+                ha="center", fontsize=fs)
     if not PAPER_MODE:
         ax.text(0.98, 0.05, "MLP: not on-board", transform=ax.transAxes, ha="right", fontsize=7, color="0.45")
     if PAPER_MODE:
@@ -985,8 +988,9 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     )
     ax.set_yscale("log")
     ax.set_xticks(xe, en_tick, fontsize=fs)
-    ax.set_ylabel("µJ (log)" if PAPER_MODE else "Total energy (µJ/window, J21 log)")
-    set_figure_title(ax, "(c)", "(c) Measured batch energy")
+    ax.set_ylabel("µJ (log)" if PAPER_MODE
+                  else "Idle-calibrated energy (µJ/window, J21 log)")
+    set_figure_title(ax, "(c)", "(c) Idle-calibrated board energy")
     for i, v in enumerate(en_vals):
         ax.text(i, v * 1.22, f"{v:.0f}", ha="center", fontsize=fs)
     if not PAPER_MODE:

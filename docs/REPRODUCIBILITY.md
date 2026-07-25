@@ -26,12 +26,12 @@ bash scripts/reproduce_paper.sh --tier core     # ~21 h, every S1-S5 claim
 ```
 
 `check_paper_numbers.py` is the fastest way to audit the paper. It reads the
-committed result files and compares 61 published values — accuracies, gaps,
+committed result files and compares 65 published values — accuracies, gaps,
 confidence intervals, p-values, energies, latencies, window counts — against what
 the manuscript prints, then exits non-zero if any of them drift:
 
 ```
-61/61 claims verified
+65/65 claims verified
 ```
 
 Reruns write to `results/repro/<tier>/` and never overwrite the committed
