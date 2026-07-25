@@ -147,11 +147,11 @@ Current Twist 2 is tautological (identical masks @128 bits; lossless @512 bits).
 
 ### Statistics (subject-level, not window-level)
 
-- [ ] Paired per-subject gaps (Fisher − random)
-- [ ] Mean, median, std across subjects
-- [ ] 95% CI (bootstrap over **subjects**)
-- [ ] Wilcoxon signed-rank or paired t-test (report p-value)
-- [ ] Never treat 658k windows as i.i.d. samples
+- [x] Paired per-subject gaps (Fisher − random)
+- [x] Mean, median, std across subjects
+- [x] 95% CI (bootstrap over **subjects**)
+- [x] Wilcoxon signed-rank or paired t-test (report p-value)
+- [x] Never treat windows as i.i.d. samples
 
 ### Result table template
 
@@ -163,10 +163,10 @@ Current Twist 2 is tautological (identical masks @128 bits; lossless @512 bits).
 
 ### Implementation checklist
 
-- [ ] Add `python_ref/tools/subject_level_stats.py`
-- [ ] Extend `run_twist1_sweep.py` for 30 seeds + active-support random
-- [ ] FPGA: `bash board/HDC_DMA/run_twist1_board.sh --random-seeds 0,1,2,3,4,5,6,7,8,9,...`
-- [ ] Summarize in `results/twist1_v2/README.md`
+- [x] Add `python_ref/tools/subject_level_stats.py`
+- [x] Extend `run_twist1_sweep.py` for 30 seeds (`protocol_v2/twist1_keep0125_30seed/`)
+- [ ] FPGA: ≥5 silicon random seeds (deferred — JTAG; seed 0 done)
+- [x] Summarize in `results/protocol_v2/twist1_keep0125_30seed/subject_level_stats.*`
 
 ---
 
