@@ -81,6 +81,39 @@ def batch_latency_us(anchor: str) -> float:
     return float(ms.group(1)) * 1000.0 / float(windows.group(1))
 
 
+def single_window_latency_us() -> float:
+    """Mean single-window DMA latency (us) from the Phase 3 bench."""
+    text = read_text("results/phase3/board_bench.txt")
+    block = text.split("Single-window DMA latency")[1]
+    m = re.search(r"mean\s*=\s*([0-9.]+)\s*us", block)
+    if not m:
+        raise ValueError("no single-window mean in board_bench.txt")
+    return float(m.group(1))
+
+
+def synth_slack(metric: str) -> float:
+    """Worst setup/hold slack (ns) from the D=1024 OOC synthesis timing summary."""
+    label = {"setup": "Setup", "hold": "Hold"}[metric]
+    m = re.search(
+        rf"^{label}\s*:\s*(\d+)\s*Failing Endpoints,\s*Worst Slack\s*(-?[0-9.]+)ns",
+        read_text("results/dsweep/synth_D1024.txt"),
+        re.MULTILINE,
+    )
+    if not m:
+        raise ValueError(f"no {metric} slack line in synth_D1024.txt")
+    if int(m.group(1)) != 0:
+        return -1.0
+    return float(m.group(2))
+
+
+def slice_occupancy() -> float:
+    m = re.search(r"Slices:\s*([\d,]+)\s*/\s*([\d,]+)", read_text("results/phase2/synthesis_utilisation.txt"))
+    if not m:
+        raise ValueError("no slice count in synthesis_utilisation.txt")
+    used, total = (float(g.replace(",", "")) for g in m.groups())
+    return used / total * 100
+
+
 def golden_cases(rel: str, kind: str) -> float:
     """Matched golden vectors, or 0 if the log records any mismatch."""
     m = re.search(rf"PASS: (\d+)/(\d+) {kind} golden cases", read_text(rel))
@@ -107,6 +140,44 @@ def ranking_row(method: str) -> dict:
         if row["method"] == method:
             return row
     raise ValueError(f"ranking method {method} missing")
+
+
+INFORMED_RANKINGS = (
+    "fisher",
+    "variance",
+    "mutual_information",
+    "class_mean_separation",
+    "prototype_disagreement",
+    "entropy",
+)
+
+
+def ranking_subjects() -> list[dict]:
+    return load_json(
+        "results/protocol_v2/ranking_baselines/ranking_baselines_results.json"
+    )["per_subject"]
+
+
+def ranking_correct_spread() -> float:
+    """Largest spread in correct counts across informed rankings, over subjects.
+
+    Zero means every criterion predicts identically on every test window, which
+    is the paper's claim in Sec. V-D.
+    """
+    spreads = []
+    for subj in ranking_subjects():
+        counts = [subj["methods"][name]["correct"] for name in INFORMED_RANKINGS]
+        spreads.append(max(counts) - min(counts))
+    return float(max(spreads))
+
+
+def ranking_jaccard_subject_min() -> float:
+    """Lowest per-subject mask overlap with Fisher across the informed criteria."""
+    return min(
+        subj["methods"][name]["jaccard_vs_fisher"]
+        for subj in ranking_subjects()
+        for name in INFORMED_RANKINGS
+    )
 
 
 def encoder_step(step: str) -> float:
@@ -332,6 +403,57 @@ CLAIMS: list[dict] = [
         fn=lambda: batch_latency_us("ARM") / batch_latency_us("A"),
     ),
     dict(
+        id="pl_single_window",
+        paper="Sec. III",
+        claim="Single-window DMA latency 58 us (descriptor setup dominates)",
+        expected=58.0,
+        tol=0.5,
+        unit="us/w",
+        evidence="results/phase3/board_bench.txt",
+        fn=single_window_latency_us,
+    ),
+    dict(
+        id="pl_throughput",
+        paper="Table (tab:prior)",
+        claim="PL batch throughput 216k windows/s",
+        expected=216000.0,
+        tol=1000.0,
+        unit="win/s",
+        evidence="results/phase3/energy_runs/anchor_A/run01/energy_batch.txt",
+        fn=lambda: 1e6 / batch_latency_us("A"),
+    ),
+    # --- Implementation -----------------------------------------------------
+    dict(
+        id="slice_occupancy",
+        paper="Sec. III",
+        claim="Slice occupancy 96.3% (the binding constraint on xc7z020)",
+        expected=96.3,
+        tol=0.1,
+        unit="%",
+        evidence="results/phase2/synthesis_utilisation.txt",
+        fn=slice_occupancy,
+    ),
+    dict(
+        id="setup_slack",
+        paper="Sec. III",
+        claim="OOC D=1024 worst setup slack +0.78 ns at 100 MHz, 0 failing endpoints",
+        expected=0.78,
+        tol=0.01,
+        unit="ns",
+        evidence="results/dsweep/synth_D1024.txt",
+        fn=lambda: synth_slack("setup"),
+    ),
+    dict(
+        id="hold_slack",
+        paper="Sec. III",
+        claim="OOC D=1024 worst hold slack +0.26 ns, 0 failing endpoints",
+        expected=0.26,
+        tol=0.01,
+        unit="ns",
+        evidence="results/dsweep/synth_D1024.txt",
+        fn=lambda: synth_slack("hold"),
+    ),
+    dict(
         id="anchor_energy_spread",
         paper="Sec. V-B",
         claim="Anchor A/B/C energy spread <= 1.5%",
@@ -491,9 +613,29 @@ CLAIMS: list[dict] = [
         ),
     ),
     dict(
+        id="ranking_identical_preds",
+        paper="Sec. V-D",
+        claim="All six informed rankings predict identically on every test window",
+        expected=0.0,
+        tol=0.0,
+        unit="windows",
+        evidence="results/protocol_v2/ranking_baselines/ranking_baselines_results.json",
+        fn=ranking_correct_spread,
+    ),
+    dict(
+        id="ranking_jaccard_subject_min",
+        paper="Sec. V-D",
+        claim="Lowest per-subject mask overlap with Fisher 0.11",
+        expected=0.113,
+        tol=0.005,
+        unit="J",
+        evidence="results/protocol_v2/ranking_baselines/ranking_baselines_results.json",
+        fn=ranking_jaccard_subject_min,
+    ),
+    dict(
         id="ranking_jaccard_min",
         paper="Sec. V-D",
-        claim="Lowest informed-mask Jaccard vs Fisher 0.18",
+        claim="Lowest informed-mask mean Jaccard vs Fisher 0.18",
         expected=0.18,
         tol=0.005,
         unit="J",
@@ -512,7 +654,7 @@ CLAIMS: list[dict] = [
     dict(
         id="ranking_jaccard_max",
         paper="Sec. V-D",
-        claim="Highest informed-mask Jaccard vs Fisher 0.95",
+        claim="Highest informed-mask mean Jaccard vs Fisher 0.95",
         expected=0.95,
         tol=0.005,
         unit="J",
