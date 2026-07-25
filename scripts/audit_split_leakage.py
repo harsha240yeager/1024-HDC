@@ -120,7 +120,7 @@ def audit_dataset(cfg_path: Path, out_json: Path, out_csv: Path) -> int:
     hdc2_gate = split_kw["test_set"] == "disjoint" and total_overlap == 0
 
     payload = {
-        "config": str(cfg_path),
+        "config": cfg_path.as_posix(),
         "protocol_id": protocol_id,
         "test_set_mode": split_kw["test_set"],
         "subjects": rows,

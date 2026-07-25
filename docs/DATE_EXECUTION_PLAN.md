@@ -110,5 +110,5 @@ Copy to issue #1 or project board; update as phases complete.
 | 8 Energy doc | ✅ `docs/ENERGY_METHODOLOGY.md` + paper Appendix — issue #8 |
 | 9 Baselines | ✅ `results/protocol_v2/ranking_baselines/` · issue #9 |
 | 10 Inconsistencies | ✅ Fig 5-class + metrics footnotes — issue #10 |
-| 11 Repro artifact | ⏳ issue #11 |
+| 11 Repro artifact | ✅ `docs/REPRODUCIBILITY.md` · `scripts/reproduce_paper.sh` · `scripts/check_paper_numbers.py` (49/49) — issue #11 |
 | Paper rewrite | ✅ title/abstract/claim reorg — Research-paper #2–#4 |

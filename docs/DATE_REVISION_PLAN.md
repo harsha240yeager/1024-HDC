@@ -311,22 +311,28 @@ Deliverable: `docs/ENERGY_METHODOLOGY.md` + half-page in paper appendix.
 
 ---
 
-## Phase 10 — Reproducibility artifact
+## Phase 10 — Reproducibility artifact — DONE
 
 **Issue:** [#11](https://github.com/harsha240yeager/1024-HDC/issues/11)
 
-Release package (Zenodo or tagged GitHub release):
+Released as a tagged GitHub release plus [`docs/REPRODUCIBILITY.md`](REPRODUCIBILITY.md):
 
-- [ ] Split-generation code + Protocol HDC-2 config
-- [ ] All random seeds documented
-- [ ] Fisher mask generation scripts
-- [ ] Exported prototypes + test vectors (HDC-2)
-- [ ] RTL commit hash + Vivado 2024.2 + synthesis scripts
-- [ ] ARM reference (`libhdc_arm_ref`) + compiler flags
-- [ ] Board replay scripts + INA219 logs (raw CSV)
-- [ ] One-command: `scripts/reproduce_paper.sh` (Python portions)
+- [x] Split-generation code + Protocol HDC-2 config (`audit_split_leakage.py`, `emg_baseline_v2.json`)
+- [x] All random seeds documented — seed table in `REPRODUCIBILITY.md`
+- [x] Fisher mask generation scripts (`hdc_ref.py`, `export_fisher_pooled.py`)
+- [x] Exported prototypes + test vectors (HDC-2) — frozen export reference, 493,512 windows
+- [x] RTL commit hash (`aa65999`) + Vivado 2024.2 + `vivado_pack/` + `dsweep_synth.tcl`
+- [x] ARM reference (`libhdc_arm_ref`) + compiler flags (`-mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -O0 -g`)
+- [x] Board replay scripts + INA219 logs (raw CSV under `results/phase3/energy_runs/`)
+- [x] One-command: `scripts/reproduce_paper.sh` — tiers `smoke` (~30 min) / `core` (~21 h) / `full` (~3 days)
+- [x] **`scripts/check_paper_numbers.py`** — re-derives all 49 published numbers from committed
+      artifacts, stdlib only, exits non-zero on drift (currently 49/49 PASS)
 
-Paper: reproducibility statement with URL + license.
+Two inconsistencies the checker caught and fixed: anchor C board accuracy
+(72.85 → 72.84 %, the 72.85 % is the export reference) and the active-support
+range quoted two ways (now 203–210 everywhere, from the full-split runs).
+
+Paper: reproducibility statement with URL + license in §IV-D.
 
 ---
 
@@ -378,6 +384,6 @@ Claim: runtime Fisher bit-position selection on a bit-exact fixed-width streamin
 | 7 Claim alignment | ⏳ Not started | Phase 7 path choice |
 | 8 Energy methodology | ⏳ Not started | — |
 | 9 Inconsistencies | ⏳ Not started | — |
-| 10 Reproducibility | ⏳ Not started | Phases 1–5 |
+| 10 Reproducibility | ✅ Done — artifact + 49/49 claim check | — |
 | 11 Title/abstract | ✅ Done | Research-paper #3 |
 | 12 Paper reorg | ⏳ Blocked | New results |

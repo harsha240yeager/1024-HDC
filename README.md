@@ -242,7 +242,7 @@ full plan: [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md)
 | **Title + abstract** | Draft with **+7.94 pp** Python gap; finalize silicon line after board rerun |
 | **§ reorganization** | IV = protocol · V = (verify, ranking, cross-subject, energy, seeds) · cut demoted Twist 2 zero-gap narrative |
 | **Energy appendix** ([#8](https://github.com/harsha240yeager/1024-HDC/issues/8)) | Add INA219 methodology half-page + `docs/ENERGY_METHODOLOGY.md` |
-| **Reproducibility** ([#11](https://github.com/harsha240yeager/1024-HDC/issues/11)) | Zenodo/tag + `scripts/reproduce_paper.sh`; cite `protocol_v2/` artifacts |
+| **Reproducibility** ([#11](https://github.com/harsha240yeager/1024-HDC/issues/11)) | ✅ §IV-D statement + tagged release; `scripts/reproduce_paper.sh`, `scripts/check_paper_numbers.py`, [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) |
 
 ### Figures to regenerate
 
@@ -654,6 +654,22 @@ Index: [`results/figures/README.md`](results/figures/README.md). LaTeX draft: [`
 
 ## Reproduce
 
+### One command (artifact release)
+
+```bash
+python scripts/check_paper_numbers.py            # audit all 49 paper numbers vs committed evidence
+bash scripts/reproduce_paper.sh --list           # stages + measured runtimes
+bash scripts/reproduce_paper.sh --tier smoke     # ~30 min sanity rerun
+bash scripts/reproduce_paper.sh --tier core      # ~21 h, every S1–S5 claim
+```
+
+`check_paper_numbers.py` needs no dependencies and no dataset — it reads the
+committed result files and fails if any published number drifts. Reruns land in
+`results/repro/<tier>/` and never overwrite `results/protocol_v2/`.
+
+Full artifact manifest, seeds, environment, and the list of board-only results:
+[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md).
+
 ### Protocol HDC-2 (after issue #1 lands)
 
 ```bash
@@ -759,7 +775,7 @@ HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harness
 | **8** | Energy methodology | [#8](https://github.com/harsha240yeager/1024-HDC/issues/8) | ⏳ |
 | **9** | Ranking baselines (variance, MI, …) | [#9](https://github.com/harsha240yeager/1024-HDC/issues/9) | ⏳ |
 | **10** | Fix inconsistencies | [#10](https://github.com/harsha240yeager/1024-HDC/issues/10) | ⏳ |
-| **11** | Reproducibility artifact | [#11](https://github.com/harsha240yeager/1024-HDC/issues/11) | ⏳ |
+| **11** | Reproducibility artifact | [#11](https://github.com/harsha240yeager/1024-HDC/issues/11) | ✅ [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) + `reproduce_paper.sh` / `check_paper_numbers.py` |
 
 **Paper:** [Research-paper issues #1–#4](https://github.com/harsha240yeager/Research-paper/issues) · [`outline.md`](https://github.com/harsha240yeager/Research-paper/blob/main/outline.md)
 

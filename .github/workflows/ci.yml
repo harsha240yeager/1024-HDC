@@ -30,6 +30,17 @@ jobs:
       - run: pip install numpy
       - run: cd python_ref && python run_smoke_test.py
 
+  paper-claims:
+    name: Paper numbers vs committed artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # No dependencies and no dataset: the checker reads committed results only.
+      - run: python scripts/check_paper_numbers.py
+
   hdc2-gate:
     name: HDC-2 split audit (dataset)
     runs-on: ubuntu-latest

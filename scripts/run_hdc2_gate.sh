@@ -4,18 +4,29 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+# Probe by executing: Windows ships a python3 alias stub that resolves on PATH
+# but cannot run.
+PY=""
+for candidate in python3 python py; do
+  if "$candidate" -c "import sys; sys.exit(0)" >/dev/null 2>&1; then
+    PY="$candidate"
+    break
+  fi
+done
+[[ -n "$PY" ]] || { echo "no working python3/python interpreter on PATH" >&2; exit 1; }
+
 echo "== HDC-2 split unit tests =="
-python3 python_ref/tests/test_split_hdc2.py
+"$PY" python_ref/tests/test_split_hdc2.py
 
 echo "== Synthetic audit =="
-python3 scripts/audit_split_leakage.py --synthetic-only
+"$PY" scripts/audit_split_leakage.py --synthetic-only
 
 echo "== hdc_ref smoke =="
-(cd python_ref && python3 run_smoke_test.py)
+(cd python_ref && "$PY" run_smoke_test.py)
 
 if [[ -f python_ref/HDC-EMG/dataset.mat ]]; then
   echo "== HDC-2 dataset gate =="
-  python3 scripts/audit_split_leakage.py \
+  "$PY" scripts/audit_split_leakage.py \
     --config python_ref/config/emg_baseline_v2.json
 else
   echo "SKIP dataset gate (clone python_ref/HDC-EMG for full audit)"

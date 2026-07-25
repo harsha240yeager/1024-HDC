@@ -40,6 +40,10 @@ sim/waves/*.vcd
 # Twist 2 encode checkpoints (regenerate: run_twist2_sweep.py --resume)
 results/**/encode_cache/
 
+# Artifact reruns (regenerate: scripts/reproduce_paper.sh); committed results
+# under results/protocol_v2/ stay the reference
+results/repro/
+
 # OS cruft
 Thumbs.db
 .DS_Store

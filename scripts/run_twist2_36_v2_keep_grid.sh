@@ -9,6 +9,7 @@
 #   bash scripts/run_twist2_36_v2_keep_grid.sh
 #   bash scripts/run_twist2_36_v2_keep_grid.sh --quick
 #   bash scripts/run_twist2_36_v2_keep_grid.sh --keep-bits 64
+#   bash scripts/run_twist2_36_v2_keep_grid.sh --out-root results/repro/full/twist2_36_v2
 #
 set -euo pipefail
 
@@ -26,6 +27,13 @@ while [[ $# -gt 0 ]]; do
     --quick) QUICK=1; shift ;;
     --keep-bits)
       ONLY_BITS="$2"
+      shift 2
+      ;;
+    --out-root)
+      case "$2" in
+        /*) OUT_ROOT="$2" ;;
+        *) OUT_ROOT="$REPO/$2" ;;
+      esac
       shift 2
       ;;
     -h|--help)
