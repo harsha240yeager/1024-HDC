@@ -26,12 +26,12 @@ bash scripts/reproduce_paper.sh --tier core     # ~21 h, every S1-S5 claim
 ```
 
 `check_paper_numbers.py` is the fastest way to audit the paper. It reads the
-committed result files and compares 49 published values — accuracies, gaps,
-confidence intervals, p-values, energies, window counts — against what the
-manuscript prints, then exits non-zero if any of them drift:
+committed result files and compares 54 published values — accuracies, gaps,
+confidence intervals, p-values, energies, latencies, window counts — against what
+the manuscript prints, then exits non-zero if any of them drift:
 
 ```
-49/49 claims verified
+54/54 claims verified
 ```
 
 Reruns write to `results/repro/<tier>/` and never overwrite the committed
@@ -72,7 +72,7 @@ corpus; `docs/TWIST2_36_REPRO.md` walks through it end to end.
 | OS | Ubuntu 22.04 for sweeps and board bring-up; Windows 11 + Git Bash also verified |
 | FPGA toolchain | Vivado 2024.2, target `xc7z020clg484-1` (ZedBoard), PL @ 100 MHz |
 | Board software | Vitis bare-metal, `board/HDC_DMA/` workspace |
-| ARM baseline | `arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard`, `-O0 -g` for the energy-campaign ELF |
+| ARM baseline | `arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -O2` (`scripts/build_arm_bench_cross.sh`) |
 | Energy | TI INA219 (`0x40`, config `0x019F`) on ZedBoard J21, 10 mΩ shunt, logged from a Raspberry Pi |
 
 `scripts/check_paper_numbers.py` is standard library only, so it runs in a bare
@@ -90,10 +90,10 @@ Every stochastic choice is fixed and recorded in the result JSON `meta` blocks.
 | Protocol global | 1 | Stride-1 window ordering |
 | Item memory (deployed) | 42 | Item hypervectors in RTL and Python golden |
 | Item memory (sensitivity) | 1, 7, 21, 42 | Section V-E |
-| Random masks (iso-density) | 0–29 | 30 seeds per subject, Table IV |
-| Random masks (ranking, active-bit) | 0–4 | Sections V-D and IV-C |
+| Random masks (iso-density) | 0–29 | 30 seeds per subject, iso-density table |
+| Random masks (ranking, active-bit) | 0–4 | Sections V-D and IV-D |
 | Silicon random mask | 0 | The only seed programmed on the board |
-| Subject bootstrap | 0, 10,000 resamples | Confidence interval in Table IV |
+| Subject bootstrap | 0, 10,000 resamples | Iso-density confidence interval |
 
 Reruns are bit-identical where the pipeline is deterministic: re-running the
 split audit on a different OS reproduces `results/protocol_v2/split_audit.json`
@@ -158,7 +158,7 @@ produced are committed, so the numbers remain auditable.
 
 | Result | Requires | Script |
 |--------|----------|--------|
-| Bit-exact replay of 493,512 windows | ZedBoard + JTAG | `board/HDC_DMA/run_phase3_emg.sh` |
+| Full-cohort replay of 493,512 windows | ZedBoard + JTAG | `board/HDC_DMA/run_phase3_emg.sh` |
 | Anchors A/B/C at 72.78 / 72.78 / 72.84 % | ZedBoard, AXI mask reload only | `board/HDC_DMA/run_anchor_replay.sh ALL` |
 | Silicon iso-density gap +10.33 pp (seed 0) | ZedBoard + mask patch | `board/HDC_DMA/run_twist1_board.sh --random-seeds 0` |
 | J21 energy, 11.98 and 2088 µJ/window | INA219 on a Pi, 12 V sense at J21 | `scripts/run_energy_measure.sh`, then `scripts/aggregate_energy_runs.py` |
@@ -177,7 +177,7 @@ equations describe: [`docs/ENERGY_METHODOLOGY.md`](ENERGY_METHODOLOGY.md).
 | RTL last modified | `aa65999` (2026-06-25) — unchanged by the HDC-2 protocol fix |
 | Deployed bitstream | Phase 3 scatter-gather DMA design, `board/HDC_DMA/` |
 | Export reference | Frozen `sw/emg_board_vectors_hdc2.h`, 493,512 windows, 72.78 % pooled |
-| Board pass criterion | Every predicted label matches the export reference; accuracy within 0.5 % |
+| Board pass criterion | Every predicted label matches the golden model on the 200-vector batch (`sw/hdc_dma_stream_bench.c`), and full-cohort accuracy is within 0.5 pp of the export reference (`sw/hdc_emg_board_test.c`) |
 
 ---
 
@@ -194,6 +194,10 @@ equations describe: [`docs/ENERGY_METHODOLOGY.md`](ENERGY_METHODOLOGY.md).
   the two cohorts. Only within-cohort gaps are compared.
 - Energy is whole-board at J21. Isolating the PL rail would need a board
   modification and is listed as future work.
+- Per-window label equality against the export reference is enforced on the
+  200-vector golden batch, not on all 493,512 replayed windows: the replay
+  firmware scores against ground truth and gates on cohort accuracy. Anchor C
+  therefore sits 0.01 pp from its export reference, well inside the 0.5 pp gate.
 
 ---
 

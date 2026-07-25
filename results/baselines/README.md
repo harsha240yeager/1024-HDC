@@ -21,7 +21,8 @@ JTAG readback @ `0x00100400`, magic `0xBEC00006`. Compare to PL DMA batch (~4 µ
 
 - **Accuracy (host):** done — 74.15% ([`arm_hdc_results.json`](arm_hdc_results.json))
 - **Timing (board):** done — **819 µs** mean encode+classify, **1221 win/s**, 200/200 golden
-      ([`arm_hdc_board_timing.txt`](arm_hdc_board_timing.txt), 2026-06-29). ~**200× slower** than PL DMA batch (~4 µs/window).
+      ([`arm_hdc_board_timing.txt`](arm_hdc_board_timing.txt), 2026-06-29). ~**176× slower** than PL DMA batch
+      (4.63 µs/window = 926 µs / 200; the bench's `mean/window ~ 4 us` line is integer-truncated).
 - **Energy:** pending INA219 (needed for ~10× energy claim)
 
 ## MLP

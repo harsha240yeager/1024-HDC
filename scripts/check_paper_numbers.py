@@ -67,6 +67,28 @@ def energy_total(anchor: str) -> float:
     raise ValueError(f"no Total row for anchor {anchor}")
 
 
+def batch_latency_us(anchor: str) -> float:
+    """Per-window batch latency (us) from an INA219 run: duration / window count.
+
+    The on-board bench prints total/N with integer division, so read the raw
+    duration instead of trusting the rounded per-window line in the log.
+    """
+    text = read_text(f"results/phase3/energy_runs/anchor_{anchor}/run01/energy_batch.txt")
+    ms = re.search(r"Batch duration \(ms\):\s*([0-9.]+)", text)
+    windows = re.search(r"Batch windows:\s*([0-9]+)", text)
+    if not (ms and windows):
+        raise ValueError(f"anchor {anchor}: no batch duration / window count")
+    return float(ms.group(1)) * 1000.0 / float(windows.group(1))
+
+
+def golden_cases(rel: str, kind: str) -> float:
+    """Matched golden vectors, or 0 if the log records any mismatch."""
+    m = re.search(rf"PASS: (\d+)/(\d+) {kind} golden cases", read_text(rel))
+    if not m:
+        raise ValueError(f"no {kind} golden PASS line in {rel}")
+    return float(m.group(1)) if m.group(1) == m.group(2) else 0.0
+
+
 def anchor_row(anchor: str) -> dict:
     for row in load_csv("results/protocol_v2/anchors/summary.csv"):
         if row["anchor"] == anchor:
@@ -139,7 +161,7 @@ CLAIMS: list[dict] = [
     # --- Protocol -----------------------------------------------------------
     dict(
         id="split_overlap",
-        paper="Table I (Protocol HDC-2)",
+        paper="Table (tab:protocol)",
         claim="Train/test index overlap is 0 on every subject",
         expected=0.0,
         tol=0.0,
@@ -160,7 +182,7 @@ CLAIMS: list[dict] = [
     # --- Board verification -------------------------------------------------
     dict(
         id="board_pooled_acc",
-        paper="Abstract, Table II",
+        paper="Abstract, Table (tab:baselines)",
         claim="Board pooled accuracy 72.78%",
         expected=72.78,
         tol=0.01,
@@ -169,20 +191,41 @@ CLAIMS: list[dict] = [
         fn=lambda: board_accuracy("results/protocol_v2/anchors/anchor_A/board_emg_replay.txt"),
     ),
     dict(
-        id="board_bitexact",
-        paper="Abstract, Sec. V-A",
-        claim="Board vs export delta is 0.00% at every anchor",
-        expected=0.0,
+        id="board_golden_batch",
+        paper="Sec. IV-B, Sec. V-A",
+        claim="Board matches the golden model on 200/200 batch-DMA vectors",
+        expected=200.0,
         tol=0.0,
+        unit="vectors",
+        evidence="results/phase3/board_bench.txt",
+        fn=lambda: golden_cases("results/phase3/board_bench.txt", "batch"),
+    ),
+    dict(
+        id="board_golden_stream",
+        paper="Sec. IV-B",
+        claim="Board matches the golden model on 200/200 single-window vectors",
+        expected=200.0,
+        tol=0.0,
+        unit="vectors",
+        evidence="results/phase3/board_bench.txt",
+        fn=lambda: golden_cases("results/phase3/board_bench.txt", "stream"),
+    ),
+    dict(
+        id="board_vs_export_dev",
+        paper="Sec. IV-B, Table (tab:protocol)",
+        claim="Largest board-vs-export accuracy deviation 0.01 pp (anchor C), gate 0.5 pp",
+        expected=0.01,
+        tol=0.005,
         unit="pp",
         evidence="results/protocol_v2/anchors/summary.csv",
         fn=lambda: max(
-            abs(float(anchor_row(a)["delta_pct"])) for a in ("A", "B", "C")
+            abs(float(anchor_row(a)["board_pct"]) - float(anchor_row(a)["export_ref_pct"]))
+            for a in ("A", "B", "C")
         ),
     ),
     dict(
         id="anchor_c_ref",
-        paper="Table III (anchor C)",
+        paper="Table (tab:anchors)",
         claim="Anchor C export reference 72.85%",
         expected=72.85,
         tol=0.01,
@@ -192,7 +235,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="anchor_c_board",
-        paper="Table III (anchor C), Table V",
+        paper="Table (tab:anchors), Table (tab:isodensity)",
         claim="Anchor C board accuracy 72.84%",
         expected=72.84,
         tol=0.01,
@@ -202,7 +245,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="python_spatial_mean",
-        paper="Sec. IV-A, Table II",
+        paper="Sec. IV-A, Table (tab:baselines)",
         claim="Python RTL-encoder spatial mean 72.65%",
         expected=72.65,
         tol=0.01,
@@ -215,7 +258,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="arm_spatial_mean",
-        paper="Table II",
+        paper="Table (tab:baselines)",
         claim="ARM software HDC spatial mean 72.65%",
         expected=72.65,
         tol=0.01,
@@ -229,7 +272,7 @@ CLAIMS: list[dict] = [
     # --- Energy -------------------------------------------------------------
     dict(
         id="pl_energy",
-        paper="Table II, Table III",
+        paper="Table (tab:baselines), Table (tab:anchors)",
         claim="PL DMA batch energy 11.98 uJ/window",
         expected=11.98,
         tol=0.005,
@@ -239,7 +282,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="arm_energy",
-        paper="Table II",
+        paper="Table (tab:baselines)",
         claim="ARM software energy 2088 uJ/window",
         expected=2088.0,
         tol=0.5,
@@ -249,13 +292,44 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="energy_ratio",
-        paper="Abstract, Table II caption",
+        paper="Abstract, Table (tab:baselines) caption",
         claim="ARM/PL energy ratio ~174x",
         expected=174.0,
         tol=1.0,
         unit="x",
         evidence="results/phase3/energy_summary.txt",
         fn=lambda: energy_total("ARM") / energy_total("A"),
+    ),
+    # --- Latency ------------------------------------------------------------
+    dict(
+        id="pl_batch_latency",
+        paper="Table (tab:phases), Table (tab:baselines)",
+        claim="PL DMA batch latency 4.6 us/window (0.927 ms / 200)",
+        expected=4.6,
+        tol=0.05,
+        unit="us/w",
+        evidence="results/phase3/energy_runs/anchor_A/run01/energy_batch.txt",
+        fn=lambda: batch_latency_us("A"),
+    ),
+    dict(
+        id="arm_batch_latency",
+        paper="Table (tab:baselines)",
+        claim="ARM software latency 818 us/window (163.6 ms / 200)",
+        expected=818.0,
+        tol=1.0,
+        unit="us/w",
+        evidence="results/phase3/energy_runs/anchor_ARM/run01/energy_batch.txt",
+        fn=lambda: batch_latency_us("ARM"),
+    ),
+    dict(
+        id="latency_ratio",
+        paper="Abstract, Sec. IV-C, Sec. V-A",
+        claim="ARM/PL latency ratio ~176x",
+        expected=176.0,
+        tol=1.0,
+        unit="x",
+        evidence="results/phase3/energy_runs/anchor_ARM/run01/energy_batch.txt",
+        fn=lambda: batch_latency_us("ARM") / batch_latency_us("A"),
     ),
     dict(
         id="anchor_energy_spread",
@@ -270,7 +344,7 @@ CLAIMS: list[dict] = [
     # --- Iso-density (Python) ----------------------------------------------
     dict(
         id="twist1_gap_mean",
-        paper="Abstract, Table IV",
+        paper="Abstract, Table (tab:isodensity)",
         claim="Informed - random gap +6.90 pp (30 seeds, subject-level)",
         expected=6.90,
         tol=0.01,
@@ -280,7 +354,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist1_random_mean",
-        paper="Table IV",
+        paper="Table (tab:isodensity)",
         claim="Random iso-density mean accuracy 65.75%",
         expected=65.75,
         tol=0.01,
@@ -290,7 +364,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist1_ci_low",
-        paper="Abstract, Table IV",
+        paper="Abstract, Table (tab:isodensity)",
         claim="Subject-bootstrap 95% CI lower bound +4.04 pp",
         expected=4.04,
         tol=0.01,
@@ -300,7 +374,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist1_ci_high",
-        paper="Abstract, Table IV",
+        paper="Abstract, Table (tab:isodensity)",
         claim="Subject-bootstrap 95% CI upper bound +9.76 pp",
         expected=9.76,
         tol=0.01,
@@ -351,7 +425,7 @@ CLAIMS: list[dict] = [
     # --- Iso-density (silicon) ---------------------------------------------
     dict(
         id="twist1_silicon_informed",
-        paper="Table IV",
+        paper="Table (tab:isodensity)",
         claim="Silicon informed (anchor C) 72.84% pooled",
         expected=72.84,
         tol=0.01,
@@ -363,7 +437,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist1_silicon_random",
-        paper="Table IV",
+        paper="Table (tab:isodensity)",
         claim="Silicon random seed 0 62.51% pooled",
         expected=62.51,
         tol=0.01,
@@ -375,7 +449,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist1_silicon_gap",
-        paper="Abstract, Table IV",
+        paper="Abstract, Table (tab:isodensity)",
         claim="Silicon iso-density gap +10.33 pp (seed 0)",
         expected=10.33,
         tol=0.01,
@@ -518,7 +592,7 @@ CLAIMS: list[dict] = [
     # --- Cross-subject ------------------------------------------------------
     dict(
         id="twist2_local",
-        paper="Table VI",
+        paper="Table (tab:twist2)",
         claim="Pilot local oracle / unpruned 67.66%",
         expected=67.66,
         tol=0.01,
@@ -531,7 +605,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist2_pooled",
-        paper="Table VI",
+        paper="Table (tab:twist2)",
         claim="Pilot pooled transfer 66.64%",
         expected=66.64,
         tol=0.01,
@@ -544,7 +618,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist2_gap",
-        paper="Abstract, Table VI",
+        paper="Abstract, Table (tab:twist2)",
         claim="Pilot local - pooled gap +1.02 pp (within the 3 pp bound)",
         expected=1.02,
         tol=0.01,
@@ -556,7 +630,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist2_36_keep32_local",
-        paper="Table VII",
+        paper="Table (tab:twist2_36)",
         claim="36-subject keep=32 local oracle 60.91%",
         expected=60.91,
         tol=0.01,
@@ -566,7 +640,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist2_36_keep32_pooled",
-        paper="Table VII",
+        paper="Table (tab:twist2_36)",
         claim="36-subject keep=32 pooled transfer 63.50%",
         expected=63.50,
         tol=0.01,
@@ -576,7 +650,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist2_36_keep32_gap",
-        paper="Abstract, Table VII",
+        paper="Abstract, Table (tab:twist2_36)",
         claim="36-subject keep=32 gap -2.59 pp (worst case, within bound)",
         expected=-2.59,
         tol=0.01,
@@ -586,7 +660,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist2_36_lossless_gap",
-        paper="Abstract, Table VII",
+        paper="Abstract, Table (tab:twist2_36)",
         claim="Gap is exactly 0.00 pp for keep >= 64 bits",
         expected=0.0,
         tol=0.0,
@@ -598,7 +672,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="twist2_36_unpruned",
-        paper="Table VII",
+        paper="Table (tab:twist2_36)",
         claim="36-subject unpruned baseline 59.87%",
         expected=59.87,
         tol=0.01,
@@ -609,7 +683,7 @@ CLAIMS: list[dict] = [
     # --- Encoder ablation ---------------------------------------------------
     dict(
         id="encoder_stage_b_lit",
-        paper="Table VIII",
+        paper="Table (tab:encoder)",
         claim="Stage B BSC, literature protocol 90.17%",
         expected=90.17,
         tol=0.01,
@@ -619,7 +693,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="encoder_stage_b_hdc2",
-        paper="Table VIII",
+        paper="Table (tab:encoder)",
         claim="Stage B under HDC-2 89.37%",
         expected=89.37,
         tol=0.01,
@@ -629,7 +703,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="encoder_rtl_4bind",
-        paper="Table VIII",
+        paper="Table (tab:encoder)",
         claim="RTL item memory + 4 binds 73.28%",
         expected=73.28,
         tol=0.01,
@@ -639,7 +713,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="encoder_rtl_deployed",
-        paper="Table VIII",
+        paper="Table (tab:encoder)",
         claim="Deployed RTL encoder (20 binds) 72.89%",
         expected=72.89,
         tol=0.01,
@@ -660,7 +734,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="active_support_min",
-        paper="Sec. IV-C, Sec. VI",
+        paper="Sec. IV-D, Sec. VI",
         claim="Active support floor ~203 of 1024 positions (seeds 1/7/21/42, full TEST)",
         expected=203.0,
         tol=0.5,
@@ -670,7 +744,7 @@ CLAIMS: list[dict] = [
     ),
     dict(
         id="active_support_max",
-        paper="Sec. IV-C, Sec. VI",
+        paper="Sec. IV-D, Sec. VI",
         claim="Active support ceiling ~210 of 1024 positions (seeds 1/7/21/42, full TEST)",
         expected=210.0,
         tol=0.5,

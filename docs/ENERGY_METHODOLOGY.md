@@ -146,19 +146,26 @@ From [`results/phase3/energy_summary.txt`](../results/phase3/energy_summary.txt)
 - Idle ≈ 2.5–2.6 W dominates; PL batch is short, so \(E_{\mathrm{tot}} \approx P_{\mathrm{idle}} t\).
 - ARM is slower → much larger \(E_{\mathrm{tot}}\) at similar idle power.
 
-### 175× / 200× footnotes
+### ~175× footnotes
 
 \[
 \frac{e_{\mathrm{ARM}}}{e_{\mathrm{PL}}}
 = \frac{2088}{11.98} \approx 174,\qquad
-\frac{t_{\mathrm{ARM}}/N}{t_{\mathrm{PL}}/N}
-\approx \frac{819\,\mu\mathrm{s}}{4\,\mu\mathrm{s}} \approx 205.
+\frac{t_{\mathrm{ARM}}}{t_{\mathrm{PL}}}
+= \frac{163.6\,\mathrm{ms}}{0.927\,\mathrm{ms}} \approx 176.
 \]
 
 Because \(E_{\mathrm{tot}} \approx P_{\mathrm{idle}} \cdot t_{\mathrm{batch}}\) and
 \(P_{\mathrm{idle}}\) is similar for PL and ARM benches, the energy ratio tracks the
-**latency ratio**. Cite **~175× energy** and **~200× latency** as platform
-comparisons, not as Fisher-pruning gains.
+**latency ratio** — and it does, once the latency is taken from the measured batch
+durations. Cite **~175× energy** and **~175× latency** as platform comparisons,
+not as Fisher-pruning gains.
+
+> **Do not use the `mean/window ~ 4 us` line** printed by
+> [`results/phase3/board_bench.txt`](../results/phase3/board_bench.txt): the bench
+> computes `total / N` in integer arithmetic, so 926 µs / 200 windows truncates to
+> 4. The measured value is **4.63 µs/window**, which is why the latency ratio is
+> ~176× and not the ~205× that the truncated figure implies.
 
 ---
 
@@ -168,9 +175,9 @@ comparisons, not as Fisher-pruning gains.
 |------|--------|
 | Core | Cortex-A9 (Zynq PS), hard-float VFPv3 |
 | Compiler | `arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard` |
-| Optimization (bench ELF) | **`-O0 -g`** (debug build used for energy campaign; document as-is) |
+| Optimization (ARM bench ELF) | **`-O2`** via `scripts/build_arm_bench_cross.sh` (the `-O0 -g` flags in `run_energy_campaign.sh` build the *PL* DMA bench, not this one) |
 | Workload | Same 200-window batch, software encode + classify (`libhdc_arm_ref` / `hdc_arm_ref.c`) |
-| Timing | Per-window mean ≈ **819 µs** from board timing logs |
+| Timing | Per-window mean **818 µs** (`results/baselines/arm_hdc_board_timing.txt`; 163.6 ms / 200 in the energy run) |
 
 PS CPU frequency is the Zynq-7020 default PS clock configuration for the Phase~3
 bitstream (board BSP); we did not retune clocks for the energy campaign.
@@ -211,5 +218,5 @@ Raw CSVs live under `results/phase3/energy_runs/anchor_*/run*/`.
 ## 8. Paper text
 
 Methods §Energy Measurement in Research-paper `conference_101719.tex` carries the
-formulas, 174×/205× footnotes, and claim boundary.
+formulas, 174×/176× footnotes, and claim boundary.
 This file is the full artifact write-up (wiring, scripts, raw CSVs).

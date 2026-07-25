@@ -462,8 +462,11 @@ def mask_random_from_support(
 
 def per_bit_fisher_scores(query_hvs: np.ndarray, labels: np.ndarray) -> np.ndarray:
     """
-    Per-bit Fisher-like score: between-class variance / (within-class variance + eps).
-    Higher = more discriminative.
+    Per-bit Fisher-like score: total variance / (within-class variance + eps).
+
+    Total variance is used rather than between-class variance; since
+    total = between + within, the score is 1 + the textbook Fisher ratio and
+    ranks bit positions identically. Higher = more discriminative.
     """
     x = np.asarray(query_hvs, dtype=np.float64)
     y = np.asarray(labels, dtype=np.int32)

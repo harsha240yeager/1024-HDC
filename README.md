@@ -183,8 +183,8 @@ methodology separately ([#8](https://github.com/harsha240yeager/1024-HDC/issues/
 | Python / ARM RTL ref | **72.65%** spatial mean | [`protocol_v2/emg_baseline.json`](results/protocol_v2/emg_baseline.json) · [`arm_baseline/`](results/protocol_v2/arm_baseline/) |
 | Hook A (D=1024, CNT_W≥4) | **72.65%** flat 0–87.5% prune | [`protocol_v2/hook_a/`](results/protocol_v2/hook_a/) |
 | Anchor A / B / C | **72.78% / 72.78% / 72.85%** | [`protocol_v2/anchors/`](results/protocol_v2/anchors/) |
-| PL batch latency | **~4 µs**/window | Phase 3 SG DMA (unchanged) |
-| ARM HDC latency | **819 µs**/window | [`arm_hdc_board_timing.txt`](results/baselines/arm_hdc_board_timing.txt) |
+| PL batch latency | **4.63 µs**/window (926 µs / 200; the bench's `~4 us` line is integer-truncated) | Phase 3 SG DMA (unchanged) |
+| ARM HDC latency | **818 µs**/window | [`arm_hdc_board_timing.txt`](results/baselines/arm_hdc_board_timing.txt) |
 | PL energy (anchor A) | **11.98 ± 0.07 µJ**/w | [`energy_summary.txt`](results/phase3/energy_summary.txt) |
 | ARM energy | **2088 ± 6 µJ**/w | same |
 | Twist 1 @ keep=0.125 (Python, 30 seeds) | **+6.90 pp** (72.65% vs 65.75%) | [`protocol_v2/twist1_keep0125_30seed/`](results/protocol_v2/twist1_keep0125_30seed/) |
