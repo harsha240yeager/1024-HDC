@@ -1,20 +1,18 @@
-## Priority: P3
+## Priority: P3 — DONE
 
 Fix internal inconsistencies flagged in review.
 
 ## Hardware / repo
 
-- [ ] Fig. 1: **5-class argmin** (currently says 8-class) in `Research-paper/figures/`
-- [ ] Five prototypes vs eight AM slots in RTL
+- [x] Fig. 1: **5-class argmin** — `Research-paper/figures/final_arch1.*`
+- [x] Five prototypes vs eight AM slots — explained in §Architecture (`N_CLASS=8` padding)
 
-## Paper numbers (after HDC-2 rerun)
+## Paper numbers (HDC-2)
 
-- [ ] Spatial mean vs pooled window — single definition
-- [ ] Bit-exact: every label matched reference over all N windows
-- [ ] Latency 4 µs vs 4–7 µs — consistent reporting
-- [ ] Show 200× and 175× calculations
-- [ ] 74.24% vs 74.32% under pruning — explain
-
-Plan: [Phase 9](https://github.com/harsha240yeager/1024-HDC/blob/main/docs/DATE_REVISION_PLAN.md#phase-9--fix-internal-inconsistencies)
+- [x] Spatial mean vs pooled window — defined once in protocol table
+- [x] Bit-exact: every label matched frozen reference over all N windows
+- [x] Latency: Phase 3 mean ~4 µs (range 4–7) consistent with baselines table
+- [x] 200× / 175×: calculations in `tab:baselines` caption
+- [x] Anchor C +0.07 pp vs A explained (mask / active support; bit-exact)
 
 Paper: [Research-paper #2](https://github.com/harsha240yeager/Research-paper/issues/2)

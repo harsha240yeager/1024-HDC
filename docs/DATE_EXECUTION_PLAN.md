@@ -109,6 +109,6 @@ Copy to issue #1 or project board; update as phases complete.
 | 7 Claims | ⏳ issue #7 (Path B) |
 | 8 Energy doc | ✅ `docs/ENERGY_METHODOLOGY.md` + paper Appendix — issue #8 |
 | 9 Baselines | ✅ `results/protocol_v2/ranking_baselines/` · issue #9 |
-| 10 Inconsistencies | ⏳ issue #10 |
+| 10 Inconsistencies | ✅ Fig 5-class + metrics footnotes — issue #10 |
 | 11 Repro artifact | ⏳ issue #11 |
-| Paper rewrite | ⏳ partial — see README [Paper rewrite checklist](../README.md#paper-rewrite-checklist-research-paper) |
+| Paper rewrite | ✅ title/abstract/claim reorg — Research-paper #2–#4 |

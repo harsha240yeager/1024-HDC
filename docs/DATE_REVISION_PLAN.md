@@ -297,17 +297,17 @@ Deliverable: `docs/ENERGY_METHODOLOGY.md` + half-page in paper appendix.
 
 ---
 
-## Phase 9 — Fix internal inconsistencies
+## Phase 9 — Fix internal inconsistencies — DONE
 
 **Issue:** [#10](https://github.com/harsha240yeager/1024-HDC/issues/10) (hardware fig) · Research-paper [#2](https://github.com/harsha240yeager/Research-paper/issues/2)
 
-- [ ] Fig. 1: **5-class argmin** (not 8) — `Research-paper/figures/final_arch1.drawio.svg`
-- [ ] Five prototypes vs eight AM slots — explain padding in RTL
-- [ ] Spatial mean vs pooled window — define once in protocol table
-- [ ] Bit-exact: *"Every predicted label matched frozen reference over all N windows"*
-- [ ] Latency: consistent 4 µs vs 4–7 µs (report mean ± range)
-- [ ] 200× / 175×: show calculation in table footnote
-- [ ] 74.24% vs 74.32% under pruning — explain pooled metric + mask effect
+- [x] Fig. 1: **5-class argmin** — `Research-paper/figures/final_arch1.*`
+- [x] Five prototypes vs eight AM slots — explained in manuscript §Architecture
+- [x] Spatial mean vs pooled window — defined in protocol table
+- [x] Bit-exact: every predicted label matched frozen reference over all N windows
+- [x] Latency: Phase 3 mean ~4 µs (range 4–7)
+- [x] 200× / 175×: calculations in `tab:baselines` caption
+- [x] Anchor C +0.07 pp vs A explained (active-support mask; bit-exact)
 
 ---
 
@@ -330,41 +330,26 @@ Paper: reproducibility statement with URL + license.
 
 ---
 
-## Phase 11 — Rewrite title and abstract
+## Phase 11 — Rewrite title and abstract — DONE
 
 **Issue:** Research-paper [#3](https://github.com/harsha240yeager/Research-paper/issues/3)
 
-**Candidate titles (pick after Phase 2 results):**
+**Chosen title:** *Fisher-Guided Bit Selection for a Bit-Exact Streaming HDC Accelerator on Zynq*
 
-1. *Fisher-Guided Bit Selection for a Bit-Exact Streaming HDC Accelerator on Zynq*
-2. *Cross-Subject Fisher-Guided Bit Pruning for Streaming HDC on Zynq* (if Phase 2 strong)
-
-Abstract structure (5 sentences max):
-1. Problem (bit position vs dimension at fixed sparsity)
-2. Method (streaming HDC + runtime Fisher mask on Zynq)
-3. Strongest statistical result (subject-level Fisher vs random @ stress keep ratio)
-4. Hardware result (bit-exact replay + PL vs ARM)
-5. One-line limitation (fixed-width datapath / no board energy from mask)
-
-No defensive qualifications in abstract.
+Abstract: problem → method → +6.90 pp subject-level (CI) → bit-exact 72.78% + PL/ARM → fixed-width energy limitation.
 
 ---
 
-## Phase 12 — Reorganize paper around one claim
+## Phase 12 — Reorganize paper around one claim — DONE
 
 **Issue:** Research-paper [#4](https://github.com/harsha240yeager/Research-paper/issues/4)
 
-| § | Content |
-|---|---------|
-| I Introduction | Problem, gap, 3 contributions |
-| II Related work | HDC pruning gap |
-| III Method | Encoder, Fisher score, runtime mask, pipeline |
-| IV **Experimental protocol** | HDC-2 disjoint split, cohorts, metrics, seeds, stats tests |
-| V Results | (a) bit-exact verification (b) ranking baselines (c) cross-subject stress (d) PL vs ARM energy (e) seed sensitivity |
-| VI Discussion | Bit collapse (257), energy static dominance, limitations |
-| VII Conclusion | |
+Claim: runtime Fisher bit-position selection on a bit-exact fixed-width streaming HDC datapath.
 
-Cut or demote: old Twist 2 zero-gap story, MLP figure, excessive encoder/dataset disclaimers.
+- [x] 3 contributions (silicon+cost, iso-density, cross-subject protocol check)
+- [x] §Experimental Protocol and Methodology (HDC-2)
+- [x] Demoted MLP to optional context; cut legacy HDC-1 Twist 2 tautology line
+- [x] Conclusion aligned with Path B (accuracy under iso-density; no board-joule claim)
 
 ---
 
@@ -394,5 +379,5 @@ Cut or demote: old Twist 2 zero-gap story, MLP figure, excessive encoder/dataset
 | 8 Energy methodology | ⏳ Not started | — |
 | 9 Inconsistencies | ⏳ Not started | — |
 | 10 Reproducibility | ⏳ Not started | Phases 1–5 |
-| 11 Title/abstract | ⏳ Blocked | Phase 2 results |
+| 11 Title/abstract | ✅ Done | Research-paper #3 |
 | 12 Paper reorg | ⏳ Blocked | New results |
