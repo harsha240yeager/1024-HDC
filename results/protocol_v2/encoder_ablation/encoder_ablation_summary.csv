@@ -1,0 +1,7 @@
+step,label,change,test_set,n_subjects,spatial_mean_accuracy,spatial_std_accuracy
+stage_b_literature_fulltest,Stage B BSC (literature protocol),Full-recording test (HDC-1-style); Rahimi parity reference,full_recording,5,0.90168,0.018546728971857947
+stage_b_hdc2,Stage B BSC @ HDC-2,Same encoder; disjoint 75% test (Protocol HDC-2),disjoint,5,0.8937066666666666,0.02465223361527761
+stage_b_hdc2_seed42,Stage B + item-mem seed 42,Replace protocol seed with RTL item_mem_seed=42,disjoint,5,0.9082266666666667,0.027728159773855236
+stage_b_hdc2_16levels,Stage B + 16-level CiM,Map envelope 21->16 levels (RTL grid depth),disjoint,5,0.9026133333333333,0.030123432001608903
+rtl_4bind,RTL item mem + 4 binds,Eq. 3.1 bind (ch⊕val⊕ρ(feat0)); majority of 4 channels,disjoint,5,0.7328133333333333,0.05279083085368352
+rtl_20bind,RTL encoder (20 binds),"Full Eq. 3.1 grid: 4×5 feature slots, deployed path",disjoint,5,0.7289200000000001,0.058649079181935064

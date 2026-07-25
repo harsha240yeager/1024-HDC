@@ -1,0 +1,33 @@
+{
+  "name": "Issue 6 — Path B encoder ablation (Stage B → RTL)",
+  "description": "Controlled ladder from literature BSC spatial encoding to the deployed RTL Eq. 3.1 encoder under Protocol HDC-2 (disjoint test). Path A (BSC in PL) is out of scope.",
+  "engine": "mixed",
+  "protocol_config": "emg_baseline_v2.json",
+  "subjects": [1, 2, 3, 4, 5],
+  "D": 1024,
+  "cnt_w": 6,
+  "item_mem_seed_rtl": 42,
+  "max_train_windows_per_subject": null,
+  "max_test_windows_per_subject": 15000,
+  "steps": [
+    "stage_b_literature_fulltest",
+    "stage_b_hdc2",
+    "stage_b_hdc2_seed42",
+    "stage_b_hdc2_16levels",
+    "rtl_4bind",
+    "rtl_20bind"
+  ],
+  "quick": {
+    "subjects": [1, 2],
+    "max_train_windows_per_subject": 3000,
+    "max_test_windows_per_subject": 3000,
+    "steps": [
+      "stage_b_literature_fulltest",
+      "stage_b_hdc2",
+      "stage_b_hdc2_seed42",
+      "stage_b_hdc2_16levels",
+      "rtl_4bind",
+      "rtl_20bind"
+    ]
+  }
+}

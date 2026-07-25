@@ -236,19 +236,20 @@ Per seed report:
 - [ ] Implement or approximate Stage-B BSC bind-record encoder in PL
 - [ ] Re-run pruning study on stronger baseline
 
-### Path B (acceptable): Controlled ablation table
+### Path B (acceptable): Controlled ablation table — DONE
 
-| Configuration | Spatial mean acc. |
-|---------------|-------------------|
-| Literature BSC (Stage B) | ~90.3% |
-| − replace item memory | |
-| − replace binding structure | |
-| − replace bundling (20 binds) | |
-| − replace quantization / grid | |
-| Final RTL encoder | ~74.2% |
+| Configuration | Spatial mean (HDC-2 / noted) |
+|---------------|------------------------------|
+| Literature BSC (full test) | 90.17% |
+| Stage B @ HDC-2 | 89.37% |
+| + item-mem seed 42 | 90.82% |
+| + 16-level CiM | 90.26% |
+| RTL item mem + 4 binds | 73.28% (−17.0 pp) |
+| RTL 20 binds (deployed) | 72.89% (−0.4 pp) |
 
-- [ ] Script: `python_ref/run_encoder_ablation.py`
-- [ ] One table in paper explaining deliberate deployment encoder choice
+- [x] Script: `python_ref/run_encoder_ablation.py`
+- [x] Results: `results/protocol_v2/encoder_ablation/`
+- [x] Paper table `tab:encoder` (Path B; no BSC in PL)
 
 ---
 

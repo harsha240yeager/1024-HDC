@@ -105,7 +105,7 @@ Copy to issue #1 or project board; update as phases complete.
 | 3 Random + stats | ✅ 30-seed Python + subject-level CI/Wilcoxon — `twist1_keep0125_30seed/` · silicon seeds 1–9 deferred · issue #3 |
 | 4 Seeds | ✅ `results/seed_sensitivity/` — issue #4 |
 | 5 Active bits | ✅ tooling + HDC-2 sweep (`results/protocol_v2/active_bits/`) · issue #5 |
-| 6 Encoder | ⏳ issue #6 |
+| 6 Encoder | ✅ Path B ablation — `protocol_v2/encoder_ablation/` · issue #6 |
 | 7 Claims | ⏳ issue #7 (Path B) |
 | 8 Energy doc | ✅ `docs/ENERGY_METHODOLOGY.md` + paper Appendix — issue #8 |
 | 9 Baselines | ✅ `results/protocol_v2/ranking_baselines/` · issue #9 |
