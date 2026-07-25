@@ -340,9 +340,11 @@ Paper: reproducibility statement with URL + license in §IV-D.
 
 **Issue:** Research-paper [#3](https://github.com/harsha240yeager/Research-paper/issues/3)
 
-**Chosen title:** *Fisher-Guided Bit Selection for a Bit-Exact Streaming HDC Accelerator on Zynq*
+**Chosen title:** *Bit-Position Pruning for FPGA Hyperdimensional Computing: Informed Selection Is Active-Support Identification*
 
-Abstract: problem → method → +6.90 pp subject-level (CI) → bit-exact 72.78% + PL/ARM → fixed-width energy limitation.
+Superseded the original *Fisher-Guided Bit Selection for a Bit-Exact Streaming HDC Accelerator on Zynq* once the ranking sweep showed six criteria are interchangeable, which makes a Fisher-specific title unsupportable.
+
+Abstract: problem → method → +6.90 pp subject-level (CI) → support-not-ranking explanation → 72.78% replay + PL/ARM → fixed-width energy limitation.
 
 ---
 
