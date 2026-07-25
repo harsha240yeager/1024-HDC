@@ -101,7 +101,7 @@ Copy to issue #1 or project board; update as phases complete.
 |-------|--------|
 | 1 HDC-2 split + Tier 1 | ✅ complete — issue #1 closed |
 | 1b Hook A + anchors | ✅ complete — `protocol_v2/hook_a/`, `protocol_v2/anchors/` |
-| 2 Cross-subject | ✅ 5-subj pilot (+1.02 pp) · ⏳ 36-subj keep grid running — `protocol_v2/twist2_36_v2/` [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
+| 2 Cross-subject | ✅ complete — 5-subj pilot (+1.02 pp) · 36-subj keep grid 32–256 bits (`protocol_v2/twist2_36_v2/`) · @32b pooled +2.59 pp vs local · 64+b lossless [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
 | 3 Random + stats | ✅ 30-seed Twist 1 Python — `protocol_v2/twist1_keep0125_30seed/` · issue #3 partial |
 | 4 Seeds | ✅ `results/seed_sensitivity/` — issue #4 |
 | 5 Active bits | ✅ tooling + HDC-2 sweep (`results/protocol_v2/active_bits/`) · issue #5 |

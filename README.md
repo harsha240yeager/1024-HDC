@@ -137,7 +137,8 @@ python scripts/export_emg_board_vectors.py --config python_ref/config/emg_baseli
 | Hook A | ✅ [`protocol_v2/hook_a/`](results/protocol_v2/hook_a/) |
 | Twist 1 Python @ keep=0.125 | ✅ **+6.90 pp** (30 seeds) [`twist1_keep0125_30seed/`](results/protocol_v2/twist1_keep0125_30seed/) · 5-seed [`twist1_keep0125/`](results/protocol_v2/twist1_keep0125/) |
 | Twist 1 silicon seed 0 | ✅ **+10.33 pp** (62.51% vs 72.84%) | [`phase3/twist1_silicon/`](results/phase3/twist1_silicon/) · seeds 1–9 **deferred last** |
-| Twist 2 @ keep=0.125 (S1–3 → S4–5) | ✅ **+1.02 pp**, generalises | [`protocol_v2/twist2_keep0125/`](results/protocol_v2/twist2_keep0125/) · 36-subj grid ⏳ [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
+| Twist 2 @ keep=0.125 (S1–3 → S4–5) | ✅ **+1.02 pp**, generalises | [`protocol_v2/twist2_keep0125/`](results/protocol_v2/twist2_keep0125/) |
+| Twist 2 @ 36 UCI (S1–18 → S19–36) | ✅ keep grid **32–256 bits** complete | [`protocol_v2/twist2_36_v2/`](results/protocol_v2/twist2_36_v2/) · [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
 
 ```bash
 python python_ref/run_twist1_sweep.py \
@@ -223,7 +224,7 @@ full plan: [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md)
 | Item | Depends on | Paper impact |
 |------|------------|--------------|
 | **Twist 1** informed − random gap | Silicon seeds 1–9 (deferred last — JTAG) | Optional multi-seed silicon mean |
-| **Twist 2 / cross-subject** | 36-subject keep grid under [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) | Extended stress beyond 5-subject pilot |
+| **Twist 2 / cross-subject** | ✅ 36-subject keep grid 32–256 bits — [`protocol_v2/twist2_36_v2/`](results/protocol_v2/twist2_36_v2/) | At 32b: pooled **+2.59 pp** vs local; 64+b: lossless |
 | **Random seeds + stats** | Issue [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) | Subject-level CIs, significance tests |
 | **Seed sensitivity** | ✅ [#4](https://github.com/harsha240yeager/1024-HDC/issues/4) — [`seed_sensitivity/`](results/seed_sensitivity/) | Acc 72.2–73.4%; gap +5.55–+8.79 pp |
 | **Ranking baselines** | Issue [#9](https://github.com/harsha240yeager/1024-HDC/issues/9) | Method × accuracy table |
@@ -283,7 +284,7 @@ python python_ref/plot_results.py --paper   # after Twist 1/2 HDC-2 sweeps compl
 | Silicon anchors A/B/C | ✅ **HDC-2 PASS** (72.78% / 72.78% / 72.85%) | [`protocol_v2/anchors/`](results/protocol_v2/anchors/) |
 | INA219 energy A/B/C + ARM | ✅ (platform comparison; see issue #8) |
 | Protocol HDC-2 disjoint split | ✅ Tier 1 — [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
-| Cross-subject stress test (keep 32–256) | ⏳ [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
+| Cross-subject stress test (keep 32–256) | ✅ [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) — [`twist2_36_v2/`](results/protocol_v2/twist2_36_v2/) |
 | Random baselines + subject-level stats | ⏳ [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) |
 | Paper figures | ⏳ refresh after Twist 1/2 HDC-2 |
 | DATE manuscript | ⏳ [Research-paper](https://github.com/harsha240yeager/Research-paper) — [rewrite checklist](#paper-rewrite-checklist-research-paper) |
@@ -749,7 +750,7 @@ HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harness
 |-------|--------|-------|--------|
 | **1** | Protocol HDC-2 disjoint split + Tier 1 rerun | [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) | ✅ closed |
 | **1b** | Hook A + silicon anchors under HDC-2 | — | ✅ complete |
-| **2** | Cross-subject transfer (keep 32–256 bits) | [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) | ⏳ next |
+| **2** | Cross-subject transfer (keep 32–256 bits) | [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) | ✅ complete |
 | **3** | Random masks + subject-level stats | [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) | ⏳ |
 | **4** | Item-memory seed sensitivity | [#4](https://github.com/harsha240yeager/1024-HDC/issues/4) | ✅ `results/seed_sensitivity/` |
 | **5** | Active-bit (257) ablation | [#5](https://github.com/harsha240yeager/1024-HDC/issues/5) | ⏳ |

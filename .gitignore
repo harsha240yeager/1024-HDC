@@ -37,6 +37,9 @@ sim/waves/*.vcd
 # Packaged Vivado zip (use vivado_pack/ in repo instead)
 1024HDC_vivado_pack.zip
 
+# Twist 2 encode checkpoints (regenerate: run_twist2_sweep.py --resume)
+results/**/encode_cache/
+
 # OS cruft
 Thumbs.db
 .DS_Store
