@@ -23,8 +23,8 @@
 | Scope | Entire board input: PS + PL + DDR + I/O + regulators (not isolated VCCINT) |
 | Sensor | Texas Instruments **INA219** (Adafruit breakout), I²C address **0x40** |
 | Host | Raspberry Pi (I²C) coordinating with Ubuntu/JTAG bench, or USB–I²C on the bench host |
-| Primary metric | **Total energy per window** \(E_{\mathrm{tot}}/N\) (µJ/w) |
-| Secondary | Dynamic increment \(E_{\mathrm{dyn}}/N\) after idle subtraction (often ≪ total; noisy) |
+| Primary metric | **Idle-calibrated whole-board energy per window** \(P_{\mathrm{idle}} t_{\mathrm{batch}}/N\) (µJ/w) — a lower bound on total, see §3.3 |
+| Secondary | Dynamic increment \(E_{\mathrm{dyn}}/N\) after idle subtraction — **unresolved for PL**, do not cite |
 
 We do **not** claim PL-rail-only or clock-gated popcount energy. Masked Hamming
 clears bits before popcount but the synthesized datapath still XORs full 64-bit
@@ -94,22 +94,52 @@ integrate the full 30 s CSV as batch energy. Default `integrate_mode=batch`:
 
 \[
 \begin{aligned}
-E_{\mathrm{tot}} &= P_{\mathrm{idle}} \cdot t_{\mathrm{batch}}, \\
+E_{\mathrm{idle\text{-}cal}} &= P_{\mathrm{idle}} \cdot t_{\mathrm{batch}}, \\
 P_{\mathrm{active}} &= \text{max sliding-window mean of } P(t) \text{ during the log}, \\
 E_{\mathrm{dyn}} &= \max(0,\, P_{\mathrm{active}} - P_{\mathrm{idle}}) \cdot t_{\mathrm{batch}}, \\
-e_{\mathrm{tot}} &= E_{\mathrm{tot}} / N, \qquad
+e &= E_{\mathrm{idle\text{-}cal}} / N, \qquad
 e_{\mathrm{dyn}} = E_{\mathrm{dyn}} / N.
 \end{aligned}
 \]
 
 Units: \(P\) in mW, \(t\) in s → energy in mJ; divide by \(N\) and convert → **µJ/window**.
 
-This matches issue wording \(E_{\mathrm{dynamic}} = (P_{\mathrm{active}} - P_{\mathrm{idle}}) \times t\)
-with \(t = t_{\mathrm{batch}}\).
+### Naming: this is *not* total active energy
 
-**Headline table numbers use \(e_{\mathrm{tot}}\)** (~12 µJ/w PL, ~2088 µJ/w ARM).
-Dynamic increments are reported in summaries but are small and run-to-run noisy
-for PL (often &lt;1 µJ/w).
+Total energy during inference is \(P_{\mathrm{active}} t_{\mathrm{batch}}\). The
+field named `Total batch energy (mJ)` in `energy_batch.txt` is
+\(P_{\mathrm{idle}} t_{\mathrm{batch}}\), which is a **lower bound** on it. The
+paper calls this quantity **idle-calibrated whole-board energy over the measured
+batch duration** and states the bound explicitly; the file field name is kept for
+backward compatibility with the committed logs.
+
+The active increment is **unresolved for PL** and must not be read as switching
+activity:
+
+| | PL (0.93 ms, n=9) | ARM (163.6 ms, n=3) |
+|---|---|---|
+| Idle power | 2569 ± 22 mW | 2553 ± 8 mW |
+| Apparent elevation | 50 ± 90 mW | 136 ± 75 mW |
+| Negative runs | 3 of 9 | 0 of 3 |
+| \(t\)-statistic | 1.68 (p ≈ 0.13) | 3.15 |
+| If real, adds | 2.0% of 11.90 µJ/w | 5.3% of 2088 µJ/w |
+
+The PL burst fills under a tenth of one INA219 sample, so its elevation is
+indistinguishable from zero and the `max(0, ·)` clamp hides three negative draws.
+Excluding the increment from **both** platforms is conservative for the PL/ARM
+comparison: including both point estimates would raise the ratio from 174× to
+~180×.
+
+**Consequence for the ratios.** Since both platforms are idle-dominated,
+174 = 176 × 0.987 exactly — the energy ratio is the latency ratio scaled by the
+idle-power ratio. Report it as one measurement expressed two ways, never as
+independent corroboration.
+
+**Consequence for the mask.** \(E_{\mathrm{idle\text{-}cal}}\) depends only on
+idle power and batch duration, neither of which can depend on the mask. The
+anchors A/B/C therefore *cannot* be separated by this metric by construction;
+the "no energy saving from pruning" result rests on the fixed-width datapath
+argument, with the measurement only bounding any effect below ~2%.
 
 ### 3.4 Anchors and repetitions
 
@@ -133,7 +163,7 @@ for PL (often &lt;1 µJ/w).
 
 From [`results/phase3/energy_summary.txt`](../results/phase3/energy_summary.txt):
 
-| Anchor | Static (mW) | Total (µJ/w) | Dynamic (µJ/w) |
+| Anchor | Static (mW) | Idle-calibrated (µJ/w) | Dynamic (µJ/w, unresolved for PL) |
 |--------|-------------|--------------|----------------|
 | A (keep=1.0) | 2586 ± 17 | **11.98 ± 0.07** | 0.31 ± 0.41 |
 | B (keep=0.5) | 2570 ± 8 | **11.90 ± 0.04** | 0.07 ± 0.07 |

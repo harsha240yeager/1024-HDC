@@ -22,6 +22,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from statistics import mean, stdev
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -79,6 +80,29 @@ def batch_latency_us(anchor: str) -> float:
     if not (ms and windows):
         raise ValueError(f"anchor {anchor}: no batch duration / window count")
     return float(ms.group(1)) * 1000.0 / float(windows.group(1))
+
+
+def pl_power_elevation(stat: str) -> float:
+    """Apparent active-minus-idle board power (mW) across the nine PL runs.
+
+    The 0.93 ms burst fills under a tenth of one INA219 sample, so this is a
+    measurement-floor diagnostic, not switching activity. The paper excludes it.
+    """
+    elevations = []
+    for anchor in ("A", "B", "C"):
+        base = ROOT / "results/phase3/energy_runs" / f"anchor_{anchor}"
+        for run in sorted(base.glob("run*")):
+            text = (run / "energy_batch.txt").read_text(encoding="utf-8")
+            idle = float(re.search(r"Static power \(mW\):\s*([\d.]+)", text).group(1))
+            active = float(re.search(r"active_mean=([\d.]+)mW", text).group(1))
+            elevations.append(active - idle)
+    if stat == "mean":
+        return mean(elevations)
+    if stat == "std":
+        return stdev(elevations)
+    if stat == "negative":
+        return float(sum(e < 0 for e in elevations))
+    raise ValueError(stat)
 
 
 def single_window_latency_us() -> float:
@@ -344,7 +368,7 @@ CLAIMS: list[dict] = [
     dict(
         id="pl_energy",
         paper="Table (tab:baselines), Table (tab:anchors)",
-        claim="PL DMA batch energy 11.98 uJ/window",
+        claim="PL DMA batch idle-calibrated energy 11.98 uJ/window",
         expected=11.98,
         tol=0.005,
         unit="uJ/w",
@@ -354,7 +378,7 @@ CLAIMS: list[dict] = [
     dict(
         id="arm_energy",
         paper="Table (tab:baselines)",
-        claim="ARM software energy 2088 uJ/window",
+        claim="ARM software idle-calibrated energy 2088 uJ/window",
         expected=2088.0,
         tol=0.5,
         unit="uJ/w",
@@ -364,7 +388,7 @@ CLAIMS: list[dict] = [
     dict(
         id="energy_ratio",
         paper="Abstract, Table (tab:baselines) caption",
-        claim="ARM/PL energy ratio ~174x",
+        claim="ARM/PL idle-calibrated energy ratio ~174x (= latency 176x * idle-power 0.99)",
         expected=174.0,
         tol=1.0,
         unit="x",
@@ -401,6 +425,36 @@ CLAIMS: list[dict] = [
         unit="x",
         evidence="results/phase3/energy_runs/anchor_ARM/run01/energy_batch.txt",
         fn=lambda: batch_latency_us("ARM") / batch_latency_us("A"),
+    ),
+    dict(
+        id="pl_elevation_mean",
+        paper="Sec. IV-C",
+        claim="Apparent PL active elevation averages 50 mW (unresolved)",
+        expected=50.0,
+        tol=1.0,
+        unit="mW",
+        evidence="results/phase3/energy_runs/anchor_{A,B,C}/run*/energy_batch.txt",
+        fn=lambda: pl_power_elevation("mean"),
+    ),
+    dict(
+        id="pl_elevation_std",
+        paper="Sec. IV-C",
+        claim="PL elevation std 90 mW, i.e. indistinguishable from zero",
+        expected=90.0,
+        tol=1.0,
+        unit="mW",
+        evidence="results/phase3/energy_runs/anchor_{A,B,C}/run*/energy_batch.txt",
+        fn=lambda: pl_power_elevation("std"),
+    ),
+    dict(
+        id="pl_elevation_negative",
+        paper="Sec. IV-C",
+        claim="PL elevation is negative in 3 of 9 runs",
+        expected=3.0,
+        tol=0.0,
+        unit="runs",
+        evidence="results/phase3/energy_runs/anchor_{A,B,C}/run*/energy_batch.txt",
+        fn=lambda: pl_power_elevation("negative"),
     ),
     dict(
         id="pl_single_window",
