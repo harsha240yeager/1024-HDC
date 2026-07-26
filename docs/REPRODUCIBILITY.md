@@ -192,12 +192,34 @@ equations describe: [`docs/ENERGY_METHODOLOGY.md`](ENERGY_METHODOLOGY.md).
 - The 36-subject cohort uses a different preprocessing path from the
   five-subject board dataset, so absolute accuracies are not comparable across
   the two cohorts. Only within-cohort gaps are compared.
-- Energy is whole-board at J21. Isolating the PL rail would need a board
-  modification and is listed as future work.
+- Energy is whole-board at J21 and idle-calibrated, so every µJ/window figure
+  here and in the paper is a lower bound that excludes the unresolved active
+  increment. Isolating the PL rail would need a board modification and is
+  listed as future work.
 - Per-window label equality against the export reference is enforced on the
   200-vector golden batch, not on all 493,512 replayed windows: the replay
   firmware scores against ground truth and gates on cohort accuracy. Anchor C
   therefore sits 0.01 pp from its export reference, well inside the 0.5 pp gate.
+
+---
+
+## Double-blind review snapshot
+
+The submitted manuscript is anonymized and cannot link to this repository, so
+reviewers get a scrubbed copy built by `scripts/make_anon_artifact.py`:
+
+```bash
+python3 scripts/make_anon_artifact.py --out dist/anon-artifact --zip
+```
+
+The script exports the tracked working tree without `.git`, so no commit
+authors or e-mail addresses travel with it. It then replaces author names,
+institutions, e-mail addresses, the repository URL, and the lab hostname
+recorded in board and JTAG logs, and drops the compiled `.elf` and BSP `.a`
+images because the toolchain writes the absolute build path inside them. It
+exits non-zero if any identifying string survives. Measured values, timestamps,
+and log structure are untouched: `check_paper_numbers.py` verifies 66/66 claims
+inside the snapshot exactly as it does here.
 
 ---
 

@@ -988,9 +988,9 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     )
     ax.set_yscale("log")
     ax.set_xticks(xe, en_tick, fontsize=fs)
-    ax.set_ylabel("µJ (log)" if PAPER_MODE
-                  else "Idle-calibrated energy (µJ/window, J21 log)")
-    set_figure_title(ax, "(c)", "(c) Idle-calibrated board energy")
+    ax.set_ylabel("µJ/w (log, l.b.)" if PAPER_MODE
+                  else "Idle-calibrated energy lower bound (µJ/window, J21 log)")
+    set_figure_title(ax, "(c)", "(c) Idle-calibrated board-energy lower bound")
     for i, v in enumerate(en_vals):
         ax.text(i, v * 1.22, f"{v:.0f}", ha="center", fontsize=fs)
     if not PAPER_MODE:
