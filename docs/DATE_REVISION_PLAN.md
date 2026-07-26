@@ -340,7 +340,9 @@ Paper: reproducibility statement with URL + license in §IV-D.
 
 **Issue:** Research-paper [#3](https://github.com/harsha240yeager/Research-paper/issues/3)
 
-**Chosen title:** *Bit-Position Pruning for FPGA Hyperdimensional Computing: Informed Selection Is Active-Support Identification*
+**Chosen title:** *Bit-Position Pruning for Hyperdimensional Computing on FPGA: Support, Not Score*
+
+Shortened from the working version *…: Informed Selection Is Active-Support Identification*, and "FPGA Hyperdimensional Computing" reordered to "Hyperdimensional Computing on FPGA" so the adjective sits with the noun it belongs to.
 
 Superseded the original *Fisher-Guided Bit Selection for a Bit-Exact Streaming HDC Accelerator on Zynq* once the ranking sweep showed six criteria are interchangeable, which makes a Fisher-specific title unsupportable.
 
