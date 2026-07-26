@@ -171,6 +171,16 @@ def anchor_row(anchor: str) -> dict:
     raise ValueError(f"anchor {anchor} missing from summary.csv")
 
 
+def board_accuracy_exact(anchor: str) -> float:
+    """Board accuracy (%) from raw counts, not the firmware's printed string.
+
+    The firmware truncates to two decimals, so anchor C prints 72.84 for
+    72.8497 and looks 0.01 pp off a 72.85 reference it actually matches.
+    """
+    row = anchor_row(anchor)
+    return 100.0 * float(row["correct"]) / float(row["windows"])
+
+
 def twist2_36(keep_bits: int) -> dict:
     return load_json(
         f"results/protocol_v2/twist2_36_v2/keep_{keep_bits}/twist2_results.json"
@@ -326,15 +336,25 @@ CLAIMS: list[dict] = [
     dict(
         id="board_vs_export_dev",
         paper="Sec. IV-B, Table (tab:protocol)",
-        claim="Largest board-vs-export accuracy deviation 0.01 pp (anchor C), gate 0.5 pp",
-        expected=0.01,
-        tol=0.005,
-        unit="pp",
+        claim="Board accuracy from raw counts rounds to the export reference at every anchor",
+        expected=0.0,
+        tol=0.0,
+        unit="pp (max residual after rounding)",
         evidence="results/protocol_v2/anchors/summary.csv",
         fn=lambda: max(
-            abs(float(anchor_row(a)["board_pct"]) - float(anchor_row(a)["export_ref_pct"]))
+            abs(round(board_accuracy_exact(a), 2) - float(anchor_row(a)["export_ref_pct"]))
             for a in ("A", "B", "C")
         ),
+    ),
+    dict(
+        id="anchor_c_board_exact",
+        paper="Sec. IV-B",
+        claim="Anchor C board accuracy 72.8497% from 359,522/493,512 (firmware truncates to 72.84)",
+        expected=72.8497,
+        tol=0.0001,
+        unit="%",
+        evidence="results/protocol_v2/anchors/summary.csv",
+        fn=lambda: board_accuracy_exact("C"),
     ),
     dict(
         id="anchor_c_ref",
