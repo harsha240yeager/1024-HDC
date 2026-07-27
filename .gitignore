@@ -47,6 +47,9 @@ results/repro/
 # Double-blind review snapshot (regenerate: scripts/make_anon_artifact.py)
 dist/
 
+# Rendered study guide (regenerate: scripts/md_to_pdf.py docs/PAPER_DISCUSSION_GUIDE.md)
+docs/PAPER_DISCUSSION_GUIDE.pdf
+
 # OS cruft
 Thumbs.db
 .DS_Store
