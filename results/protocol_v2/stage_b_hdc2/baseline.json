@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "generated_at": "2026-07-28T11:51:07Z",
+    "protocol": "HDC-2",
+    "D": 1024,
+    "item_mem_seed": 1,
+    "split_seed": 1,
+    "train_fraction": 0.25,
+    "dataset": "/home/bsp-lab/1024-HDC/python_ref/HDC-EMG/dataset.mat",
+    "elapsed_s": 21.4,
+    "spatial_mean_accuracy": 0.8945894997859213
+  },
+  "per_subject": [
+    {
+      "subject": 1,
+      "n_train": 37206,
+      "n_test": 111625,
+      "correct": 105363,
+      "accuracy": 0.9439014557670773
+    },
+    {
+      "subject": 2,
+      "n_train": 34782,
+      "n_test": 104353,
+      "correct": 91930,
+      "accuracy": 0.8809521527890909
+    },
+    {
+      "subject": 3,
+      "n_train": 34391,
+      "n_test": 103182,
+      "correct": 92193,
+      "accuracy": 0.8934988660812933
+    },
+    {
+      "subject": 4,
+      "n_train": 33582,
+      "n_test": 100753,
+      "correct": 88737,
+      "accuracy": 0.8807380425396762
+    },
+    {
+      "subject": 5,
+      "n_train": 24531,
+      "n_test": 73599,
+      "correct": 64315,
+      "accuracy": 0.8738569817524695
+    }
+  ]
+}
