@@ -9,16 +9,16 @@ is replicated across five feature slots. Preempt “what are your features?” q
 
 ## Requirements
 
-- [ ] Document in `results/protocol_v2/encoder_ablation/README.md` (extend existing)
-- [ ] Cite `scripts/export_emg_board_vectors.py::level21_to_grid`
-- [ ] Confirm identical function used in all Python sweeps + board export
-- [ ] Paper: half-sentence in encoder subsection OR limitations (integration #36)
-- [ ] Optional follow-up: track as #34 if fixing encoder (real features)
+- [x] Document in `results/protocol_v2/encoder_ablation/README.md` (extend existing)
+- [x] Cite `scripts/export_emg_board_vectors.py::level21_to_grid`
+- [x] Confirm identical function used in all Python sweeps + board export
+- [x] Paper: half-sentence in encoder subsection OR limitations (integration #36)
+- [x] Optional follow-up: track as #34 if fixing encoder (real features)
 
 ## Done when
 
-- [ ] README committed; no inconsistency between Python and board pipelines
-- [ ] Advisor/professor FAQ answered in repo docs
+- [x] README committed; no inconsistency between Python and board pipelines
+- [x] Advisor/professor FAQ answered in repo docs
 
 ## Data already exists
 

@@ -116,6 +116,8 @@ encoder ablation shows 20 binds (72.89%) ≈ 4 binds (73.28%). Note that it does
 *not* explain the small active support — measured support is nearly the same
 with independent per-slot levels (§5.2), so do not conflate the two.
 
+Full pipeline table, FAQ, and paper draft: [`results/protocol_v2/encoder_ablation/README.md`](../results/protocol_v2/encoder_ablation/README.md) (issue #25).
+
 Note the two level counts and do not mix them up: **21** is the dataset envelope
 quantization; **16** is the size of the value item memory the RTL indexes, hence
 4-bit level codes and an 80-bit window (20 slots × 4 bits, sent as three 32-bit
