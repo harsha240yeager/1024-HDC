@@ -5,6 +5,7 @@ Generated from committed `results/` data only — nothing recomputed.
 ```bash
 python3 python_ref/plot_results.py              # 300 dpi (default)
 python3 python_ref/plot_results.py --paper      # IEEE single-column: no suptitles, compact size
+python3 python_ref/plot_results.py --paper --only twist1_three   # issue #23 hero only
 python3 python_ref/plot_results.py --dpi 600    # extra-high PNG rasterization
 python3 python_ref/plot_results.py --out results/figures
 ```
@@ -24,6 +25,7 @@ python3 python_ref/plot_results.py --out results/figures
 | **`baselines_bar.png`** | PL board vs ARM host sim vs MLP; latency/energy measured ZedBoard |
 | **`twist1_informed_vs_random.png`** | Twist 1 @ keep=0.5 — supplementary (+1.7 pp) |
 | **`twist1_informed_vs_random_keep0125.png`** | **Twist 1 headline** @ keep=0.125 (+8.6 pp) |
+| **`twist1_three_baselines_keep0125.png`** | **Issue #23 hero** — informed / random-all / random-support @ keep=0.125 (hdc_ref + Stage B) |
 | **`twist2_cross_subject.png`** | Twist 2 pilot — S1–3 → S4–5 (+0.86 pp) |
 | **`twist2_cross_subject_36.png`** | **Twist 2 @ 36 UCI subjects** — S1–18 → S19–36 (0.00 pp gap) |
 

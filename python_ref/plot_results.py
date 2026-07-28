@@ -15,6 +15,10 @@ Sources:
   results/protocol_v2/anchors/anchor_*/board_emg_replay.txt  on-board accuracy
   results/hook_a/fisher_pooled.npz           pooled Fisher scores + masks (export script)
   results/twist1/twist1_results.json         Twist 1 informed vs random @ keep=0.5
+  results/protocol_v2/twist1_keep0125_30seed/twist1_results.json
+  results/protocol_v2/ranking_baselines/ranking_baselines_results.json
+  results/protocol_v2/twist1_stage_b_keep0125/twist1_results.json
+  results/protocol_v2/twist1_stage_b/ranking_baselines_results.json
   results/twist2/twist2_results.json         Twist 2 cross-subject mask transfer (5-subject pilot)
   results/twist2_36/twist2_results.json    Twist 2 @ 36 UCI subjects (train 1–18 → test 19–36)
 
@@ -1016,6 +1020,174 @@ def fig_baselines_bar(systems: list[dict], out: Path) -> None:
     _save(fig, out, "baselines_bar")
 
 
+def load_ranking_baselines(
+    rel: str = "results/protocol_v2/ranking_baselines/ranking_baselines_results.json",
+) -> dict | None:
+    path = REPO / rel
+    if not path.is_file():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _summary_method(ranking: dict, name: str) -> dict:
+    for row in ranking["meta"]["summary"]:
+        if row["method"] == name:
+            return row
+    raise KeyError(name)
+
+
+def _random_method_seed_std_pp(ranking: dict, name: str) -> float:
+    """Mean per-subject seed std (percentage points), matching Twist 1 convention."""
+    stds = [
+        float(g["methods"][name]["accuracy_std"])
+        for g in ranking["per_subject"]
+        if name in g["methods"] and "accuracy_std" in g["methods"][name]
+    ]
+    if not stds:
+        return 0.0
+    return 100.0 * float(np.mean(stds))
+
+
+def load_twist1_three_baselines(
+    twist1_rel: str = "results/protocol_v2/twist1_keep0125_30seed/twist1_results.json",
+    ranking_rel: str = "results/protocol_v2/ranking_baselines/ranking_baselines_results.json",
+    *,
+    encoder_label: str = "hdc_ref RTL",
+) -> dict | None:
+    """Informed (Twist 1) + random-all (Twist 1) + random-support (ranking random_active)."""
+    twist1 = load_twist1(twist1_rel)
+    ranking = load_ranking_baselines(ranking_rel)
+    if twist1 is None or ranking is None:
+        return None
+    meta_t = twist1["meta"]
+    active = _summary_method(ranking, "random_active")
+    return {
+        "engine": meta_t.get("engine", "hdc_ref"),
+        "encoder_label": encoder_label,
+        "keep_ratio": float(meta_t["keep_ratio"]),
+        "n_keep": int(meta_t["n_keep"]),
+        "protocol": meta_t.get("protocol", "HDC-2"),
+        "informed_pp": 100.0 * float(meta_t["mean_informed_accuracy"]),
+        "random_all_pp": 100.0 * float(meta_t["mean_random_accuracy"]),
+        "random_all_err_pp": 100.0 * float(meta_t["std_random_accuracy"]),
+        "random_support_pp": 100.0 * float(active["spatial_mean_accuracy"]),
+        "random_support_err_pp": _random_method_seed_std_pp(ranking, "random_active"),
+        "gap_informed_minus_random_all_pp": float(meta_t["mean_gap_pp"]),
+        "gap_informed_minus_random_support_pp": 100.0 * (
+            float(meta_t["mean_informed_accuracy"]) - float(active["spatial_mean_accuracy"])
+        ),
+    }
+
+
+def fig_twist1_three_baselines(
+    hdc: dict,
+    out: Path,
+    *,
+    stage_b: dict | None = None,
+    name: str = "twist1_three_baselines_keep0125",
+) -> None:
+    """Hero figure: informed vs random-all vs random-support @ keep=0.125 (issue #23)."""
+    panels = [("a", hdc)]
+    if stage_b is not None:
+        panels.append(("b", stage_b))
+
+    labels = ["Informed\n(Fisher)", "Random-all", "Random-support\n(active)"]
+    colors = [PAPER_COLORS["blue"], PAPER_COLORS["red"], PAPER_COLORS["orange"]]
+
+    if PAPER_MODE:
+        n_panels = len(panels)
+        fig, axes = plt.subplots(
+            1,
+            n_panels,
+            figsize=(IEEE_COL_W if n_panels == 1 else IEEE_COL_W * 1.55, 2.05),
+            squeeze=False,
+        )
+        axes = axes[0]
+        bar_w = 0.58
+        fs = 6
+    else:
+        n_panels = len(panels)
+        fig, axes = plt.subplots(1, n_panels, figsize=(4.2 * n_panels, 4.6), squeeze=False)
+        axes = axes[0]
+        bar_w = 0.62
+        fs = 8
+
+    y_mins: list[float] = []
+    y_maxs: list[float] = []
+
+    for ax, (tag, panel) in zip(axes, panels):
+        vals = [
+            panel["informed_pp"],
+            panel["random_all_pp"],
+            panel["random_support_pp"],
+        ]
+        errs = [0.0, panel["random_all_err_pp"], panel["random_support_err_pp"]]
+        x = np.arange(3)
+        bars = ax.bar(
+            x,
+            vals,
+            yerr=errs,
+            capsize=2.5 if PAPER_MODE else 4,
+            color=colors,
+            width=bar_w,
+            edgecolor="0.25",
+            linewidth=0.45,
+            error_kw={"elinewidth": 0.7 if PAPER_MODE else 1.0, "ecolor": "0.35"},
+        )
+        for i, (v, e) in enumerate(zip(vals, errs)):
+            label = f"{v:.1f}"
+            if e > 0:
+                label += f"\n±{e:.1f}"
+            ax.text(
+                bars[i].get_x() + bars[i].get_width() / 2,
+                v + e + (0.8 if PAPER_MODE else 1.2),
+                label,
+                ha="center",
+                va="bottom",
+                fontsize=fs - 0.5,
+            )
+        ax.set_xticks(x, labels, fontsize=fs)
+        ax.set_ylabel("Spatial mean accuracy (%)" if not PAPER_MODE else "Acc. (%)", fontsize=fs)
+        ax.tick_params(labelsize=fs)
+        ax.grid(True, axis="y", alpha=0.2, linewidth=0.5)
+        y_mins.append(min(vals) - max(errs) - 4)
+        y_maxs.append(max(v + e for v, e in zip(vals, errs)) + 4)
+        if PAPER_MODE:
+            panel_tag(ax, tag)
+            ax.set_title("")
+        else:
+            ax.set_title(
+                f"{panel['encoder_label']} — keep={panel['keep_ratio']} "
+                f"({panel['n_keep']} bits, {panel['protocol']})"
+            )
+        gap_all = panel["gap_informed_minus_random_all_pp"]
+        gap_sup = panel["gap_informed_minus_random_support_pp"]
+        note = f"Δ(inf−all)={gap_all:+.1f} pp\nΔ(inf−support)={gap_sup:+.1f} pp"
+        ax.text(
+            0.98,
+            0.03,
+            note,
+            transform=ax.transAxes,
+            ha="right",
+            va="bottom",
+            fontsize=fs - 0.5,
+            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", alpha=0.9, edgecolor="0.8"),
+        )
+
+    y0 = max(0, min(y_mins))
+    y1 = min(100, max(y_maxs))
+    for ax in axes:
+        ax.set_ylim(y0, y1)
+
+    if not PAPER_MODE:
+        fig.suptitle(
+            "Iso-density baselines @ keep=0.125 — informed vs random-all vs random-support",
+            fontsize=11,
+            y=1.02,
+        )
+    _save(fig, out, name)
+
+
 def load_twist1(rel: str = "results/twist1/twist1_results.json") -> dict | None:
     path = REPO / rel
     if not path.is_file():
@@ -1166,6 +1338,11 @@ def main() -> None:
         action="store_true",
         help="compact IEEE single-column export: no suptitles, panel labels only",
     )
+    ap.add_argument(
+        "--only",
+        default=None,
+        help="generate only figures whose name contains this substring (e.g. twist1_three)",
+    )
     args = ap.parse_args()
 
     global PAPER_MODE
@@ -1180,26 +1357,33 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     print(f"Writing figures to {out}")
 
-    fig_per_subject(load_per_subject(), out)
+    def want(name: str) -> bool:
+        return args.only is None or args.only in name
+
+    if want("per_subject"):
+        fig_per_subject(load_per_subject(), out)
     spatial = load_spatial_temporal()
-    if spatial:
+    if spatial and want("spatial"):
         fig_spatial_temporal(spatial, out)
-    else:
+    elif not spatial:
         print("  skip spatial_vs_spatiotemporal (legacy emg_baseline keys missing)")
     hook = load_hook_a()
-    fig_hook_a_acc_vs_d(hook, out)
-    fig_hook_a_pareto(hook, out)
-    fig_hook_a_pruning(hook, out)
-    fig_hook_a_pareto_measured(hook, load_measured_silicon(), out)
-    fig_hook_a_anchor_energy(load_measured_silicon(), out)
-    fig_fisher_heatmap(load_fisher_pooled(), out)
-    fig_baselines_bar(load_baseline_systems(), out)
+    if want("hookA"):
+        fig_hook_a_acc_vs_d(hook, out)
+        fig_hook_a_pareto(hook, out)
+        fig_hook_a_pruning(hook, out)
+        fig_hook_a_pareto_measured(hook, load_measured_silicon(), out)
+        fig_hook_a_anchor_energy(load_measured_silicon(), out)
+    if want("fisher"):
+        fig_fisher_heatmap(load_fisher_pooled(), out)
+    if want("baselines"):
+        fig_baselines_bar(load_baseline_systems(), out)
     twist1 = load_twist1("results/protocol_v2/twist1_keep0125_30seed/twist1_results.json")
     if twist1 is None:
         twist1 = load_twist1("results/twist1/twist1_results.json")
-    if twist1:
+    if twist1 and want("twist1_informed"):
         fig_twist1(twist1, out)
-    else:
+    elif twist1 is None:
         print("  skip twist1_informed_vs_random (missing twist1 results)")
     twist1_aggressive = load_twist1(
         "results/protocol_v2/twist1_keep0125_30seed/twist1_results.json"
@@ -1210,30 +1394,45 @@ def main() -> None:
         )
     if twist1_aggressive is None:
         twist1_aggressive = load_twist1("results/twist1_keep0125/twist1_results.json")
-    if twist1_aggressive:
+    if twist1_aggressive and want("twist1_informed_vs_random_keep0125"):
         fig_twist1(
             twist1_aggressive,
             out,
             name="twist1_informed_vs_random_keep0125",
         )
-    else:
+    elif twist1_aggressive is None:
         print("  skip twist1 keep=0.125 figure (missing protocol_v2/twist1_*)")
+    three_hdc = load_twist1_three_baselines(
+        encoder_label="hdc_ref RTL",
+    )
+    three_stage_b = load_twist1_three_baselines(
+        twist1_rel="results/protocol_v2/twist1_stage_b_keep0125/twist1_results.json",
+        ranking_rel="results/protocol_v2/twist1_stage_b/ranking_baselines_results.json",
+        encoder_label="Stage B BSC",
+    )
+    if three_hdc and want("twist1_three"):
+        fig_twist1_three_baselines(
+            three_hdc,
+            out,
+            stage_b=three_stage_b,
+        )
+    elif three_hdc is None:
+        print("  skip twist1_three_baselines (missing twist1 and/or ranking_baselines JSON)")
     twist2 = load_twist2("results/protocol_v2/twist2_keep0125/twist2_results.json")
     if twist2 is None:
         twist2 = load_twist2()
-    if twist2:
+    if twist2 and want("twist2_cross_subject"):
         fig_twist2(twist2, out)
-    else:
+    elif twist2 is None:
         print("  skip twist2_cross_subject (missing twist2 results)")
-    # Prefer HDC-2 36-subj keep=128 when present; else legacy HDC-1 36-subj.
     twist2_36 = load_twist2(
         "results/protocol_v2/twist2_36_v2/keep_128/twist2_results.json"
     )
     if twist2_36 is None:
         twist2_36 = load_twist2("results/twist2_36/twist2_results.json")
-    if twist2_36:
+    if twist2_36 and want("twist2_cross_subject_36"):
         fig_twist2(twist2_36, out, name="twist2_cross_subject_36")
-    else:
+    elif twist2_36 is None:
         print("  skip twist2_cross_subject_36 (missing 36-subj results)")
 
     if args.show:

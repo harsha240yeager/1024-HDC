@@ -28,6 +28,8 @@ Random-support baseline (third arm in the issue spec) is **deferred** — not im
 
 Six informed criteria **separate** on Stage B (unlike hdc_ref tie): **MI leads at 92.77%** (+2.29 pp vs Fisher 90.48%). Jaccard vs Fisher (informed): **0.56–0.75**. Details: [`ranking_baselines_README.md`](ranking_baselines_README.md)
 
+**Hero figure (issue #23):** [`../figures/twist1_three_baselines_keep0125.pdf`](../figures/twist1_three_baselines_keep0125.pdf) — informed / random-all / random-support side-by-side with hdc_ref.
+
 ## Artifacts
 
 | Keep | Directory |

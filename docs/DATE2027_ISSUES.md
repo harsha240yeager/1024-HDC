@@ -14,7 +14,7 @@ Prior revision track (#1–#11) is largely complete; this track adds experiments
 |---|-------|--------|-------|---------|
 | 1 | [#21](https://github.com/harsha240yeager/1024-HDC/issues/21) Stage-B iso-density (S1) | ✅ | 2 | **Yes** |
 | 2 | [#22](https://github.com/harsha240yeager/1024-HDC/issues/22) Stage-B ranking baselines | ✅ | 2 | **Yes** |
-| 3 | [#23](https://github.com/harsha240yeager/1024-HDC/issues/23) Three-baseline hero figure | ⏳ | 2 | Medium |
+| 3 | [#23](https://github.com/harsha240yeager/1024-HDC/issues/23) Three-baseline hero figure | ✅ | 2 | Medium |
 | 4 | [#24](https://github.com/harsha240yeager/1024-HDC/issues/24) Active-support mechanism | ⏳ | 2 | Medium |
 | 5 | [#25](https://github.com/harsha240yeager/1024-HDC/issues/25) Encoder redundancy doc | ⏳ | 2 | Medium |
 | 6 | [#26](https://github.com/harsha240yeager/1024-HDC/issues/26) Silicon seeds 1–9 | ⏳ | Both | **Yes** |

@@ -138,6 +138,7 @@ python scripts/export_emg_board_vectors.py --config python_ref/config/emg_baseli
 | Twist 1 Python @ keep=0.125 | ✅ **+6.90 pp** (30 seeds) [`twist1_keep0125_30seed/`](results/protocol_v2/twist1_keep0125_30seed/) · 5-seed [`twist1_keep0125/`](results/protocol_v2/twist1_keep0125/) |
 | Twist 1 @ Stage B encoder | ✅ keep grid **+2.82 / +1.02 / +0.50 pp** @ {128,256,512} bits (30 seeds) · baseline **89.46%** [`twist1_stage_b/`](results/protocol_v2/twist1_stage_b/) |
 | Stage B ranking baselines @ 128 bits | ✅ **MI 92.77%** (+2.29 pp vs Fisher); criteria **separate** on dense support [#22](https://github.com/harsha240yeager/1024-HDC/issues/22) [`ranking_baselines_README.md`](results/protocol_v2/twist1_stage_b/ranking_baselines_README.md) |
+| Three-baseline hero figure @ keep=128 | ✅ informed / random-all / random-support (hdc_ref + Stage B) [#23](https://github.com/harsha240yeager/1024-HDC/issues/23) [`twist1_three_baselines_keep0125.pdf`](results/figures/twist1_three_baselines_keep0125.pdf) |
 | Twist 1 silicon seed 0 | ✅ **+10.33 pp** (62.51% vs 72.84%) | [`phase3/twist1_silicon/`](results/phase3/twist1_silicon/) · seeds 1–9 **deferred last** |
 | Twist 2 @ keep=0.125 (S1–3 → S4–5) | ✅ **+1.02 pp**, generalises | [`protocol_v2/twist2_keep0125/`](results/protocol_v2/twist2_keep0125/) |
 | Twist 2 @ 36 UCI (S1–18 → S19–36) | ✅ keep grid **32–256 bits** complete | [`protocol_v2/twist2_36_v2/`](results/protocol_v2/twist2_36_v2/) · [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) |
