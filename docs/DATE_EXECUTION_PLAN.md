@@ -1,7 +1,7 @@
 # DATE Major Revision — Execution Plan
 
 Ordered workflow for the post weak-reject DATE resubmission.  
-**Master plan:** [`DATE_REVISION_PLAN.md`](DATE_REVISION_PLAN.md) · **GitHub issues:** [#1–#11](https://github.com/harsha240yeager/1024-HDC/issues)
+**Master plan:** [`DATE_REVISION_PLAN.md`](DATE_REVISION_PLAN.md) · **Revision issues:** [#1–#11](https://github.com/harsha240yeager/1024-HDC/issues) · **DATE 2027 strong-accept epic:** [#20](https://github.com/harsha240yeager/1024-HDC/issues/20) ([`DATE2027_ISSUES.md`](DATE2027_ISSUES.md))
 
 ---
 

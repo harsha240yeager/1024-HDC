@@ -300,11 +300,40 @@ If combined is **rejected** (“incremental” / “no hardware win”): lead wi
 
 ---
 
-## 10. Related repo docs
+## 10. GitHub experiment tracker (DATE 2027 strong accept)
 
+**Epic:** [#20](https://github.com/harsha240yeager/1024-HDC/issues/20) · **Plan doc:** `docs/DATE2027_ISSUES.md`
+
+| Order | Issue | Priority | Paper |
+|------:|-------|----------|-------|
+| 1 | [#21](https://github.com/harsha240yeager/1024-HDC/issues/21) Stage-B iso-density (S1) | P0 | 2 |
+| 2 | [#22](https://github.com/harsha240yeager/1024-HDC/issues/22) Stage-B ranking baselines | P0 | 2 |
+| 3 | [#23](https://github.com/harsha240yeager/1024-HDC/issues/23) Three-baseline figure | P1 | 2 |
+| 4 | [#24](https://github.com/harsha240yeager/1024-HDC/issues/24) Active-support mechanism | P1 | 2 |
+| 5 | [#25](https://github.com/harsha240yeager/1024-HDC/issues/25) Encoder redundancy | P1 | 2 |
+| 6 | [#26](https://github.com/harsha240yeager/1024-HDC/issues/26) Silicon seeds 1–9 | P0 | Both |
+| 7 | [#27](https://github.com/harsha240yeager/1024-HDC/issues/27) Silicon seed script | P1 | Both |
+| 8 | [#28](https://github.com/harsha240yeager/1024-HDC/issues/28) Design narrow/gated RTL | P0 | 1 |
+| 9 | [#29](https://github.com/harsha240yeager/1024-HDC/issues/29) Implement + synth | P0 | 1 |
+| 10 | [#30](https://github.com/harsha240yeager/1024-HDC/issues/30) Co-sim + golden | P1 | 1 |
+| 11 | [#31](https://github.com/harsha240yeager/1024-HDC/issues/31) Board LUT/energy/latency | P1 | 1 |
+| 12 | [#32](https://github.com/harsha240yeager/1024-HDC/issues/32) Pareto figure | P2 | 1 |
+| 13 | [#36](https://github.com/harsha240yeager/1024-HDC/issues/36) Integrate manuscript | P1 | Both |
+| 14 | [#37](https://github.com/harsha240yeager/1024-HDC/issues/37) Claim checker + figures | P1 | Both |
+| 15 | [#38](https://github.com/harsha240yeager/1024-HDC/issues/38) DATE submit checklist | P1 | Both |
+
+Optional P2: [#33](https://github.com/harsha240yeager/1024-HDC/issues/33) ARM NEON · [#34](https://github.com/harsha240yeager/1024-HDC/issues/34) real encoder · [#35](https://github.com/harsha240yeager/1024-HDC/issues/35) PL-rail energy.
+
+Recreate issues: `powershell scripts/create_date2027_issues.ps1` (or `bash scripts/create_date2027_issues.sh` on Linux).
+
+---
+
+## 11. Related repo docs
+
+- `docs/DATE2027_ISSUES.md` — live experiment checklist for DATE 2027
 - `docs/PAPER_DISCUSSION_GUIDE.md` — advisor meeting / mechanism detail
 - `docs/REPRODUCIBILITY.md` — artifact tiers and claim checker
-- `docs/DATE_REVISION_PLAN.md` — combined-paper revision history
+- `docs/DATE_REVISION_PLAN.md` — combined-paper revision history (#1–#11)
 - `docs/HDC_Research_End_to_End_Guide.md` — RTL module map (pre-results)
 
 **Camera-ready authors:** `Research-paper` git history (`0eb602e`) — not in blind submission tree.
