@@ -1,0 +1,128 @@
+{
+  "generated_at": "2026-07-28T13:08:10Z",
+  "issue": 24,
+  "engine": "hdc_ref",
+  "protocol": "HDC-2",
+  "D": 1024,
+  "cnt_w": 6,
+  "primary_item_mem_seed": 42,
+  "n_synthetic_windows": 8000,
+  "elapsed_s": 180.2,
+  "paper_table": [
+    {
+      "label": "Value-table varying set (structural ceiling)",
+      "positions": 327,
+      "of_D": 1024,
+      "source": "ItemMemory.value, seed 42"
+    },
+    {
+      "label": "Bundled queries, uniform random envelope",
+      "positions": 299,
+      "of_D": 1024,
+      "source": "Synthetic level21 grid, n=8000 windows"
+    },
+    {
+      "label": "Bundled queries, independent per-slot levels",
+      "positions": 319,
+      "of_D": 1024,
+      "source": "Synthetic i.i.d. levels, n=8000 windows"
+    },
+    {
+      "label": "Bundled queries, real pooled TRAIN+TEST (EMG)",
+      "positions_range": [
+        203.0,
+        209.8
+      ],
+      "positions_mean_over_seeds": 207.7,
+      "of_D": 1024,
+      "source": "seed_sensitivity (5 subjects, seeds 1/7/21/42)"
+    }
+  ],
+  "real_emg": {
+    "source": "python_ref/config/emg_baseline_v2.json",
+    "item_mem_seeds": [
+      1,
+      7,
+      21,
+      42
+    ],
+    "spatial_mean_active_bit_support_by_seed": {
+      "1": 203.0,
+      "7": 209.8,
+      "21": 208.6,
+      "42": 209.4
+    },
+    "spatial_mean_range": [
+      203.0,
+      209.8
+    ],
+    "spatial_mean_over_seeds": 207.7,
+    "per_subject_active_bit_support_min": 168,
+    "per_subject_active_bit_support_max": 239,
+    "note": "Pooled TRAIN+TEST encoded windows per subject; spatial mean over S1\u2013S5."
+  },
+  "per_seed": [
+    {
+      "item_mem_seed": 1,
+      "D": 1024,
+      "value_table_active_bits": 316,
+      "value_minmax_hamming": 64,
+      "value_flip_budget_D_over_levels": 64,
+      "per_slot_value_path_active_mean": 316.0,
+      "per_slot_value_path_active_max": 316,
+      "single_record_universe_active_bits": 1019,
+      "synthetic_n_windows": 0,
+      "synthetic_uniform_envelope_bundled": null,
+      "synthetic_independent_per_slot_bundled": null
+    },
+    {
+      "item_mem_seed": 7,
+      "D": 1024,
+      "value_table_active_bits": 339,
+      "value_minmax_hamming": 64,
+      "value_flip_budget_D_over_levels": 64,
+      "per_slot_value_path_active_mean": 339.0,
+      "per_slot_value_path_active_max": 339,
+      "single_record_universe_active_bits": 1022,
+      "synthetic_n_windows": 0,
+      "synthetic_uniform_envelope_bundled": null,
+      "synthetic_independent_per_slot_bundled": null
+    },
+    {
+      "item_mem_seed": 21,
+      "D": 1024,
+      "value_table_active_bits": 330,
+      "value_minmax_hamming": 64,
+      "value_flip_budget_D_over_levels": 64,
+      "per_slot_value_path_active_mean": 330.0,
+      "per_slot_value_path_active_max": 330,
+      "single_record_universe_active_bits": 1019,
+      "synthetic_n_windows": 0,
+      "synthetic_uniform_envelope_bundled": null,
+      "synthetic_independent_per_slot_bundled": null
+    },
+    {
+      "item_mem_seed": 42,
+      "D": 1024,
+      "value_table_active_bits": 327,
+      "value_minmax_hamming": 64,
+      "value_flip_budget_D_over_levels": 64,
+      "per_slot_value_path_active_mean": 327.0,
+      "per_slot_value_path_active_max": 327,
+      "single_record_universe_active_bits": 1019,
+      "synthetic_n_windows": 8000,
+      "synthetic_uniform_envelope_bundled": 299,
+      "synthetic_independent_per_slot_bundled": 319
+    }
+  ],
+  "conclusions": {
+    "structural_ceiling_seed_42": 327,
+    "real_data_spatial_mean_range": [
+      203.0,
+      209.8
+    ],
+    "gap_ceiling_to_real_mean": 119.3,
+    "data_coverage_fraction_mean": 0.2028,
+    "mechanism": "Ceiling set by value item-memory table (~327 @ seed 42); real EMG uses ~64% of reachable positions (~209 mean); bundling is not the primary limiter."
+  }
+}

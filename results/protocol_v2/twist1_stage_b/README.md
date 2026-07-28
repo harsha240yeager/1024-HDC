@@ -30,6 +30,8 @@ Six informed criteria **separate** on Stage B (unlike hdc_ref tie): **MI leads a
 
 **Hero figure (issue #23):** [`../figures/twist1_three_baselines_keep0125.pdf`](../figures/twist1_three_baselines_keep0125.pdf) — informed / random-all / random-support side-by-side with hdc_ref.
 
+**Active support mechanism (issue #24):** [`../active_support_mechanism/`](../active_support_mechanism/) — ceiling **327** vs real EMG **203–210**.
+
 ## Artifacts
 
 | Keep | Directory |

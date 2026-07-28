@@ -1,0 +1,16 @@
+{
+  "name": "Issue 24 — active support mechanism (327 vs 209)",
+  "description": "Quantify structural value-table ceiling vs synthetic input saturation vs real EMG coverage.",
+  "engine": "hdc_ref",
+  "protocol_config": "emg_baseline_v2.json",
+  "D": 1024,
+  "cnt_w": 6,
+  "primary_item_mem_seed": 42,
+  "item_mem_seeds": [1, 7, 21, 42],
+  "n_synthetic_windows": 8000,
+  "seed_sensitivity_results": "results/seed_sensitivity/seed_sensitivity_results.json",
+  "quick": {
+    "n_synthetic_windows": 1500,
+    "item_mem_seeds": [42]
+  }
+}
