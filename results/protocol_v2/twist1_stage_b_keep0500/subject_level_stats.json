@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-07-28T12:32:35Z",
+  "source": "results/protocol_v2/twist1_stage_b_keep0500/twist1_results.json",
+  "protocol": "HDC-2",
+  "keep_ratio": 0.5,
+  "n_keep": 512,
+  "n_random_seeds": 30,
+  "mean_informed_accuracy": 0.8945894997859213,
+  "mean_random_accuracy": 0.8896342824232766,
+  "per_subject": [
+    {
+      "subject": 1,
+      "informed_accuracy": 0.9439014557670773,
+      "random_accuracy_mean": 0.9455375886524824,
+      "gap_pp": -0.1636132885405095,
+      "n_test": 111625
+    },
+    {
+      "subject": 2,
+      "informed_accuracy": 0.8809521527890909,
+      "random_accuracy_mean": 0.8704330493613026,
+      "gap_pp": 1.051910342778828,
+      "n_test": 104353
+    },
+    {
+      "subject": 3,
+      "informed_accuracy": 0.8934988660812933,
+      "random_accuracy_mean": 0.8875511232579325,
+      "gap_pp": 0.5947742823360747,
+      "n_test": 103182
+    },
+    {
+      "subject": 4,
+      "informed_accuracy": 0.8807380425396762,
+      "random_accuracy_mean": 0.8707899516639704,
+      "gap_pp": 0.9948090875705806,
+      "n_test": 100753
+    },
+    {
+      "subject": 5,
+      "informed_accuracy": 0.8738569817524695,
+      "random_accuracy_mean": 0.8738596991806953,
+      "gap_pp": -0.0002717428225773588,
+      "n_test": 73599
+    }
+  ],
+  "summary": {
+    "n_subjects": 5,
+    "unit_of_analysis": "subject",
+    "note": "Bootstrap and hypothesis tests are over subjects, not windows.",
+    "gap_pp_mean": 0.49552173626447926,
+    "gap_pp_median": 0.5947742823360747,
+    "gap_pp_std": 0.5587882790836025,
+    "gap_pp_min": -0.1636132885405095,
+    "gap_pp_max": 1.051910342778828,
+    "bootstrap_mean_95ci_pp": [
+      0.05340084392198019,
+      0.9376426286069783
+    ],
+    "bootstrap_median_95ci_pp": [
+      -0.1636132885405095,
+      1.051910342778828
+    ],
+    "bootstrap_n": 10000,
+    "bootstrap_seed": 0,
+    "target_gap_pp": 5.0,
+    "target_met_by_mean": false,
+    "ci_excludes_zero": true,
+    "ci_excludes_target": false,
+    "tests": {
+      "n_subjects": 5,
+      "n_positive": 3,
+      "n_negative": 2,
+      "n_zero": 0,
+      "available": true,
+      "wilcoxon_two_sided_statistic": 3.0,
+      "wilcoxon_two_sided_pvalue": 0.3125,
+      "wilcoxon_greater_statistic": 12.0,
+      "wilcoxon_greater_pvalue": 0.15625,
+      "paired_t_greater_statistic": 1.9828982247681024,
+      "paired_t_greater_pvalue": 0.05920416439239494,
+      "paired_t_two_sided_statistic": 1.9828982247681024,
+      "paired_t_two_sided_pvalue": 0.11840832878478988
+    }
+  }
+}
