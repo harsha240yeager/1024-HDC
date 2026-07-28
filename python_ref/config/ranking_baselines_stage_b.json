@@ -1,0 +1,29 @@
+{
+  "name": "Issue 22 — Stage B ranking baselines @ 128 bits",
+  "description": "Six informed ranking criteria + random baselines on Stage B BSC encoder at keep=0.125 under HDC-2.",
+  "engine": "stage_b_bsc",
+  "protocol_config": "emg_baseline_v2.json",
+  "item_mem_seed": 1,
+  "subjects": [1, 2, 3, 4, 5],
+  "D": 1024,
+  "keep_ratio": 0.125,
+  "random_seeds": [0, 1, 2, 3, 4],
+  "max_train_windows_per_subject": null,
+  "max_test_windows_per_subject": 15000,
+  "methods": [
+    "fisher",
+    "variance",
+    "mutual_information",
+    "class_mean_separation",
+    "prototype_disagreement",
+    "entropy",
+    "random_full",
+    "random_active"
+  ],
+  "quick": {
+    "subjects": [1, 2],
+    "max_train_windows_per_subject": 3000,
+    "max_test_windows_per_subject": 3000,
+    "random_seeds": [0, 1]
+  }
+}

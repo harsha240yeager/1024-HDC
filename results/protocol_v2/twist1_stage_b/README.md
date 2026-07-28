@@ -24,6 +24,10 @@ Reference (sparse hdc_ref RTL encoder @ keep=0.125): **+6.90 pp** ([`twist1_keep
 
 Random-support baseline (third arm in the issue spec) is **deferred** — not implemented for hdc_ref or Stage B yet; does not change the informed-vs-random-all conclusion above.
 
+## Ranking baselines @ keep=128 (issue #22)
+
+Six informed criteria **separate** on Stage B (unlike hdc_ref tie): **MI leads at 92.77%** (+2.29 pp vs Fisher 90.48%). Jaccard vs Fisher (informed): **0.56–0.75**. Details: [`ranking_baselines_README.md`](ranking_baselines_README.md)
+
 ## Artifacts
 
 | Keep | Directory |
