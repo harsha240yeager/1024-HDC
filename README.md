@@ -8,6 +8,41 @@ Zynq-7020 (ZedBoard), validated with EMG hand-gesture recognition.
 **Manuscript:** [Research-paper](https://github.com/harsha240yeager/Research-paper)  
 **Platform:** ZedBoard `xc7z020clg484-1` @ 100 MHz PL · Vivado 2024.2
 
+---
+
+## At a glance
+
+A streaming HDC datapath — XOR bind, permute, bundle, and masked Hamming argmin — with a
+**runtime-programmable Fisher pruning mask**, verified bit-for-bit against a Python golden
+model and then replayed on silicon over the full test set.
+
+| | Programmable logic | ARM (same board) |
+|---|---|---|
+| Latency / window | **4.63 µs** | 818 µs |
+| Energy / window | **11.98 ± 0.07 µJ** | 2088 ± 6 µJ |
+
+≈175× on both axes (177× latency, 174× energy), measured with an **INA219 at the ZedBoard
+J21 sense resistor** — not estimated from vendor power tooling.
+
+| Metric | Value |
+|---|---|
+| Bit-exactness | every label matched the golden over **493,512** disjoint test windows (Δ0.00%) |
+| Throughput | **~216k windows/s** (WNS +0.111 ns @ 100 MHz) |
+| Post-route resources | **35.2k LUT, 0 DSP, 0 BRAM** |
+| Silicon accuracy | **72.78%** baseline; **flat from 0% to 87.5% pruning** |
+| Bit *position* vs bit *count* | Fisher-informed mask beats random at equal density by **+6.90 pp** (128 bits, 30 seeds) |
+
+**Headline claim:** at a fixed number of retained bits, *which* positions survive matters more
+than how many — and an 8× reduction in active bits costs no accuracy. This is a **systems and
+pruning** result, not an accuracy-SOTA claim; the deployment encoder sits at ~73% while a
+different encoding reaches ~90%, explained in [Understanding the numbers](#understanding-the-numbers).
+
+**Start here:** [`rtl/`](rtl/) (15 SystemVerilog modules) · [`python_ref/`](python_ref/) (golden
+model) · [`results/protocol_v2/`](results/protocol_v2/) (current result set) ·
+[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md)
+
+---
+
 > **Protocol HDC-2 (Jul 2026):** Tier 1 + Hook A + silicon anchors **complete**.
 > Baseline silicon **72.78%** on **493,512** disjoint test windows (Δ0.00% vs export ref).
 > HDC-1 numbers (74.24%, 658k windows) are **legacy** — do not cite for generalization.
@@ -17,6 +52,7 @@ Zynq-7020 (ZedBoard), validated with EMG hand-gesture recognition.
 
 ## Contents
 
+- [At a glance](#at-a-glance)
 - [Research overview](#research-overview)
 - [Protocol HDC-2 fix & rerun plan](#protocol-hdc-2-fix--rerun-plan)
 - [Headline results (HDC-2)](#headline-results-hdc-2--current)
