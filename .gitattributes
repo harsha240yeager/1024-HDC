@@ -1,0 +1,21 @@
+# Language statistics: report this repository as the hardware design it is.
+#
+# board/ is a generated Xilinx Vitis workspace (BSP drivers, ELFs, bitstreams,
+# HTML reports). Without this it contributes ~17.6 MB of generated C and
+# dominates the language bar, hiding the SystemVerilog in rtl/.
+board/** linguist-vendored
+
+# Paper artifacts and measurement dumps, not source.
+docs/** linguist-documentation
+results/** linguist-documentation
+
+# Tool-generated project state.
+*.mpf linguist-generated
+*.cr.mti linguist-generated
+modelsim.ini linguist-generated
+
+# Binary artifacts.
+*.bit binary
+*.xsa binary
+*.elf binary
+*.a binary
