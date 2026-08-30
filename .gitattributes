@@ -14,6 +14,9 @@ results/** linguist-documentation
 *.cr.mti linguist-generated
 modelsim.ini linguist-generated
 
+# ModelSim/QuestaSim macro scripts are Tcl; Linguist otherwise guesses Stata.
+sim/*.do linguist-language=Tcl
+
 # Binary artifacts.
 *.bit binary
 *.xsa binary
