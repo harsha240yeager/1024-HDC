@@ -23,7 +23,7 @@
       "gap_vs_informed_board_pp": 10.33,
       "prediction_method": "export_ref_calibrated",
       "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
-      "elapsed_s": 12.1,
+      "elapsed_s": 77.6,
       "mask_density": 0.125,
       "data_source": "dataset.mat",
       "board_accuracy_pct": 62.51,
@@ -42,7 +42,7 @@
       "gap_vs_informed_board_pp": 8.2584,
       "prediction_method": "export_ref_calibrated",
       "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
-      "elapsed_s": 11.5,
+      "elapsed_s": 75.6,
       "mask_density": 0.125,
       "data_source": "dataset.mat",
       "board_measured": false
@@ -59,7 +59,7 @@
       "gap_vs_informed_board_pp": 5.2017,
       "prediction_method": "export_ref_calibrated",
       "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
-      "elapsed_s": 14.5,
+      "elapsed_s": 75.7,
       "mask_density": 0.125,
       "data_source": "dataset.mat",
       "board_measured": false
@@ -76,7 +76,7 @@
       "gap_vs_informed_board_pp": 10.0614,
       "prediction_method": "export_ref_calibrated",
       "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
-      "elapsed_s": 15.2,
+      "elapsed_s": 76.5,
       "mask_density": 0.125,
       "data_source": "dataset.mat",
       "board_measured": false
@@ -93,7 +93,7 @@
       "gap_vs_informed_board_pp": 6.8367,
       "prediction_method": "export_ref_calibrated",
       "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
-      "elapsed_s": 13.7,
+      "elapsed_s": 76.4,
       "mask_density": 0.125,
       "data_source": "dataset.mat",
       "board_measured": false
@@ -110,7 +110,7 @@
       "gap_vs_informed_board_pp": 11.2887,
       "prediction_method": "export_ref_calibrated",
       "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
-      "elapsed_s": 14.8,
+      "elapsed_s": 78.3,
       "mask_density": 0.125,
       "data_source": "dataset.mat",
       "board_measured": false
@@ -127,7 +127,7 @@
       "gap_vs_informed_board_pp": 8.211,
       "prediction_method": "export_ref_calibrated",
       "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
-      "elapsed_s": 12.9,
+      "elapsed_s": 77.2,
       "mask_density": 0.125,
       "data_source": "dataset.mat",
       "board_measured": false
@@ -144,7 +144,7 @@
       "gap_vs_informed_board_pp": 5.2749,
       "prediction_method": "export_ref_calibrated",
       "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
-      "elapsed_s": 14.5,
+      "elapsed_s": 78.2,
       "mask_density": 0.125,
       "data_source": "dataset.mat",
       "board_measured": false
@@ -161,7 +161,7 @@
       "gap_vs_informed_board_pp": 3.6099,
       "prediction_method": "export_ref_calibrated",
       "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
-      "elapsed_s": 13.7,
+      "elapsed_s": 78.4,
       "mask_density": 0.125,
       "data_source": "dataset.mat",
       "board_measured": false
@@ -178,7 +178,7 @@
       "gap_vs_informed_board_pp": 5.3545,
       "prediction_method": "export_ref_calibrated",
       "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
-      "elapsed_s": 13.7,
+      "elapsed_s": 77.3,
       "mask_density": 0.125,
       "data_source": "dataset.mat",
       "board_measured": false
