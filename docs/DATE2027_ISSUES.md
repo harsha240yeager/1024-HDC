@@ -17,8 +17,8 @@ Prior revision track (#1–#11) is largely complete; this track adds experiments
 | 3 | [#23](https://github.com/harsha240yeager/1024-HDC/issues/23) Three-baseline hero figure | ✅ | 2 | Medium |
 | 4 | [#24](https://github.com/harsha240yeager/1024-HDC/issues/24) Active-support mechanism | ✅ | 2 | Medium |
 | 5 | [#25](https://github.com/harsha240yeager/1024-HDC/issues/25) Encoder redundancy doc | ✅ | 2 | Medium |
-| 6 | [#26](https://github.com/harsha240yeager/1024-HDC/issues/26) Silicon seeds 1–9 | ⏳ | Both | **Yes** |
-| 7 | [#27](https://github.com/harsha240yeager/1024-HDC/issues/27) Silicon seed automation | ⏳ | Both | Enables #26 |
+| 6 | [#26](https://github.com/harsha240yeager/1024-HDC/issues/26) Silicon seeds 1–9 | 🔄 predict + seed 0 board; 1–9 board ⏳ | Both | **Yes** |
+| 7 | [#27](https://github.com/harsha240yeager/1024-HDC/issues/27) Silicon seed automation | ✅ script | Both | Enables #26 |
 | 8 | [#28](https://github.com/harsha240yeager/1024-HDC/issues/28) Design narrow/gated RTL | ⏳ | 1 | **Yes** |
 | 9 | [#29](https://github.com/harsha240yeager/1024-HDC/issues/29) Implement + synth | ⏳ | 1 | **Yes** |
 | 10 | [#30](https://github.com/harsha240yeager/1024-HDC/issues/30) Co-sim + golden | ⏳ | 1 | **Yes** |
@@ -70,3 +70,23 @@ powershell -File scripts/create_date2027_issues.ps1
 ```
 
 Issue bodies: `docs/.issue_bodies/date2027/`
+
+---
+
+## Issue #26 — silicon seed prediction (in progress)
+
+**Predictor:** `python_ref/predict_twist1_silicon_seeds.py`  
+**Automation:** `scripts/run_silicon_random_seeds.sh` (also closes #27)
+
+```bash
+# Python export-ref prediction (all seeds 0–9; ~1–3 h first run, cached after)
+python3 python_ref/predict_twist1_silicon_seeds.py --from-dataset
+
+# Optional: board replay when ZedBoard available
+bash scripts/run_silicon_random_seeds.sh --board --seeds 1-9 --resume
+```
+
+**Method:** Pooled random mask @ keep=0.125 (same as `patch_emg_anchor.py` / board).
+Seed 0 validated **board == export ref (Δ0.00 pp)** → predicted silicon = export ref for seeds 1–9 until measured.
+
+**Outputs:** `results/protocol_v2/twist1_silicon/seed_summary.json`, per-seed `prediction.json`
