@@ -1,0 +1,17 @@
+{
+  "seed": 9,
+  "keep_ratio": 0.125,
+  "mask_mode": "random_pooled",
+  "n_keep": 128,
+  "n_windows": 493512,
+  "n_correct": 333049,
+  "export_ref_accuracy_pct": 67.4855,
+  "predicted_board_accuracy_pct": 67.4855,
+  "gap_vs_informed_board_pp": 5.3545,
+  "prediction_method": "export_ref_calibrated",
+  "calibration_note": "Seed 0 board matched export ref (\u03940.00 pp); same path assumed.",
+  "elapsed_s": 13.7,
+  "mask_density": 0.125,
+  "data_source": "dataset.mat",
+  "board_measured": false
+}
