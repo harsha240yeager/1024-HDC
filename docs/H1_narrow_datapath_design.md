@@ -135,6 +135,42 @@ Two caveats, both stated so #29/#31 inherit them rather than rediscover them:
    only 327 bits, so 256 well-chosen bits can preserve the argmin ordering) but it needs confirming
    on the strict protocol before it goes in a table.
 
+## 5.5 The comparator that decides whether this is publishable
+
+A baked 256-bit AM datapath invites the obvious reviewer objection: *"that is just D=256 with extra
+steps."* It has to be answered with the iso-width baseline, not the D=1024 baseline. Pooled HDC-2
+accuracy from `results/protocol_v2/hook_a/sweep_results.json` (`cnt_w=6`, 5 subjects, free-choice
+Fisher masks):
+
+| D | keep=1.0 | keep=0.5 | keep=0.25 | keep=0.125 |
+|---|---|---|---|---|
+| 256 | 69.82% | 69.82% | 69.82% | 69.26% |
+| 512 | 72.72% | 72.72% | 72.72% | 72.72% |
+| **1024** | **72.78%** | 72.78% | **72.78%** | 72.78% |
+| 2048 | 76.45% | 76.45% | 76.45% | 76.45% |
+
+Read the diagonal: **encode at D=1024 and classify on 256 selected bits → 72.78%, whereas encoding
+*and* classifying at D=256 → 69.82%.** Same AM datapath width, **+2.96 pp** for the pruned design.
+The 1024-d encoding carries information that a 256-d encoding never captures, and Fisher selection
+keeps the part of it that matters.
+
+That gives Paper 1 two claims that stand on their own:
+
+1. **vs D=1024 baseline — iso-accuracy efficiency.** 72.78% at both keep=1.0 and keep=0.25, so
+   −73% AM cycles and (est.) −37% LUT come at **zero** accuracy cost.
+2. **vs D=256 baseline — iso-width accuracy.** +2.96 pp at the same AM width, for the cost of a
+   wider encoder.
+
+Claim 1 is the headline; claim 2 is what stops the "just use a smaller D" rebuttal. Both must appear
+in the #32 Pareto figure, which therefore needs **three** curves: D-sweep, keep-sweep at D=1024, and
+the narrow-RTL points.
+
+> **Gate on this before writing RTL.** The table above uses *free-choice* Fisher masks. C2 needs
+> *word-blocked* masks, and the 0.00 pp word-blocking cost in §5 comes from the leaky design proxy.
+> Re-run the word-blocked arm at keep=0.25 under HDC-2 with TRAIN-derived Fisher scores; it must land
+> at 72.78% ± 0.5 pp. If it does not, fall back to C1 (free-choice mask preserved, latency/energy
+> claim only). This is one Python run and it is the cheapest possible way to de-risk the RTL work.
+
 ## 6. Micro-architecture spec
 
 ### 6.1 `pruning_mask` — add a live-word interface (shared by C1 and C2)
@@ -227,6 +263,8 @@ regenerated `.mem` vectors for the word-blocked configs.
 
 ## 9. Task breakdown for #29
 
+0. **Gate first (§5.5):** word-blocked keep=0.25 under HDC-2 with TRAIN-Fisher scores must hit
+   72.78% ± 0.5 pp. Do not start RTL until this passes; if it fails, switch to C1.
 1. Extend `pruning_mask` with `word_live`/`live_seq`/`n_live`; update `tb_pruning_mask_cosim`.
 2. Promote `blocked_mask_from_scores` into `hdc_ref`; regenerate co-sim vectors and `.mem` files.
 3. Add `rtl/popcount_am_narrow.sv` (both variants, one parameterised source).
