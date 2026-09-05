@@ -1,6 +1,6 @@
 # H1 — Narrow / gated masked-Hamming datapath: micro-architecture design
 
-**Issue:** [#28](https://github.com/harsha240yeager/1024HDC/issues/28) (P0, Paper 1) · **Feeds:** #29 (implement+synth), #30 (co-sim), #31 (board eval), #32 (Pareto figure)
+**Issue:** [#28](https://github.com/harsha240yeager/1024-HDC/issues/28) (P0, Paper 1) · **Feeds:** #29 (implement+synth), #30 (co-sim), #31 (board eval), #32 (Pareto figure)
 **Status:** design complete, awaiting sign-off → #29
 **Baseline RTL:** `rtl/popcount_am.sv`, `rtl/pruning_mask.sv` @ `D=1024`, `WORDS=16`, `BITS_PER_WORD=64`, `N_CLASS=8`
 

@@ -1,6 +1,6 @@
 # Narrow / gated datapath (H1) — design evidence
 
-Design-stage measurements backing [#28](https://github.com/harsha240yeager/1024HDC/issues/28).
+Design-stage measurements backing [#28](https://github.com/harsha240yeager/1024-HDC/issues/28).
 Full argument and micro-architecture spec: `docs/H1_narrow_datapath_design.md`.
 
 Implementation, synthesis, and board numbers land under #29/#31 and will be added here.
