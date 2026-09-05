@@ -48,6 +48,7 @@ from hdc_ref import (  # noqa: E402
     HDCConfig,
     HDCEngine,
     ItemMemory,
+    blocked_mask_from_scores,
     bundle_majority_unlimited,
     mask_from_scores,
     per_bit_fisher_scores,
@@ -186,6 +187,7 @@ def sweep_subject(
     max_test_windows: Optional[int],
     max_train_windows: Optional[int],
     split_kw: dict,
+    mask_granularity: str = "bit",
 ) -> Tuple[List[dict], np.ndarray, np.ndarray]:
     mat = sio.loadmat(str(DATASET))
     data = mat[f"COMPLETE_{subject}"].astype(np.float64)
@@ -215,6 +217,10 @@ def sweep_subject(
     for keep in keep_ratios:
         if keep >= 1.0 - 1e-9:
             mask = np.ones(cfg.D, dtype=np.uint8)
+        elif mask_granularity == "word":
+            mask = blocked_mask_from_scores(
+                fisher_scores, keep, bits_per_word=cfg.bits_per_word
+            )
         else:
             mask = mask_from_scores(fisher_scores, keep, informed=True)
         acc, correct, total = accuracy_with_mask(engine, test_hvs, test_labels, protos, mask)
@@ -225,6 +231,8 @@ def sweep_subject(
                 "cnt_w": cnt_w,
                 "keep_ratio": keep,
                 "prune_pct": round(100.0 * (1.0 - keep), 2),
+                "mask_granularity": mask_granularity,
+                "n_keep_bits": int(mask.sum()),
                 "accuracy": acc,
                 "correct": correct,
                 "n_test": total,
@@ -347,6 +355,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--max-windows", type=int, default=None, help="cap TEST windows per subject")
     p.add_argument("--max-train-windows", type=int, default=None, help="cap TRAIN windows per subject")
     p.add_argument("--subjects", type=int, nargs="*", default=None)
+    p.add_argument(
+        "--mask-granularity",
+        choices=["bit", "word"],
+        default="bit",
+        help="bit = free-choice top-K (default); word = whole 64-bit words (H1 narrow datapath, #28)",
+    )
     return p.parse_args()
 
 
@@ -383,6 +397,7 @@ def main() -> int:
     print("=" * 70)
     print("Hook A Python sweep (hdc_ref / RTL encoder)")
     print(f"  D: {d_list}  CNT_W: {cnt_list}  keep: {keep_list}")
+    print(f"  mask granularity: {args.mask_granularity}")
     print(f"  subjects: {subjects}")
     print(f"  max_train_windows: {max_train_windows or 'all'}  max_test_windows: {max_windows or 'all'}")
     print("=" * 70)
@@ -397,6 +412,7 @@ def main() -> int:
                 rows, _, _ = sweep_subject(
                     subject, D, cnt_w, keep_list, seed, train_frac,
                     item_mem_seed, max_windows, max_train_windows, split_kw,
+                    args.mask_granularity,
                 )
                 all_rows.extend(rows)
                 _write_checkpoint(args.out_dir, meta={
@@ -415,6 +431,7 @@ def main() -> int:
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "engine": sweep_cfg["engine"],
         "mask_mode": sweep_cfg["mask_mode"],
+        "mask_granularity": args.mask_granularity,
         "protocol": emg_cfg["protocol"]["id"],
         "subjects": subjects,
         "D_list": d_list,

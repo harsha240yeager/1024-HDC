@@ -622,6 +622,34 @@ def mask_from_scores(
     return mask
 
 
+def blocked_mask_from_scores(
+    scores: np.ndarray,
+    keep_ratio: float,
+    *,
+    bits_per_word: int = 64,
+) -> np.ndarray:
+    """Word-granular mask: keep whole `bits_per_word` words with the highest summed score.
+
+    H1 narrow datapath (issue #28). `popcount_am` iterates whole 64-bit words, and
+    free-choice masks never leave a word empty (measured: 0 dead words at every keep
+    ratio, see results/narrow_rtl/mask_word_occupancy.json). Restricting selection to
+    word granularity is what makes word skipping — and a physically narrower datapath —
+    possible. See docs/H1_narrow_datapath_design.md.
+    """
+    D = scores.shape[0]
+    if D % bits_per_word != 0:
+        raise ValueError(f"D={D} must be a multiple of bits_per_word={bits_per_word}")
+    n_words = D // bits_per_word
+    n_keep_words = max(1, int(round(n_words * keep_ratio)))
+    word_scores = scores.reshape(n_words, bits_per_word).sum(axis=1)
+    # Descending score, index-ascending on ties (matches mask_topk_from_scores intent).
+    order = np.lexsort((np.arange(n_words), -word_scores))
+    mask = zeros(D)
+    for w in order[:n_keep_words]:
+        mask[w * bits_per_word : (w + 1) * bits_per_word] = 1
+    return mask
+
+
 def make_pruning_masks(
     query_hvs: np.ndarray,
     labels: np.ndarray,
