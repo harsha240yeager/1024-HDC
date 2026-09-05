@@ -151,6 +151,42 @@ def parse_pkg_sha(path: Path) -> str | None:
     return m.group(1) if m else None
 
 
+def decode_pkg_sel(path: Path) -> np.ndarray:
+    """Decode SEL_FLAT exactly the way the RTL indexes it.
+
+    The RTL does `SEL_FLAT[i*IDX_W +: IDX_W]`, i.e. entry i lives at bit offset
+    i*IDX_W counting from the LSB. Re-deriving the positions from the emitted
+    literal catches a bit-packing bug in this generator, which would otherwise
+    produce silently wrong hardware.
+    """
+    text = path.read_text(encoding="utf-8")
+
+    def localparam_int(name: str) -> int:
+        m = re.search(rf"localparam\s+int\s+{name}\s*=\s*(\d+)\s*;", text)
+        if not m:
+            raise SystemExit(f"{path}: could not parse localparam int {name}")
+        return int(m.group(1))
+
+    k_bits = localparam_int("K_BITS")
+    idx_w = localparam_int("IDX_W")
+
+    m = re.search(r"SEL_FLAT\s*=\s*(\d+)'b([01_]+)\s*;", text)
+    if not m:
+        raise SystemExit(f"{path}: could not parse SEL_FLAT literal")
+    width = int(m.group(1))
+    bits = m.group(2).replace("_", "")
+    if width != k_bits * idx_w:
+        raise SystemExit(f"{path}: SEL_FLAT width {width} != K_BITS*IDX_W {k_bits * idx_w}")
+    if len(bits) != width:
+        raise SystemExit(f"{path}: SEL_FLAT has {len(bits)} digits, expected {width}")
+
+    value = int(bits, 2)
+    out = np.empty(k_bits, dtype=np.int64)
+    for i in range(k_bits):
+        out[i] = (value >> (i * idx_w)) & ((1 << idx_w) - 1)
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Generate the baked SEL table (#28 Option E)")
     ap.add_argument("--mask-npz", type=Path, default=DEFAULT_NPZ)
@@ -189,7 +225,19 @@ def main() -> int:
             print(f"CHECK FAIL: {args.out} sha256 {have} != artefact {sha}")
             print("  regenerate with: python3 scripts/gen_sel_table.py --keep", keep)
             return 1
-        print(f"CHECK OK: {args.out} matches {source} (sha256 {sha[:16]}...)")
+        decoded = decode_pkg_sel(args.out)
+        if decoded.size != sel.size or not np.array_equal(decoded, sel):
+            print(f"CHECK FAIL: SEL_FLAT in {args.out} does not decode to the artefact mask")
+            if decoded.size != sel.size:
+                print(f"  decoded {decoded.size} entries, artefact has {sel.size}")
+            else:
+                bad = np.flatnonzero(decoded != sel)
+                print(f"  {bad.size} entries differ, first at i={bad[0]}: "
+                      f"pkg={decoded[bad[0]]} artefact={sel[bad[0]]}")
+            return 1
+        print(f"CHECK OK: {args.out} matches {source}")
+        print(f"  mask sha256   {sha}")
+        print(f"  SEL_FLAT decodes to {decoded.size} positions, identical to artefact")
         return 0
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
