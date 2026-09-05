@@ -19,6 +19,27 @@
 
 onerror {quit -code 3}
 
+# Portable interpreter pick: on Windows `python3` is often the Microsoft Store
+# stub, which exits non-zero instead of running.  Probe candidates and keep the
+# first that actually reports Python 3.  Override with the PYTHON env var.
+proc find_python {} {
+    if {[info exists ::env(PYTHON)]} { return $::env(PYTHON) }
+    foreach cand {python3 python py} {
+        if {![catch {exec $cand -c "import sys; print(sys.version_info\[0\])"} out]} {
+            if {[string trim $out] eq "3"} { return $cand }
+        }
+    }
+    return ""
+}
+
+set PY [find_python]
+if {$PY eq ""} {
+    echo "ERROR: no working Python 3 found (tried python3, python, py)."
+    echo "       Set the PYTHON env var to your interpreter and re-run."
+    quit -code 2
+}
+echo "Using Python: $PY"
+
 set NUM_CASES 500
 if {[info exists ::env(NUM_CASES)]} { set NUM_CASES $::env(NUM_CASES) }
 
@@ -28,7 +49,7 @@ if {[info exists ::env(SEED)]} { set SEED $::env(SEED) }
 set VECDIR "python_ref/vectors/cosim_core_narrow"
 
 echo "=== \[1/5\] Ensure anchor-C SEL package ==="
-if {[catch {exec python3 scripts/gen_sel_table.py --keep 0.125} result]} {
+if {[catch {exec $PY scripts/gen_sel_table.py --keep 0.125} result]} {
     echo "ERROR: gen_sel_table failed:"
     echo $result
     quit -code 2
@@ -36,7 +57,7 @@ if {[catch {exec python3 scripts/gen_sel_table.py --keep 0.125} result]} {
 echo $result
 
 echo "=== \[2/5\] Generating Python narrow-core golden vectors ($NUM_CASES cases, seed $SEED) ==="
-if {[catch {exec python python_ref/generate_vectors.py --narrow-core --count $NUM_CASES --seed $SEED --out-dir $VECDIR} result]} {
+if {[catch {exec $PY python_ref/generate_vectors.py --narrow-core --count $NUM_CASES --seed $SEED --out-dir $VECDIR} result]} {
     echo "ERROR: vector generation failed:"
     echo $result
     quit -code 2
