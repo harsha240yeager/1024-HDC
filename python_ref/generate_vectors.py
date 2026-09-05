@@ -13,7 +13,10 @@ Formats:
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
+
+import numpy as np
 
 from hdc_ref import (
     HDCConfig,
@@ -23,8 +26,21 @@ from hdc_ref import (
     export_bundle_cosim,
     export_core_cosim,
     export_encoder_cosim,
+    export_narrow_core_cosim,
     export_pruning_mask_cosim,
 )
+
+KEEP_TO_NPZ_KEY = {1.0: "mask_keep_1_0", 0.5: "mask_keep_0_5", 0.125: "mask_keep_0_125"}
+
+
+def _load_fisher_mask(npz_path: Path, keep: float) -> np.ndarray:
+    key = KEEP_TO_NPZ_KEY.get(keep)
+    if key is None:
+        raise SystemExit(f"keep={keep} not in frozen artefact keys {sorted(KEEP_TO_NPZ_KEY)}")
+    data = np.load(npz_path)
+    if key not in data:
+        raise SystemExit(f"{npz_path} missing {key}")
+    return np.asarray(data[key]).astype(np.uint8)
 
 
 def main() -> None:
@@ -46,6 +62,17 @@ def main() -> None:
                    help="emit encoder $readmemh files + item_mem .mem for tb_encoder_cosim.sv")
     p.add_argument("--core", action="store_true",
                    help="emit end-to-end core $readmemh files for tb_core_cosim.sv")
+    p.add_argument("--narrow-core", action="store_true",
+                   help="emit narrow-core vectors for tb_core_narrow_cosim.sv")
+    p.add_argument("--identity-sel", action="store_true",
+                   help="with --narrow-core: K=D and SEL[i]=i (identity regression pass)")
+    p.add_argument("--keep", type=float, default=0.125,
+                   help="with --narrow-core: Fisher keep ratio for SEL (default 0.125)")
+    p.add_argument("--sel-manifest", type=Path,
+                   default=Path("results/narrow_rtl/sel_table_manifest.json"),
+                   help="manifest with sel[] for --narrow-core")
+    p.add_argument("--mask-npz", type=Path,
+                   default=Path("results/protocol_v2/fisher_pooled.npz"))
     p.add_argument("--kmin", type=int, default=2, help="bundle: min vectors per case")
     p.add_argument("--kmax", type=int, default=16, help="bundle: max vectors per case")
     p.add_argument("--cnt-bits", type=int, default=6, help="bundle: counter width")
@@ -58,7 +85,36 @@ def main() -> None:
     cfg = HDCConfig(D=args.D, words=args.D // bits_per_word,
                     bits_per_word=bits_per_word, seed=args.seed)
 
-    if args.core:
+    if args.narrow_core:
+        repo = Path(__file__).resolve().parents[1]
+        manifest_path = args.sel_manifest
+        if not manifest_path.is_absolute():
+            manifest_path = repo / manifest_path
+        npz_path = args.mask_npz
+        if not npz_path.is_absolute():
+            npz_path = repo / npz_path
+
+        out_dir = args.out_dir or Path("vectors/cosim_core_narrow")
+        if args.identity_sel:
+            sel = np.arange(cfg.D, dtype=np.int64)
+            mask = None
+        else:
+            if manifest_path.is_file():
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                sel = np.asarray(manifest["sel"], dtype=np.int64)
+            else:
+                mask_arr = _load_fisher_mask(npz_path, args.keep)
+                sel = np.flatnonzero(mask_arr).astype(np.int64)
+            mask = _load_fisher_mask(npz_path, args.keep) if npz_path.is_file() else None
+        meta = export_narrow_core_cosim(
+            out_dir, cfg, args.count, args.seed, sel, n_class=args.nclass, mask=mask
+        )
+        print(
+            f"Wrote {meta['count']} narrow-core cases (K={meta['k_bits']}, "
+            f"{meta['n_channels']}x{meta['n_features']} pairs, n_class={meta['n_class']}) "
+            f"to {out_dir.resolve()}"
+        )
+    elif args.core:
         out_dir = args.out_dir or Path("vectors/cosim_core")
         meta = export_core_cosim(out_dir, cfg, args.count, args.seed, n_class=args.nclass)
         print(f"Wrote {meta['count']} core cases (D={meta['D']}, "

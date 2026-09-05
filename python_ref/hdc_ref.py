@@ -13,6 +13,7 @@ EMG encoding follows the record model in HDC_Research_Plan.md Eq. (3.1).
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from dataclasses import dataclass, field
@@ -1202,6 +1203,124 @@ def export_core_cosim(
         "mask_density": float(mask.mean()),
         "seed": seed,
     }
+    (out_dir / "meta.txt").write_text(
+        "".join(f"{k}={v}\n" for k, v in meta.items()), encoding="utf-8"
+    )
+    return meta
+
+
+def gather_narrow_bits(bits: np.ndarray, sel: np.ndarray) -> np.ndarray:
+    """Apply baked gather: narrow[i] = bits[sel[i]] (matches hdc_core_top_narrow wiring)."""
+    return np.asarray(bits, dtype=np.uint8)[sel]
+
+
+def _pad_bits_to_words(bits: np.ndarray, words: int, bits_per_word: int) -> np.ndarray:
+    want = words * bits_per_word
+    if bits.shape[0] > want:
+        raise ValueError(f"cannot pad {bits.shape[0]} bits into {want}")
+    if bits.shape[0] == want:
+        return bits
+    out = zeros(want)
+    out[: bits.shape[0]] = bits
+    return out
+
+
+def export_narrow_core_cosim(
+    out_dir: Path,
+    cfg: HDCConfig,
+    count: int,
+    seed: int,
+    sel: np.ndarray,
+    n_class: int = 8,
+    train_per_class: int = 5,
+    mask: Optional[np.ndarray] = None,
+) -> dict:
+    """
+    Write co-simulation vectors for tb_core_narrow_cosim.sv (hdc_core_top_narrow).
+
+    Prototypes are pre-gathered to K_BITS = len(sel).  Expected (idx, dist) uses
+    unmasked Hamming on the gathered operands — bit-exact to masked full-width
+    classify when ``sel`` lists the Fisher mask positions in artefact order.
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rng = np.random.default_rng(seed)
+    sel = np.asarray(sel, dtype=np.int64)
+
+    mem = ItemMemory(cfg)
+    mem.export_mem_files(out_dir)
+    engine = HDCEngine(cfg)
+
+    n_ch = cfg.n_channels
+    n_ft = cfg.n_features
+    n_pairs = n_ch * n_ft
+    level_w = max(1, int(math.ceil(math.log2(cfg.n_levels))))
+    hex_digits = (n_pairs * level_w + 3) // 4
+    k_bits = int(sel.size)
+    k_words = (k_bits + cfg.bits_per_word - 1) // cfg.bits_per_word
+
+    protos = np.zeros((n_class, cfg.D), dtype=np.uint8)
+    for k in range(n_class):
+        windows = [
+            engine.encode_emg_window(
+                rng.integers(0, cfg.n_levels, size=(n_ch, n_ft), dtype=np.int32), mem
+            )
+            for _ in range(train_per_class)
+        ]
+        protos[k] = bundle_majority(windows, cfg)
+
+    protos_n = np.stack([gather_narrow_bits(protos[k], sel) for k in range(n_class)])
+
+    proto_lines: List[str] = []
+    for k in range(n_class):
+        padded = _pad_bits_to_words(protos_n[k], k_words, cfg.bits_per_word)
+        proto_lines.extend(bits_to_hex_lines(padded, k_words, cfg.bits_per_word))
+
+    lvl_lines: List[str] = []
+    exp_lines: List[str] = []
+    for _ in range(count):
+        q = rng.integers(0, cfg.n_levels, size=(n_ch, n_ft), dtype=np.int32)
+        query = engine.encode_emg_window(q, mem)
+        q_n = gather_narrow_bits(query, sel)
+        distances = np.array(
+            [hamming(q_n, protos_n[k]) for k in range(n_class)], dtype=np.int32
+        )
+        class_id = int(distances.argmin())
+        dist = int(distances[class_id])
+
+        packed = 0
+        for c in range(n_ch):
+            for f in range(n_ft):
+                p = c * n_ft + f
+                packed |= (int(q[c, f]) & ((1 << level_w) - 1)) << (level_w * p)
+        lvl_lines.append(f"{packed:0{hex_digits}x}")
+        exp_lines.append(f"{((class_id << 16) | (dist & 0xFFFF)):08x}")
+
+    (out_dir / "core_proto_narrow.hex").write_text("\n".join(proto_lines) + "\n", encoding="utf-8")
+    (out_dir / "core_levels.hex").write_text("\n".join(lvl_lines) + "\n", encoding="utf-8")
+    (out_dir / "core_expect.hex").write_text("\n".join(exp_lines) + "\n", encoding="utf-8")
+
+    meta = {
+        "count": count,
+        "D": cfg.D,
+        "k_bits": k_bits,
+        "k_words": k_words,
+        "words": cfg.words,
+        "bits_per_word": cfg.bits_per_word,
+        "n_channels": n_ch,
+        "n_features": n_ft,
+        "n_levels": cfg.n_levels,
+        "level_w": level_w,
+        "n_pairs": n_pairs,
+        "n_class": n_class,
+        "train_per_class": train_per_class,
+        "seed": seed,
+        "sel": sel.tolist(),
+    }
+    if mask is not None:
+        meta["mask_density"] = float(np.asarray(mask).mean())
+        meta["mask_sha256"] = hashlib.sha256(
+            np.packbits(np.asarray(mask).astype(np.uint8)).tobytes()
+        ).hexdigest()
     (out_dir / "meta.txt").write_text(
         "".join(f"{k}={v}\n" for k, v in meta.items()), encoding="utf-8"
     )
