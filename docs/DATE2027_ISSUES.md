@@ -19,7 +19,7 @@ Prior revision track (#1–#11) is largely complete; this track adds experiments
 | 5 | [#25](https://github.com/harsha240yeager/1024-HDC/issues/25) Encoder redundancy doc | ✅ | 2 | Medium |
 | 6 | [#26](https://github.com/harsha240yeager/1024-HDC/issues/26) Silicon seeds 1–9 | ✅ predict + seed 0 board; 1–9 board lab | Both | **Yes** |
 | 7 | [#27](https://github.com/harsha240yeager/1024-HDC/issues/27) Silicon seed automation | ✅ script | Both | Enables #26 |
-| 8 | [#28](https://github.com/harsha240yeager/1024-HDC/issues/28) Design narrow/gated RTL | ✅ spec in `docs/H1_narrow_datapath_design.md` | 1 | **Yes** |
+| 8 | [#28](https://github.com/harsha240yeager/1024-HDC/issues/28) Design narrow/gated RTL | ✅ Option E (baked permutation, bit-exact) — `docs/H1_narrow_datapath_design.md` | 1 | **Yes** |
 | 9 | [#29](https://github.com/harsha240yeager/1024-HDC/issues/29) Implement + synth | ⏳ | 1 | **Yes** |
 | 10 | [#30](https://github.com/harsha240yeager/1024-HDC/issues/30) Co-sim + golden | ⏳ | 1 | **Yes** |
 | 11 | [#31](https://github.com/harsha240yeager/1024-HDC/issues/31) Board eval vs keep | ⏳ | 1 | **Yes** |
