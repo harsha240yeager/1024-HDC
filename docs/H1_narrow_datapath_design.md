@@ -165,11 +165,22 @@ Claim 1 is the headline; claim 2 is what stops the "just use a smaller D" rebutt
 in the #32 Pareto figure, which therefore needs **three** curves: D-sweep, keep-sweep at D=1024, and
 the narrow-RTL points.
 
+Note also that free-choice Fisher at D=1024 is **completely flat** across the keep axis — 72.65%
+spatial-mean (72.78% pooled) at keep=1.0, 0.5, 0.25 *and* 0.125. There is no accuracy price to pay
+for pruning at all in the free-choice regime; the entire question is how much of that survives the
+word-granularity constraint.
+
 > **Gate on this before writing RTL.** The table above uses *free-choice* Fisher masks. C2 needs
 > *word-blocked* masks, and the 0.00 pp word-blocking cost in §5 comes from the leaky design proxy.
-> Re-run the word-blocked arm at keep=0.25 under HDC-2 with TRAIN-derived Fisher scores; it must land
-> at 72.78% ± 0.5 pp. If it does not, fall back to C1 (free-choice mask preserved, latency/energy
-> claim only). This is one Python run and it is the cheapest possible way to de-risk the RTL work.
+> The gate run is `run_hook_a_sweep.py --mask-granularity word` at D=1024, cnt_w=6, keep ∈
+> {1.0, 0.5, 0.25, 0.125}, 5 subjects, `emg_baseline_v2.json`, output in
+> `results/narrow_rtl/word_blocked_hdc2/`.
+>
+> **Target: keep=0.25 word-blocked ≥ 72.15% spatial-mean** (72.65% − 0.5 pp), compared against the
+> free-choice arm using the *same* statistic (`spatial_mean_accuracy`, mean over the 5 subjects).
+> keep=0.125 is the stretch goal: free-choice is flat there too, so if word-blocking also holds at
+> 2 words it buys −85% cycles instead of −73%. If keep=0.25 fails, fall back to C1 (free-choice mask
+> preserved, latency/energy claim only). One Python run, ~2 h, and it de-risks all of #29.
 
 ## 6. Micro-architecture spec
 
