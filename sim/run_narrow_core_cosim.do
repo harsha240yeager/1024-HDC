@@ -7,13 +7,23 @@
 # Run from the repository root:
 #     vsim -c -do sim/run_narrow_core_cosim.do
 #
-# Optional: NUM_CASES env var (default 500).
+# Optional: NUM_CASES env var (default 500), SEED env var (default 42).
+#
+# SEED must be 42 -- the deployed item-memory seed.  SEL comes from the seed-42
+# pooled Fisher artefact, so at any other seed most selected positions are
+# input-independent constants and the narrow datapath is barely exercised:
+# measured at seed 31, only 46 of the 128 SEL positions are active, best-distance
+# range collapses to 2..15 (mean 8.1), and 82 XOR lanes never toggle across the
+# whole run.  At seed 42 all 128 are active and the range is 27..50 (mean 38.2).
 # ===========================================================================
 
 onerror {quit -code 3}
 
 set NUM_CASES 500
 if {[info exists ::env(NUM_CASES)]} { set NUM_CASES $::env(NUM_CASES) }
+
+set SEED 42
+if {[info exists ::env(SEED)]} { set SEED $::env(SEED) }
 
 set VECDIR "python_ref/vectors/cosim_core_narrow"
 
@@ -25,8 +35,8 @@ if {[catch {exec python3 scripts/gen_sel_table.py --keep 0.125} result]} {
 }
 echo $result
 
-echo "=== \[2/5\] Generating Python narrow-core golden vectors ($NUM_CASES cases) ==="
-if {[catch {exec python python_ref/generate_vectors.py --narrow-core --count $NUM_CASES --seed 31 --out-dir $VECDIR} result]} {
+echo "=== \[2/5\] Generating Python narrow-core golden vectors ($NUM_CASES cases, seed $SEED) ==="
+if {[catch {exec python python_ref/generate_vectors.py --narrow-core --count $NUM_CASES --seed $SEED --out-dir $VECDIR} result]} {
     echo "ERROR: vector generation failed:"
     echo $result
     quit -code 2
