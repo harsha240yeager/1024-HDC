@@ -1,0 +1,49 @@
+{
+  "issue": 28,
+  "scope": "design-time relative comparison; scores from cached cohort (optimistic, equal bias across arms)",
+  "D": 1024,
+  "bits_per_word": 64,
+  "n_windows_evaluated": 40000,
+  "unpruned_accuracy_pct": 74.275,
+  "keep_grid": [
+    {
+      "keep_ratio": 0.125,
+      "n_keep_free": 128,
+      "n_keep_blocked": 128,
+      "words_kept_blocked": 2,
+      "cycle_reduction_blocked_pct": 87.5,
+      "free_accuracy_pct": 77.68,
+      "blocked_accuracy_pct": 73.155,
+      "random_mean_accuracy_pct": 66.6083,
+      "blocked_minus_free_pp": -4.525,
+      "blocked_minus_random_pp": 6.5467,
+      "elapsed_s": 30.7
+    },
+    {
+      "keep_ratio": 0.25,
+      "n_keep_free": 256,
+      "n_keep_blocked": 256,
+      "words_kept_blocked": 4,
+      "cycle_reduction_blocked_pct": 75.0,
+      "free_accuracy_pct": 74.275,
+      "blocked_accuracy_pct": 74.275,
+      "random_mean_accuracy_pct": 68.6217,
+      "blocked_minus_free_pp": 0.0,
+      "blocked_minus_random_pp": 5.6533,
+      "elapsed_s": 30.3
+    },
+    {
+      "keep_ratio": 0.5,
+      "n_keep_free": 512,
+      "n_keep_blocked": 512,
+      "words_kept_blocked": 8,
+      "cycle_reduction_blocked_pct": 50.0,
+      "free_accuracy_pct": 74.275,
+      "blocked_accuracy_pct": 72.3175,
+      "random_mean_accuracy_pct": 70.5783,
+      "blocked_minus_free_pp": -1.9575,
+      "blocked_minus_random_pp": 1.7392,
+      "elapsed_s": 33.1
+    }
+  ]
+}

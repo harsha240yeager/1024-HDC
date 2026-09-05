@@ -1,0 +1,483 @@
+{
+  "issue": 28,
+  "D": 1024,
+  "bits_per_word": 64,
+  "item_mem_seed": 42,
+  "active_support": {
+    "n_keep": 327,
+    "n_words": 16,
+    "dead_words": 0,
+    "live_words": 16,
+    "min_live_bits": 13,
+    "max_live_bits": 27,
+    "mean_live_bits": 20.44,
+    "word_skip_saving_pct": 0.0,
+    "per_word_live": [
+      24,
+      21,
+      14,
+      21,
+      25,
+      17,
+      15,
+      17,
+      25,
+      25,
+      18,
+      27,
+      13,
+      23,
+      22,
+      20
+    ]
+  },
+  "keep_grid": [
+    {
+      "keep_ratio": 0.125,
+      "n_keep": 128,
+      "random": {
+        "seeds": [
+          {
+            "n_keep": 128,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 4,
+            "max_live_bits": 12,
+            "mean_live_bits": 8.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 0
+          },
+          {
+            "n_keep": 128,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 5,
+            "max_live_bits": 12,
+            "mean_live_bits": 8.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 1
+          },
+          {
+            "n_keep": 128,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 4,
+            "max_live_bits": 13,
+            "mean_live_bits": 8.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 2
+          },
+          {
+            "n_keep": 128,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 3,
+            "max_live_bits": 13,
+            "mean_live_bits": 8.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 3
+          },
+          {
+            "n_keep": 128,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 3,
+            "max_live_bits": 14,
+            "mean_live_bits": 8.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 4
+          },
+          {
+            "n_keep": 128,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 4,
+            "max_live_bits": 12,
+            "mean_live_bits": 8.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 5
+          },
+          {
+            "n_keep": 128,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 4,
+            "max_live_bits": 12,
+            "mean_live_bits": 8.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 6
+          },
+          {
+            "n_keep": 128,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 4,
+            "max_live_bits": 11,
+            "mean_live_bits": 8.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 7
+          },
+          {
+            "n_keep": 128,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 3,
+            "max_live_bits": 14,
+            "mean_live_bits": 8.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 8
+          },
+          {
+            "n_keep": 128,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 4,
+            "max_live_bits": 12,
+            "mean_live_bits": 8.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 9
+          }
+        ],
+        "mean_dead_words": 0.0,
+        "max_dead_words": 0,
+        "mean_live_bits_per_word": 8.0
+      },
+      "fisher": {
+        "n_keep": 128,
+        "n_words": 16,
+        "dead_words": 0,
+        "live_words": 16,
+        "min_live_bits": 2,
+        "max_live_bits": 13,
+        "mean_live_bits": 8.0,
+        "word_skip_saving_pct": 0.0,
+        "per_word_live": [
+          9,
+          4,
+          7,
+          10,
+          10,
+          6,
+          11,
+          8,
+          9,
+          8,
+          6,
+          13,
+          3,
+          12,
+          10,
+          2
+        ]
+      }
+    },
+    {
+      "keep_ratio": 0.25,
+      "n_keep": 256,
+      "random": {
+        "seeds": [
+          {
+            "n_keep": 256,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 10,
+            "max_live_bits": 20,
+            "mean_live_bits": 16.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 0
+          },
+          {
+            "n_keep": 256,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 9,
+            "max_live_bits": 22,
+            "mean_live_bits": 16.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 1
+          },
+          {
+            "n_keep": 256,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 12,
+            "max_live_bits": 21,
+            "mean_live_bits": 16.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 2
+          },
+          {
+            "n_keep": 256,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 10,
+            "max_live_bits": 21,
+            "mean_live_bits": 16.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 3
+          },
+          {
+            "n_keep": 256,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 9,
+            "max_live_bits": 22,
+            "mean_live_bits": 16.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 4
+          },
+          {
+            "n_keep": 256,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 11,
+            "max_live_bits": 19,
+            "mean_live_bits": 16.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 5
+          },
+          {
+            "n_keep": 256,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 10,
+            "max_live_bits": 24,
+            "mean_live_bits": 16.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 6
+          },
+          {
+            "n_keep": 256,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 11,
+            "max_live_bits": 22,
+            "mean_live_bits": 16.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 7
+          },
+          {
+            "n_keep": 256,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 10,
+            "max_live_bits": 22,
+            "mean_live_bits": 16.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 8
+          },
+          {
+            "n_keep": 256,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 6,
+            "max_live_bits": 25,
+            "mean_live_bits": 16.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 9
+          }
+        ],
+        "mean_dead_words": 0.0,
+        "max_dead_words": 0,
+        "mean_live_bits_per_word": 16.0
+      },
+      "fisher": {
+        "n_keep": 256,
+        "n_words": 16,
+        "dead_words": 0,
+        "live_words": 16,
+        "min_live_bits": 7,
+        "max_live_bits": 25,
+        "mean_live_bits": 16.0,
+        "word_skip_saving_pct": 0.0,
+        "per_word_live": [
+          20,
+          16,
+          11,
+          17,
+          20,
+          10,
+          14,
+          14,
+          18,
+          21,
+          14,
+          25,
+          7,
+          18,
+          17,
+          14
+        ]
+      }
+    },
+    {
+      "keep_ratio": 0.5,
+      "n_keep": 512,
+      "random": {
+        "seeds": [
+          {
+            "n_keep": 512,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 24,
+            "max_live_bits": 37,
+            "mean_live_bits": 32.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 0
+          },
+          {
+            "n_keep": 512,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 26,
+            "max_live_bits": 39,
+            "mean_live_bits": 32.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 1
+          },
+          {
+            "n_keep": 512,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 26,
+            "max_live_bits": 38,
+            "mean_live_bits": 32.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 2
+          },
+          {
+            "n_keep": 512,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 27,
+            "max_live_bits": 39,
+            "mean_live_bits": 32.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 3
+          },
+          {
+            "n_keep": 512,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 25,
+            "max_live_bits": 37,
+            "mean_live_bits": 32.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 4
+          },
+          {
+            "n_keep": 512,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 26,
+            "max_live_bits": 38,
+            "mean_live_bits": 32.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 5
+          },
+          {
+            "n_keep": 512,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 27,
+            "max_live_bits": 36,
+            "mean_live_bits": 32.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 6
+          },
+          {
+            "n_keep": 512,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 25,
+            "max_live_bits": 36,
+            "mean_live_bits": 32.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 7
+          },
+          {
+            "n_keep": 512,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 26,
+            "max_live_bits": 39,
+            "mean_live_bits": 32.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 8
+          },
+          {
+            "n_keep": 512,
+            "n_words": 16,
+            "dead_words": 0,
+            "live_words": 16,
+            "min_live_bits": 23,
+            "max_live_bits": 40,
+            "mean_live_bits": 32.0,
+            "word_skip_saving_pct": 0.0,
+            "seed": 9
+          }
+        ],
+        "mean_dead_words": 0.0,
+        "max_dead_words": 0,
+        "mean_live_bits_per_word": 32.0
+      },
+      "fisher": {
+        "n_keep": 512,
+        "n_words": 16,
+        "dead_words": 0,
+        "live_words": 16,
+        "min_live_bits": 7,
+        "max_live_bits": 64,
+        "mean_live_bits": 32.0,
+        "word_skip_saving_pct": 0.0,
+        "per_word_live": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          25,
+          14,
+          15,
+          20,
+          21,
+          14,
+          25,
+          7,
+          18,
+          19,
+          14
+        ]
+      }
+    }
+  ]
+}
