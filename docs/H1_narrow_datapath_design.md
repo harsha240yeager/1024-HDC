@@ -1,8 +1,18 @@
 # H1 — Narrow / gated masked-Hamming datapath: micro-architecture design
 
 **Issue:** [#28](https://github.com/harsha240yeager/1024-HDC/issues/28) (P0, Paper 1) · **Feeds:** #29 (implement+synth), #30 (co-sim), #31 (board eval), #32 (Pareto figure)
-**Status:** design complete, awaiting sign-off → #29
+**Status:** design complete → #29
 **Baseline RTL:** `rtl/popcount_am.sv`, `rtl/pruning_mask.sv` @ `D=1024`, `WORDS=16`, `BITS_PER_WORD=64`, `N_CLASS=8`
+
+> **Selected design: Option E — baked bit-permutation + narrow AM (§5.2).** Hardwire the Fisher-selected
+> bit positions into the AM operand routing so the AM is physically 128 bits (2 words) instead of 1024
+> (16 words). A synthesis-time permutation is pure wiring (0 LUT), and popcount is invariant to bit
+> relabeling, so this is **bit-exact** to the baseline: −85% classify cycles and −45% core flip-flops
+> at **provably zero** accuracy cost.
+>
+> Options A (word-skip), B (clock-gating), C1 (runtime skip) and D (runtime gather) were rejected on
+> measurement; C2 (word-blocked mask) was rejected after failing its accuracy gate by −2.31 pp. Those
+> negative results are §3 and §5 and are worth reporting.
 
 ---
 
@@ -93,11 +103,15 @@ with the flat energy we already measure. Keep it as a near-free add-on inside th
 not build a claim on it.
 
 ### Option D — runtime gather/compaction network · **rejected**
-Compact 1024 scattered bits down to 128 with a configurable permutation so the mask stays
+Compact 1024 scattered bits down to 128 with a **runtime-configurable** permutation so the mask stays
 free-choice. Requires 128 lanes × 1024:1 muxing; that is tens of thousands of LUTs on a part where
 the full core is 28,600. The compaction network would cost more than the datapath it compacts.
 
-### Option C — **word-blocked mask + genuinely narrow datapath · SELECTED**
+> The word "configurable" is carrying all the cost here. Drop it and the same idea becomes free —
+> that is Option E (§5.2), and overlooking the distinction is what made the first pass of this
+> document select Option C.
+
+### Option C — word-blocked mask + genuinely narrow datapath · **rejected (see §5)**
 Constrain mask selection to whole-word granularity: choose the best `KEEP_WORDS` of 16 words rather
 than the best `K` of 1024 bits. Word skipping then works by construction, and — in the
 synthesis-time variant — storage and muxes shrink proportionally.
@@ -111,34 +125,102 @@ Two variants, both worth building because they occupy different Pareto points:
   parameter array; `proto`, `query_r`, and both muxes are physically `KEEP_WORDS*64` bits wide.
   Wins **area, cycles, and energy**; mask is frozen at synthesis.
 
-## 5. What the word-blocked constraint costs in accuracy
+## 5. What the word-blocked constraint costs in accuracy — **MEASURED: it fails**
 
-Measured with `scripts/eval_word_blocked_mask.py` → `results/narrow_rtl/word_blocked_mask_eval.json`
-(40k windows, cached cohort, unpruned reference 74.28%):
+Run: `run_hook_a_sweep.py --mask-granularity word`, D=1024, cnt_w=6, 5 subjects, HDC-2, TRAIN-derived
+Fisher scores, all windows (`results/narrow_rtl/word_blocked_hdc2/`, 3,787 s). Compared against the
+free-choice arm on the same statistic:
 
-| keep | Words kept | Cycle reduction | Free-choice | **Word-blocked** | Δ blocked−free | Random iso-density |
-|---|---|---|---|---|---|---|
-| 0.125 | 2/16 | −88% | 77.68% | **73.16%** | −4.53 pp | 66.61% |
-| 0.25 | 4/16 | −75% | 74.28% | **74.28%** | **0.00 pp** | 68.62% |
-| 0.5 | 8/16 | −50% | 74.28% | **72.32%** | −1.96 pp | 70.58% |
+| keep | Words | Free-choice | **Word-blocked** | Δ | ±0.5 pp gate |
+|---|---|---|---|---|---|
+| 1.0 | 16 | 72.65% | 72.65% | +0.00 pp | PASS (sanity) |
+| 0.5 | 8 | 72.65% | 71.73% | −0.92 pp | **FAIL** |
+| 0.25 | 4 | 72.65% | 70.34% | −2.31 pp | **FAIL** |
+| 0.125 | 2 | 72.65% | 66.14% | −6.51 pp | **FAIL** |
 
-**keep=0.25 is the operating point**: word-blocking is free (0.00 pp vs free-choice, and identical to
-unpruned) while removing 75% of AM cycles.
+**Word-blocking fails the accuracy gate at every useful keep ratio**, and the design proxy in §5.1
+below was badly optimistic (it predicted 0.00 pp at keep=0.25; the truth is −2.31 pp). The gate did
+its job: this would have been discovered after the RTL was written.
 
-Two caveats, both stated so #29/#31 inherit them rather than rediscover them:
+The proxy failed for the reason flagged when it was built — test-derived Fisher scores let
+free-choice exploit per-bit leakage, and word-granular selection cannot. That inflated free-choice
+and made the *gap* look small. The lesson for #29/#31: no mask-selection decision gets made on the
+cached-cohort proxy again.
 
-1. These scores come from the cached cohort, so *every* arm is optimistic — that is why free-choice
-   at keep=0.125 (77.68%) exceeds unpruned. The comparison is valid because the bias is shared, and
-   the blocked−free gap is if anything **overstated**: free-choice can exploit per-bit leakage that
-   word-granular selection cannot. Paper numbers must come from the TRAIN-Fisher path under #29/#31.
-2. keep=0.25 landing exactly on the unpruned accuracy is plausible (the value-table active support is
-   only 327 bits, so 256 well-chosen bits can preserve the argmin ordering) but it needs confirming
-   on the strict protocol before it goes in a table.
+This also kills **C1**: runtime word-skipping needs dead words, and §3 measured zero. So C1 saves
+nothing and C2 costs too much accuracy. **Both variants of Option C are dead** — see §5.6 for what
+replaces them.
 
-## 5.5 The comparator that decides whether this is publishable
+### 5.1 Superseded design proxy (kept for the record)
 
-A baked 256-bit AM datapath invites the obvious reviewer objection: *"that is just D=256 with extra
-steps."* It has to be answered with the iso-width baseline, not the D=1024 baseline. Pooled HDC-2
+Earlier estimate from `scripts/eval_word_blocked_mask.py` (40k windows, cached-cohort Fisher scores,
+unpruned reference 74.28%) — **do not cite; superseded by the table above**:
+
+| keep | Free-choice | Word-blocked | Δ |
+|---|---|---|---|
+| 0.125 | 77.68% | 73.16% | −4.53 pp |
+| 0.25 | 74.28% | 74.28% | 0.00 pp |
+| 0.5 | 74.28% | 72.32% | −1.96 pp |
+
+Note free-choice at keep=0.125 (77.68%) exceeding its own unpruned reference (74.28%) — the leakage
+tell that should have discounted this table harder at the time.
+
+### 5.2 Option E — **baked bit-permutation + narrow AM · SELECTED**
+
+Option D was rejected for needing a *runtime-configurable* gather (128 lanes × 1024:1 muxes). But the
+mask does not need to be runtime-configurable. If `SEL[]` — the list of Fisher-selected positions —
+is a **synthesis-time constant**, the gather is not a mux at all. It is a fixed reordering of wires
+between the encoder output flops and the AM input flops, which costs **zero LUTs**; on an FPGA a
+constant permutation is pure routing.
+
+That reframing is the whole design:
+
+```
+narrow_query[i]    = enc_query[SEL[i]]          // fixed wiring, 0 LUT
+narrow_proto[k][i] = proto[k][SEL[i]]           // applied offline by software
+dist[k]            = popcount(narrow_query ^ narrow_proto[k])   // no mask register
+```
+
+**This is bit-exact to the baseline**, because
+
+`Σᵢ (q[SEL[i]] ^ p[SEL[i]]) = Σ_{j∈SEL} (q[j] ^ p[j]) = popcount((q ^ p) & mask)`
+
+— popcount is invariant to relabeling of bit positions, and argmin tie-breaking is by class index and
+so unaffected. Verified numerically on real cohort data by
+`scripts/verify_narrow_gather_equivalence.py` → `results/narrow_rtl/narrow_gather_equivalence.json`:
+**0 distance-vector mismatches and 0 prediction mismatches over 20,000 windows at keep ∈ {0.125,
+0.25, 0.5}.**
+
+The consequence is that **there is no accuracy gate left to clear.** Option E keeps the *free-choice*
+Fisher mask, so it inherits the free-choice accuracy exactly — and §5.5 shows that number is flat at
+72.65% all the way down to keep=0.125. Option E at K=128 bits is a **2-word AM** with the accuracy of
+the full 16-word design.
+
+| | C2 (word-blocked) | **E (baked permutation)** |
+|---|---|---|
+| Mask freedom | word granularity only | **free choice (any 128 positions)** |
+| Accuracy @ keep=0.125 | 66.14% (−6.51 pp) | **72.65% (−0.00 pp, bit-exact)** |
+| Accuracy @ keep=0.25 | 70.34% (−2.31 pp) | **72.65% (−0.00 pp, bit-exact)** |
+| Gather cost | none needed | 0 LUT (fixed wiring) |
+| Mask reprogrammable | no (synthesis) | no (synthesis) |
+| AM mask register | required | **not required** |
+
+E strictly dominates C2: same synthesis-time restriction, but zero accuracy loss instead of −2.31 pp,
+and it can go all the way to 2 words where C2 could not. It also *removes* hardware — with `SEL`
+baked in, the AM needs no `mask_in` port and no 128-bit mask compare, so `pruning_mask` drops out of
+the narrow build entirely.
+
+**Cost of the restriction.** The mask is frozen at synthesis, so changing the keep ratio or retraining
+the mask needs a rebuild. This is ordinary compile-time specialisation for an FPGA accelerator, and it
+is the honest framing: we are not claiming a runtime-reconfigurable sparse engine. Nothing in the
+option space delivers runtime reconfigurability *and* a hardware win — A, B, and C1 all measured to
+zero saving, and D costs more than it saves. That negative result is itself worth one paragraph in
+the paper.
+
+### 5.3 The comparator that decides whether this is publishable
+
+A baked narrow AM datapath invites the obvious reviewer objection: *"that is just a smaller D with
+extra steps."* It has to be answered with the iso-width baseline, not the D=1024 baseline. Pooled HDC-2
 accuracy from `results/protocol_v2/hook_a/sweep_results.json` (`cnt_w=6`, 5 subjects, free-choice
 Fisher masks):
 
@@ -149,146 +231,165 @@ Fisher masks):
 | **1024** | **72.78%** | 72.78% | **72.78%** | 72.78% |
 | 2048 | 76.45% | 76.45% | 76.45% | 76.45% |
 
-Read the diagonal: **encode at D=1024 and classify on 256 selected bits → 72.78%, whereas encoding
-*and* classifying at D=256 → 69.82%.** Same AM datapath width, **+2.96 pp** for the pruned design.
-The 1024-d encoding carries information that a 256-d encoding never captures, and Fisher selection
-keeps the part of it that matters.
+Free-choice Fisher at D=1024 is **completely flat** across the keep axis — 72.65% spatial-mean
+(72.78% pooled) at keep=1.0, 0.5, 0.25 *and* 0.125. There is no accuracy price for pruning at all in
+the free-choice regime, and Option E inherits that number bit-exactly (§5.2). So the operating point
+is the most aggressive one:
 
-That gives Paper 1 two claims that stand on their own:
+**Option E at K=128 bits (2-word AM) → 72.65% / 72.78%, versus D=256 encode-and-classify → 69.82%.**
+That is **+2.83 pp at half the AM width**, or read the other way, the same accuracy as the full
+16-word design with 1/8 of the AM.
 
-1. **vs D=1024 baseline — iso-accuracy efficiency.** 72.78% at both keep=1.0 and keep=0.25, so
-   −73% AM cycles and (est.) −37% LUT come at **zero** accuracy cost.
-2. **vs D=256 baseline — iso-width accuracy.** +2.96 pp at the same AM width, for the cost of a
+Paper 1 gets two claims that stand on their own:
+
+1. **vs D=1024 baseline — iso-accuracy efficiency.** Bit-exact identical predictions with a 2-word
+   instead of 16-word AM: −85% classify cycles and a proportional cut in AM storage, at **zero**
+   accuracy cost. Not "within noise" — provably identical.
+2. **vs D=256 baseline — iso-width accuracy.** +2.83 pp at half the AM width, for the cost of a
    wider encoder.
 
 Claim 1 is the headline; claim 2 is what stops the "just use a smaller D" rebuttal. Both must appear
 in the #32 Pareto figure, which therefore needs **three** curves: D-sweep, keep-sweep at D=1024, and
 the narrow-RTL points.
 
-Note also that free-choice Fisher at D=1024 is **completely flat** across the keep axis — 72.65%
-spatial-mean (72.78% pooled) at keep=1.0, 0.5, 0.25 *and* 0.125. There is no accuracy price to pay
-for pruning at all in the free-choice regime; the entire question is how much of that survives the
-word-granularity constraint.
+> **No accuracy gate remains.** The word-blocked gate (§5) was needed because C2 changed the mask;
+> Option E does not change the mask, so §5.2's bit-exactness proof replaces the gate. What #29 must
+> verify is *implementation* equivalence in RTL, not accuracy — see §8.
 
-> **Gate on this before writing RTL.** The table above uses *free-choice* Fisher masks. C2 needs
-> *word-blocked* masks, and the 0.00 pp word-blocking cost in §5 comes from the leaky design proxy.
-> The gate run is `run_hook_a_sweep.py --mask-granularity word` at D=1024, cnt_w=6, keep ∈
-> {1.0, 0.5, 0.25, 0.125}, 5 subjects, `emg_baseline_v2.json`, output in
-> `results/narrow_rtl/word_blocked_hdc2/`.
->
-> **Target: keep=0.25 word-blocked ≥ 72.15% spatial-mean** (72.65% − 0.5 pp), compared against the
-> free-choice arm using the *same* statistic (`spatial_mean_accuracy`, mean over the 5 subjects).
-> keep=0.125 is the stretch goal: free-choice is flat there too, so if word-blocking also holds at
-> 2 words it buys −85% cycles instead of −73%. If keep=0.25 fails, fall back to C1 (free-choice mask
-> preserved, latency/energy claim only). One Python run, ~2 h, and it de-risks all of #29.
+## 6. Micro-architecture spec (Option E)
 
-## 6. Micro-architecture spec
+### 6.1 `sel_table` — the baked gather
 
-### 6.1 `pruning_mask` — add a live-word interface (shared by C1 and C2)
-
-New outputs alongside the existing `mask_out`:
+A generated package holds the selected positions as synthesis-time constants:
 
 ```systemverilog
-output logic [N_WORDS-1:0]              word_live,   // OR-reduce per word
-output logic [WORD_IDX_W-1:0]           live_seq [0:N_WORDS-1],  // compacted indices
-output logic [$clog2(N_WORDS+1)-1:0]    n_live                   // popcount(word_live)
+package hdc_sel_pkg;
+    localparam int K_BITS = 128;                 // kept bits (= keep_ratio * D)
+    localparam int K_WORDS = 2;                  // ceil(K_BITS / 64)
+    localparam int SEL [0:K_BITS-1] = '{ 3, 17, 42, /* ... */ };  // from Fisher mask
+endpackage
 ```
 
-`word_live[g] = |regs[g]`, combinational off the existing register file. `live_seq`/`n_live` are
-recomputed on any mask write — a 16-entry compaction, one small always_comb block. Existing ports and
-the all-ones reset default are untouched, so `hdc_core_top` and both wrappers keep working unchanged
-(unpruned ⇒ `n_live=16` ⇒ baseline behaviour, bit-identical).
+Generated by a new `scripts/gen_sel_table.py` from the same `.npy`/`.mem` mask artefact the Python
+pipeline already produces, so RTL and golden model cannot drift.
 
-### 6.2 `popcount_am_narrow` — new module, baseline left in place
+`pruning_mask` is **not instantiated** in the narrow build. There is no runtime mask, so no mask
+register file, no `mask_in` port, and no AND-with-mask term. The block is retained unchanged for the
+baseline build.
 
-Parameterised so one source covers both variants:
+### 6.2 Gather wiring in `hdc_core_top`
+
+```systemverilog
+logic [K_BITS-1:0] enc_query_narrow;
+for (genvar i = 0; i < K_BITS; i++)
+    assign enc_query_narrow[i] = enc_query[hdc_sel_pkg::SEL[i]];
+```
+
+A constant-indexed assign per bit: no logic, just routing between the encoder output flops and the AM
+input flops. Prototypes arrive already gathered — software applies `SEL` when it packs them, exactly
+as it already applies the mask offline today, so **no host-side work is added**.
+
+The unused 896 encoder output bits become dangling. Vivado will then prune any encoder logic that
+feeds only those bits — most usefully the bundle-stage majority counters, which are `D × CNT_W` flops.
+Whether that prunes cleanly is an empirical question for #29 and is the main upside surprise to look
+for; it is **not** claimed here.
+
+### 6.3 `popcount_am_narrow`
 
 ```systemverilog
 module popcount_am_narrow #(
-    parameter int WORDS         = 16,
+    parameter int K_BITS        = 128,
     parameter int BITS_PER_WORD = 64,
+    parameter int K_WORDS       = (K_BITS + BITS_PER_WORD - 1) / BITS_PER_WORD,
     parameter int N_CLASS       = 8,
-    parameter int KEEP_WORDS    = 16,      // C2: < WORDS ⇒ physically narrow
-    parameter bit RUNTIME_SKIP  = 1'b1     // C1: iterate live_seq at runtime
-) ( /* baseline ports + word_live/live_seq/n_live */ );
+    parameter int DIST_W        = $clog2(K_BITS + 1)
+) ( /* baseline ports, minus mask_in, with D -> K_BITS */ );
 ```
 
-FSM changes, minimal and local:
+Changes from the baseline, all of them simplifications:
 
-- `S_XOR` indexes `live_seq[w_ptr]` instead of `w_idx`; `w_ptr` counts `0 .. n_live-1`.
-- `S_ACC` terminates on `w_ptr == n_live-1` rather than `LAST_WORD`.
-- `DIST_W` narrows to `$clog2(KEEP_WORDS*BITS_PER_WORD + 1)` under C2.
-- Storage under C2: `proto[k]` and `query_r` are `KEEP_WORDS*BITS_PER_WORD` wide. The host loads
-  **pre-compacted** prototypes (software already applies the mask offline — no hardware gather), and
-  the encoder output is sliced to the selected words on the way in.
-- Under C1 (`KEEP_WORDS == WORDS`) the widths collapse to the baseline and only iteration changes.
+- `proto[k]` and `query_r` are `K_BITS` wide, not `D`.
+- `S_XOR` drops the `& mask_in` term entirely.
+- `LAST_WORD` becomes `K_WORDS-1`; `DIST_W` narrows from 11 to 8 bits at `K_BITS=128`.
+- Tail handling when `K_BITS % 64 != 0`: zero-pad the final word. Zero bits contribute 0 to popcount,
+  so this is safe; `K_BITS ∈ {128, 256, 512}` are exact multiples anyway.
 
-Argmin semantics are untouched: `dist[k] = popcount((query ^ proto[k]) & mask)` over live words only,
-first-index-wins on ties. This is exactly `hdc_ref.HDCEngine.classify` restricted to a word-blocked
-mask, so the golden model needs **no** change — only a word-blocked mask generator.
+Argmin semantics are untouched (first index wins on ties), and by §5.2 the distances are identical to
+the baseline's masked distances. The golden model needs **no new mask mode** — `hdc_ref` already
+produces the free-choice Fisher mask, and `scripts/verify_narrow_gather_equivalence.py` is the
+reference for the gathered form.
 
-### 6.3 Projected results
+### 6.4 Projected results
 
 Cycles are exact; area is an estimate pending the per-module utilisation report in #29.
 
-| Config | Words | Classify cycles | Core cycles | Core latency | Est. core FF | Est. ΔFF |
+| Config | K bits | AM words | Classify cycles | Core cycles | Core latency | Accuracy (HDC-2) |
 |---|---|---|---|---|---|---|
-| Baseline | 16 | 264 | 287 | 2.87 µs | 17,784 | — |
-| C1/C2 keep=0.5 | 8 | 136 | 159 | 1.59 µs | ~13,300 | −25% |
-| **C2 keep=0.25** | 4 | **72** | **95** | **0.95 µs** | **~10,900** | **−39%** |
-| C2 keep=0.125 | 2 | 40 | 63 | 0.63 µs | ~9,700 | −45% |
+| Baseline | 1024 | 16 | 264 | 287 | 2.87 µs | 72.65% |
+| E keep=0.5 | 512 | 8 | 136 | 159 | 1.59 µs | 72.65% (bit-exact) |
+| E keep=0.25 | 256 | 4 | 72 | 95 | 0.95 µs | 72.65% (bit-exact) |
+| **E keep=0.125** | **128** | **2** | **40** | **63** | **0.63 µs** | **72.65% (bit-exact)** |
 
-FF estimate: `proto` (`N_CLASS×D`) and `query_r` scale with `KEEP_WORDS`; the encoder does not shrink
-(it still produces 1024 bits). LUT saving should track the proto mux, which shrinks from 128:1 to
-`N_CLASS*KEEP_WORDS`:1 per lane — 4× at keep=0.25 — but the encoder's fixed LUT share caps the
-core-level number, which is why #29 must produce a **per-module** report, not just a core total.
+AM storage at `K_BITS=128`: `proto` falls from `N_CLASS×1024` = 8,192 FF to `N_CLASS×128` = 1,024 FF,
+and `query_r` from 1,024 to 128 FF — **−8,064 FF, 45% of the 17,784-FF core**, before any encoder
+pruning. The proto mux shrinks from `N_CLASS*WORDS`=128:1 to 16:1 per lane. The encoder's fixed share
+still caps the core-level percentage, so #29 must report **per-module** utilisation.
 
-End-to-end at keep=0.25: 4.63 µs → ~2.7 µs/window (~1.7×), after the ~1.8 µs DMA/PS floor.
+End-to-end at keep=0.125: 4.63 µs → ~2.4 µs/window (~1.9×), after the ~1.8 µs DMA/PS floor.
 
 ## 7. Gate criteria (from the split plan)
 
 > ≥10% LUT reduction **or** measurable µJ/latency improvement at keep=0.125 vs baseline RTL.
 
-C2 clears this on the latency axis with margin (−73% classify cycles at keep=0.25, −85% at 0.125) and
-should clear the LUT axis too. Accuracy gate: anchor within ±0.5 pp — **C2 at keep=0.125 does not
-meet this** (−4.53 pp in the design proxy), so **keep=0.25 is the config we take to the board**, with
-keep=0.125 reported as the aggressive Pareto endpoint.
+Option E clears this at keep=0.125 on both axes: −85% classify cycles and −45% core FF, with the LUT
+number pending synthesis. The ±0.5 pp accuracy gate is met **by construction** (bit-exact, §5.2)
+rather than by measurement, so keep=0.125 — the config C2 could not reach — is the config we take to
+the board.
 
 ## 8. Verification plan (#30)
 
 | Harness | Why it must re-run | Pass criterion |
 |---|---|---|
-| `tb_pruning_mask_cosim` | new `word_live`/`live_seq`/`n_live` outputs | 64 cases, incl. all-ones and single-word masks |
-| `tb_am_cosim` | new module under test | 500 cases bit-exact vs `hdc_ref` |
-| `tb_core_cosim` | integration through `hdc_core_top` | 500 cases, at D ∈ {256, 512, 1024, 2048} |
-| `tb_core_axi_cosim` | mask load path via AXI-Lite | 200 cases |
-| `tb_stream_cosim` | DMA path, pre-compacted protos | 200 cases |
+| `tb_am_cosim` | new module under test | 500 cases bit-exact vs gathered `hdc_ref` |
+| `tb_core_cosim` | gather wiring through `hdc_core_top` | 500 cases, at D ∈ {256, 512, 1024, 2048} |
+| `tb_core_axi_cosim` | proto load path via AXI-Lite (mask path removed) | 200 cases |
+| `tb_stream_cosim` | DMA path, pre-gathered protos | 200 cases |
+| `tb_pruning_mask_cosim` | unchanged module, baseline build only | 64 cases, must still pass |
 
-Regression discipline: **run every harness against `KEEP_WORDS=16, RUNTIME_SKIP=0` first** and require
-bit-identical results to the current baseline logs. That proves the refactor is behaviour-preserving
-before any narrowing is evaluated, and isolates a genuine narrowing bug from a refactor bug.
+Two-stage discipline:
 
-New golden-side work: a word-blocked mask generator in `hdc_ref` (the
-`blocked_mask_from_scores` in `scripts/eval_word_blocked_mask.py` promoted into the library) plus
-regenerated `.mem` vectors for the word-blocked configs.
+1. **Identity pass.** Build with `K_BITS=1024` and `SEL[i] = i`. Every harness must be bit-identical
+   to the current baseline logs. This proves the gather plumbing is behaviour-preserving and isolates
+   a wiring bug from a narrowing bug.
+2. **Narrow pass.** `K_BITS ∈ {512, 256, 128}` with the real Fisher `SEL`, cross-checked against
+   `scripts/verify_narrow_gather_equivalence.py` on the same vectors — the RTL distances must equal
+   the golden *masked full-width* distances, not merely the golden narrow ones. That is the property
+   the paper claim rests on.
+
+New golden-side work is small: `scripts/gen_sel_table.py` to emit `hdc_sel_pkg` from the mask
+artefact, plus pre-gathered prototype `.mem` vectors. `blocked_mask_from_scores` in `hdc_ref` is no
+longer on the critical path but is kept — it produced the §5 negative result.
 
 ## 9. Task breakdown for #29
 
-0. **Gate first (§5.5):** word-blocked keep=0.25 under HDC-2 with TRAIN-Fisher scores must hit
-   72.78% ± 0.5 pp. Do not start RTL until this passes; if it fails, switch to C1.
-1. Extend `pruning_mask` with `word_live`/`live_seq`/`n_live`; update `tb_pruning_mask_cosim`.
-2. Promote `blocked_mask_from_scores` into `hdc_ref`; regenerate co-sim vectors and `.mem` files.
-3. Add `rtl/popcount_am_narrow.sv` (both variants, one parameterised source).
-4. Equivalence pass: `KEEP_WORDS=16, RUNTIME_SKIP=0` bit-identical to baseline on all five harnesses.
-5. Narrowing pass: co-sim at `KEEP_WORDS ∈ {2, 4, 8}`.
-6. OOC synthesis per `KEEP_WORDS`, **with per-module utilisation** (`report_utilization -hierarchical`).
+1. `scripts/gen_sel_table.py` → `rtl/hdc_sel_pkg.sv` from the Fisher mask artefact; check the emitted
+   `SEL` against the `.mem` mask in CI.
+2. Add `rtl/popcount_am_narrow.sv` (no `mask_in`, `K_BITS`-wide storage).
+3. Gather wiring + `K_BITS` plumbing in `hdc_core_top`; keep the baseline path selectable.
+4. **Identity pass:** `K_BITS=1024`, `SEL[i]=i`, bit-identical to baseline on all harnesses.
+5. **Narrow pass:** co-sim at `K_BITS ∈ {512, 256, 128}` against masked full-width golden distances.
+6. OOC synthesis per `K_BITS`, **with `report_utilization -hierarchical`**. Explicitly check whether
+   the bundle-stage counters pruned (§6.2).
 7. Update `results/dsweep/`-style summary under `results/narrow_rtl/`.
+
+No accuracy re-run is required — that is the point of Option E.
 
 ## 10. Risks
 
 | Risk | Mitigation |
 |---|---|
-| Word-blocked accuracy fails the ±0.5 pp gate on the strict protocol | keep=0.25 has 0.00 pp headroom in the proxy and the proxy is biased *against* blocking; if it still fails, fall back to C1 (latency/energy claim only, free-choice mask preserved) |
-| LUT saving diluted by the fixed encoder share | report per-module AM utilisation as the primary number, core total as secondary |
+| 1024-wire fixed permutation causes routing congestion or hurts WNS | only 128 of 1024 bits are actually routed to the AM; the rest are dangling. If WNS regresses, add a pipeline stage on the gathered query — it is off the critical accumulate loop |
+| `SEL` in RTL drifts from the Python mask | generate `hdc_sel_pkg` from the same artefact and assert equality in CI (task 1) |
+| Encoder bundle counters do not prune, capping core-level LUT saving | report per-module AM utilisation as the primary number, core total as secondary |
 | Board latency win swamped by DMA overhead | report core-only cycles (from co-sim) alongside end-to-end board µs in #31 |
-| Reviewer objects that C2 freezes the mask at synthesis | ship C1 as the runtime-programmable point on the same Pareto curve; the two variants answer "flexible" and "efficient" separately |
+| Reviewer objects that Option E freezes the mask at synthesis | own it as compile-time specialisation, and report the measured negative result: nothing in the option space (A, B, C1, D) delivers runtime reconfigurability *and* a hardware win. §3 and §5 are the evidence |
