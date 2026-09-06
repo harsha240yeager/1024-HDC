@@ -16,6 +16,10 @@
 //   +CASES=<n>     number of cases to run    (default 500)
 //   +VECDIR=<path> directory holding the hex (default python_ref/vectors/cosim_core_narrow)
 //
+// Item-memory .mem files are loaded by encoder ROMs from the CH_MEM/FT_MEM/
+// VAL_MEM parameters (not +VECDIR).  The .do scripts override those with
+// -g so they stay in lock-step with the vector directory / seed.
+//
 // Exit: $finish on full match, $fatal on any mismatch (non-zero sim exit).
 //============================================================================
 

@@ -1,0 +1,27 @@
+{
+  "tool": "ModelSim SE-64 10.6e",
+  "date": "2026-09-06",
+  "license": "1715@lic-modelsim.usc.edu",
+  "passes": [
+    {
+      "name": "identity",
+      "k_bits": 1024,
+      "sel": "identity",
+      "seed": 31,
+      "cases": 500,
+      "mismatches": 0,
+      "result": "PASS",
+      "log": "results/narrow_rtl/identity_cosim.log"
+    },
+    {
+      "name": "anchor_c",
+      "k_bits": 128,
+      "sel": "fisher_keep_0.125",
+      "seed": 42,
+      "cases": 500,
+      "mismatches": 0,
+      "result": "PASS",
+      "log": "results/narrow_rtl/anchor_c_cosim.log"
+    }
+  ]
+}

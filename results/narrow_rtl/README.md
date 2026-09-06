@@ -5,6 +5,20 @@ Full argument and micro-architecture spec: `docs/H1_narrow_datapath_design.md`.
 
 Implementation, synthesis, and board numbers land under #29/#31 and will be added here.
 
+**RTL co-sim (ModelSim SE-64 10.6e, 2026-09-06, USC license):** both passes are bit-exact.
+
+| Pass | Config | Log | Result |
+|---|---|---|---|
+| Identity | K=1024, SEL[i]=i, seed 31 | `identity_cosim.log` | **500/500 PASS** |
+| Anchor C | K=128, Fisher keep=0.125, seed 42 | `anchor_c_cosim.log` | **500/500 PASS** |
+
+```text
+vsim -c -do sim/run_narrow_core_cosim_identity.do
+vsim -c -do sim/run_narrow_core_cosim.do
+```
+
+Needs `LM_LICENSE_FILE=1715@lic-modelsim.usc.edu` (USC VPN). The `.do` files override the testbench item-memory parameters so the encoder ROMs match the vector-directory seed.
+
 **Selected design: Option E — baked bit-permutation + narrow AM.**
 
 ## Files

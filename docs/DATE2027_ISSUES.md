@@ -20,8 +20,8 @@ Prior revision track (#1–#11) is largely complete; this track adds experiments
 | 6 | [#26](https://github.com/harsha240yeager/1024-HDC/issues/26) Silicon seeds 1–9 | ✅ predict + seed 0 board; 1–9 board lab | Both | **Yes** |
 | 7 | [#27](https://github.com/harsha240yeager/1024-HDC/issues/27) Silicon seed automation | ✅ script | Both | Enables #26 |
 | 8 | [#28](https://github.com/harsha240yeager/1024-HDC/issues/28) Design narrow/gated RTL | ✅ Option E (baked permutation, bit-exact) — `docs/H1_narrow_datapath_design.md` | 1 | **Yes** |
-| 9 | [#29](https://github.com/harsha240yeager/1024-HDC/issues/29) Implement + synth | ⏳ | 1 | **Yes** |
-| 10 | [#30](https://github.com/harsha240yeager/1024-HDC/issues/30) Co-sim + golden | ⏳ | 1 | **Yes** |
+| 9 | [#29](https://github.com/harsha240yeager/1024-HDC/issues/29) Implement + synth | ⏳ RTL + ModelSim co-sim done; synth still open | 1 | **Yes** |
+| 10 | [#30](https://github.com/harsha240yeager/1024-HDC/issues/30) Co-sim + golden | ✅ identity 500/500 + anchor C 500/500 | 1 | **Yes** |
 | 11 | [#31](https://github.com/harsha240yeager/1024-HDC/issues/31) Board eval vs keep | ⏳ | 1 | **Yes** |
 | 12 | [#32](https://github.com/harsha240yeager/1024-HDC/issues/32) Pareto figure | ⏳ | 1 | Medium |
 | 13 | [#36](https://github.com/harsha240yeager/1024-HDC/issues/36) Integrate manuscript | ⏳ | Both | **Yes** |

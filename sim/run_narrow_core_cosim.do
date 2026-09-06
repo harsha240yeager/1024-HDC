@@ -72,7 +72,13 @@ echo "=== \[4/5\] Compiling narrow core + testbench ==="
 vlog -sv -quiet rtl/hdc_sel_pkg.sv rtl/item_mem.sv rtl/bundle_unit.sv rtl/encoder_top.sv rtl/popcount_am_narrow.sv rtl/hdc_core_top_narrow.sv tb/tb_core_narrow_cosim.sv
 
 echo "=== \[5/5\] Running narrow end-to-end co-simulation ==="
-vsim -quiet -t 1ps work.tb_core_narrow_cosim +CASES=$NUM_CASES +VECDIR=$VECDIR
+# Item-memory $readmemh paths are compile-time parameters.  Override them so
+# the encoder ROMs match the seed used to write $VECDIR (anchor C uses 42).
+vsim -quiet -t 1ps work.tb_core_narrow_cosim \
+    -g/tb_core_narrow_cosim/CH_MEM=${VECDIR}/item_mem_channel.mem \
+    -g/tb_core_narrow_cosim/FT_MEM=${VECDIR}/item_mem_feature.mem \
+    -g/tb_core_narrow_cosim/VAL_MEM=${VECDIR}/item_mem_value.mem \
+    +CASES=$NUM_CASES +VECDIR=$VECDIR
 run -all
 
 quit -code 0
