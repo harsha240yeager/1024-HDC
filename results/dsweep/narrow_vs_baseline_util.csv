@@ -1,0 +1,7 @@
+variant,top,k_bits,scope,lut,ff,wns_ns,fmax_mhz,report
+baseline,hdc_core_top,1024,ooc_core,28600,17784,,n/a,synth_baseline_core.txt
+narrow,hdc_core_top_narrow,128,ooc_core,3794,2209,,n/a,synth_narrow_core.txt
+baseline,hdc_stream_wrapper,1024,ooc_stream,28963,18960,,n/a,synth_baseline_stream.txt
+narrow,hdc_stream_wrapper_narrow,128,ooc_stream,4153,3382,,n/a,synth_narrow_stream.txt
+baseline,hdc_stream_system_bd_wrapper,1024,ooc_integrated,30639,22117,,n/a,synth_baseline_bd.txt
+narrow,hdc_stream_system_bd_wrapper_narrow,128,ooc_integrated,4261,3706,,n/a,synth_narrow_bd.txt

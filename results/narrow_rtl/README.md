@@ -5,6 +5,33 @@ Full argument and micro-architecture spec: `docs/H1_narrow_datapath_design.md`.
 
 Implementation, synthesis, and board numbers land under #29/#31 and will be added here.
 
+## OOC synthesis (Vivado 2024.2, xc7z020clg484-1 @ 100 MHz, 2026-09-07)
+
+Regenerate:
+
+```bash
+bash scripts/run_narrow_vs_baseline_synth.sh   # core + stream OOC
+vivado -mode batch -source scripts/narrow_bd_synth.tcl   # bd-wrapper OOC
+bash scripts/compare_narrow_vs_baseline_lut.sh
+```
+
+| Scope | Baseline LUT | Narrow LUT (K=128) | Δ LUT | Baseline FF | Narrow FF |
+|---|---|---|---|---|---|
+| Core (`hdc_core_top*`) | 28,600 | 3,794 | **−86.7%** | 17,784 | 2,209 |
+| Stream wrapper | 28,963 | 4,153 | **−85.7%** | 18,960 | 3,382 |
+| BD IP (`hdc_stream_system_bd_wrapper*`) | 30,639 | 4,261 | **−86.1%** | 22,117 | 3,706 |
+
+CSV + hierarchical reports: `results/dsweep/narrow_vs_baseline_util.csv`, `synth_*_{core,stream,bd}.txt`.
+
+Integrated place-and-route (full Zynq + DMA + bitstream):
+
+```bash
+export HDC_VIVADO_ROOT=~/Final_HDC/FInal_HDC
+bash scripts/run_narrow_integrated_bitstream.sh
+```
+
+Log: `results/narrow_rtl/integrated_synth.log` · util: `integrated_utilization_placed.rpt`.
+
 **RTL co-sim (ModelSim SE-64 10.6e, 2026-09-06, USC license):** both passes are bit-exact.
 
 | Pass | Config | Log | Result |
