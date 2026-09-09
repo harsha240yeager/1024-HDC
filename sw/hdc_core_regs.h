@@ -22,11 +22,19 @@
 #define HDC_STATUS_BUSY     0x1U
 #define HDC_STATUS_DONE     0x2U
 
+#ifdef HDC_NARROW
+#define HDC_VEC_WORDS       4U
+#define HDC_WORDS64         2U
+#define HDC_K_BITS          128U
+#define HDC_DIST_W          8U
+#else
 #define HDC_VEC_WORDS       32U
 #define HDC_WORDS64         16U
+#define HDC_DIST_W          11U
+#endif
+
 #define HDC_N_CLASS         8U
 #define HDC_IDX_W           3U
-#define HDC_DIST_W          11U
 
 void hdc_wr(u32 off, u32 val);
 u32  hdc_rd(u32 off);

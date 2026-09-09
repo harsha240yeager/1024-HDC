@@ -116,12 +116,20 @@ static void emg_progress_report(u32 windows_done, u32 correct_so_far)
 
 static void load_protos_for_subject(u32 subj_idx)
 {
+#ifdef EMG_NARROW
+    u32 base = subj_idx * EMG_N_CLASS * EMG_K_WORDS;
+    u32 k;
+
+    for (k = 0U; k < EMG_N_CLASS; ++k)
+        hdc_load_prototype_from64(k, &emg_proto_narrow64[base]);
+#else
     u32 base = subj_idx * EMG_N_CLASS * EMG_WORDS64;
     u32 k;
 
     /* proto64 must be subject base: hdc_load_prototype_from64 indexes by class_idx. */
     for (k = 0U; k < EMG_N_CLASS; ++k)
         hdc_load_prototype_from64(k, &emg_proto64[base]);
+#endif
 }
 
 static void pack_chunk(u32 offset, u32 chunk_n)
@@ -264,11 +272,19 @@ int main(void)
         return -1;
     }
 
+#ifndef EMG_NARROW
     hdc_load_mask_from64(emg_mask64);
+#endif
 
     xil_printf("==================================================\r\n");
+#ifdef EMG_NARROW
+    xil_printf("HDC EMG replay (narrow K=%u): %lu subjects, %lu windows\r\n",
+               (unsigned)EMG_K_BITS,
+               (unsigned long)EMG_N_SUBJECTS, (unsigned long)n);
+#else
     xil_printf("HDC EMG replay starting: %lu subjects, %lu windows\r\n",
                (unsigned long)EMG_N_SUBJECTS, (unsigned long)n);
+#endif
     xil_printf("Export ref target: %lu.%02lu%%\r\n",
                (unsigned long)(EMG_EXPORT_REF_ACCURACY_X1000 / 1000U),
                (unsigned long)((EMG_EXPORT_REF_ACCURACY_X1000 % 1000U) / 10U));

@@ -5,6 +5,7 @@
 #   bash board/HDC_DMA/run_anchor_replay.sh A
 #   bash board/HDC_DMA/run_anchor_replay.sh B
 #   bash board/HDC_DMA/run_anchor_replay.sh C
+#   bash board/HDC_DMA/run_anchor_replay.sh C --narrow   # anchor C + narrow bitstream
 #   bash board/HDC_DMA/run_anchor_replay.sh ALL
 #
 # Prerequisite: sw/emg_board_vectors.bin + sw/emg_board_vectors.h (DDR pack from .full export).
@@ -13,6 +14,10 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$ROOT/../.." && pwd)"
 ANCHOR="${1:-}"
+NARROW=0
+if [[ "${2:-}" == "--narrow" || "${HDC_NARROW:-0}" == "1" ]]; then
+  NARROW=1
+fi
 
 if [[ -z "$ANCHOR" ]]; then
   echo "Usage: $0 A|B|C|ALL" >&2
@@ -31,8 +36,13 @@ anchor_keep() {
 run_one_anchor() {
   local id="$1"
   local keep
-  local out_dir="${HDC_EMG_RESULTS_DIR:-$REPO/results/protocol_v2/anchors/anchor_${id}}"
-  local log_dir="${HDC_LOG_DIR:-/tmp/hdc_anchor_${id}}"
+  local out_dir
+  if [[ "$NARROW" == "1" ]]; then
+    out_dir="${HDC_EMG_RESULTS_DIR:-$REPO/results/protocol_v2/narrow_rtl/anchors/anchor_${id}}"
+  else
+    out_dir="${HDC_EMG_RESULTS_DIR:-$REPO/results/protocol_v2/anchors/anchor_${id}}"
+  fi
+  local log_dir="${HDC_LOG_DIR:-/tmp/hdc_anchor_${id}${NARROW:+_narrow}}"
   local v2_cfg="$REPO/python_ref/config/emg_baseline_v2.json"
   local hdc2_hdr="$REPO/sw/emg_board_vectors_hdc2.h"
 
@@ -43,7 +53,12 @@ run_one_anchor() {
 
   mkdir -p "$out_dir" "$log_dir"
 
-  echo "=== Anchor ${id}: keep_ratio=${keep} ==="
+  echo "=== Anchor ${id}: keep_ratio=${keep}${NARROW:+ (narrow PL)} ==="
+
+  if [[ "$NARROW" == "1" && "$id" != "C" ]]; then
+    echo "ERROR: narrow bitstream is anchor-C only (K=128 baked SEL)" >&2
+    return 1
+  fi
 
   if [[ "${HDC_ANCHOR_SKIP_PATCH:-0}" == "1" ]]; then
     echo "Skipping mask patch for anchor ${id} (HDC_ANCHOR_SKIP_PATCH=1)"
@@ -53,6 +68,14 @@ run_one_anchor() {
       --anchor "$id" \
       --keep-ratio "$keep" \
       --config "$v2_cfg" \
+      --slim-header "$REPO/sw/emg_board_vectors.h" \
+      --header "$hdc2_hdr"
+  fi
+
+  if [[ "$NARROW" == "1" ]]; then
+    echo "Pre-gathering narrow prototypes (K=128) ..."
+    python3 "$REPO/scripts/patch_emg_narrow_protos.py" \
+      --keep "$keep" \
       --slim-header "$REPO/sw/emg_board_vectors.h" \
       --header "$hdc2_hdr"
   fi
@@ -70,9 +93,14 @@ run_one_anchor() {
     make -C "$BSP" >/dev/null
     mkdir -p "$BLD"
     objs=()
+    extra_cflags=()
+    if [[ "$NARROW" == "1" ]]; then
+      extra_cflags+=(-DHDC_NARROW)
+    fi
     for f in hdc_emg_board_test.c hdc_dma_stream.c hdc_core_regs.c; do
       obj="$BLD/${f%.c}.emg.o"
       arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -O0 -g -Wall \
+        "${extra_cflags[@]}" \
         "-I$BSP/ps7_cortexa9_0/include" "-I$SW" \
         -c "$SW/$f" -o "$obj"
       objs+=("$obj")
@@ -89,6 +117,9 @@ run_one_anchor() {
   export HDC_EMG_RESULTS="$out_dir/board_emg_replay.txt"
   export HDC_EMG_RESULTS_DIR="$out_dir"
   export HDC_LOG_DIR="$log_dir"
+  if [[ "$NARROW" == "1" ]]; then
+    export HDC_VIVADO_ROOT="${HDC_VIVADO_ROOT:-$HOME/Desktop/Final HDC/FInal_HDC}"
+  fi
   bash "$ROOT/run_phase3_emg.sh" | tee "$log_dir/run_anchor_${id}.log"
 
   echo "Anchor ${id} complete -> $HDC_EMG_RESULTS"

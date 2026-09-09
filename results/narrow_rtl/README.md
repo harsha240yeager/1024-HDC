@@ -32,6 +32,8 @@ bash scripts/run_narrow_integrated_bitstream.sh
 
 Log: `results/narrow_rtl/integrated_synth.log` · util: `integrated_utilization_placed.rpt`.
 
+**Integrated (full Zynq + DMA, 2026-09-07):** 10,601 LUT (19.9%) vs baseline 35,206 (66.2%) — **−70% integrated LUT**.
+
 **RTL co-sim (ModelSim SE-64 10.6e, 2026-09-06, USC license):** both passes are bit-exact.
 
 | Pass | Config | Log | Result |
