@@ -15,7 +15,11 @@
  * Optional: -DBENCH_ITERS=5000  -DBENCH_BATCH_WINDOWS=200
  */
 
+#ifdef HDC_NARROW
+#include "golden_vectors_narrow.h"
+#else
 #include "golden_vectors.h"
+#endif
 #include "hdc_core_regs.h"
 #include "hdc_dma_stream.h"
 #include "xil_cache.h"
@@ -223,7 +227,9 @@ int main(void)
 
     for (k = 0U; k < GOLDEN_N_CLASS; ++k)
         hdc_load_prototype_from64(k, golden_proto64);
+#ifndef HDC_NARROW
     hdc_load_mask_from64(golden_mask64);
+#endif
 
     pack_batch_inputs(n_batch);
 

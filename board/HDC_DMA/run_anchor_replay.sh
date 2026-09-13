@@ -53,7 +53,7 @@ run_one_anchor() {
 
   mkdir -p "$out_dir" "$log_dir"
 
-  echo "=== Anchor ${id}: keep_ratio=${keep}${NARROW:+ (narrow PL)} ==="
+  echo "=== Anchor ${id}: keep_ratio=${keep}$([[ "$NARROW" == "1" ]] && echo ' (narrow PL)') ==="
 
   if [[ "$NARROW" == "1" && "$id" != "C" ]]; then
     echo "ERROR: narrow bitstream is anchor-C only (K=128 baked SEL)" >&2

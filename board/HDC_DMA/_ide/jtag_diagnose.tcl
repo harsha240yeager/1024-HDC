@@ -78,7 +78,11 @@ foreach t [targets] {
     }
 }
 catch { rst -system } rst2
-log_puts "  rst from DAP: [expr {[info exists rst2] ? $rst2 : OK}]"
+if {[info exists rst2]} {
+    log_puts "  rst from DAP: $rst2"
+} else {
+    log_puts "  rst from DAP: OK"
+}
 after 5000
 catch { disconnect }
 after 2000

@@ -1,6 +1,6 @@
 Phase 3 — DMA stream bench (ZedBoard)
 =====================================
-Date:       2026-06-22T16:13:16+05:30
+Date:       2026-09-13T23:47:56+05:30
 App:        sw/hdc_dma_stream_bench.c
 Method:     JTAG readback @ 0x00100000 (single) + 0x00100100 (batch)
 Run script: bash board/HDC_DMA/run_phase3_bench.sh
@@ -18,9 +18,9 @@ throughput ~ 17241 windows/s (1/mean)
 --- vs Phase 1 AXI-Lite baseline (~3 us/window) ---
 delta = +55 us (slower than Phase 1)
 --- Batch DMA throughput ---
-total   = 926 us
+total   = 941 us
 mean/window ~ 4 us (total / N)
-throughput ~ 215982 windows/s (batch / total)
+throughput ~ 212539 windows/s (batch / total)
 --- Golden batch check (batch DMA outputs) ---
 PASS: 200/200 batch golden cases
 --- Golden batch check (per-window DMA) ---
