@@ -1,6 +1,6 @@
 Phase 3 — DMA stream bench (ZedBoard)
 =====================================
-Date:       2026-09-13T23:47:56+05:30
+Date:       2026-09-16T00:52:48+05:30
 App:        sw/hdc_dma_stream_bench.c
 Method:     JTAG readback @ 0x00100000 (single) + 0x00100100 (batch)
 Run script: bash board/HDC_DMA/run_phase3_bench.sh
