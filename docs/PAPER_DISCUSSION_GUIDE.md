@@ -346,7 +346,7 @@ with mean p, both are monotone in how far p sits from ½), so there are five
 distinct criteria. Those
 five select visibly different masks — mean Jaccard against the Fisher mask spans
 0.18–0.95 — yet all six predict identically on *every* test window of every
-subject, giving 72.58% throughout. Even a mask sharing only 11% of its positions
+subject, giving 72.65% throughout (full HDC-2 test windows; issue #9). Even a mask sharing only 11% of its positions
 with Fisher's produces the same labels.
 
 That is why the paper is titled "support, not score" and why the original

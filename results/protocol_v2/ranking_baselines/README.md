@@ -27,6 +27,6 @@ Test cap: all random windows/subject
 ## Regenerate
 
 ```bash
+bash scripts/run_issue9_ranking_baselines.sh   # full test/subject (~1.9 h)
 python3 python_ref/run_ranking_baselines.py --quick
-python3 python_ref/run_ranking_baselines.py
 ```

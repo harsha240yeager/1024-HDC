@@ -17,7 +17,7 @@ Compare Fisher ranking against stronger baselines (not random alone).
 
 Method × 128-bit accuracy × ranking cost × requires retraining?
 
-Outputs: `results/protocol_v2/ranking_baselines/`
+Outputs: `results/protocol_v2/ranking_baselines/` · **Full cohort** (all test windows/subject, Sep 2026): Fisher **72.65%**; random active **−1.04 pp**; random full **−7.94 pp** (`ad4a460`).
 
 Plan: [Phase 5b](https://github.com/harsha240yeager/1024-HDC/blob/main/docs/DATE_REVISION_PLAN.md#5b--ranking-baselines-128-bit-accuracy)
 

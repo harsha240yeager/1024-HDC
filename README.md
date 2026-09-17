@@ -173,7 +173,8 @@ python scripts/export_emg_board_vectors.py --config python_ref/config/emg_baseli
 | Hook A | ✅ [`protocol_v2/hook_a/`](results/protocol_v2/hook_a/) |
 | Twist 1 Python @ keep=0.125 | ✅ **+6.90 pp** (30 seeds) [`twist1_keep0125_30seed/`](results/protocol_v2/twist1_keep0125_30seed/) · 5-seed [`twist1_keep0125/`](results/protocol_v2/twist1_keep0125/) |
 | Twist 1 @ Stage B encoder | ✅ keep grid **+2.82 / +1.02 / +0.50 pp** @ {128,256,512} bits (30 seeds) · baseline **89.46%** [`twist1_stage_b/`](results/protocol_v2/twist1_stage_b/) |
-| Stage B ranking baselines @ 128 bits | ✅ **MI 92.77%** (+2.29 pp vs Fisher); criteria **separate** on dense support [#22](https://github.com/harsha240yeager/1024-HDC/issues/22) [`ranking_baselines_README.md`](results/protocol_v2/twist1_stage_b/ranking_baselines_README.md) |
+| Ranking baselines @ 128 bits (hdc_ref, #9) | ✅ **72.65%** informed (full test); random **−1.04 / −7.94 pp** | [`ranking_baselines/`](results/protocol_v2/ranking_baselines/) |
+| Stage B ranking baselines @ 128 bits (#22) | ✅ **MI 92.77%** (+2.29 pp vs Fisher); criteria **separate** on dense support | [`ranking_baselines_README.md`](results/protocol_v2/twist1_stage_b/ranking_baselines_README.md) |
 | Three-baseline hero figure @ keep=128 | ✅ informed / random-all / random-support (hdc_ref + Stage B) [#23](https://github.com/harsha240yeager/1024-HDC/issues/23) [`twist1_three_baselines_keep0125.pdf`](results/figures/twist1_three_baselines_keep0125.pdf) |
 | Active support mechanism (327 vs ~209) | ✅ value-table ceiling **327** · real EMG **203–210** [#24](https://github.com/harsha240yeager/1024-HDC/issues/24) [`active_support_mechanism/`](results/protocol_v2/active_support_mechanism/) |
 | Twist 1 silicon seeds 0–9 | ✅ **+7.45 ± 2.59 pp** vs informed (10 seeds) | [`protocol_v2/twist1_silicon/`](results/protocol_v2/twist1_silicon/) |
