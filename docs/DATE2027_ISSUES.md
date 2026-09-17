@@ -17,12 +17,12 @@ Prior revision track (#1–#11) is largely complete; this track adds experiments
 | 3 | [#23](https://github.com/harsha240yeager/1024-HDC/issues/23) Three-baseline hero figure | ✅ | 2 | Medium |
 | 4 | [#24](https://github.com/harsha240yeager/1024-HDC/issues/24) Active-support mechanism | ✅ | 2 | Medium |
 | 5 | [#25](https://github.com/harsha240yeager/1024-HDC/issues/25) Encoder redundancy doc | ✅ | 2 | Medium |
-| 6 | [#26](https://github.com/harsha240yeager/1024-HDC/issues/26) Silicon seeds 1–9 | ✅ predict + seed 0 board; 1–9 board lab | Both | **Yes** |
-| 7 | [#27](https://github.com/harsha240yeager/1024-HDC/issues/27) Silicon seed automation | ✅ script | Both | Enables #26 |
+| 6 | [#26](https://github.com/harsha240yeager/1024-HDC/issues/26) Silicon seeds 1–9 | ✅ closed — 10/10 board (`3b3ac26`) | Both | **Yes** |
+| 7 | [#27](https://github.com/harsha240yeager/1024-HDC/issues/27) Silicon seed automation | ✅ closed — stepwise + one-seed scripts | Both | Enables #26 |
 | 8 | [#28](https://github.com/harsha240yeager/1024-HDC/issues/28) Design narrow/gated RTL | ✅ Option E (baked permutation, bit-exact) — `docs/H1_narrow_datapath_design.md` | 1 | **Yes** |
-| 9 | [#29](https://github.com/harsha240yeager/1024-HDC/issues/29) Implement + synth | ✅ OOC + integrated (10,601 LUT, 19.9%) | 1 | **Yes** |
-| 10 | [#30](https://github.com/harsha240yeager/1024-HDC/issues/30) Co-sim + golden | ✅ identity 500/500 + anchor C 500/500 | 1 | **Yes** |
-| 11 | [#31](https://github.com/harsha240yeager/1024-HDC/issues/31) Board eval vs keep | ✅ LUT/latency/anchor C; narrow INA219 when Pi online | 1 | **Yes** |
+| 9 | [#29](https://github.com/harsha240yeager/1024-HDC/issues/29) Implement + synth | ✅ closed — OOC + integrated (10,601 LUT) | 1 | **Yes** |
+| 10 | [#30](https://github.com/harsha240yeager/1024-HDC/issues/30) Co-sim + golden | ✅ closed — identity + anchor C 500/500 | 1 | **Yes** |
+| 11 | [#31](https://github.com/harsha240yeager/1024-HDC/issues/31) Board eval vs keep | ✅ closed — `board_eval_summary.md` (`044c166`) | 1 | **Yes** |
 | 12 | [#32](https://github.com/harsha240yeager/1024-HDC/issues/32) Pareto figure | ⏳ | 1 | Medium |
 | 13 | [#36](https://github.com/harsha240yeager/1024-HDC/issues/36) Integrate manuscript | ⏳ | Both | **Yes** |
 | 14 | [#37](https://github.com/harsha240yeager/1024-HDC/issues/37) Claim checker + figures | ⏳ | Both | **Yes** |
@@ -73,20 +73,10 @@ Issue bodies: `docs/.issue_bodies/date2027/`
 
 ---
 
-## Issue #26 — silicon seed prediction (in progress)
+## Issue #26 — silicon seeds (complete)
 
-**Predictor:** `python_ref/predict_twist1_silicon_seeds.py`  
-**Automation:** `scripts/run_silicon_random_seeds.sh` (also closes #27)
+**Board:** all seeds 0–9 measured (`N=493512`, Δexport within 0.5 pp).  
+**Gap vs informed anchor C:** mean **+7.45 ± 2.59 pp** (10 seeds).
 
-```bash
-# Python export-ref prediction (all seeds 0–9; ~1–3 h first run, cached after)
-python3 python_ref/predict_twist1_silicon_seeds.py --from-dataset
-
-# Optional: board replay when ZedBoard available
-bash scripts/run_silicon_random_seeds.sh --board --seeds 1-9 --resume
-```
-
-**Method:** Pooled random mask @ keep=0.125 (same as `patch_emg_anchor.py` / board).
-Seed 0 validated **board == export ref (Δ0.00 pp)** → predicted silicon = export ref for seeds 1–9 until measured.
-
-**Outputs:** `results/protocol_v2/twist1_silicon/seed_summary.json`, per-seed `prediction.json`
+**Outputs:** `results/protocol_v2/twist1_silicon/seed_summary.json`, per-seed `board_emg_replay.txt`  
+**Docs:** `results/protocol_v2/twist1_silicon/README.md`
