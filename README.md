@@ -268,7 +268,8 @@ full plan: [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md)
 | **Stage-B ranking / hero fig** | ✅ | [#22](https://github.com/harsha240yeager/1024-HDC/issues/22) · [#23](https://github.com/harsha240yeager/1024-HDC/issues/23) |
 | **Random seeds + subject-level stats** | ⏳ [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) | Superseded for silicon by [#26](https://github.com/harsha240yeager/1024-HDC/issues/26); optional Python stats |
 | **Seed sensitivity** | ✅ [#4](https://github.com/harsha240yeager/1024-HDC/issues/4) | [`seed_sensitivity/`](results/seed_sensitivity/) |
-| **Ranking baselines (revision #9)** | ✅ DATE27 [#22](https://github.com/harsha240yeager/1024-HDC/issues/22) | Use Stage-B table in paper |
+| **Ranking baselines (#9 hdc_ref)** | ✅ | [`ranking_baselines/paper_table.md`](results/protocol_v2/ranking_baselines/paper_table.md) |
+| **Ranking baselines (Stage-B #22)** | ✅ | [`twist1_stage_b/ranking_baselines_README.md`](results/protocol_v2/twist1_stage_b/ranking_baselines_README.md) |
 | **Active-bit ablation** | ⏳ [#5](https://github.com/harsha240yeager/1024-HDC/issues/5) | Optional Discussion |
 
 ### Structural / claim changes (Path B + narrow)
@@ -818,7 +819,7 @@ HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harness
 | **6** | Encoder gap 72.65% vs 90% | [#6](https://github.com/harsha240yeager/1024-HDC/issues/6) | ⏳ |
 | **7** | Claim alignment (Path B reframe) | [#7](https://github.com/harsha240yeager/1024-HDC/issues/7) | ⏳ |
 | **8** | Energy methodology | [#8](https://github.com/harsha240yeager/1024-HDC/issues/8) | ⏳ |
-| **9** | Ranking baselines (variance, MI, …) | [#9](https://github.com/harsha240yeager/1024-HDC/issues/9) | ⏳ |
+| **9** | Ranking baselines (variance, MI, …) | [#9](https://github.com/harsha240yeager/1024-HDC/issues/9) | ✅ [`ranking_baselines/`](results/protocol_v2/ranking_baselines/) |
 | **10** | Fix inconsistencies | [#10](https://github.com/harsha240yeager/1024-HDC/issues/10) | ⏳ |
 | **11** | Reproducibility artifact | [#11](https://github.com/harsha240yeager/1024-HDC/issues/11) | ✅ [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) + `reproduce_paper.sh` / `check_paper_numbers.py` |
 

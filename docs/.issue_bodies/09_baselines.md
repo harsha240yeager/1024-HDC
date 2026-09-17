@@ -11,7 +11,7 @@ Compare Fisher ranking against stronger baselines (not random alone).
 - [x] Per-bit entropy
 - [x] Random (full 1024) vs random (active support)
 - [x] Fisher (current)
-- [ ] Learned mask (optional — skipped)
+- [x] Learned mask (optional — skipped; documented in README)
 
 ## Table
 

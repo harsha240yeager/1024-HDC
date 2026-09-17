@@ -3,7 +3,7 @@
 Generated: 2026-07-24T12:51:54Z
 Protocol: **HDC-2** · Engine: **hdc_ref**
 D=1024  keep=0.125 (128 bits)  item_mem_seeds=[42]  subjects=[1, 2, 3, 4, 5]
-Test cap: 15000 random windows/subject
+Test cap: 15000 random windows/subject (full test set optional: set `max_test_windows_per_subject` to `null` in config — slow)
 
 ## Spatial mean (S1–S5)
 
