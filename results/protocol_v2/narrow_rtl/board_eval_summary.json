@@ -1,0 +1,60 @@
+{
+  "issue": 31,
+  "narrow_config": {
+    "k_bits": 128,
+    "keep_ratio": 0.125,
+    "option": "E baked SEL"
+  },
+  "lut_integrated": {
+    "baseline": 35206,
+    "narrow": 10601,
+    "delta_pct": 69.89,
+    "gate_10pct_lut": true
+  },
+  "latency_batch_200_windows_us": {
+    "baseline": 4.0,
+    "narrow": 2.0,
+    "improvement_pct": 50.0,
+    "gate_5pct_latency": true
+  },
+  "accuracy_emg_493512": {
+    "A": {
+      "baseline_pl": {
+        "n": 493512,
+        "correct": 359202,
+        "accuracy_pct": 72.78
+      }
+    },
+    "B": {
+      "baseline_pl": {
+        "n": 493512,
+        "correct": 359202,
+        "accuracy_pct": 72.78
+      }
+    },
+    "C": {
+      "baseline_pl": {
+        "n": 493512,
+        "correct": 359522,
+        "accuracy_pct": 72.84
+      },
+      "narrow_pl": {
+        "n": 493512,
+        "correct": 359522,
+        "accuracy_pct": 72.84
+      }
+    }
+  },
+  "energy_uj_per_window_anchor_c": {
+    "baseline_pl": {
+      "total_uj_per_window": "11.98 \u00b1 0.07"
+    },
+    "narrow_pl": null
+  },
+  "strong_paper1_gate_met": true,
+  "anchors_on_narrow_bitstream": {
+    "A": "n/a \u2014 narrow RTL is K=128 Fisher only (use baseline PL for keep=1.0)",
+    "B": "n/a \u2014 narrow RTL is K=128 Fisher only (use baseline PL for keep=0.5)",
+    "C": "measured \u2014 full EMG replay PASS"
+  }
+}

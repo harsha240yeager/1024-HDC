@@ -118,9 +118,17 @@ run_one_anchor() {
   export HDC_EMG_RESULTS_DIR="$out_dir"
   export HDC_LOG_DIR="$log_dir"
   if [[ "$NARROW" == "1" ]]; then
-    export HDC_VIVADO_ROOT="${HDC_VIVADO_ROOT:-$HOME/Desktop/Final HDC/FInal_HDC}"
+    unset HDC_VIVADO_ROOT
+    # shellcheck source=/dev/null
+    source "$ROOT/_ide/bitstream_switch.sh"
+    hdc_activate_narrow_bitstream
+    trap 'hdc_restore_baseline_bitstream' EXIT
   fi
   bash "$ROOT/run_phase3_emg.sh" | tee "$log_dir/run_anchor_${id}.log"
+  if [[ "$NARROW" == "1" ]]; then
+    hdc_restore_baseline_bitstream
+    trap - EXIT
+  fi
 
   echo "Anchor ${id} complete -> $HDC_EMG_RESULTS"
   grep -E "EMG replay:|Export ref:|Board vs export:|Status:" "$HDC_EMG_RESULTS" || true

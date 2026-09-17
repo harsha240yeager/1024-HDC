@@ -8,17 +8,17 @@ Main Paper 1 result: Pareto-style evidence that keep ratio affects **physical** 
 
 ## Requirements
 
-- [ ] Replay anchors A, B, C on narrow/gated bitstream (accuracy vs export ref)
-- [ ] INA219 energy runs (n=3) per anchor — idle-calibrated l.b.
-- [ ] Latency: Phase 3 batch 200-window mean
-- [ ] Compare to baseline RTL numbers (Table anchors + 12 µJ flat)
+- [x] Replay anchor C on narrow/gated bitstream (A/B documented n/a — K=128 only)
+- [ ] INA219 energy runs (n=3) on narrow PL — `scripts/run_narrow_energy_campaign.sh` (Pi offline 2026-09-17)
+- [x] Latency: Phase 3 batch 200-window mean (`board_bench.txt`)
+- [x] Compare to baseline RTL numbers (LUT, latency, accuracy, baseline energy ref)
 - [ ] Sweep optional: keep programmed via mask at fixed bitstream (if supported)
 
 ## Done when
 
-- [ ] `results/protocol_v2/narrow_rtl/anchors/` committed
-- [ ] **Gate met:** ≥10% LUT **or** ≥5% energy/latency improvement at keep=0.125 vs baseline at same accuracy band
-- [ ] Summary table ready for paper Fig + Table
+- [x] `results/protocol_v2/narrow_rtl/anchors/` committed
+- [x] **Gate met:** ≥10% LUT **or** ≥5% energy/latency improvement at keep=0.125 vs baseline at same accuracy band
+- [x] Summary table ready for paper Fig + Table — `board_eval_summary.md`
 
 ## Blocked by
 

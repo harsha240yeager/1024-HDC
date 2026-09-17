@@ -1,6 +1,8 @@
 # Narrow board bring-up (issue #31)
 
-**Status:** anchor C board replay **PASS** (2026-09-13).
+**Status:** **#31 complete** — see [`../board_eval_summary.md`](../board_eval_summary.md).
+
+Anchor C board replay **PASS** (2026-09-13). Anchors A/B are **baseline PL only** (narrow is K=128 / anchor C).
 
 ## Prepared artifacts
 

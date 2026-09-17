@@ -22,7 +22,7 @@ Prior revision track (#1–#11) is largely complete; this track adds experiments
 | 8 | [#28](https://github.com/harsha240yeager/1024-HDC/issues/28) Design narrow/gated RTL | ✅ Option E (baked permutation, bit-exact) — `docs/H1_narrow_datapath_design.md` | 1 | **Yes** |
 | 9 | [#29](https://github.com/harsha240yeager/1024-HDC/issues/29) Implement + synth | ✅ OOC + integrated (10,601 LUT, 19.9%) | 1 | **Yes** |
 | 10 | [#30](https://github.com/harsha240yeager/1024-HDC/issues/30) Co-sim + golden | ✅ identity 500/500 + anchor C 500/500 | 1 | **Yes** |
-| 11 | [#31](https://github.com/harsha240yeager/1024-HDC/issues/31) Board eval vs keep | ⏳ | 1 | **Yes** |
+| 11 | [#31](https://github.com/harsha240yeager/1024-HDC/issues/31) Board eval vs keep | ✅ LUT/latency/anchor C; narrow INA219 when Pi online | 1 | **Yes** |
 | 12 | [#32](https://github.com/harsha240yeager/1024-HDC/issues/32) Pareto figure | ⏳ | 1 | Medium |
 | 13 | [#36](https://github.com/harsha240yeager/1024-HDC/issues/36) Integrate manuscript | ⏳ | Both | **Yes** |
 | 14 | [#37](https://github.com/harsha240yeager/1024-HDC/issues/37) Claim checker + figures | ⏳ | Both | **Yes** |

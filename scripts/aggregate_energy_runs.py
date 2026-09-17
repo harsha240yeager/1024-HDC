@@ -9,7 +9,8 @@ import statistics
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-RUNS = REPO / "results" / "phase3" / "energy_runs"
+DEFAULT_RUNS = REPO / "results" / "phase3" / "energy_runs"
+NARROW_RUNS = REPO / "results" / "protocol_v2" / "narrow_rtl" / "energy_runs"
 
 
 def parse_summary(path: Path) -> dict[str, float]:
@@ -28,8 +29,8 @@ def parse_summary(path: Path) -> dict[str, float]:
     return out
 
 
-def aggregate_anchor(anchor: str) -> list[dict]:
-    base = RUNS / f"anchor_{anchor}"
+def aggregate_anchor(anchor: str, runs_root: Path) -> list[dict]:
+    base = runs_root / f"anchor_{anchor}"
     rows: list[dict] = []
     for run_dir in sorted(base.glob("run*")):
         summary = run_dir / "energy_batch.txt"
@@ -51,8 +52,8 @@ def fmt_pm(values: list[float], scale: float = 1.0) -> str:
     return f"{mean:.2f}"
 
 
-def write_anchor_readme(anchor: str, rows: list[dict]) -> None:
-    base = RUNS / f"anchor_{anchor}"
+def write_anchor_readme(anchor: str, rows: list[dict], runs_root: Path) -> None:
+    base = runs_root / f"anchor_{anchor}"
     base.mkdir(parents=True, exist_ok=True)
     static = [r["static_mw"] for r in rows if "static_mw" in r]
     total = [r["total_uj"] for r in rows if "total_uj" in r]
@@ -78,13 +79,19 @@ def write_anchor_readme(anchor: str, rows: list[dict]) -> None:
     print(f"Wrote {base / 'README.md'}")
 
 
-def write_global_summary(anchors: dict[str, list[dict]]) -> None:
-    path = REPO / "results" / "phase3" / "energy_summary.txt"
+def write_global_summary(
+    anchors: dict[str, list[dict]],
+    path: Path,
+    *,
+    title: str,
+    mask_note: str,
+    footer: list[str] | None = None,
+) -> None:
     lines = [
-        "Phase 3 — Energy measurement summary (self-consistent, pooled Fisher masks)",
+        title,
         "=" * 62,
-        f"Method: ZedBoard J21 + INA219 on Pi; cal_ref_mv=2.0; batch integration",
-        "Mask: same pooled Fisher mask in sw/golden_vectors.h AND sw/emg_board_vectors.h",
+        "Method: ZedBoard J21 + INA219 on Pi; cal_ref_mv=2.0; batch integration",
+        mask_note,
         "",
     ]
     for anchor in ("A", "B", "C", "ARM"):
@@ -94,7 +101,13 @@ def write_global_summary(anchors: dict[str, list[dict]]) -> None:
         static = [r["static_mw"] for r in rows if "static_mw" in r]
         total = [r["total_uj"] for r in rows if "total_uj" in r]
         dynamic = [r["dynamic_uj"] for r in rows if "dynamic_uj" in r]
-        keep = {"A": "1.0", "B": "0.5", "C": "0.125", "ARM": "1.0 (ARM PS path)"}[anchor]
+        keep_map = {
+            "A": "1.0",
+            "B": "0.5",
+            "C": "0.125",
+            "ARM": "1.0 (ARM PS path)",
+        }
+        keep = keep_map.get(anchor, "0.125 (narrow K=128)")
         lines += [
             f"Anchor {anchor} (keep={keep}, n={len(rows)})",
             f"  Static (mW):     {fmt_pm(static)}",
@@ -102,31 +115,62 @@ def write_global_summary(anchors: dict[str, list[dict]]) -> None:
             f"  Dynamic (µJ/w):  {fmt_pm(dynamic)}",
             "",
         ]
-    lines += [
-        "Note: Anchor A re-measured with Fisher keep=1.0 (all-ones), replacing legacy cosim golden_mask runs.",
-        "ARM row uses PS software batch (~164 ms / 200 windows); PL rows use DMA batch (~0.93 ms / 200).",
-    ]
+    if footer:
+        lines.extend(footer)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Wrote {path}")
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--anchor", choices=("A", "B", "C", "ARM"))
+    ap.add_argument("--anchor", help="A, B, C, ARM, or C for narrow runs")
+    ap.add_argument("--runs-root", type=Path, default=DEFAULT_RUNS)
     ap.add_argument("--write-summary", action="store_true")
+    ap.add_argument(
+        "--write-narrow-summary",
+        action="store_true",
+        help="Write results/protocol_v2/narrow_rtl/energy_summary.txt",
+    )
     args = ap.parse_args()
+    runs = args.runs_root
 
     if args.anchor:
-        rows = aggregate_anchor(args.anchor)
-        write_anchor_readme(args.anchor, rows)
+        rows = aggregate_anchor(args.anchor, runs)
+        write_anchor_readme(args.anchor, rows, runs)
         return 0
 
     if args.write_summary:
-        anchors = {a: aggregate_anchor(a) for a in ("A", "B", "C", "ARM")}
+        anchors = {a: aggregate_anchor(a, runs) for a in ("A", "B", "C", "ARM")}
         for a, rows in anchors.items():
             if rows:
-                write_anchor_readme(a, rows)
-        write_global_summary(anchors)
+                write_anchor_readme(a, rows, runs)
+        write_global_summary(
+            anchors,
+            REPO / "results" / "phase3" / "energy_summary.txt",
+            title="Phase 3 — Energy measurement summary (self-consistent, pooled Fisher masks)",
+            mask_note="Mask: same pooled Fisher mask in sw/golden_vectors.h AND sw/emg_board_vectors.h",
+            footer=[
+                "Note: Anchor A re-measured with Fisher keep=1.0 (all-ones), "
+                "replacing legacy cosim golden_mask runs.",
+                "ARM row uses PS software batch (~164 ms / 200 windows); "
+                "PL rows use DMA batch (~0.93 ms / 200).",
+            ],
+        )
+        return 0
+
+    if args.write_narrow_summary:
+        rows = aggregate_anchor("C", runs)
+        if rows:
+            write_anchor_readme("C", rows, runs)
+        write_global_summary(
+            {"C": rows},
+            REPO / "results" / "protocol_v2" / "narrow_rtl" / "energy_summary.txt",
+            title="Narrow PL — Energy @ anchor C (K=128, keep=0.125, n=3)",
+            mask_note="Bitstream: design_1_wrapper.narrow.bit; bench: Final_HDC_dma_bench_narrow.elf",
+            footer=[
+                "Compare to baseline PL anchor C in results/phase3/energy_summary.txt.",
+            ],
+        )
         return 0
 
     ap.print_help()

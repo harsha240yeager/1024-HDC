@@ -1,6 +1,6 @@
 Narrow PL — DMA stream bench (ZedBoard, K=128, keep=0.125)
 ============================================================
-Date:       2026-09-13T08:49:49+05:30
+Date:       2026-09-17T12:29:11+05:30
 App:        sw/hdc_dma_stream_bench.c (-DHDC_NARROW)
 Golden:     sw/golden_vectors_narrow.h
 Method:     JTAG readback @ 0x00100000 (single) + 0x00100100 (batch)
@@ -20,9 +20,9 @@ throughput ~ 17857 windows/s (1/mean)
 --- vs Phase 1 AXI-Lite baseline (~3 us/window) ---
 delta = +53 us (slower than Phase 1)
 --- Batch DMA throughput ---
-total   = 558 us
+total   = 555 us
 mean/window ~ 2 us (total / N)
-throughput ~ 358422 windows/s (batch / total)
+throughput ~ 360360 windows/s (batch / total)
 --- Golden batch check (batch DMA outputs) ---
 PASS: 200/200 batch golden cases
 --- Golden batch check (per-window DMA) ---

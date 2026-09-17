@@ -10,20 +10,15 @@ ARCHIVE_DIR="$REPO/results/protocol_v2/narrow_rtl/logs"
 
 # shellcheck source=/dev/null
 source "$ROOT/_ide/common.sh"
+# shellcheck source=/dev/null
+source "$ROOT/_ide/bitstream_switch.sh"
 
 BITSTREAM="$ROOT/app/_ide/bitstream/design_1_wrapper.bit"
 PS7_INIT="$ROOT/app/_ide/psinit/ps7_init.tcl"
 FSBL="$ROOT/platform/zynq_fsbl/fsbl.elf"
 BENCH_ELF="$ROOT/app/build/Final_HDC_dma_bench_narrow.elf"
 
-if [[ -n "${HDC_VIVADO_ROOT:-}" && -f "$HDC_VIVADO_ROOT/FInal_HDC.runs/impl_1/design_1_wrapper.bit" ]]; then
-  IMPL_BITSTREAM="$HDC_VIVADO_ROOT/FInal_HDC.runs/impl_1/design_1_wrapper.bit"
-  if [[ ! -f "$BITSTREAM" ]] \
-    || [[ "$(stat -c %Y "$IMPL_BITSTREAM")" -gt "$(stat -c %Y "$BITSTREAM")" ]]; then
-    mkdir -p "$(dirname "$BITSTREAM")"
-    cp -f "$IMPL_BITSTREAM" "$BITSTREAM"
-  fi
-fi
+unset HDC_VIVADO_ROOT
 
 mkdir -p "$LOG_DIR" "$ARCHIVE_DIR" "$(dirname "$RESULTS")"
 
@@ -47,6 +42,9 @@ sleep 2
 hdc_start_hw_server || exit 1
 sleep 2
 hdc_wait_for_digilent_usb || exit 1
+
+hdc_activate_narrow_bitstream
+trap 'hdc_restore_baseline_bitstream' EXIT
 
 echo "=== Program narrow PL + run bench ==="
 if ! hdc_xsdb "$ROOT/_ide/run_bench_narrow_all.tcl" | tee "$LOG_DIR/run_narrow_bench.log"; then
