@@ -8,15 +8,15 @@ Publication-ready figure for Paper 1 / combined DATE Discussion.
 
 ## Requirements
 
-- [ ] Add `scripts/compare_narrow_vs_baseline_lut.sh` — parse Vivado util reports
-- [ ] Extend `python_ref/plot_results.py` or new `plot_narrow_pareto.py`
-- [ ] Output: `results/figures/narrow_vs_baseline_pareto.pdf`
-- [ ] Caption draft: heterogeneity vs baseline null (fixed-width) RTL
+- [x] `scripts/compare_narrow_vs_baseline_lut.sh` — parse Vivado util reports
+- [x] `python_ref/plot_narrow_pareto.py` + `scripts/plot_issue32_pareto.sh`
+- [x] Output: `results/figures/narrow_vs_baseline_pareto.pdf`
+- [x] Caption draft: `narrow_vs_baseline_pareto_caption.txt`
 
 ## Done when
 
 - [ ] Figure in `Research-paper/figures/` via integration #36
-- [ ] Numbers traceable in committed CSV
+- [x] Numbers traceable in `results/figures/narrow_vs_baseline_pareto.csv`
 
 ## Blocked by
 

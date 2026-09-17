@@ -246,54 +246,59 @@ Manuscript repo: [Research-paper](https://github.com/harsha240yeager/Research-pa
 tracking: [Research-paper issues #1–#4](https://github.com/harsha240yeager/Research-paper/issues) ·
 full plan: [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md)
 
-### Update now (HDC-2 numbers available)
+### Manuscript numbers (HDC-2 — use in Research-paper)
 
-| Location | Change |
-|----------|--------|
-| **§IV Protocol** | Replace HDC-1 with **Protocol HDC-2**: first 25% train / remaining 75% test, overlap = 0, **493,512** test windows |
-| **Abstract / intro numbers** | **74.24% → 72.78%** silicon; **658k → 493k** windows; **74.15% → 72.65%** Python/ARM ref |
-| **Hook A / Pareto table** | **74.15% → 72.65%** reference; flat pruning 0–87.5% at D=1024; best OOC **76.12%** @ D=2048 |
-| **Twist 1 table** | **+6.90 pp** Python (30 seeds); **+10.33 pp** silicon seed 0 — cite `protocol_v2/twist1_keep0125_30seed/` + `phase3/twist1_silicon/` |
-| **Anchor table** | A/B **72.78%**; C **72.85%** (128/1024 Fisher bits); cite `protocol_v2/anchors/` |
-| **Bit-exact claim** | Every label matched export ref over **493,512** windows (not 658,004) |
-| **Contributions §I** | Hook A iso-accuracy + Twist 1 **+6.90 pp** Python + Twist 2 **generalises (+1.02 pp)** under HDC-2 |
-| **Abstract sentence 3** | Fisher beats random by **+7.94 pp** (Python); add silicon gap when board rerun done |
+| Location | Text / numbers | Evidence in repo |
+|----------|----------------|------------------|
+| **§IV Protocol** | **Protocol HDC-2**: first 25% train / 75% test, overlap = 0, **493,512** test windows | [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md) · [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
+| **Abstract / intro** | Silicon **72.78%** (anchor A/B); **493k** windows; Python/ARM ref **72.65%** (Hook A) | [`protocol_v2/anchors/`](results/protocol_v2/anchors/) · [`protocol_v2/hook_a/`](results/protocol_v2/hook_a/) |
+| **Hook A / Pareto** | Ref **72.65%**; flat prune 0–87.5% @ D=1024; OOC best **76.12%** @ D=2048 | [`protocol_v2/hook_a/sweep_summary.csv`](results/protocol_v2/hook_a/sweep_summary.csv) |
+| **Twist 1** | Python **+6.90 pp** (30 seeds) or **+7.94 pp** (5-seed quick); silicon **+7.45 ± 2.59 pp** (10 seeds) | [`twist1_keep0125_30seed/`](results/protocol_v2/twist1_keep0125_30seed/) · [`twist1_silicon/seed_summary.json`](results/protocol_v2/twist1_silicon/seed_summary.json) |
+| **Anchor table** | A/B **72.78%**; C **72.84–72.85%** board (128/1024 Fisher) | [`protocol_v2/anchors/`](results/protocol_v2/anchors/) |
+| **Narrow PL (#31)** | Integrated LUT **35,206 → 10,601** (−70%); batch **~4 → ~2 µs/w**; EMG **72.84%** (iso-accuracy) | [`narrow_rtl/board_eval_summary.md`](results/protocol_v2/narrow_rtl/board_eval_summary.md) |
+| **Bit-exact claim** | Board vs export within **0.5 pp** over **493,512** windows (anchors + silicon seeds) | Per-seed `board_emg_replay.txt` |
+| **Contributions §I** | Hook A iso-accuracy + Twist 1 gap + Twist 2 **+1.02 pp** generalises + optional **narrow datapath** LUT/latency win | This README · DATE27 #21–#31 |
+| **Abstract sentence 3** | Fisher beats random **+7.94 pp** (Python @ keep=0.125); silicon **+7.45 ± 2.59 pp** (10 seeds vs 72.84% informed) | `seed_summary.json` |
 
-### Blocked on experiments (do not invent numbers)
+### Still open in manuscript (do not invent)
 
-| Item | Depends on | Paper impact |
-|------|------------|--------------|
-| **Twist 1** informed − random gap | ✅ Silicon 10-seed mean **+7.45 pp** | [`twist1_silicon/seed_summary.json`](results/protocol_v2/twist1_silicon/seed_summary.json) |
-| **Twist 2 / cross-subject** | ✅ 36-subject keep grid 32–256 bits — [`protocol_v2/twist2_36_v2/`](results/protocol_v2/twist2_36_v2/) | At 32b: pooled **+2.59 pp** vs local; 64+b: lossless |
-| **Random seeds + stats** | Issue [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) | Subject-level CIs, significance tests |
-| **Seed sensitivity** | ✅ [#4](https://github.com/harsha240yeager/1024-HDC/issues/4) — [`seed_sensitivity/`](results/seed_sensitivity/) | Acc 72.2–73.4%; gap +5.55–+8.79 pp |
-| **Ranking baselines** | Issue [#9](https://github.com/harsha240yeager/1024-HDC/issues/9) | Method × accuracy table |
-| **Active-bit (257) ablation** | Issue [#5](https://github.com/harsha240yeager/1024-HDC/issues/5) | Discussion §VI |
+| Item | Status | Notes |
+|------|--------|-------|
+| **Twist 2 / cross-subject** | ✅ data ready | [`twist2_36_v2/`](results/protocol_v2/twist2_36_v2/) · 32b pooled **+2.59 pp** |
+| **Stage-B ranking / hero fig** | ✅ | [#22](https://github.com/harsha240yeager/1024-HDC/issues/22) · [#23](https://github.com/harsha240yeager/1024-HDC/issues/23) |
+| **Random seeds + subject-level stats** | ⏳ [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) | Superseded for silicon by [#26](https://github.com/harsha240yeager/1024-HDC/issues/26); optional Python stats |
+| **Seed sensitivity** | ✅ [#4](https://github.com/harsha240yeager/1024-HDC/issues/4) | [`seed_sensitivity/`](results/seed_sensitivity/) |
+| **Ranking baselines (revision #9)** | ✅ DATE27 [#22](https://github.com/harsha240yeager/1024-HDC/issues/22) | Use Stage-B table in paper |
+| **Active-bit ablation** | ⏳ [#5](https://github.com/harsha240yeager/1024-HDC/issues/5) | Optional Discussion |
 
-### Structural / claim changes (Path B default)
+### Structural / claim changes (Path B + narrow)
 
 | Item | Action |
 |------|--------|
-| **Claim alignment** ([#7](https://github.com/harsha240yeager/1024-HDC/issues/7)) | Reframe: *runtime-selectable bit-position compression on a fixed-width datapath* — not LUT/energy savings from mask |
-| **Pruning + energy language** | PL vs ARM **175×** = platform/latency comparison; A/B/C energy **flat** — mask does not reduce measured J21 µJ/w |
-| **Encoder gap table** ([#6](https://github.com/harsha240yeager/1024-HDC/issues/6)) | RTL **~72.65%** vs BSC ablation **~90%** — same gap story, updated absolutes |
-| **Fig. 1** ([#10](https://github.com/harsha240yeager/1024-HDC/issues/10)) | **5-class argmin** (not 8); explain 8-slot AM padding |
-| **Metrics footnotes** | Define spatial mean vs pooled window once; latency 4 µs mean ± range; show 175× calculation |
-| **Title + abstract** | Draft with **+7.94 pp** Python gap; finalize silicon line after board rerun |
-| **§ reorganization** | IV = protocol · V = (verify, ranking, cross-subject, energy, seeds) · cut demoted Twist 2 zero-gap narrative |
-| **Energy appendix** ([#8](https://github.com/harsha240yeager/1024-HDC/issues/8)) | Add INA219 methodology half-page + `docs/ENERGY_METHODOLOGY.md` |
-| **Reproducibility** ([#11](https://github.com/harsha240yeager/1024-HDC/issues/11)) | ✅ §IV-D statement + tagged release; `scripts/reproduce_paper.sh`, `scripts/check_paper_numbers.py`, [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) |
+| **Claim alignment** ([#7](https://github.com/harsha240yeager/1024-HDC/issues/7)) | Mask on fixed-width path = runtime compression; **narrow RTL** = separate datapath win (LUT/latency), not mask-dependent energy |
+| **Pruning + energy** | PL vs ARM **~175×** latency; anchor A/B/C **~12 µJ/w flat** — pruning does not change J21 measurement |
+| **Encoder gap** ([#6](https://github.com/harsha240yeager/1024-HDC/issues/6)) | RTL **~72.65%** vs BSC **~90%** — [`encoder_ablation/`](results/protocol_v2/encoder_ablation/) |
+| **Fig. 1** ([#10](https://github.com/harsha240yeager/1024-HDC/issues/10)) | **5-class argmin**; 8-slot AM padding note |
+| **Metrics footnotes** | Pooled window accuracy; batch latency from Phase 3 bench; cite `board_bench.txt` + narrow bench |
+| **Title + abstract** | Use silicon **+7.45 pp** line; cite 10-seed std **2.59 pp** |
+| **§ reorganization** | IV protocol · V verify/ranking/cross-subject/energy/seeds · VI narrow Pareto ([#32](https://github.com/harsha240yeager/1024-HDC/issues/32)) |
+| **Energy appendix** ([#8](https://github.com/harsha240yeager/1024-HDC/issues/8)) | INA219 + [`docs/ENERGY_METHODOLOGY.md`](docs/ENERGY_METHODOLOGY.md) if present else `energy_setup.md` |
+| **Reproducibility** ([#11](https://github.com/harsha240yeager/1024-HDC/issues/11)) | ✅ [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) |
 
-### Figures to regenerate
+### Figures (regenerate from committed `results/`)
 
 ```bash
-python python_ref/plot_results.py --paper   # after Twist 1/2 HDC-2 sweeps complete
+python3 python_ref/plot_results.py --paper
+bash scripts/plot_issue32_pareto.sh    # issue #32 — narrow vs baseline LUT/latency/energy
 ```
 
-- Hook A Pareto (update ref line to 72.65%)
-- Twist 1 informed vs random @ keep=0.125
-- Cross-subject stress (new design, issue #2)
-- Energy bar chart (may reuse HDC-1 measurements with methodology note)
+| Figure | File | Status |
+|--------|------|--------|
+| Hook A Pareto + measured energy | `hookA_pareto_measured.pdf` | Regenerate with `--paper` |
+| Twist 1 @ keep=0.125 | `twist1_informed_vs_random_keep0125.pdf` | HDC-2 paths in `protocol_v2/` |
+| Three-baseline hero (#23) | `twist1_three_baselines_keep0125.pdf` | ✅ committed |
+| Twist 2 @ 36 subjects | `twist2_cross_subject_36.pdf` | Regenerate if JSON updated |
+| **Narrow vs baseline (#32)** | **`narrow_vs_baseline_pareto.pdf`** | **`bash scripts/plot_issue32_pareto.sh`** |
 
 ---
 
@@ -326,7 +331,7 @@ python python_ref/plot_results.py --paper   # after Twist 1/2 HDC-2 sweeps compl
 | Protocol HDC-2 disjoint split | ✅ Tier 1 — [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
 | Cross-subject stress test (keep 32–256) | ✅ [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) — [`twist2_36_v2/`](results/protocol_v2/twist2_36_v2/) |
 | Random baselines + subject-level stats | ⏳ [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) |
-| Paper figures | ⏳ refresh after Twist 1/2 HDC-2 |
+| Paper figures | ⏳ [#32](https://github.com/harsha240yeager/1024-HDC/issues/32) narrow Pareto started · run `plot_results.py --paper` |
 | DATE manuscript | ⏳ [Research-paper](https://github.com/harsha240yeager/Research-paper) — [rewrite checklist](#paper-rewrite-checklist-research-paper) |
 
 ---
@@ -826,7 +831,7 @@ HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harness
 | Silicon anchors A/B/C | ✅ 72.78% / 72.78% / 72.85% | [`protocol_v2/anchors/`](results/protocol_v2/anchors/) |
 | Twist 1 Python @ keep=0.125 | ✅ +7.94 pp | [`protocol_v2/twist1_keep0125/`](results/protocol_v2/twist1_keep0125/) |
 | Twist 1 silicon + Twist 2 | Both ✅ · silicon 10-seed cohort + Twist 2 Python |
-| Paper rewrite ([Research-paper](https://github.com/harsha240yeager/Research-paper)) | ⏳ partial — see [checklist](#paper-rewrite-checklist-research-paper) |
+| Paper rewrite ([Research-paper](https://github.com/harsha240yeager/Research-paper)) | ⏳ checklist updated Sep 2026 — integrate via [#36](https://github.com/harsha240yeager/1024-HDC/issues/36) |
 | DATE submission | ⏳ Sep 2026 |
 
 ---

@@ -28,9 +28,16 @@ python3 python_ref/plot_results.py --out results/figures
 | **`twist1_three_baselines_keep0125.png`** | **Issue #23 hero** — informed / random-all / random-support @ keep=0.125 (hdc_ref + Stage B) |
 | **`twist2_cross_subject.png`** | Twist 2 pilot — S1–3 → S4–5 (+0.86 pp) |
 | **`twist2_cross_subject_36.png`** | **Twist 2 @ 36 UCI subjects** — S1–18 → S19–36 (0.00 pp gap) |
+| **`narrow_vs_baseline_pareto.pdf`** | **Issue #32** — baseline vs narrow PL @ anchor C (LUT, µs/w, µJ/w) |
+
+```bash
+bash scripts/plot_issue32_pareto.sh   # narrow Pareto only (#32)
+```
 
 Sources: [`hook_a/sweep_summary.csv`](../hook_a/sweep_summary.csv),
 [`hook_a/fisher_pooled.npz`](../hook_a/fisher_pooled.npz),
 [`phase3/energy_summary.txt`](../phase3/energy_summary.txt),
 [`twist1/`](../twist1/), [`twist1_keep0125/`](../twist1_keep0125/),
-[`twist2/`](../twist2/), [`twist2_36/`](../twist2_36/).
+[`twist2/`](../twist2/), [`twist2_36/`](../twist2_36/),
+[`narrow_vs_baseline_pareto.csv`](narrow_vs_baseline_pareto.csv),
+[`protocol_v2/narrow_rtl/board_eval_summary.json`](../protocol_v2/narrow_rtl/board_eval_summary.json).

@@ -1,0 +1,1 @@
+Baseline vs narrow gated PL at Fisher anchor C (keep=0.125, 493,512 EMG windows). Narrow reduces integrated LUT and DMA batch latency at matched board accuracy; system energy at J21 remains flat (mask does not change measured µJ/w until narrow INA219 campaign completes). OOC BD-wrapper LUT rows are in narrow_vs_baseline_pareto.csv.

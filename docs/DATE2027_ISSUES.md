@@ -23,7 +23,7 @@ Prior revision track (#1–#11) is largely complete; this track adds experiments
 | 9 | [#29](https://github.com/harsha240yeager/1024-HDC/issues/29) Implement + synth | ✅ closed — OOC + integrated (10,601 LUT) | 1 | **Yes** |
 | 10 | [#30](https://github.com/harsha240yeager/1024-HDC/issues/30) Co-sim + golden | ✅ closed — identity + anchor C 500/500 | 1 | **Yes** |
 | 11 | [#31](https://github.com/harsha240yeager/1024-HDC/issues/31) Board eval vs keep | ✅ closed — `board_eval_summary.md` (`044c166`) | 1 | **Yes** |
-| 12 | [#32](https://github.com/harsha240yeager/1024-HDC/issues/32) Pareto figure | ⏳ | 1 | Medium |
+| 12 | [#32](https://github.com/harsha240yeager/1024-HDC/issues/32) Pareto figure | ⏳ CSV + `narrow_vs_baseline_pareto.pdf` | 1 | Medium |
 | 13 | [#36](https://github.com/harsha240yeager/1024-HDC/issues/36) Integrate manuscript | ⏳ | Both | **Yes** |
 | 14 | [#37](https://github.com/harsha240yeager/1024-HDC/issues/37) Claim checker + figures | ⏳ | Both | **Yes** |
 | 15 | [#38](https://github.com/harsha240yeager/1024-HDC/issues/38) DATE submit checklist | ⏳ | Both | **Yes** |

@@ -1,0 +1,5 @@
+variant,scope,keep_ratio,k_bits,lut,batch_us_per_window,energy_uj_per_window,accuracy_pct_anchor_c,source
+baseline,integrated_placed,0.125,1024,35206,4.0,11.98,72.84,board_eval_summary.json + integrated util
+narrow,integrated_placed,0.125,128,10601,2.0,11.98,72.84,board_eval_summary.json (#31)
+baseline,ooc_bd_wrapper,0.125,1024,30639,,,,synth_baseline_bd.txt
+narrow,ooc_bd_wrapper,0.125,128,4261,,,,synth_narrow_bd.txt
