@@ -10,7 +10,7 @@
   "keep_ratio": 0.125,
   "random_seeds": [0, 1, 2, 3, 4],
   "max_train_windows_per_subject": null,
-  "max_test_windows_per_subject": 15000,
+  "max_test_windows_per_subject": null,
   "methods": [
     "fisher",
     "variance",
