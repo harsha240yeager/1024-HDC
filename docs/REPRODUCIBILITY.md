@@ -123,6 +123,7 @@ The experiment-level view:
 | Table VIII — encoder ablation | `python_ref/run_encoder_ablation.py` | `results/protocol_v2/encoder_ablation/` |
 | Sec. V-B — design-space sweep | `python_ref/run_hook_a_sweep.py` | `results/protocol_v2/hook_a/` |
 | Sec. V-D — ranking baselines | `python_ref/run_ranking_baselines.py` | `results/protocol_v2/ranking_baselines/` |
+| Sec. V-D — Antonio compact (mock review) | `python_ref/run_antonio_compact_baseline.py` | `results/protocol_v2/antonio_compact/` |
 | Sec. V-E — seed sensitivity | `python_ref/run_seed_sensitivity.py` | `results/seed_sensitivity/` |
 | Sec. IV-C, VI — active support | `python_ref/run_active_bit_ablation.py` | `results/protocol_v2/active_bits/` |
 | Figures | `python_ref/plot_results.py --paper` | `results/figures/` |
