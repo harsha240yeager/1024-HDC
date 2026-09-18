@@ -574,6 +574,19 @@ def per_bit_mutual_information_scores(
     return scores
 
 
+def antonio_identical_compact_mask(prototypes: np.ndarray) -> np.ndarray:
+    """
+    Antonio & Alvarez (ISCAS 2022): drop bits identical across all class prototypes.
+
+    Returns a mask with 1 on positions that can affect nearest-prototype decisions.
+    """
+    p = (np.asarray(prototypes) & 1).astype(np.uint8)
+    if p.shape[0] < 2:
+        return np.ones(p.shape[1], dtype=np.uint8)
+    identical = np.all(p == p[0], axis=0)
+    return (~identical).astype(np.uint8)
+
+
 def per_bit_prototype_disagreement_scores(prototypes: np.ndarray) -> np.ndarray:
     """
     Fraction of class-prototype pairs that disagree at each bit.

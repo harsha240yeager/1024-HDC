@@ -1,0 +1,22 @@
+{
+  "name": "Issue 39 — Antonio identical-across-prototypes compact baseline",
+  "description": "ISCAS 2022 redundancy compaction vs Fisher-128 and active support (HDC-2).",
+  "engines": ["hdc_ref", "stage_b"],
+  "protocol_config": "emg_baseline_v2.json",
+  "item_mem_seeds": [42],
+  "stage_b_item_mem_seed": 1,
+  "subjects": [1, 2, 3, 4, 5],
+  "D": 1024,
+  "cnt_w": 6,
+  "keep_ratio": 0.125,
+  "random_seeds": [0, 1, 2, 3, 4],
+  "max_train_windows_per_subject": null,
+  "max_test_windows_per_subject": null,
+  "quick": {
+    "engines": ["hdc_ref"],
+    "subjects": [1, 2],
+    "max_train_windows_per_subject": 3000,
+    "max_test_windows_per_subject": 3000,
+    "random_seeds": [0, 1]
+  }
+}

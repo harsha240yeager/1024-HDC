@@ -194,6 +194,12 @@ def ranking_row(method: str) -> dict:
     raise ValueError(f"ranking method {method} missing")
 
 
+def antonio_engine_summary(engine_key: str = "hdc_ref_seed42") -> dict:
+    data = load_json("results/protocol_v2/antonio_compact/antonio_compact_results.json")
+    eng = data["engines"][engine_key]["summary"]
+    return eng
+
+
 INFORMED_RANKINGS = (
     "fisher",
     "variance",
@@ -688,8 +694,8 @@ CLAIMS: list[dict] = [
     dict(
         id="ranking_fisher",
         paper="Sec. V-D",
-        claim="Fisher at 128 bits 72.58% spatial mean",
-        expected=72.58,
+        claim="Fisher at 128 bits 72.65% spatial mean",
+        expected=72.65,
         tol=0.01,
         unit="%",
         evidence="results/protocol_v2/ranking_baselines/ranking_baselines_summary.csv",
@@ -775,8 +781,8 @@ CLAIMS: list[dict] = [
     dict(
         id="ranking_random_full",
         paper="Sec. V-D",
-        claim="Uniform random over 1024 bits 64.55% (-8.04 pp)",
-        expected=64.55,
+        claim="Uniform random over 1024 bits 64.71% (-7.94 pp)",
+        expected=64.71,
         tol=0.01,
         unit="%",
         evidence="results/protocol_v2/ranking_baselines/ranking_baselines_summary.csv",
@@ -785,12 +791,57 @@ CLAIMS: list[dict] = [
     dict(
         id="ranking_random_active",
         paper="Sec. V-D",
-        claim="Fair random from active support 71.45% (-1.13 pp)",
-        expected=71.45,
+        claim="Fair random from active support 71.61% (-1.04 pp)",
+        expected=71.61,
         tol=0.01,
         unit="%",
         evidence="results/protocol_v2/ranking_baselines/ranking_baselines_summary.csv",
         fn=lambda: float(ranking_row("random_active")["spatial_mean_accuracy"]) * 100,
+    ),
+    # --- Antonio compact baseline (issue #39) -------------------------------
+    dict(
+        id="antonio_hdc_ref_accuracy",
+        paper="Sec. V-D (mock review)",
+        claim="Antonio compact hdc_ref spatial mean 72.65% (ties Fisher)",
+        expected=72.65,
+        tol=0.01,
+        unit="%",
+        evidence="results/protocol_v2/antonio_compact/antonio_compact_summary.csv",
+        fn=lambda: float(antonio_engine_summary()["spatial_mean_antonio_accuracy"]) * 100,
+    ),
+    dict(
+        id="antonio_hdc_ref_n_keep",
+        paper="Sec. V-D (mock review)",
+        claim="Antonio hdc_ref mean kept bits ~27",
+        expected=26.6,
+        tol=0.5,
+        unit="bits",
+        evidence="results/protocol_v2/antonio_compact/antonio_compact_results.json",
+        fn=lambda: float(antonio_engine_summary()["spatial_mean_n_keep_antonio"]),
+    ),
+    dict(
+        id="antonio_hdc_ref_jaccard_fisher",
+        paper="Sec. V-D (mock review)",
+        claim="Antonio vs Fisher mask Jaccard 0.208 (hdc_ref)",
+        expected=0.208,
+        tol=0.01,
+        unit="J",
+        evidence="results/protocol_v2/antonio_compact/antonio_compact_results.json",
+        fn=lambda: float(antonio_engine_summary()["spatial_mean_jaccard_antonio_vs_fisher"]),
+    ),
+    dict(
+        id="antonio_stage_b_gap_vs_fisher",
+        paper="Sec. V-D (mock review)",
+        claim="Stage B Antonio beats Fisher by +0.45 pp spatial mean",
+        expected=0.45,
+        tol=0.05,
+        unit="pp",
+        evidence="results/protocol_v2/antonio_compact/antonio_compact_summary.csv",
+        fn=lambda: float(
+            load_csv("results/protocol_v2/antonio_compact/antonio_compact_summary.csv")[1][
+                "spatial_mean_gap_pp_antonio_vs_fisher"
+            ]
+        ),
     ),
     # --- Seed sensitivity ---------------------------------------------------
     dict(

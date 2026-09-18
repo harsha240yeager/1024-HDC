@@ -1,0 +1,3 @@
+engine,spatial_mean_antonio_accuracy,spatial_mean_fisher_accuracy,spatial_mean_random_active_accuracy,spatial_mean_full_accuracy,pooled_antonio_accuracy,pooled_fisher_accuracy,spatial_mean_n_keep_antonio,spatial_mean_n_active_support,spatial_mean_jaccard_antonio_vs_fisher,spatial_mean_gap_pp_antonio_vs_fisher
+hdc_ref,0.7264893417111118,0.7264893417111118,0.7161104091183464,0.7264893417111118,0.7278485629528765,0.7278485629528765,26.6,209.4,0.2078125,0.0
+stage_b,0.8945894997859213,0.8901043156384448,0.8861943848362884,0.8945894997859213,0.8967117314269967,0.8935567929452577,202.6,352.6,0.6606287884412179,0.4485184147476562
