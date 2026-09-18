@@ -339,7 +339,7 @@ bash scripts/plot_issue32_pareto.sh    # issue #32 — narrow vs baseline LUT/la
 | Protocol HDC-2 disjoint split | ✅ Tier 1 — [#1](https://github.com/harsha240yeager/1024-HDC/issues/1) |
 | Cross-subject stress test (keep 32–256) | ✅ [#2](https://github.com/harsha240yeager/1024-HDC/issues/2) — [`twist2_36_v2/`](results/protocol_v2/twist2_36_v2/) |
 | Random baselines + subject-level stats | ⏳ [#3](https://github.com/harsha240yeager/1024-HDC/issues/3) |
-| Paper figures | ⏳ [#32](https://github.com/harsha240yeager/1024-HDC/issues/32) narrow Pareto started · run `plot_results.py --paper` |
+| Paper figures | ✅ [#32](https://github.com/harsha240yeager/1024-HDC/issues/32) `narrow_vs_baseline_pareto.pdf` · run `plot_results.py --paper` for Hook A set |
 | DATE manuscript | ⏳ [Research-paper](https://github.com/harsha240yeager/Research-paper) — [rewrite checklist](#paper-rewrite-checklist-research-paper) |
 
 ---
