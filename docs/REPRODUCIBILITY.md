@@ -125,6 +125,7 @@ The experiment-level view:
 | Sec. V-D — ranking baselines | `python_ref/run_ranking_baselines.py` | `results/protocol_v2/ranking_baselines/` |
 | Sec. V-D — Antonio compact (mock review) | `python_ref/run_antonio_compact_baseline.py` | `results/protocol_v2/antonio_compact/` |
 | Sec. VI — native D vs K=128 gather (#40) | `python_ref/run_native_d_sweep.py` | `results/protocol_v2/native_d_sweep/` |
+| Sec. VI — LUT hierarchy + core cycles (#41) | `scripts/build_lut_hierarchy_issue41.py` | `results/protocol_v2/lut_hierarchy/` |
 | Sec. V-E — seed sensitivity | `python_ref/run_seed_sensitivity.py` | `results/seed_sensitivity/` |
 | Sec. IV-C, VI — active support | `python_ref/run_active_bit_ablation.py` | `results/protocol_v2/active_bits/` |
 | Figures | `python_ref/plot_results.py --paper` | `results/figures/` |

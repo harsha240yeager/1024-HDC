@@ -205,6 +205,10 @@ def native_d_mode(mode: str, engine: str = "hdc_ref") -> dict:
     return data["engines"][engine]["summary"][mode]
 
 
+def lut_hierarchy_results() -> dict:
+    return load_json("results/protocol_v2/lut_hierarchy/lut_hierarchy_results.json")
+
+
 INFORMED_RANKINGS = (
     "fisher",
     "variance",
@@ -915,6 +919,71 @@ CLAIMS: list[dict] = [
         fn=lambda: float(
             native_d_mode("d1024_option_e_k128_gather")["spatial_mean_pred_agreement_vs_masked"]
         ),
+    ),
+    # --- LUT hierarchy + cycles (issue #41) -----------------------------------
+    dict(
+        id="lut_core_baseline_ooc",
+        paper="Sec. VI / resource table",
+        claim="OOC baseline core Slice LUTs 28,600",
+        expected=28600,
+        tol=0,
+        unit="LUT",
+        evidence="results/protocol_v2/lut_hierarchy/lut_hierarchy_results.json",
+        fn=lambda: int(
+            lut_hierarchy_results()["ooc_core_lut"]["baseline_hdc_core_top"]["core_total_luts"]
+        ),
+    ),
+    dict(
+        id="lut_core_narrow_ooc",
+        paper="Sec. VI / resource table",
+        claim="OOC narrow core Slice LUTs 3,794",
+        expected=3794,
+        tol=0,
+        unit="LUT",
+        evidence="results/protocol_v2/lut_hierarchy/lut_hierarchy_results.json",
+        fn=lambda: int(
+            lut_hierarchy_results()["ooc_core_lut"]["narrow_hdc_core_top_narrow"]["core_total_luts"]
+        ),
+    ),
+    dict(
+        id="lut_core_reduction_factor",
+        paper="Sec. VI",
+        claim="OOC core LUT reduction ~7.5×",
+        expected=7.5,
+        tol=0.1,
+        unit="×",
+        evidence="results/protocol_v2/lut_hierarchy/lut_hierarchy_results.json",
+        fn=lambda: float(lut_hierarchy_results()["ooc_core_lut"]["lut_reduction_factor"]),
+    ),
+    dict(
+        id="lut_integrated_narrow_placed",
+        paper="Issue #31 / narrow PL",
+        claim="Integrated narrow placed LUTs 10,601",
+        expected=10601,
+        tol=0,
+        unit="LUT",
+        evidence="results/protocol_v2/lut_hierarchy/lut_hierarchy_results.json",
+        fn=lambda: int(lut_hierarchy_results()["integrated_placed"]["narrow_placed_lut"]),
+    ),
+    dict(
+        id="core_cycles_baseline",
+        paper="Sec. VI timing",
+        claim="Baseline core 287 cycles/window (D=1024 AM)",
+        expected=287,
+        tol=0,
+        unit="cycles",
+        evidence="results/protocol_v2/lut_hierarchy/lut_hierarchy_results.json",
+        fn=lambda: int(lut_hierarchy_results()["core_cycles"]["total_cycles_full"]),
+    ),
+    dict(
+        id="core_cycles_narrow",
+        paper="Sec. VI timing",
+        claim="Narrow core 63 cycles/window (K=128 AM)",
+        expected=63,
+        tol=0,
+        unit="cycles",
+        evidence="results/protocol_v2/lut_hierarchy/lut_hierarchy_results.json",
+        fn=lambda: int(lut_hierarchy_results()["core_cycles"]["total_cycles_narrow"]),
     ),
     # --- Seed sensitivity ---------------------------------------------------
     dict(

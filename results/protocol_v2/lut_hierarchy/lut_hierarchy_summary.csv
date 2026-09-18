@@ -1,0 +1,12 @@
+scope,variant,block,luts
+ooc_core,baseline,core_total,28600
+ooc_core,baseline,encoder,25672
+ooc_core,baseline,encoder_bundle,25006
+ooc_core,baseline,popcount_am,2672
+ooc_core,baseline,pruning_mask,256
+ooc_core,narrow,core_total,3794
+ooc_core,narrow,encoder,3328
+ooc_core,narrow,encoder_bundle,3311
+ooc_core,narrow,popcount_am_narrow,466
+integrated_placed,baseline,design_1_wrapper,35206
+integrated_placed,narrow,design_1_wrapper,10601

@@ -1,0 +1,103 @@
+{
+  "meta": {
+    "generated_at": "2026-09-18T23:23:27Z",
+    "issue": 41,
+    "device": "xc7z020clg484-1",
+    "clock_mhz": 100,
+    "reports": {
+      "baseline_core_ooc": "results/dsweep/synth_baseline_core.txt",
+      "narrow_core_ooc": "results/dsweep/synth_narrow_core.txt",
+      "baseline_stream_ooc": "results/dsweep/synth_baseline_stream.txt",
+      "narrow_stream_ooc": "results/dsweep/synth_narrow_stream.txt",
+      "baseline_bd_ooc": "results/dsweep/synth_baseline_bd.txt",
+      "narrow_bd_ooc": "results/dsweep/synth_narrow_bd.txt",
+      "narrow_integrated_placed": "results/narrow_rtl/integrated_utilization_placed.rpt"
+    }
+  },
+  "ooc_core_lut": {
+    "baseline_hdc_core_top": {
+      "core_total_luts": 28600,
+      "encoder_total_luts": 25672,
+      "encoder_bundle_luts": 25006,
+      "encoder_control_luts": 666,
+      "popcount_am_luts": 2672,
+      "pruning_mask_luts": 256,
+      "other_core_luts": 0
+    },
+    "narrow_hdc_core_top_narrow": {
+      "core_total_luts": 3794,
+      "encoder_total_luts": 3328,
+      "encoder_bundle_luts": 3311,
+      "encoder_control_luts": 17,
+      "popcount_am_luts": 466,
+      "pruning_mask_luts": 0,
+      "other_core_luts": 0
+    },
+    "lut_reduction_factor": 7.54
+  },
+  "ooc_stream_wrapper": {
+    "baseline_total": 28963,
+    "narrow_total": 4153,
+    "stream_fsm_shell_luts": {
+      "baseline": 346,
+      "narrow": 343
+    }
+  },
+  "ooc_bd_wrapper": {
+    "baseline_total": 30639,
+    "narrow_total": 4261,
+    "axi_lite_cfg_luts": {
+      "baseline": 1683,
+      "narrow": 133
+    }
+  },
+  "integrated_placed": {
+    "baseline_placed_lut": 35206,
+    "narrow_placed_lut": 10601,
+    "source_baseline": "Phase 3 deployed bitstream / board_eval_summary.json",
+    "source_narrow": "results/narrow_rtl/integrated_utilization_placed.rpt"
+  },
+  "timing": {
+    "ooc_synth_baseline_core": {
+      "wns_ns": 0.781,
+      "whs_ns": 0.259
+    },
+    "ooc_synth_narrow_core": {
+      "wns_ns": 1.661,
+      "whs_ns": 0.259
+    },
+    "ooc_synth_baseline_bd": {
+      "wns_ns": 0.781,
+      "whs_ns": 0.259
+    },
+    "ooc_synth_narrow_bd": {
+      "wns_ns": 1.923,
+      "whs_ns": 0.259
+    },
+    "narrow_integrated_post_route_wns_ns": 1.011
+  },
+  "core_cycles": {
+    "n_pairs": 20,
+    "n_class_slots": 8,
+    "encode_cycles": 23,
+    "classify_cycles_full": 264,
+    "classify_cycles_narrow": 40,
+    "total_cycles_full": 287,
+    "total_cycles_narrow": 63,
+    "at_100mhz_us_full": 2.87,
+    "at_100mhz_us_narrow": 0.63,
+    "note": "RTL uses N_CLASS=8 slots; EMG deploys 5 active prototypes."
+  },
+  "board_latency": {
+    "baseline_phase3": {
+      "single_window_dma_mean_us": 58,
+      "batch_200_mean_us_per_window": 4
+    },
+    "narrow_phase3": {
+      "single_window_dma_mean_us": 56,
+      "batch_200_mean_us_per_window": 2
+    },
+    "phase1_axi_lite_poll_us": 3,
+    "note": "Batch \u00b5s/window amortizes DMA descriptor ring; single-window includes full SG path."
+  }
+}
