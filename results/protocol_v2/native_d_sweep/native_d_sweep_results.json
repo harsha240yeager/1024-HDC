@@ -1,0 +1,633 @@
+{
+  "meta": {
+    "generated_at": "2026-09-18T07:17:26Z",
+    "issue": 40,
+    "protocol": "HDC-2",
+    "subjects": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "native_D": [
+      128,
+      256,
+      1024
+    ],
+    "cnt_w": 6,
+    "gather_keep_ratio": 0.125,
+    "gather_k_bits": 128,
+    "item_mem_seed": 42,
+    "stage_b_item_mem_seed": 1,
+    "max_train_windows_per_subject": null,
+    "max_test_windows_per_subject": null,
+    "elapsed_s": 10254.9
+  },
+  "engines": {
+    "hdc_ref": {
+      "per_subject": [
+        {
+          "subject": 1,
+          "item_mem_seed": 42,
+          "n_train": 37206,
+          "modes": {
+            "native_D128_full": {
+              "mode": "native_D128_full",
+              "D": 128,
+              "accuracy": 0.7784904815229563,
+              "correct": 86899,
+              "n_test": 111625
+            },
+            "native_D256_full": {
+              "mode": "native_D256_full",
+              "D": 256,
+              "accuracy": 0.7686718924972005,
+              "correct": 85803,
+              "n_test": 111625
+            },
+            "native_D1024_full": {
+              "mode": "native_D1024_full",
+              "D": 1024,
+              "accuracy": 0.7690481522956327,
+              "correct": 85845,
+              "n_test": 111625
+            },
+            "d1024_fisher_k128_masked": {
+              "mode": "d1024_fisher_k128_masked",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.7690481522956327,
+              "correct": 85845,
+              "n_test": 111625
+            },
+            "d1024_option_e_k128_gather": {
+              "mode": "d1024_option_e_k128_gather",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.7690481522956327,
+              "correct": 85845,
+              "n_test": 111625,
+              "pred_agreement_vs_masked": 1.0
+            }
+          }
+        },
+        {
+          "subject": 2,
+          "item_mem_seed": 42,
+          "n_train": 34782,
+          "modes": {
+            "native_D128_full": {
+              "mode": "native_D128_full",
+              "D": 128,
+              "accuracy": 0.5844106063074372,
+              "correct": 60985,
+              "n_test": 104353
+            },
+            "native_D256_full": {
+              "mode": "native_D256_full",
+              "D": 256,
+              "accuracy": 0.6431247783964045,
+              "correct": 67112,
+              "n_test": 104353
+            },
+            "native_D1024_full": {
+              "mode": "native_D1024_full",
+              "D": 1024,
+              "accuracy": 0.7003440246087799,
+              "correct": 73083,
+              "n_test": 104353
+            },
+            "d1024_fisher_k128_masked": {
+              "mode": "d1024_fisher_k128_masked",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.7003440246087799,
+              "correct": 73083,
+              "n_test": 104353
+            },
+            "d1024_option_e_k128_gather": {
+              "mode": "d1024_option_e_k128_gather",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.7003440246087799,
+              "correct": 73083,
+              "n_test": 104353,
+              "pred_agreement_vs_masked": 1.0
+            }
+          }
+        },
+        {
+          "subject": 3,
+          "item_mem_seed": 42,
+          "n_train": 34391,
+          "modes": {
+            "native_D128_full": {
+              "mode": "native_D128_full",
+              "D": 128,
+              "accuracy": 0.7644065825434669,
+              "correct": 78873,
+              "n_test": 103182
+            },
+            "native_D256_full": {
+              "mode": "native_D256_full",
+              "D": 256,
+              "accuracy": 0.714514159446415,
+              "correct": 73725,
+              "n_test": 103182
+            },
+            "native_D1024_full": {
+              "mode": "native_D1024_full",
+              "D": 1024,
+              "accuracy": 0.809763330813514,
+              "correct": 83553,
+              "n_test": 103182
+            },
+            "d1024_fisher_k128_masked": {
+              "mode": "d1024_fisher_k128_masked",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.809763330813514,
+              "correct": 83553,
+              "n_test": 103182
+            },
+            "d1024_option_e_k128_gather": {
+              "mode": "d1024_option_e_k128_gather",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.809763330813514,
+              "correct": 83553,
+              "n_test": 103182,
+              "pred_agreement_vs_masked": 1.0
+            }
+          }
+        },
+        {
+          "subject": 4,
+          "item_mem_seed": 42,
+          "n_train": 33582,
+          "modes": {
+            "native_D128_full": {
+              "mode": "native_D128_full",
+              "D": 128,
+              "accuracy": 0.5720524450884837,
+              "correct": 57636,
+              "n_test": 100753
+            },
+            "native_D256_full": {
+              "mode": "native_D256_full",
+              "D": 256,
+              "accuracy": 0.6522882693319305,
+              "correct": 65720,
+              "n_test": 100753
+            },
+            "native_D1024_full": {
+              "mode": "native_D1024_full",
+              "D": 1024,
+              "accuracy": 0.6304824670233145,
+              "correct": 63523,
+              "n_test": 100753
+            },
+            "d1024_fisher_k128_masked": {
+              "mode": "d1024_fisher_k128_masked",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.6304824670233145,
+              "correct": 63523,
+              "n_test": 100753
+            },
+            "d1024_option_e_k128_gather": {
+              "mode": "d1024_option_e_k128_gather",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.6304824670233145,
+              "correct": 63523,
+              "n_test": 100753,
+              "pred_agreement_vs_masked": 1.0
+            }
+          }
+        },
+        {
+          "subject": 5,
+          "item_mem_seed": 42,
+          "n_train": 24531,
+          "modes": {
+            "native_D128_full": {
+              "mode": "native_D128_full",
+              "D": 128,
+              "accuracy": 0.7046291389828666,
+              "correct": 51860,
+              "n_test": 73599
+            },
+            "native_D256_full": {
+              "mode": "native_D256_full",
+              "D": 256,
+              "accuracy": 0.7091944184024239,
+              "correct": 52196,
+              "n_test": 73599
+            },
+            "native_D1024_full": {
+              "mode": "native_D1024_full",
+              "D": 1024,
+              "accuracy": 0.7228087338143181,
+              "correct": 53198,
+              "n_test": 73599
+            },
+            "d1024_fisher_k128_masked": {
+              "mode": "d1024_fisher_k128_masked",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.7228087338143181,
+              "correct": 53198,
+              "n_test": 73599
+            },
+            "d1024_option_e_k128_gather": {
+              "mode": "d1024_option_e_k128_gather",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.7228087338143181,
+              "correct": 53198,
+              "n_test": 73599,
+              "pred_agreement_vs_masked": 1.0
+            }
+          }
+        }
+      ],
+      "summary": {
+        "native_D128_full": {
+          "spatial_mean_accuracy": 0.6807978508890422,
+          "spatial_std_accuracy": 0.08742798703162404,
+          "pooled_accuracy": 0.6813471607579957,
+          "pooled_correct": 336253,
+          "pooled_n_test": 493512,
+          "per_subject_accuracy": {
+            "1": 0.7784904815229563,
+            "2": 0.5844106063074372,
+            "3": 0.7644065825434669,
+            "4": 0.5720524450884837,
+            "5": 0.7046291389828666
+          }
+        },
+        "native_D256_full": {
+          "spatial_mean_accuracy": 0.6975587036148749,
+          "spatial_std_accuracy": 0.04580922922063244,
+          "pooled_accuracy": 0.6981714730340903,
+          "pooled_correct": 344556,
+          "pooled_n_test": 493512,
+          "per_subject_accuracy": {
+            "1": 0.7686718924972005,
+            "2": 0.6431247783964045,
+            "3": 0.714514159446415,
+            "4": 0.6522882693319305,
+            "5": 0.7091944184024239
+          }
+        },
+        "native_D1024_full": {
+          "spatial_mean_accuracy": 0.7264893417111118,
+          "spatial_std_accuracy": 0.06109051331849486,
+          "pooled_accuracy": 0.7278485629528765,
+          "pooled_correct": 359202,
+          "pooled_n_test": 493512,
+          "per_subject_accuracy": {
+            "1": 0.7690481522956327,
+            "2": 0.7003440246087799,
+            "3": 0.809763330813514,
+            "4": 0.6304824670233145,
+            "5": 0.7228087338143181
+          }
+        },
+        "d1024_fisher_k128_masked": {
+          "spatial_mean_accuracy": 0.7264893417111118,
+          "spatial_std_accuracy": 0.06109051331849486,
+          "pooled_accuracy": 0.7278485629528765,
+          "pooled_correct": 359202,
+          "pooled_n_test": 493512,
+          "per_subject_accuracy": {
+            "1": 0.7690481522956327,
+            "2": 0.7003440246087799,
+            "3": 0.809763330813514,
+            "4": 0.6304824670233145,
+            "5": 0.7228087338143181
+          }
+        },
+        "d1024_option_e_k128_gather": {
+          "spatial_mean_accuracy": 0.7264893417111118,
+          "spatial_std_accuracy": 0.06109051331849486,
+          "pooled_accuracy": 0.7278485629528765,
+          "pooled_correct": 359202,
+          "pooled_n_test": 493512,
+          "per_subject_accuracy": {
+            "1": 0.7690481522956327,
+            "2": 0.7003440246087799,
+            "3": 0.809763330813514,
+            "4": 0.6304824670233145,
+            "5": 0.7228087338143181
+          },
+          "spatial_mean_pred_agreement_vs_masked": 1.0
+        }
+      }
+    },
+    "stage_b": {
+      "per_subject": [
+        {
+          "subject": 1,
+          "item_mem_seed": 1,
+          "n_train": 37206,
+          "modes": {
+            "native_D128_full": {
+              "mode": "native_D128_full",
+              "D": 128,
+              "accuracy": 0.8687749160134378,
+              "correct": 96977,
+              "n_test": 111625
+            },
+            "native_D256_full": {
+              "mode": "native_D256_full",
+              "D": 256,
+              "accuracy": 0.9456304591265398,
+              "correct": 105556,
+              "n_test": 111625
+            },
+            "native_D1024_full": {
+              "mode": "native_D1024_full",
+              "D": 1024,
+              "accuracy": 0.9439014557670773,
+              "correct": 105363,
+              "n_test": 111625
+            },
+            "d1024_fisher_k128_masked": {
+              "mode": "d1024_fisher_k128_masked",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.9333751399776036,
+              "correct": 104188,
+              "n_test": 111625
+            },
+            "d1024_option_e_k128_gather": {
+              "mode": "d1024_option_e_k128_gather",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.9333751399776036,
+              "correct": 104188,
+              "n_test": 111625,
+              "pred_agreement_vs_masked": 1.0
+            }
+          }
+        },
+        {
+          "subject": 2,
+          "item_mem_seed": 1,
+          "n_train": 34782,
+          "modes": {
+            "native_D128_full": {
+              "mode": "native_D128_full",
+              "D": 128,
+              "accuracy": 0.7468208867976963,
+              "correct": 77933,
+              "n_test": 104353
+            },
+            "native_D256_full": {
+              "mode": "native_D256_full",
+              "D": 256,
+              "accuracy": 0.9203664484969287,
+              "correct": 96043,
+              "n_test": 104353
+            },
+            "native_D1024_full": {
+              "mode": "native_D1024_full",
+              "D": 1024,
+              "accuracy": 0.8809521527890909,
+              "correct": 91930,
+              "n_test": 104353
+            },
+            "d1024_fisher_k128_masked": {
+              "mode": "d1024_fisher_k128_masked",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.871637614634941,
+              "correct": 90958,
+              "n_test": 104353
+            },
+            "d1024_option_e_k128_gather": {
+              "mode": "d1024_option_e_k128_gather",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.871637614634941,
+              "correct": 90958,
+              "n_test": 104353,
+              "pred_agreement_vs_masked": 1.0
+            }
+          }
+        },
+        {
+          "subject": 3,
+          "item_mem_seed": 1,
+          "n_train": 34391,
+          "modes": {
+            "native_D128_full": {
+              "mode": "native_D128_full",
+              "D": 128,
+              "accuracy": 0.89308212672753,
+              "correct": 92150,
+              "n_test": 103182
+            },
+            "native_D256_full": {
+              "mode": "native_D256_full",
+              "D": 256,
+              "accuracy": 0.9088988389447772,
+              "correct": 93782,
+              "n_test": 103182
+            },
+            "native_D1024_full": {
+              "mode": "native_D1024_full",
+              "D": 1024,
+              "accuracy": 0.8934988660812933,
+              "correct": 92193,
+              "n_test": 103182
+            },
+            "d1024_fisher_k128_masked": {
+              "mode": "d1024_fisher_k128_masked",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.9248027756779283,
+              "correct": 95423,
+              "n_test": 103182
+            },
+            "d1024_option_e_k128_gather": {
+              "mode": "d1024_option_e_k128_gather",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.9248027756779283,
+              "correct": 95423,
+              "n_test": 103182,
+              "pred_agreement_vs_masked": 1.0
+            }
+          }
+        },
+        {
+          "subject": 4,
+          "item_mem_seed": 1,
+          "n_train": 33582,
+          "modes": {
+            "native_D128_full": {
+              "mode": "native_D128_full",
+              "D": 128,
+              "accuracy": 0.8704554703085764,
+              "correct": 87701,
+              "n_test": 100753
+            },
+            "native_D256_full": {
+              "mode": "native_D256_full",
+              "D": 256,
+              "accuracy": 0.8579595644794696,
+              "correct": 86442,
+              "n_test": 100753
+            },
+            "native_D1024_full": {
+              "mode": "native_D1024_full",
+              "D": 1024,
+              "accuracy": 0.8807380425396762,
+              "correct": 88737,
+              "n_test": 100753
+            },
+            "d1024_fisher_k128_masked": {
+              "mode": "d1024_fisher_k128_masked",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.8753684753803856,
+              "correct": 88196,
+              "n_test": 100753
+            },
+            "d1024_option_e_k128_gather": {
+              "mode": "d1024_option_e_k128_gather",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.8753684753803856,
+              "correct": 88196,
+              "n_test": 100753,
+              "pred_agreement_vs_masked": 1.0
+            }
+          }
+        },
+        {
+          "subject": 5,
+          "item_mem_seed": 1,
+          "n_train": 24531,
+          "modes": {
+            "native_D128_full": {
+              "mode": "native_D128_full",
+              "D": 128,
+              "accuracy": 0.8615606190301499,
+              "correct": 63410,
+              "n_test": 73599
+            },
+            "native_D256_full": {
+              "mode": "native_D256_full",
+              "D": 256,
+              "accuracy": 0.8666286226715036,
+              "correct": 63783,
+              "n_test": 73599
+            },
+            "native_D1024_full": {
+              "mode": "native_D1024_full",
+              "D": 1024,
+              "accuracy": 0.8738569817524695,
+              "correct": 64315,
+              "n_test": 73599
+            },
+            "d1024_fisher_k128_masked": {
+              "mode": "d1024_fisher_k128_masked",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.8453375725213658,
+              "correct": 62216,
+              "n_test": 73599
+            },
+            "d1024_option_e_k128_gather": {
+              "mode": "d1024_option_e_k128_gather",
+              "D": 1024,
+              "k_bits": 128,
+              "accuracy": 0.8453375725213658,
+              "correct": 62216,
+              "n_test": 73599,
+              "pred_agreement_vs_masked": 1.0
+            }
+          }
+        }
+      ],
+      "summary": {
+        "native_D128_full": {
+          "spatial_mean_accuracy": 0.8481388037754781,
+          "spatial_std_accuracy": 0.05174794766339402,
+          "pooled_accuracy": 0.8473370455024397,
+          "pooled_correct": 418171,
+          "pooled_n_test": 493512,
+          "per_subject_accuracy": {
+            "1": 0.8687749160134378,
+            "2": 0.7468208867976963,
+            "3": 0.89308212672753,
+            "4": 0.8704554703085764,
+            "5": 0.8615606190301499
+          }
+        },
+        "native_D256_full": {
+          "spatial_mean_accuracy": 0.8998967867438438,
+          "spatial_std_accuracy": 0.03303668911291647,
+          "pooled_accuracy": 0.9029283989041806,
+          "pooled_correct": 445606,
+          "pooled_n_test": 493512,
+          "per_subject_accuracy": {
+            "1": 0.9456304591265398,
+            "2": 0.9203664484969287,
+            "3": 0.9088988389447772,
+            "4": 0.8579595644794696,
+            "5": 0.8666286226715036
+          }
+        },
+        "native_D1024_full": {
+          "spatial_mean_accuracy": 0.8945894997859213,
+          "spatial_std_accuracy": 0.025457949208563736,
+          "pooled_accuracy": 0.8967117314269967,
+          "pooled_correct": 442538,
+          "pooled_n_test": 493512,
+          "per_subject_accuracy": {
+            "1": 0.9439014557670773,
+            "2": 0.8809521527890909,
+            "3": 0.8934988660812933,
+            "4": 0.8807380425396762,
+            "5": 0.8738569817524695
+          }
+        },
+        "d1024_fisher_k128_masked": {
+          "spatial_mean_accuracy": 0.8901043156384448,
+          "spatial_std_accuracy": 0.03358146122930436,
+          "pooled_accuracy": 0.8935567929452577,
+          "pooled_correct": 440981,
+          "pooled_n_test": 493512,
+          "per_subject_accuracy": {
+            "1": 0.9333751399776036,
+            "2": 0.871637614634941,
+            "3": 0.9248027756779283,
+            "4": 0.8753684753803856,
+            "5": 0.8453375725213658
+          }
+        },
+        "d1024_option_e_k128_gather": {
+          "spatial_mean_accuracy": 0.8901043156384448,
+          "spatial_std_accuracy": 0.03358146122930436,
+          "pooled_accuracy": 0.8935567929452577,
+          "pooled_correct": 440981,
+          "pooled_n_test": 493512,
+          "per_subject_accuracy": {
+            "1": 0.9333751399776036,
+            "2": 0.871637614634941,
+            "3": 0.9248027756779283,
+            "4": 0.8753684753803856,
+            "5": 0.8453375725213658
+          },
+          "spatial_mean_pred_agreement_vs_masked": 1.0
+        }
+      }
+    }
+  }
+}

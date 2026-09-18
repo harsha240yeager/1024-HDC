@@ -175,6 +175,7 @@ python scripts/export_emg_board_vectors.py --config python_ref/config/emg_baseli
 | Twist 1 @ Stage B encoder | ✅ keep grid **+2.82 / +1.02 / +0.50 pp** @ {128,256,512} bits (30 seeds) · baseline **89.46%** [`twist1_stage_b/`](results/protocol_v2/twist1_stage_b/) |
 | Ranking baselines @ 128 bits (hdc_ref, #9) | ✅ **72.65%** informed (full test); random **−1.04 / −7.94 pp** | [`ranking_baselines/`](results/protocol_v2/ranking_baselines/) |
 | Antonio compact baseline (#39) | ✅ hdc_ref **72.65%** @ **~27** kept bits (ties Fisher); Stage B **+0.45 pp** vs Fisher | [`antonio_compact/`](results/protocol_v2/antonio_compact/) |
+| Native D=128/256 vs K=128 gather (#40) | ✅ native **68.08% / 69.76%** vs gather **72.65%** (+2.89 pp vs D=256); pooled D=256 **69.82%** | [`native_d_sweep/`](results/protocol_v2/native_d_sweep/) |
 | Stage B ranking baselines @ 128 bits (#22) | ✅ **MI 92.77%** (+2.29 pp vs Fisher); criteria **separate** on dense support | [`ranking_baselines_README.md`](results/protocol_v2/twist1_stage_b/ranking_baselines_README.md) |
 | Three-baseline hero figure @ keep=128 | ✅ informed / random-all / random-support (hdc_ref + Stage B) [#23](https://github.com/harsha240yeager/1024-HDC/issues/23) [`twist1_three_baselines_keep0125.pdf`](results/figures/twist1_three_baselines_keep0125.pdf) |
 | Active support mechanism (327 vs ~209) | ✅ value-table ceiling **327** · real EMG **203–210** [#24](https://github.com/harsha240yeager/1024-HDC/issues/24) [`active_support_mechanism/`](results/protocol_v2/active_support_mechanism/) |
@@ -272,6 +273,7 @@ full plan: [`docs/DATE_REVISION_PLAN.md`](docs/DATE_REVISION_PLAN.md)
 | **Seed sensitivity** | ✅ [#4](https://github.com/harsha240yeager/1024-HDC/issues/4) | [`seed_sensitivity/`](results/seed_sensitivity/) |
 | **Ranking baselines (#9 hdc_ref)** | ✅ | [`ranking_baselines/paper_table.md`](results/protocol_v2/ranking_baselines/paper_table.md) |
 | **Antonio compact (#39)** | ✅ | [`antonio_compact/README.md`](results/protocol_v2/antonio_compact/README.md) |
+| **Native D sweep (#40)** | ✅ | [`native_d_sweep/README.md`](results/protocol_v2/native_d_sweep/README.md) |
 | **Ranking baselines (Stage-B #22)** | ✅ | [`twist1_stage_b/ranking_baselines_README.md`](results/protocol_v2/twist1_stage_b/ranking_baselines_README.md) |
 | **Active-bit ablation** | ⏳ [#5](https://github.com/harsha240yeager/1024-HDC/issues/5) | Optional Discussion |
 
@@ -824,6 +826,7 @@ HDC-EMG data and co-sim vectors are gitignored — clone dataset and run harness
 | **8** | Energy methodology | [#8](https://github.com/harsha240yeager/1024-HDC/issues/8) | ⏳ |
 | **9** | Ranking baselines (variance, MI, …) | [#9](https://github.com/harsha240yeager/1024-HDC/issues/9) | ✅ [`ranking_baselines/`](results/protocol_v2/ranking_baselines/) |
 | **39** | Antonio identical-prototype compact baseline | [#39](https://github.com/harsha240yeager/1024-HDC/issues/39) | ✅ [`antonio_compact/`](results/protocol_v2/antonio_compact/) |
+| **40** | Native D=128/256 vs K=128 gather | [#40](https://github.com/harsha240yeager/1024-HDC/issues/40) | ✅ [`native_d_sweep/`](results/protocol_v2/native_d_sweep/) |
 | **10** | Fix inconsistencies | [#10](https://github.com/harsha240yeager/1024-HDC/issues/10) | ⏳ |
 | **11** | Reproducibility artifact | [#11](https://github.com/harsha240yeager/1024-HDC/issues/11) | ✅ [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) + `reproduce_paper.sh` / `check_paper_numbers.py` |
 

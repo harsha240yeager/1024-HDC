@@ -1,0 +1,21 @@
+{
+  "name": "Issue 40 — native D=128/256 vs K=128 gather from D=1024",
+  "description": "HDC-2 hdc_ref (+ optional Stage B): full-width encode-and-classify at native D vs Option-E gather.",
+  "engines": ["hdc_ref", "stage_b"],
+  "protocol_config": "emg_baseline_v2.json",
+  "item_mem_seed": 42,
+  "stage_b_item_mem_seed": 1,
+  "subjects": [1, 2, 3, 4, 5],
+  "native_D": [128, 256, 1024],
+  "cnt_w": 6,
+  "gather_keep_ratio": 0.125,
+  "gather_k_bits": 128,
+  "max_train_windows_per_subject": null,
+  "max_test_windows_per_subject": null,
+  "quick": {
+    "engines": ["hdc_ref"],
+    "subjects": [1, 2],
+    "max_train_windows_per_subject": 3000,
+    "max_test_windows_per_subject": 3000
+  }
+}

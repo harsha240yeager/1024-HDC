@@ -200,6 +200,11 @@ def antonio_engine_summary(engine_key: str = "hdc_ref_seed42") -> dict:
     return eng
 
 
+def native_d_mode(mode: str, engine: str = "hdc_ref") -> dict:
+    data = load_json("results/protocol_v2/native_d_sweep/native_d_sweep_results.json")
+    return data["engines"][engine]["summary"][mode]
+
+
 INFORMED_RANKINGS = (
     "fisher",
     "variance",
@@ -841,6 +846,74 @@ CLAIMS: list[dict] = [
             load_csv("results/protocol_v2/antonio_compact/antonio_compact_summary.csv")[1][
                 "spatial_mean_gap_pp_antonio_vs_fisher"
             ]
+        ),
+    ),
+    # --- Native D sweep (issue #40) -----------------------------------------
+    dict(
+        id="native_d128_hdc_ref",
+        paper="Sec. VI / narrow datapath (mock review)",
+        claim="Native D=128 hdc_ref spatial mean 68.08%",
+        expected=68.08,
+        tol=0.02,
+        unit="%",
+        evidence="results/protocol_v2/native_d_sweep/native_d_sweep_summary.csv",
+        fn=lambda: float(native_d_mode("native_D128_full")["spatial_mean_accuracy"]) * 100,
+    ),
+    dict(
+        id="native_d256_hdc_ref_spatial",
+        paper="H1 narrow design / iso-width baseline",
+        claim="Native D=256 hdc_ref spatial mean 69.76%",
+        expected=69.76,
+        tol=0.02,
+        unit="%",
+        evidence="results/protocol_v2/native_d_sweep/native_d_sweep_summary.csv",
+        fn=lambda: float(native_d_mode("native_D256_full")["spatial_mean_accuracy"]) * 100,
+    ),
+    dict(
+        id="native_d256_hdc_ref_pooled",
+        paper="H1 narrow design / iso-width baseline",
+        claim="Native D=256 hdc_ref pooled 69.82%",
+        expected=69.82,
+        tol=0.02,
+        unit="%",
+        evidence="results/protocol_v2/native_d_sweep/native_d_sweep_summary.csv",
+        fn=lambda: float(native_d_mode("native_D256_full")["pooled_accuracy"]) * 100,
+    ),
+    dict(
+        id="native_d_gather_k128_hdc_ref",
+        paper="Sec. VI — Option E gather",
+        claim="K=128 gather from D=1024 matches Fisher 72.65% spatial mean",
+        expected=72.65,
+        tol=0.01,
+        unit="%",
+        evidence="results/protocol_v2/native_d_sweep/native_d_sweep_results.json",
+        fn=lambda: float(native_d_mode("d1024_option_e_k128_gather")["spatial_mean_accuracy"])
+        * 100,
+    ),
+    dict(
+        id="native_d_gap_gather_vs_d256",
+        paper="H1 narrow design",
+        claim="K=128 gather beats native D=256 by +2.89 pp (spatial mean)",
+        expected=2.89,
+        tol=0.05,
+        unit="pp",
+        evidence="results/protocol_v2/native_d_sweep/native_d_sweep_results.json",
+        fn=lambda: 100.0
+        * (
+            float(native_d_mode("d1024_option_e_k128_gather")["spatial_mean_accuracy"])
+            - float(native_d_mode("native_D256_full")["spatial_mean_accuracy"])
+        ),
+    ),
+    dict(
+        id="native_d_gather_bit_exact",
+        paper="Sec. VI — Option E",
+        claim="Gather vs masked Fisher: 100% pred agreement (hdc_ref)",
+        expected=1.0,
+        tol=0.0,
+        unit="frac",
+        evidence="results/protocol_v2/native_d_sweep/native_d_sweep_results.json",
+        fn=lambda: float(
+            native_d_mode("d1024_option_e_k128_gather")["spatial_mean_pred_agreement_vs_masked"]
         ),
     ),
     # --- Seed sensitivity ---------------------------------------------------
