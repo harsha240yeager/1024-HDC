@@ -42,7 +42,8 @@ results/**/encode_cache/
 
 # Artifact reruns (regenerate: scripts/reproduce_paper.sh); committed results
 # under results/protocol_v2/ stay the reference
-results/repro/
+results/repro/*
+!results/repro/claim_check.json
 
 # Double-blind review snapshot (regenerate: scripts/make_anon_artifact.py)
 dist/

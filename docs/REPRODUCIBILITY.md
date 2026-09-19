@@ -26,13 +26,20 @@ bash scripts/reproduce_paper.sh --tier core     # ~21 h, every S1-S5 claim
 ```
 
 `check_paper_numbers.py` is the fastest way to audit the paper. It reads the
-committed result files and compares 66 published values — accuracies, gaps,
-confidence intervals, p-values, energies, latencies, window counts — against what
-the manuscript prints, then exits non-zero if any of them drift:
+committed result files and compares **82** published values — accuracies, gaps,
+confidence intervals, p-values, energies, latencies, window counts, native-width
+and LUT hierarchy metrics — against what the manuscript prints, then exits
+non-zero if any of them drift:
 
 ```
-66/66 claims verified
+82/82 claims verified
 ```
+
+A machine-readable log is committed at `results/repro/claim_check.json`
+(regenerate with `bash scripts/reproduce_paper.sh --verify-only` or
+`python3 scripts/check_paper_numbers.py --json results/repro/claim_check.json`).
+Copy manuscript figures to the paper repo with
+`bash scripts/sync_figures_to_research_paper.sh`.
 
 Reruns write to `results/repro/<tier>/` and never overwrite the committed
 reference under `results/protocol_v2/`, so you can diff the two trees.
@@ -221,7 +228,7 @@ institutions, e-mail addresses, the repository URL, and the lab hostname
 recorded in board and JTAG logs, and drops the compiled `.elf` and BSP `.a`
 images because the toolchain writes the absolute build path inside them. It
 exits non-zero if any identifying string survives. Measured values, timestamps,
-and log structure are untouched: `check_paper_numbers.py` verifies 66/66 claims
+and log structure are untouched: `check_paper_numbers.py` verifies 82/82 claims
 inside the snapshot exactly as it does here.
 
 ---
