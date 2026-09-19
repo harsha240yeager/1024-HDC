@@ -228,8 +228,8 @@ def ranking_subjects() -> list[dict]:
 def ranking_correct_spread() -> float:
     """Largest spread in correct counts across informed rankings, over subjects.
 
-    Zero means every criterion predicts identically on every test window, which
-    is the paper's claim in Sec. V-D.
+    Zero means every criterion has the same n_correct on every subject. That is
+    the paper claim; it is not bit-identical per-window label identity.
     """
     spreads = []
     for subj in ranking_subjects():
@@ -732,7 +732,7 @@ CLAIMS: list[dict] = [
     dict(
         id="ranking_identical_preds",
         paper="Sec. V-D",
-        claim="All six informed rankings predict identically on every test window",
+        claim="All six informed rankings match Fisher's correct count on every subject",
         expected=0.0,
         tol=0.0,
         unit="windows",
